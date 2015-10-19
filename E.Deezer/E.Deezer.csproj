@@ -36,16 +36,6 @@
     </CreateItem>
   </Target>
 
-  <!-- Doing something with versioning?-->
-  <Target Name="version" DependsOnTargets="configurations" Inputs="@(Configuration)" Outputs="target\%(Configuration.FileName)">
-    <Version Major="$(MajorVersion)" Minor="$(MinorVersion)">
-      <Output TaskParameter="Major" PropertyName="Major" />
-      <Output TaskParameter="Minor" PropertyName="Minor" />
-      <Output TaskParameter="Revision" PropertyName="Revision" />
-    </Version>
-  </Target>
-
-
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
