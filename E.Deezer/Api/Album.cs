@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using RestSharp.Deserializers;
+
 namespace E.Deezer.Api
 {
     public interface IAlbum
@@ -35,6 +37,12 @@ namespace E.Deezer.Api
                 if (ArtistInternal == null) { return string.Empty; }
                 else { return ArtistInternal.Name; }
             }
+        }
+
+
+        public ISearchResult<ITrack> GetTracks()
+        {
+            return null;
         }
     }
 }
