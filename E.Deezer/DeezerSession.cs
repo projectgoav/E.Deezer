@@ -43,6 +43,12 @@ namespace E.Deezer
         internal Task<IRestResponse> Execute(IRestRequest aRequest, CancellationToken aToken) { return iClient.ExecuteGetTaskAsync(aRequest, aToken); }
 
 
+        //Adding any addition params we'd like to the requests
+        private void AppendParams(IRestRequest aRequest)
+        {
+            aRequest.AddParameter("output", "json");
+        }
+
         //Generates a permission string which can be used to grant people
         //Access to features of the app
         private void GeneratePermissionString(DeezerPermissions iPermissions)
