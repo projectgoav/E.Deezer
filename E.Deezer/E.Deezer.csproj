@@ -20,22 +20,19 @@
     <AssemblyVersionSettings>None.None.None.Increment</AssemblyVersionSettings>
     <AssemblyFileVersionSettings>IncrementOnDemand.Increment.DateStamp.TimeStamp</AssemblyFileVersionSettings>
     <AssemblyInfoVersionSettings>IncrementOnDemand.Increment.DateStamp.TimeStamp</AssemblyInfoVersionSettings>
-    <AssemblyVersion>0.0.0.8</AssemblyVersion>
+    <AssemblyVersion>0.0.0.10</AssemblyVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
-  
   <!-- If nothing is specified we build with DEBUG -->
   <PropertyGroup Condition="'$(Configuration)'==''">
     <Configuration>Debug</Configuration>
   </PropertyGroup>
-
   <!-- So we can have multiple building in one CLI invoke of MSBuild -->
   <Target Name="configurations">
     <CreateItem Include="$(Configuration)">
       <Output TaskParameter="Include" ItemName="Configuration" />
     </CreateItem>
   </Target>
-
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -69,8 +66,12 @@
   <ItemGroup>
     <Compile Include="Api\Album.cs" />
     <Compile Include="Api\Artist.cs" />
+    <Compile Include="Api\Editorial.cs" />
+    <Compile Include="Api\Genre.cs" />
+    <Compile Include="Api\Playlist.cs.cs" />
     <Compile Include="Api\SearchResult.cs" />
     <Compile Include="Api\Track.cs" />
+    <Compile Include="Api\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
