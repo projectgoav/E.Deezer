@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using E.Deezer;
+using System.Threading;
+using System.Threading.Tasks;
+
+using RestSharp;
 
 namespace E.Deezer
 {
@@ -13,10 +16,17 @@ namespace E.Deezer
     /// </summary>
     public class DeezerSession
     {
+        /// <summary>
+        /// Base Deezer API endpoint
+        /// </summary>
+        public const string ENDPOINT = "https://api.deezer.com/";
+
         public string Username { get; private set; }
         public string ApplicationId { get; private set; }
         public string ApplicationSecret { get; private set; }
         internal string Permissions { get; private set; }
+
+        private RestClient iClient;
 
         public DeezerSession(string aUsername, string aAppId, string aAppSecret, DeezerPermissions iPermissions )
         {
@@ -25,7 +35,13 @@ namespace E.Deezer
             ApplicationSecret = aAppSecret;
 
             GeneratePermissionString(iPermissions);
+
+            iClient = new RestClient(ENDPOINT);
         }
+
+        internal Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, CancellationToken aToken) { return iClient.ExecuteGetTaskAsync<T>(aRequest, aToken); }
+        internal Task<IRestResponse> Execute(IRestRequest aRequest, CancellationToken aToken) { return iClient.ExecuteGetTaskAsync(aRequest, aToken); }
+
 
         //Generates a permission string which can be used to grant people
         //Access to features of the app
