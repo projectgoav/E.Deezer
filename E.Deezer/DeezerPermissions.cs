@@ -7,52 +7,6 @@ namespace E.Deezer
 {
     public static class Permissions
     {
-        /// <summary>
-        /// Deezer OAuth Permission requests
-        /// </summary>
-        public enum DeezerPermissions
-        {
-            /// <summary>
-            /// Access users basic information.
-            /// INFO: Include name, firstname, profile picture, gender
-            /// </summary>
-            BasicAccess = 1,
-
-            /// <summary>
-            /// Get the user's email
-            /// </summary>
-            Email = 2,
-
-            /// <summary>
-            /// Access user data any time
-            /// NOTE: Almost the same as all other permissions
-            /// </summary>
-            OfflineAccess = 4,
-
-            /// <summary>
-            /// Manage users' library 
-            /// INFO: Add/rename a playlist. Add/order songs in the playlist.
-            /// </summary>
-            ManageLibrary = 8,
-
-            /// <summary>
-            /// Manage users' friends
-            /// INFO: Add/remove a following/follower.
-            /// </summary>
-            ManageCommunity = 16,
-
-            /// <summary>
-            /// Delete library items 	
-            /// INFO: Allow the application to delete items in the user's library
-            /// </summary>
-            DeleteLibrary = 32,
-
-            /// <summary>
-            /// Allow the application to access the user's listening history
-            /// </summary>
-            ListeningHistory = 64,
-        }
-
         public static string PermissionToString(this DeezerPermissions aPermission)
         {
             switch (aPermission)
@@ -74,5 +28,52 @@ namespace E.Deezer
         {
             public UnknownPermissionException() : base("An unknown DeezerPermission value was given to PermissionToString()") { }
         }
+    }
+
+    /// <summary>
+    /// Deezer OAuth Permission requests
+    /// </summary>
+    [Flags]
+    public enum DeezerPermissions
+    {
+        /// <summary>
+        /// Access users basic information.
+        /// INFO: Include name, firstname, profile picture, gender
+        /// </summary>
+        BasicAccess = 1,
+
+        /// <summary>
+        /// Get the user's email
+        /// </summary>
+        Email = 2,
+
+        /// <summary>
+        /// Access user data any time
+        /// NOTE: Almost the same as all other permissions
+        /// </summary>
+        OfflineAccess = 4,
+
+        /// <summary>
+        /// Manage users' library 
+        /// INFO: Add/rename a playlist. Add/order songs in the playlist.
+        /// </summary>
+        ManageLibrary = 8,
+
+        /// <summary>
+        /// Manage users' friends
+        /// INFO: Add/remove a following/follower.
+        /// </summary>
+        ManageCommunity = 16,
+
+        /// <summary>
+        /// Delete library items 	
+        /// INFO: Allow the application to delete items in the user's library
+        /// </summary>
+        DeleteLibrary = 32,
+
+        /// <summary>
+        /// Allow the application to access the user's listening history
+        /// </summary>
+        ListeningHistory = 64,
     }
 }
