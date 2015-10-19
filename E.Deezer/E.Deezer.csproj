@@ -20,7 +20,7 @@
     <AssemblyVersionSettings>None.None.None.Increment</AssemblyVersionSettings>
     <AssemblyFileVersionSettings>IncrementOnDemand.Increment.DateStamp.TimeStamp</AssemblyFileVersionSettings>
     <AssemblyInfoVersionSettings>IncrementOnDemand.Increment.DateStamp.TimeStamp</AssemblyInfoVersionSettings>
-    <AssemblyVersion>0.0.0.10</AssemblyVersion>
+    <AssemblyVersion>0.0.0.13</AssemblyVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
   <!-- If nothing is specified we build with DEBUG -->
@@ -68,10 +68,14 @@
     <Compile Include="Api\Artist.cs" />
     <Compile Include="Api\Editorial.cs" />
     <Compile Include="Api\Genre.cs" />
-    <Compile Include="Api\Playlist.cs.cs" />
+    <Compile Include="Api\Infos.cs" />
+    <Compile Include="Api\Playlist.cs" />
     <Compile Include="Api\SearchResult.cs" />
     <Compile Include="Api\Track.cs" />
     <Compile Include="Api\User.cs" />
+    <Compile Include="DeezerClient.cs" />
+    <Compile Include="DeezerPermissions.cs" />
+    <Compile Include="DeezerSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

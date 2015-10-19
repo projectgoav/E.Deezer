@@ -94,7 +94,7 @@ namespace E.Deezer
         //Adds the permissions in a comma seperated list
         private void AddToString(string aString, string aAdd)
         {
-            if(string.IsNullOrEmpty(aString) {  aString = aAdd; }
+            if(string.IsNullOrEmpty(aString)) {  aString = aAdd; }
             else {  aString += string.Format(",{0}", aAdd); }
         }
     }
