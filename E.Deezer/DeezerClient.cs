@@ -178,6 +178,10 @@ namespace E.Deezer
         #endregion
 
         #region Content
+        //Gaining content from the API
+
+        #region Albums
+
         /// <summary>
         /// Gets the specificed albums tracks
         /// </summary>
@@ -207,10 +211,106 @@ namespace E.Deezer
                 };
             });
         }
-        #endregion
 
+        #endregion //Albums
 
-        #endregion
+        #region Artists
+
+        /// <summary>
+        /// Gets the top tracks of an artist
+        /// </summary>
+        /// <param name="aId">Artist Id</param>
+        /// <returns>First page of top tracks from artist</returns>
+        internal Task<IPagedResponse<ITrack>> GetArtistTopTracks(uint aId)
+        {
+            IRestRequest Request = new RestRequest("/artist/{id}/top", Method.GET);
+            Request.AddParameter("id", aId, ParameterType.UrlSegment);
+            return Execute<PagedResponse<Track>>(Request).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+            {
+                List<ITrack> items = new List<ITrack>();
+                foreach(var item in aTask.Result.Data.Data)
+                {
+                    item.Deserialize(this);
+                    items.Add(item as ITrack);
+                }
+
+                aTask.Result.Data.Deserialize(this);
+
+                return new PagedResponse<ITrack>()
+                {
+                    Data = items,
+                    Total = aTask.Result.Data.Total,
+                    Next = aTask.Result.Data.Next,
+                    Previous = aTask.Result.Data.Previous,
+                };
+            });
+        }
+
+        /// <summary>
+        /// Gets albums by given artist
+        /// </summary>
+        /// <param name="aId">Artist Id</param>
+        /// <returns>First page of albums by artist</returns>
+        internal Task<IPagedResponse<IAlbum>> GetArtistAlbums(uint aId)
+        {
+            IRestRequest Request = new RestRequest("/artist/{id}/albums", Method.GET);
+            Request.AddParameter("id", aId, ParameterType.UrlSegment);
+            return Execute<PagedResponse<Album>>(Request).ContinueWith<IPagedResponse<IAlbum>>((aTask) =>
+            {
+                List<IAlbum> items = new List<IAlbum>();
+                foreach (var item in aTask.Result.Data.Data)
+                {
+                    item.Deserialize(this);
+                    items.Add(item as IAlbum);
+                }
+
+                aTask.Result.Data.Deserialize(this);
+
+                return new PagedResponse<IAlbum>()
+                {
+                    Data = items,
+                    Total = aTask.Result.Data.Total,
+                    Next = aTask.Result.Data.Next,
+                    Previous = aTask.Result.Data.Previous,
+                };
+            });
+        }
+
+        /// <summary>
+        /// Gets related artists
+        /// </summary>
+        /// <param name="aId">Artist Id</param>
+        /// <returns>First page of artists related to given artist</returns>
+        internal Task<IPagedResponse<IArtist>> GetArtistRelated(uint aId)
+        {
+            IRestRequest Request = new RestRequest("/artist/{id}/related", Method.GET);
+            Request.AddParameter("id", aId, ParameterType.UrlSegment);
+            return Execute<PagedResponse<Artist>>(Request).ContinueWith<IPagedResponse<IArtist>>((aTask) =>
+            {
+                List<IArtist> items = new List<IArtist>();
+                foreach (var item in aTask.Result.Data.Data)
+                {
+                    item.Deserialize(this);
+                    items.Add(item as IArtist);
+                }
+
+                aTask.Result.Data.Deserialize(this);
+
+                return new PagedResponse<IArtist>()
+                {
+                    Data = items,
+                    Total = aTask.Result.Data.Total,
+                    Next = aTask.Result.Data.Next,
+                    Previous = aTask.Result.Data.Previous,
+                };
+            });
+        }
+
+        #endregion //Artists
+
+        #endregion //Content
+
+        #endregion //Deezer Methods
 
         private Task<IRestResponse> Execute(IRestRequest aRequest)
         {

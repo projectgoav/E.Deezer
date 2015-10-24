@@ -77,7 +77,6 @@ namespace E.Deezer.Api
             }
         }
 
-
         //Local Serailization info
         private DeezerClient Client { get; set; }
         internal void Deserialize(DeezerClient aClient) { Client = aClient; }
@@ -87,10 +86,15 @@ namespace E.Deezer.Api
             return Client.GetAlbumTracks(Id);
         }
 
-
         public Task<IArtist> GetArtist()
         {
             return Task.Factory.StartNew<IArtist>(() => ArtistInternal);
+        }
+
+
+        public override string ToString()
+        {
+            return string.Format("E.Deezer: Album({0})", Title);
         }
     }
 }

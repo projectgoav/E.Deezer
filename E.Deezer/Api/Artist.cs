@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using System.Threading.Tasks;
+
 namespace E.Deezer.Api
 {
     /// <summary>
@@ -42,19 +44,19 @@ namespace E.Deezer.Api
         /// Gets the artist's top track
         /// </summary>
         /// <returns>First page of artist's top tracks</returns>
-        IPagedResponse<ITrack> GetTopTracks();
+        Task<IPagedResponse<ITrack>> GetTopTracks();
 
         /// <summary>
         /// Gets a list of artist's albums
         /// </summary>
         /// <returns>First page of artist's album collection</returns>
-        IPagedResponse<IAlbum> GetAlbums();
+        Task<IPagedResponse<IAlbum>> GetAlbums();
 
         /// <summary>
         /// Geta  list of related artists
         /// </summary>
         /// <returns>First page of related artists</returns>
-        IPagedResponse<IArtist> GetRelated();
+        Task<IPagedResponse<IArtist>> GetRelated();
     }
 
     public class Artist : IArtist
@@ -72,25 +74,27 @@ namespace E.Deezer.Api
             Client = aClient;
         }
 
-        public IPagedResponse<ITrack> GetTopTracks()
+
+        public Task<IPagedResponse<ITrack>> GetTopTracks()
         {
-            throw new NotImplementedException();
+            return Client.GetArtistTopTracks(Id);
         }
 
-        public IPagedResponse<IAlbum> GetAlbums()
+        public Task<IPagedResponse<IAlbum>> GetAlbums()
         {
-            throw new NotImplementedException();
+            return Client.GetArtistAlbums(Id);
         }
 
-        public IPagedResponse<IArtist> GetRelated()
+        public Task<IPagedResponse<IArtist>> GetRelated()
         {
-            throw new NotImplementedException();
+            return Client.GetArtistRelated(Id);
         }
+
 
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return string.Format("E.Deezer: Artist({0})", Name);
         }
     }
 }
