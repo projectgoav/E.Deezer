@@ -51,12 +51,12 @@ namespace E.Deezer.Api
     internal class PagedResponse<T> : IPagedResponse<T>
     {
         public List<T> Data { get; set; }
-
         public uint Total { get; set; }
-
         public string Next { get; set; }
-
         public string Previous { get; set; }
+
+        private DeezerClient Client { get; set; }
+        public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
         public Task<IPagedResponse<T>> GetNextPage()

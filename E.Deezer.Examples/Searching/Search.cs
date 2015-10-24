@@ -39,6 +39,7 @@ namespace E.Deezer.Examples.Searching
             var previousPage = searchTask.Result.Previous;
 
             //Alternatively we can get the pages directly
+            //TODO NotYetImplemented
             var nextPageTask = searchTask.Result.GetNextPage();
             var previousPageTask = searchTask.Result.GetPreviousPage();
         }

@@ -66,6 +66,8 @@ namespace E.Deezer
                     items.Add(item as IAlbum);
                 }
 
+                aTask.Result.Data.Deserialize(this);
+
                 IPagedResponse<IAlbum> result = new PagedResponse<IAlbum>()
                 {
                     Data = items,
@@ -95,6 +97,8 @@ namespace E.Deezer
                     item.Deserialize(this);
                     items.Add(item as IArtist);
                 }
+
+                aTask.Result.Data.Deserialize(this);
 
                 IPagedResponse<IArtist> result = new PagedResponse<IArtist>()
                 {
@@ -127,6 +131,8 @@ namespace E.Deezer
                     items.Add(item as ITrack);
                 }
 
+                aTask.Result.Data.Deserialize(this);
+
                 IPagedResponse<ITrack> result = new PagedResponse<ITrack>()
                 {
                     Data = items,
@@ -156,6 +162,8 @@ namespace E.Deezer
                     item.Deserialize(this);
                     items.Add(item as IPlaylist);
                 }
+
+                aTask.Result.Data.Deserialize(this);
 
                 IPagedResponse<IPlaylist> result = new PagedResponse<IPlaylist>()
                 {
