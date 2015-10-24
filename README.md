@@ -10,9 +10,9 @@ An unoffical asynchronous wrapper for the Deezer API and .NET
 ## Usage
 *A Nuget package will be created when fully functional*
 
-'''
+```
 git clone https://github.com/projectgoav/e.deezer
-'''
+```
 
 See E.Deezer.Examples for C# example usage.
 
