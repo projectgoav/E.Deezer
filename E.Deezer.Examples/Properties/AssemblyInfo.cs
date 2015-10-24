@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("E.Deezer.Examples")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A Collection of Example classes on how to use E.Deezer")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("E.Deezer.Examples")]

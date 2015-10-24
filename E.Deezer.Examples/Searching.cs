@@ -6,12 +6,12 @@ using System.Text;
 //See Setup Example
 using E.Deezer;
 
-namespace E.Deezer.Examples.Searching
+namespace E.Deezer.Examples
 {
     /// <summary>
     /// An example on how to search for data on Deezer
     /// </summary>
-    public class Search
+    public class Searching
     {
         public void Search()
         {
