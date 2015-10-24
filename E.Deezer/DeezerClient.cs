@@ -45,6 +45,13 @@ namespace E.Deezer
 
 
         #region Search
+        //Search Methods for Deezer.com
+
+        /// <summary>
+        /// Searches Deezer for Albums matching the query
+        /// </summary>
+        /// <param name="aQuery">Search query</param>
+        /// <returns>First page of search results</returns>
         public Task<IPagedResponse<IAlbum>> SearchAlbums(string aQuery)
         {
             IRestRequest request = new RestRequest("/search/album", Method.GET);
@@ -70,6 +77,11 @@ namespace E.Deezer
             });
         }
 
+        /// <summary>
+        /// Search deezer for artists matching query
+        /// </summary>
+        /// <param name="aQuery">Search query</param>
+        /// <returns>First page of search results</returns>
         public Task<IPagedResponse<IArtist>> SearchArtists(string aQuery)
         {
             IRestRequest request = new RestRequest("/search/artist", Method.GET);
@@ -96,6 +108,11 @@ namespace E.Deezer
         }
 
 
+        /// <summary>
+        /// Searches Deezer for track matching query
+        /// </summary>
+        /// <param name="aQuery">Search query</param>
+        /// <returns>First page of search results</returns>
         public Task<IPagedResponse<ITrack>> SearchTracks(string aQuery)
         {
             IRestRequest request = new RestRequest("/search/track", Method.GET);
@@ -121,6 +138,11 @@ namespace E.Deezer
             });
         }
 
+        /// <summary>
+        /// Searches Deezer for playlists
+        /// </summary>
+        /// <param name="aQuery">Search query</param>
+        /// <returns>First page of search results</returns>
         public Task<IPagedResponse<IPlaylist>> SearchPlaylists(string aQuery)
         {
             IRestRequest request = new RestRequest("/search/playlist", Method.GET);
@@ -145,7 +167,6 @@ namespace E.Deezer
                 return result;
             });
         }
-
         #endregion
 
 
