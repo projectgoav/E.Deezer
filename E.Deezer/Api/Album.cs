@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using System.Threading.Tasks;
+
 using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
@@ -42,7 +44,7 @@ namespace E.Deezer.Api
         /// </summary>
         string ArtistName { get; }
 
-        IPagedResponse<ITrack> GetTracks();
+        Task<IPagedResponse<ITrack>> GetTracks();
     }
 
     internal class Album : IAlbum
@@ -71,9 +73,9 @@ namespace E.Deezer.Api
         internal void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
-        public IPagedResponse<ITrack> GetTracks()
+        public Task<IPagedResponse<ITrack>> GetTracks()
         {
-            return null;
+            return Client.GetAlbumTracks(Id);
         }
     }
 }

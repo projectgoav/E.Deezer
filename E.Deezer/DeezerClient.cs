@@ -177,6 +177,37 @@ namespace E.Deezer
         }
         #endregion
 
+        #region Content
+        /// <summary>
+        /// Gets the specificed albums tracks
+        /// </summary>
+        /// <param name="aId">Album Id</param>
+        /// <returns>First page of Album tracks</returns>
+        internal Task<IPagedResponse<ITrack>> GetAlbumTracks(uint aId)
+        {
+            IRestRequest Request = new RestRequest("/album/{id}/tracks", Method.GET);
+            Request.AddParameter("id", aId, ParameterType.UrlSegment);
+            return Execute<PagedResponse<Track>>(Request).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+            {
+                List<ITrack> items = new List<ITrack>();
+                foreach(var item in aTask.Result.Data.Data)
+                {
+                    item.Deserialize(this);
+                    items.Add(item as ITrack);
+                }
+
+                aTask.Result.Data.Deserialize(this);
+
+                return new PagedResponse<ITrack>()
+                {
+                    Data = items,
+                    Total = aTask.Result.Data.Total,
+                    Next = aTask.Result.Data.Next,
+                    Previous = aTask.Result.Data.Previous,
+                };
+            });
+        }
+        #endregion
 
 
         #endregion
