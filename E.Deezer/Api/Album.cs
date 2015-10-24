@@ -44,7 +44,17 @@ namespace E.Deezer.Api
         /// </summary>
         string ArtistName { get; }
 
+        /// <summary>
+        /// Gets the album tracklist
+        /// </summary>
+        /// <returns>First page of album tracks</returns>
         Task<IPagedResponse<ITrack>> GetTracks();
+
+        /// <summary>
+        /// Gets album artist
+        /// </summary>
+        /// <returns>Album Artist</returns>
+        Task<IArtist> GetArtist();
     }
 
     internal class Album : IAlbum
@@ -72,10 +82,15 @@ namespace E.Deezer.Api
         private DeezerClient Client { get; set; }
         internal void Deserialize(DeezerClient aClient) { Client = aClient; }
 
-
         public Task<IPagedResponse<ITrack>> GetTracks()
         {
             return Client.GetAlbumTracks(Id);
+        }
+
+
+        public Task<IArtist> GetArtist()
+        {
+            return Task.Factory.StartNew<IArtist>(() => ArtistInternal);
         }
     }
 }
