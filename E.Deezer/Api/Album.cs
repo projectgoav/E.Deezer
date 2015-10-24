@@ -7,16 +7,42 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
+    /// <summary>
+    /// A Deezer Album object
+    /// </summary>
     public interface IAlbum
     {
+        /// <summary>
+        /// Deezer library ID mumber
+        /// </summary>
         uint Id { get; set; }
+        
+        /// <summary>
+        /// Album Title
+        /// </summary>
         string Title { get; set; }
+        
+        /// <summary>
+        /// Deezer.com link to album
+        /// </summary>
         string Url { get; set; }
+
+        /// <summary>
+        /// Link to album cover
+        /// </summary>
         string Cover { get; set; }
+        
+        /// <summary>
+        /// Link to album tracklist
+        /// </summary>
         string Tracklist { get; set; }
+
+        /// <summary>
+        /// Album artist
+        /// </summary>
         string ArtistName { get; }
 
-        ISearchResult<ITrack> GetTracks();
+        IPagedResponse<ITrack> GetTracks();
     }
 
     internal class Album : IAlbum
@@ -40,7 +66,7 @@ namespace E.Deezer.Api
         }
 
 
-        public ISearchResult<ITrack> GetTracks()
+        public IPagedResponse<ITrack> GetTracks()
         {
             return null;
         }

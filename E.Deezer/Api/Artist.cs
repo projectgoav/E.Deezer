@@ -5,17 +5,56 @@ using System.Text;
 
 namespace E.Deezer.Api
 {
+    /// <summary>
+    /// A Deezer artist object
+    /// </summary>
     public interface IArtist
     {
+        /// <summary>
+        /// Deezer library ID number
+        /// </summary>
         uint Id { get; set; }
+
+        /// <summary>
+        /// Artist's name
+        /// </summary>
         string Name { get; set; }
+
+        /// <summary>
+        /// Deezer.com link to artist
+        /// </summary>
         string Url { get; set; }
+
+        /// <summary>
+        /// Link to artist's image
+        /// </summary>
         string Picture { get; set; }
+
+        /// <summary>
+        /// Link to artist tracklist
+        /// </summary>
         string Tracklist { get; set; }
 
-        ISearchResult<ITrack> GetTopTracks();
-        ISearchResult<IAlbum> GetAlbums();
-        ISearchResult<IArtist> GetRelated();
+
+        //Methods
+
+        /// <summary>
+        /// Gets the artist's top track
+        /// </summary>
+        /// <returns>First page of artist's top tracks</returns>
+        IPagedResponse<ITrack> GetTopTracks();
+
+        /// <summary>
+        /// Gets a list of artist's albums
+        /// </summary>
+        /// <returns>First page of artist's album collection</returns>
+        IPagedResponse<IAlbum> GetAlbums();
+
+        /// <summary>
+        /// Geta  list of related artists
+        /// </summary>
+        /// <returns>First page of related artists</returns>
+        IPagedResponse<IArtist> GetRelated();
     }
 
     public class Artist : IArtist
@@ -26,25 +65,25 @@ namespace E.Deezer.Api
         public string Picture { get; set; }
         public string Tracklist { get; set; }
 
-        public ISearchResult<ITrack> GetTopTracks()
+        public IPagedResponse<ITrack> GetTopTracks()
         {
-            return null;
+            throw new NotImplementedException();
         }
 
-        public ISearchResult<IAlbum> GetAlbums()
+        public IPagedResponse<IAlbum> GetAlbums()
         {
-            return null;
+            throw new NotImplementedException();
         }
 
-        public ISearchResult<IArtist> GetRelated()
+        public IPagedResponse<IArtist> GetRelated()
         {
-            return null;
+            throw new NotImplementedException();
         }
 
 
         public override string ToString()
         {
-            return Name;
+            throw new NotImplementedException();
         }
     }
 }

@@ -7,18 +7,56 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
+    /// <summary>
+    /// Deezer Playlist object
+    /// </summary>
     public interface IPlaylist
     {
+        /// <summary>
+        /// Deezer library ID number
+        /// </summary>
         uint Id { get; set; }
+
+        /// <summary>
+        /// Playlist title
+        /// </summary>
         string Title { get; set; }
+
+        /// <summary>
+        /// Public availablity of playlist
+        /// </summary>
         bool Public { get; set; }
+
+        /// <summary>
+        /// Number of tracks in playlist
+        /// </summary>
         uint NumTracks { get; set; }
+
+        /// <summary>
+        /// Deezer.com link to playlist
+        /// </summary>
         string Link { get; set; }
+        
+        /// <summary>
+        /// Link to playlist picture
+        /// </summary>
         string Picture { get; set; }
+
+        /// <summary>
+        /// Link to playlist tracklist
+        /// </summary>
         string Tracklist { get; set; }
+
+        /// <summary>
+        /// Username of playlist creator
+        /// </summary>
         string CreatorName { get; }
 
-        ISearchResult<ITrack> GetTracks();
+        /// <summary>
+        /// Gets the tracks in the playlist
+        /// </summary>
+        /// <returns>First page of tracks in playlist.</returns>
+        IPagedResponse<ITrack> GetTracks();
 
     }
 
@@ -50,9 +88,9 @@ namespace E.Deezer.Api
         [DeserializeAs(Name = "creator")]
         public User CreatorInternal { get; set; }
 
-        public ISearchResult<ITrack> GetTracks()
+        public IPagedResponse<ITrack> GetTracks()
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         public override string ToString()

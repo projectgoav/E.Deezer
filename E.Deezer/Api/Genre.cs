@@ -5,10 +5,24 @@ using System.Text;
 
 namespace E.Deezer.Api
 {
+    /// <summary>
+    /// A Deezer Genre Object
+    /// </summary>
     public interface IGenre
     {
+        /// <summary>
+        /// Deezer library ID number
+        /// </summary>
         uint Id { get; set; }
+
+        /// <summary>
+        /// Genre name
+        /// </summary>
         string Name { get; set; }
+
+        /// <summary>
+        /// Link to genre's image
+        /// </summary>
         string Picture { get; set; }
     }
 
