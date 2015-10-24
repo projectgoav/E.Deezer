@@ -5,6 +5,17 @@ An unoffical asynchronous wrapper for the Deezer API and .NET.
 - Searching
 - Service Information
 
+**Object Methods**
+- Album
+	- Artist
+	- Tracklist
+- Artist
+	- Albums
+	- Top Tracks
+	- Tracklist
+	- Related Artists
+	
+
 *More features later*
 
 ## Usage
