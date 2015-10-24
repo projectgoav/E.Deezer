@@ -51,12 +51,22 @@ namespace E.Deezer
             request.AddParameter("q", aQuery);
             return Execute<PagedResponse<Album>>(request).ContinueWith<IPagedResponse<IAlbum>>((aTask) =>
             {
+                List<IAlbum> items = new List<IAlbum>();
                 //Insert reference to client to get access to client
                 foreach (var item in aTask.Result.Data.Data) 
                 {
-                    item.Deserialize(this); 
+                    item.Deserialize(this);
+                    items.Add(item as IAlbum);
                 }
-                return aTask.Result.Data as IPagedResponse<IAlbum>;
+
+                IPagedResponse<IAlbum> result = new PagedResponse<IAlbum>()
+                {
+                    Data = items,
+                    Total = aTask.Result.Data.Total,
+                    Next = aTask.Result.Data.Next,
+                    Previous = aTask.Result.Data.Previous
+                };
+                return result;
             });
         }
 
@@ -66,12 +76,22 @@ namespace E.Deezer
             request.AddParameter("q", aQuery);
             return Execute<PagedResponse<Artist>>(request).ContinueWith<IPagedResponse<IArtist>>((aTask) =>
             {
+                List<IArtist> items = new List<IArtist>();
                 //Insert reference to client to get access to client
                 foreach (var item in aTask.Result.Data.Data)
                 {
                     item.Deserialize(this);
+                    items.Add(item as IArtist);
                 }
-                return aTask.Result.Data as IPagedResponse<IArtist>;
+
+                IPagedResponse<IArtist> result = new PagedResponse<IArtist>()
+                {
+                    Data = items,
+                    Total = aTask.Result.Data.Total,
+                    Next = aTask.Result.Data.Next,
+                    Previous = aTask.Result.Data.Previous
+                };
+                return result;
             });
         }
 
@@ -82,12 +102,22 @@ namespace E.Deezer
             request.AddParameter("q", aQuery);
             return Execute<PagedResponse<Track>>(request).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
             {
+                List<ITrack> items = new List<ITrack>();
                 //Insert reference to client to get access to client
                 foreach (var item in aTask.Result.Data.Data)
                 {
                     item.Deserialize(this);
+                    items.Add(item as ITrack);
                 }
-                return aTask.Result.Data as IPagedResponse<ITrack>;
+
+                IPagedResponse<ITrack> result = new PagedResponse<ITrack>()
+                {
+                    Data = items,
+                    Total = aTask.Result.Data.Total,
+                    Next = aTask.Result.Data.Next,
+                    Previous = aTask.Result.Data.Previous
+                };
+                return result;
             });
         }
 
@@ -97,13 +127,22 @@ namespace E.Deezer
             request.AddParameter("q", aQuery);
             return Execute<PagedResponse<Playlist>>(request).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
             {
+                List<IPlaylist> items = new List<IPlaylist>();
                 //Insert reference to client to get access to client
                 foreach (var item in aTask.Result.Data.Data)
                 {
                     item.Deserialize(this);
+                    items.Add(item as IPlaylist);
                 }
 
-                return aTask.Result.Data as IPagedResponse<IPlaylist>;
+                IPagedResponse<IPlaylist> result = new PagedResponse<IPlaylist>()
+                {
+                    Data = items,
+                    Total = aTask.Result.Data.Total,
+                    Next = aTask.Result.Data.Next,
+                    Previous = aTask.Result.Data.Previous
+                };
+                return result;
             });
         }
 

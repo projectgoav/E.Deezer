@@ -23,6 +23,17 @@ namespace E.Deezer.TestConsole
             Console.WriteLine("> Deezer Service Info");
             Console.WriteLine(string.Format("Country: {0}\nCountry ISO: {1}\nDeezer Available: {2}", T.Result.Country, T.Result.Iso, T.Result.IsAvailable));
 
+
+            //Search
+
+            Console.WriteLine("> Performing a Search...");
+
+            var TT = iClient.SearchArtists("Skillet");
+
+            TT.Wait();
+
+
+
             Console.WriteLine("\n\nPress any key to close...");
             Console.ReadLine(); 
         }

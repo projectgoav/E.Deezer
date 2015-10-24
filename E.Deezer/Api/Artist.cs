@@ -72,7 +72,6 @@ namespace E.Deezer.Api
             Client = aClient;
         }
 
-
         public IPagedResponse<ITrack> GetTopTracks()
         {
             throw new NotImplementedException();
