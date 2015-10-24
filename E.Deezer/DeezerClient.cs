@@ -306,6 +306,36 @@ namespace E.Deezer
             });
         }
 
+        /// <summary>
+        /// Gets an artist's tracklist
+        /// </summary>
+        /// <param name="aId">Artist Id</param>
+        /// <returns>First page f artist's tracklist</returns>
+        internal Task<IPagedResponse<ITrack>> GetArtistTracklist(uint aId)
+        {
+            IRestRequest Request = new RestRequest("/artist/{id}/radio", Method.GET);
+            Request.AddParameter("id", aId, ParameterType.UrlSegment);
+            return Execute<PagedResponse<Track>>(Request).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+            {
+                List<ITrack> items = new List<ITrack>();
+                foreach (var item in aTask.Result.Data.Data)
+                {
+                    item.Deserialize(this);
+                    items.Add(item as ITrack);
+                }
+
+                aTask.Result.Data.Deserialize(this);
+
+                return new PagedResponse<ITrack>()
+                {
+                    Data = items,
+                    Total = aTask.Result.Data.Total,
+                    Next = aTask.Result.Data.Next,
+                    Previous = aTask.Result.Data.Previous,
+                };
+            });
+        }
+
         #endregion //Artists
 
         #endregion //Content

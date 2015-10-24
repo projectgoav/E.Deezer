@@ -88,8 +88,8 @@ namespace E.Deezer.TestConsole
             var topTracks = artist.GetTopTracks();
             var related = artist.GetRelated();
             var albums = artist.GetAlbums();
-            //var tracklist = artist.GetTracklist(); TODO
-            Task.WaitAll(topTracks, albums, related);
+            var tracklist = artist.GetTracklist();
+            Task.WaitAll(topTracks, albums, related, tracklist);
 
             Console.WriteLine(">Top Tracks...");
 
@@ -100,6 +100,7 @@ namespace E.Deezer.TestConsole
 
             Console.WriteLine(string.Format("{0} album(s) found.", albums.Result.Total));
             Console.WriteLine(string.Format("{0} related artist(s) found.", related.Result.Total));
+            Console.WriteLine(string.Format("{0} track(s) found.", tracklist.Result.Data.Count));
             Console.WriteLine("> Got artist info");
         }
 

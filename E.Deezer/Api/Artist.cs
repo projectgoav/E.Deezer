@@ -37,8 +37,13 @@ namespace E.Deezer.Api
         /// </summary>
         string Tracklist { get; set; }
 
-
         //Methods
+
+        /// <summary>
+        /// Gets Album tracklist
+        /// </summary>
+        /// <returns>First page of tracklist</returns>
+        Task<IPagedResponse<ITrack>> GetTracklist();
 
         /// <summary>
         /// Gets the artist's top track
@@ -90,6 +95,10 @@ namespace E.Deezer.Api
             return Client.GetArtistRelated(Id);
         }
 
+        public Task<IPagedResponse<ITrack>> GetTracklist()
+        {
+            return Client.GetArtistTracklist(Id);
+        }
 
 
         public override string ToString()
