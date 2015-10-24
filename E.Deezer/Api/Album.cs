@@ -66,6 +66,10 @@ namespace E.Deezer.Api
         }
 
 
+        //Local Serailization info
+        private DeezerClient Client { get; set; }
+        internal void Deserialize(DeezerClient aClient) { Client = aClient; }
+
         public IPagedResponse<ITrack> GetTracks()
         {
             return null;

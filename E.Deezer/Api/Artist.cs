@@ -65,6 +65,14 @@ namespace E.Deezer.Api
         public string Picture { get; set; }
         public string Tracklist { get; set; }
 
+
+        private DeezerClient Client { get; set; }
+        internal void Deserialize(DeezerClient aClient)
+        {
+            Client = aClient;
+        }
+
+
         public IPagedResponse<ITrack> GetTopTracks()
         {
             throw new NotImplementedException();

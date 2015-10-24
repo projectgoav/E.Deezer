@@ -23,6 +23,8 @@ namespace E.Deezer
             iCancellationTokenSource = new CancellationTokenSource();
         }
 
+        #region Deezer Methods
+
         /// <summary>
         /// Get Deezer service availablity
         /// </summary>
@@ -42,7 +44,75 @@ namespace E.Deezer
         }
 
 
-        
+        #region Search
+        public Task<IPagedResponse<IAlbum>> SearchAlbums(string aQuery)
+        {
+            IRestRequest request = new RestRequest("/search/album", Method.GET);
+            request.AddParameter("q", aQuery);
+            return Execute<PagedResponse<Album>>(request).ContinueWith<IPagedResponse<IAlbum>>((aTask) =>
+            {
+                //Insert reference to client to get access to client
+                foreach (var item in aTask.Result.Data.Data) 
+                {
+                    item.Deserialize(this); 
+                }
+                return aTask.Result.Data as IPagedResponse<IAlbum>;
+            });
+        }
+
+        public Task<IPagedResponse<IArtist>> SearchArtists(string aQuery)
+        {
+            IRestRequest request = new RestRequest("/search/artist", Method.GET);
+            request.AddParameter("q", aQuery);
+            return Execute<PagedResponse<Artist>>(request).ContinueWith<IPagedResponse<IArtist>>((aTask) =>
+            {
+                //Insert reference to client to get access to client
+                foreach (var item in aTask.Result.Data.Data)
+                {
+                    item.Deserialize(this);
+                }
+                return aTask.Result.Data as IPagedResponse<IArtist>;
+            });
+        }
+
+
+        public Task<IPagedResponse<ITrack>> SearchTracks(string aQuery)
+        {
+            IRestRequest request = new RestRequest("/search/track", Method.GET);
+            request.AddParameter("q", aQuery);
+            return Execute<PagedResponse<Track>>(request).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+            {
+                //Insert reference to client to get access to client
+                foreach (var item in aTask.Result.Data.Data)
+                {
+                    item.Deserialize(this);
+                }
+                return aTask.Result.Data as IPagedResponse<ITrack>;
+            });
+        }
+
+        public Task<IPagedResponse<IPlaylist>> SearchPlaylists(string aQuery)
+        {
+            IRestRequest request = new RestRequest("/search/playlist", Method.GET);
+            request.AddParameter("q", aQuery);
+            return Execute<PagedResponse<Playlist>>(request).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
+            {
+                //Insert reference to client to get access to client
+                foreach (var item in aTask.Result.Data.Data)
+                {
+                    item.Deserialize(this);
+                }
+
+                return aTask.Result.Data as IPagedResponse<IPlaylist>;
+            });
+        }
+
+        #endregion
+
+
+
+        #endregion
+
         private Task<IRestResponse> Execute(IRestRequest aRequest)
         {
             return iSession.Execute(aRequest, iCancellationTokenSource.Token);

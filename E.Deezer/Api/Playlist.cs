@@ -88,6 +88,18 @@ namespace E.Deezer.Api
         [DeserializeAs(Name = "creator")]
         public User CreatorInternal { get; set; }
 
+        private DeezerClient Client { get; set; }
+        internal void Deserialize(DeezerClient aClient)
+        {
+            Client = aClient;
+        }
+
+        internal IPlaylist ConvertToInterface()
+        {
+            return this as IPlaylist;
+        }
+
+
         public IPagedResponse<ITrack> GetTracks()
         {
             throw new NotImplementedException();

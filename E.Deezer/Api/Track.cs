@@ -95,6 +95,13 @@ namespace E.Deezer.Api
         public Album AlbumInternal { get; set; }
 
 
+        private DeezerClient Client { get; set; }
+        internal void Deserialize(DeezerClient aClient) 
+        { 
+            Client = aClient;
+        }
+
+
         public override string ToString()
         {
             return string.Format("{0} - {1} ({2})", Title, ArtistName, AlbumName);

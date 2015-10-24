@@ -48,7 +48,7 @@ namespace E.Deezer.Api
         Task<IPagedResponse<T>> GetPreviousPage();
     }
 
-    internal class SearchResult<T> : IPagedResponse<T> where T : new()
+    internal class PagedResponse<T> : IPagedResponse<T>
     {
         public List<T> Data { get; set; }
 
