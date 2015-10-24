@@ -1,21 +1,22 @@
 # E.Deezer
-## (Unoffical) Deezer .NET API 
 An unoffical asynchronous wrapper for the Deezer API and .NET
 
-### Features
+## Features
 - Searching
 - Service Information
 
 *More features later*
 
-### Usage
+## Usage
 *A Nuget package will be created when fully functional*
+
 '''
 git clone https://github.com/projectgoav/e.deezer
 '''
+
 See E.Deezer.Examples for C# example usage.
 
-### Contents
-- E.Deezer (API Library)
-- E.Deezer.Examples (Some C# example usage)
-- E.Deezer.TestConsole (Scratch pad for testing)
+## Contents
+- E.Deezer **(API Library)**
+- E.Deezer.Examples **(Some C# example usage)**
+- E.Deezer.TestConsole **(Scratch pad for testing)**
