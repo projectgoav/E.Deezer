@@ -1,5 +1,5 @@
 # E.Deezer
-An unoffical asynchronous wrapper for the Deezer API and .NET
+An unoffical asynchronous wrapper for the Deezer API and .NET.
 
 ## Features
 - Searching
@@ -15,6 +15,10 @@ git clone https://github.com/projectgoav/e.deezer
 ```
 
 See E.Deezer.Examples for C# example usage.
+
+## Requirements
+- Visual Studio 2012 (or later)
+- [RestSharp](http://restsharp.org/)
 
 ## Contents
 - E.Deezer **(API Library)**
