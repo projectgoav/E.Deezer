@@ -1,6 +1,6 @@
 # E.Deezer
 ## (Unoffical) Deezer .NET API 
-An unoffical aasynchronous wrapper for the Deezer API and .NET
+An unoffical asynchronous wrapper for the Deezer API and .NET
 
 ### Features
 - Searching
