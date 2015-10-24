@@ -28,13 +28,13 @@ namespace E.Deezer
 
         private RestClient iClient;
 
-        public DeezerSession(string aUsername, string aAppId, string aAppSecret, DeezerPermissions iPermissions )
+        public DeezerSession(string aUsername, string aAppId, string aAppSecret, DeezerPermissions aPermissions )
         {
             Username = aUsername;
             ApplicationId = aAppId;
             ApplicationSecret = aAppSecret;
 
-            GeneratePermissionString(iPermissions);
+            GeneratePermissionString(aPermissions);
 
             iClient = new RestClient(ENDPOINT);
         }
