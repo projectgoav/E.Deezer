@@ -17,7 +17,7 @@ namespace E.Deezer.Examples
     {
 
         //Simple method getting us a Deezer Client object so we can use the API 
-        public void Setup()
+        public void SetupMethod()
         {
             //The username of the account you wish to browse the API with
             //NOTE: You don't need to specify this to BROWSE the API,
