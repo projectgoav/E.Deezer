@@ -23,7 +23,10 @@ namespace E.Deezer
             iCancellationTokenSource = new CancellationTokenSource();
         }
 
-
+        /// <summary>
+        /// Get Deezer service availablity
+        /// </summary>
+        /// <returns>Deezer service availiblity information. <see cref="E.Deezer.Api.IInfos"/>See IInfos</returns>
         public Task<IInfos> GetInfos()
         {
             IRestRequest request = new RestRequest("infos", Method.GET);
