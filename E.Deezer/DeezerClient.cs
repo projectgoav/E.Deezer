@@ -43,6 +43,10 @@ namespace E.Deezer
             });
         }
 
+        internal Task<IPagedResponse<T>> GetPage<T>(string aUrl)
+        {
+            throw new NotImplementedException();
+        }
 
         #region Search
         //Search Methods for Deezer.com

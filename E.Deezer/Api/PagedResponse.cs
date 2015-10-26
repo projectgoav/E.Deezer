@@ -38,13 +38,13 @@ namespace E.Deezer.Api
         /// <summary>
         /// Gets the next page, if available of the response
         /// </summary>
-        /// <returns>The next page, or null if not available</returns>
+        /// <returns>The next page or throws PageNotAvailableException if no page exists</returns>
         Task<IPagedResponse<T>> GetNextPage();
 
         /// <summary>
         /// Gets the previous page, if available of the response
         /// </summary>
-        /// <returns>The previous page, or null if not available</returns>
+        /// <returns>The previous page throws PageNotAvailableException if no page exists</returns>
         Task<IPagedResponse<T>> GetPreviousPage();
     }
 
@@ -58,15 +58,31 @@ namespace E.Deezer.Api
         private DeezerClient Client { get; set; }
         public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
-
         public Task<IPagedResponse<T>> GetNextPage()
         {
-            throw new NotImplementedException();
+            if(!string.IsNullOrEmpty(Next))
+            {
+                return Client.GetPage<T>(Next);
+            }
+            throw new PageNotAvailableException();
         }
 
         public Task<IPagedResponse<T>> GetPreviousPage()
         {
-            throw new NotImplementedException();
+            if(!string.IsNullOrEmpty(Previous))
+            {
+                return Client.GetPage<T>(Previous);
+            }
+            throw new PageNotAvailableException();
         }
+    }
+
+    /// <summary>
+    /// Exception thrown when using PagedResponse Next() and Previous() functions if 
+    /// no page is available.
+    /// </summary>
+    public class PageNotAvailableException : Exception
+    {
+        public PageNotAvailableException() : base("Requested page doesn't exist") { }
     }
 }
