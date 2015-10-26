@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using System.Threading.Tasks;
+
 using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
@@ -56,7 +58,7 @@ namespace E.Deezer.Api
         /// Gets the tracks in the playlist
         /// </summary>
         /// <returns>First page of tracks in playlist.</returns>
-        IPagedResponse<ITrack> GetTracks();
+        Task<IPagedResponse<ITrack>> GetTracks();
 
     }
 
@@ -94,16 +96,13 @@ namespace E.Deezer.Api
             Client = aClient;
         }
 
-        internal IPlaylist ConvertToInterface()
-        {
-            return this as IPlaylist;
-        }
 
 
-        public IPagedResponse<ITrack> GetTracks()
+        public Task<IPagedResponse<ITrack>> GetTracks()
         {
-            throw new NotImplementedException();
+            return Client.GetPlaylistTracks(Id);
         }
+
 
         public override string ToString()
         {

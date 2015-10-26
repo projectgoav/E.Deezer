@@ -338,6 +338,40 @@ namespace E.Deezer
 
         #endregion //Artists
 
+        #region Playlist
+
+        /// <summary>
+        /// Gets a tracklist for a playlist
+        /// </summary>
+        /// <param name="aId">Playlist Id</param>
+        /// <returns>FIrst page of tracks in playlist</returns>
+        internal Task<IPagedResponse<ITrack>> GetPlaylistTracks(uint aId)
+        {
+            IRestRequest Request = new RestRequest("/playlist/{id}/tracks", Method.GET);
+            Request.AddParameter("id", aId, ParameterType.UrlSegment);
+            return Execute<PagedResponse<Track>>(Request).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+            {
+                List<ITrack> items = new List<ITrack>();
+                foreach (var item in aTask.Result.Data.Data)
+                {
+                    item.Deserialize(this);
+                    items.Add(item as ITrack);
+                }
+
+                aTask.Result.Data.Deserialize(this);
+
+                return new PagedResponse<ITrack>()
+                {
+                    Data = items,
+                    Total = aTask.Result.Data.Total,
+                    Next = aTask.Result.Data.Next,
+                    Previous = aTask.Result.Data.Previous,
+                };
+            });
+        }
+
+        #endregion //Playlists
+
         #endregion //Content
 
         #endregion //Deezer Methods
