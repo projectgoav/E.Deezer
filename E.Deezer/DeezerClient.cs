@@ -336,6 +336,35 @@ namespace E.Deezer
             });
         }
 
+        /// <summary>
+        /// Gets playlists featuring the given artist
+        /// </summary>
+        /// <param name="aId">Artist Id</param>
+        /// <returns>First page of playlists containing the given artist</returns>
+        internal Task<IPagedResponse<IPlaylist>> GetArtistPlaylists(uint aId)
+        {
+            IRestRequest Request = new RestRequest("/artist/{id}/playlists", Method.GET);
+            Request.AddParameter("id", aId, ParameterType.UrlSegment);
+            return Execute<PagedResponse<Playlist>>(Request).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
+            {
+                List<IPlaylist> items = new List<IPlaylist>();
+                foreach (var item in aTask.Result.Data.Data)
+                {
+                    item.Deserialize(this);
+                    items.Add(item as IPlaylist);
+                }
+
+                aTask.Result.Data.Deserialize(this);
+
+                return new PagedResponse<IPlaylist>()
+                {
+                    Data = items,
+                    Total = aTask.Result.Data.Total,
+                    Next = aTask.Result.Data.Next,
+                    Previous = aTask.Result.Data.Previous,
+                };
+            });
+        }
         #endregion //Artists
 
         #region Playlist

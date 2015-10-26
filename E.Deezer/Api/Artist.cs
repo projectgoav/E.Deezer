@@ -62,6 +62,12 @@ namespace E.Deezer.Api
         /// </summary>
         /// <returns>First page of related artists</returns>
         Task<IPagedResponse<IArtist>> GetRelated();
+
+        /// <summary>
+        /// Gets a list of playlists containing this artist
+        /// </summary>
+        /// <returns>First page of playlists featuring artist</returns>
+        Task<IPagedResponse<IPlaylist>> GetPlaylistsContaining();
     }
 
     public class Artist : IArtist
@@ -98,6 +104,11 @@ namespace E.Deezer.Api
         public Task<IPagedResponse<ITrack>> GetTracklist()
         {
             return Client.GetArtistTracklist(Id);
+        }
+
+        public Task<IPagedResponse<IPlaylist>> GetPlaylistsContaining()
+        {
+            return Client.GetArtistPlaylists(Id);
         }
 
 
