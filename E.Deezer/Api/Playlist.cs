@@ -106,7 +106,7 @@ namespace E.Deezer.Api
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", Title, CreatorName);
+            return string.Format("E.Deezer: Playlist({0} [{1}])", Title, CreatorName);
         }
     }
 }

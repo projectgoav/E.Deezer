@@ -75,6 +75,14 @@ namespace E.Deezer.Api
             }
             throw new PageNotAvailableException();
         }
+
+
+        public override string ToString()
+        {
+            return string.Format("E.Deezer: PR({0} - {1} item(s)", typeof(T).ToString(), Data.Count);
+        }
+
+
     }
 
     /// <summary>

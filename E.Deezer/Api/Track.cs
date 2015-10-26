@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using System.Threading.Tasks;
+
 using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
@@ -56,6 +58,20 @@ namespace E.Deezer.Api
         /// Track album name
         /// </summary>
         string AlbumName { get; }
+
+        //Methods
+
+        /// <summary>
+        /// Gets track artist
+        /// </summary>
+        /// <returns>Track's artist</returns>
+        Task<IArtist> GetArtist();
+
+        /// <summary>
+        /// Gets album that track belongs to
+        /// </summary>
+        /// <returns>Containing album</returns>
+        Task<IAlbum> GetAlbum();
     }
 
 
@@ -102,9 +118,14 @@ namespace E.Deezer.Api
         }
 
 
+        public Task<IArtist> GetArtist() { return Task.Factory.StartNew<IArtist>(() => ArtistInternal); }
+
+        public Task<IAlbum> GetAlbum() { return Task.Factory.StartNew<IAlbum>(() => AlbumInternal); }
+
+
         public override string ToString()
         {
-            return string.Format("{0} - {1} ({2})", Title, ArtistName, AlbumName);
+            return string.Format("E.Deezer: Track({0} - ({1}))", Title, ArtistName);
         }
     }
 }

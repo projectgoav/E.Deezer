@@ -14,6 +14,14 @@ An unoffical asynchronous wrapper for the Deezer API and .NET.
 	- Top Tracks
 	- Tracklist
 	- Related Artists
+	- Featured Playlists
+	
+- Playlist
+	- Tracklist
+	
+- Track
+	- Artist
+	- Album
 	
 
 *More features later*

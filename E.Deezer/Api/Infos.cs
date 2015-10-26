@@ -37,5 +37,11 @@ namespace E.Deezer.Api
 
         [DeserializeAs(Name = "open")]
         public bool IsAvailable { get; set; }
+
+
+        public override string ToString()
+        {
+            return string.Format("E.Deezer: Info");
+        }
     }
 }

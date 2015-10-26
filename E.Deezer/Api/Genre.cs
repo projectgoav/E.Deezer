@@ -35,7 +35,7 @@ namespace E.Deezer.Api
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", Name, Id);
+            return string.Format("E.Deezer: Genre({0} ({1}))", Name, Id);
         }
     }
 }
