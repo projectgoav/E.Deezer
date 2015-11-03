@@ -20,7 +20,7 @@ namespace E.Deezer.TestConsole
         {
             Program me = new Program();
 
-            me.iSession = new DeezerSession("projectgoav", string.Empty, string.Empty, DeezerPermissions.Email);
+						me.iSession = new DeezerSession("RadioFeed.org", string.Empty, string.Empty, DeezerPermissions.Email);
             me.iClient = new DeezerClient(me.iSession);
 
             me.Run();
@@ -67,6 +67,15 @@ namespace E.Deezer.TestConsole
 					IUser user = await iClient.GetUser(userId);
 					Console.WriteLine("> User info");
 					Console.WriteLine("Id: {0}\nName: {1}\nCountry: {2}\nLink: {3}", user.Id, user.Name , user.Country, user.Link);
+
+					var playlists = await user.GetFavouritePlaylists();
+
+					Console.WriteLine("> PLAYLISTS");
+
+					foreach (var item in playlists.Data)
+					{
+						Console.WriteLine(string.Format("\t> {0}  by {1}. {2} track(s))", item.Title, item.CreatorName, item.NumTracks));
+					}
 				}
 
 
