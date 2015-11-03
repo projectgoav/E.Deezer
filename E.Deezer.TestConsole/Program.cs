@@ -37,6 +37,8 @@ namespace E.Deezer.TestConsole
             {
                 ServiceInfo();
                 Thread.Sleep(250);
+								UserInfo(1761649);
+								Thread.Sleep(250);
                 AlbumStuff();
                 Thread.Sleep(250);
                 ArtistStuff();
@@ -44,6 +46,8 @@ namespace E.Deezer.TestConsole
 
             runtime.Wait();
         }
+
+				
 
 
 
@@ -56,6 +60,14 @@ namespace E.Deezer.TestConsole
             Console.WriteLine("> Deezer Service Info");
             Console.WriteLine(string.Format("Country: {0}\nCountry ISO: {1}\nDeezer Available: {2}", T.Result.Country, T.Result.Iso, T.Result.IsAvailable));
         }
+
+				//Gets and prints out specific user info
+				private async void UserInfo(int userId)
+				{
+					IUser user = await iClient.GetUser(userId);
+					Console.WriteLine("> User info");
+					Console.WriteLine("Id: {0}\nName: {1}\nCountry: {2}\nLink: {3}", user.Id, user.Name , user.Country, user.Link);
+				}
 
 
         //Searches for a random album and gets its tracks

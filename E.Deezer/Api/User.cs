@@ -25,6 +25,12 @@ namespace E.Deezer.Api
         /// </summary>
         string Link { get; set; }
 
+				/// <summary>
+				/// Country
+				/// </summary>
+				string Country { get; set; }
+
+
         //Methods
 
 
@@ -96,6 +102,7 @@ namespace E.Deezer.Api
         public uint Id { get; set; }
         public string Name { get; set; }
         public string Link { get; set; }
+				public string Country { get; set; }
 
         public string error { get; set; }
 
