@@ -21,6 +21,8 @@ namespace E.Deezer
         /// </summary>
         public const string ENDPOINT = "https://api.deezer.com/";
 
+				public const int PAGE_LIMIT = 25;
+
         public string Username { get; private set; }
         public string ApplicationId { get; private set; }
         public string ApplicationSecret { get; private set; }

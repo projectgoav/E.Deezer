@@ -17,7 +17,7 @@ namespace E.Deezer.Api
         /// <summary>
         /// Deezer libray ID number
         /// </summary>
-        uint Id { get; set;  }
+        int Id { get; set;  }
 
         /// <summary>
         /// Track title
@@ -77,7 +77,7 @@ namespace E.Deezer.Api
 
     internal class Track : ITrack
     {
-        public uint Id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Link { get; set; }
         public uint Duration { get; set; }
