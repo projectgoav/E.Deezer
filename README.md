@@ -1,6 +1,18 @@
 # E.Deezer
 An unoffical asynchronous wrapper for the Deezer API and .NET.
 
+## Usage
+
+[Via Nuget](https://www.nuget.org/packages/E.Deezer)
+
+From source:
+```
+git clone https://github.com/projectgoav/e.deezer
+```
+
+See E.Deezer.Examples for C# example usage. *(Source only)*
+
+
 ## Features
 - Searching
 - Service Information
@@ -30,17 +42,6 @@ An unoffical asynchronous wrapper for the Deezer API and .NET.
 	
 
 *More features later*
-
-## Usage
-
-[Via Nuget](https://www.nuget.org/packages/E.Deezer)
-
-From source:
-```
-git clone https://github.com/projectgoav/e.deezer
-```
-
-See E.Deezer.Examples for C# example usage.
 
 ## Requirements
 - Visual Studio 2012 (or later)
