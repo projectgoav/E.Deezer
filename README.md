@@ -4,6 +4,7 @@ An unoffical asynchronous wrapper for the Deezer API and .NET.
 ## Features
 - Searching
 - Service Information
+- Variable result sizes
 
 **Object Methods**
 - Album
@@ -22,6 +23,10 @@ An unoffical asynchronous wrapper for the Deezer API and .NET.
 - Track
 	- Artist
 	- Album
+	
+- User
+	- Current User
+	- Favourite Playlists 
 	
 
 *More features later*
