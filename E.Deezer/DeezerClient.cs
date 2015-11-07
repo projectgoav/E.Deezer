@@ -34,12 +34,12 @@ namespace E.Deezer
 			IRestRequest request = new RestRequest("infos", Method.GET);
 			return Execute<Infos>(request).ContinueWith<IInfos>((aTask) =>
 			{
-				if (aTask.Result != null)
+				if (aTask.Result.Data != null)
 				{
 					IInfos info = aTask.Result.Data;
 					return info;
 				}
-				else { return null; }
+                else { return new Infos(); }
 			});
 		}
 

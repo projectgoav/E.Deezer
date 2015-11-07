@@ -62,25 +62,49 @@ namespace E.Deezer
         internal Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, CancellationToken aToken)
         {
             AppendParams(aRequest);
-            return iClient.ExecuteGetTaskAsync<T>(aRequest, aToken);
+            var task = iClient.ExecuteGetTaskAsync<T>(aRequest, aToken).ContinueWith<IRestResponse<T>>((aTask) =>
+            {
+                if (aTask.IsFaulted) { throw aTask.Exception; }
+                else { return aTask.Result; }
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            task.SuppressExceptions();
+            return task;
         }
 
         internal Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, CancellationToken aToken, int aResultSize)
         {
             AppendParams(aRequest, aResultSize);
-            return iClient.ExecuteGetTaskAsync<T>(aRequest, aToken);
+            var task = iClient.ExecuteGetTaskAsync<T>(aRequest, aToken).ContinueWith<IRestResponse<T>>((aTask) =>
+            {
+                if (aTask.IsFaulted) { throw aTask.Exception; }
+                else { return aTask.Result; }
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            task.SuppressExceptions();
+            return task;
         }
 
         internal Task<IRestResponse> Execute(IRestRequest aRequest, CancellationToken aToken)
         {
             AppendParams(aRequest);
-            return iClient.ExecuteGetTaskAsync(aRequest, aToken);
+            var task = iClient.ExecuteGetTaskAsync(aRequest, aToken).ContinueWith<IRestResponse>((aTask) =>
+            {
+                if (aTask.IsFaulted) { throw aTask.Exception; }
+                else { return aTask.Result; }
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            task.SuppressExceptions();
+            return task;
         }
 
         internal Task<IRestResponse> Execute(IRestRequest aRequest, CancellationToken aToken, int aResultSize) 
         {
             AppendParams(aRequest, aResultSize);
-            return iClient.ExecuteGetTaskAsync(aRequest, aToken);
+            var task = iClient.ExecuteGetTaskAsync(aRequest, aToken).ContinueWith<IRestResponse>((aTask) =>
+            {
+                if (aTask.IsFaulted) { throw aTask.Exception; }
+                else { return aTask.Result; }
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            task.SuppressExceptions();
+            return task;
         }
 
         #endregion
@@ -144,5 +168,31 @@ namespace E.Deezer
             if(string.IsNullOrEmpty(aString)) {  aString = aAdd; }
             else {  aString += string.Format(",{0}", aAdd); }
         }
+    }
+
+    /// <summary>
+    /// Task Extensions to stop tasks throwing exceptions straight away.
+    /// </summary>
+    public static class TaskExtensions
+    {
+        public static Task SuppressExceptions(this Task aTask)
+        {
+            aTask.ContinueWith((t) => { var ignored = t.Exception; },
+                TaskContinuationOptions.OnlyOnFaulted |
+                TaskContinuationOptions.ExecuteSynchronously);
+            return aTask;
+        }
+        public static Task<T> SuppressExceptions<T>(this Task<T> aTask)
+        {
+            aTask.ContinueWith((t) => { var ignored = t.Exception; },
+                TaskContinuationOptions.OnlyOnFaulted |
+                TaskContinuationOptions.ExecuteSynchronously);
+            return aTask;
+        }
+    }
+
+    public class EmptyResultException : Exception
+    {
+        public EmptyResultException() : base("Task returned an empty result. Check network connection or Deezer API status") { }
     }
 }
