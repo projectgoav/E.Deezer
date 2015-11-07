@@ -21,34 +21,60 @@ namespace E.Deezer
         /// </summary>
         public const string ENDPOINT = "https://api.deezer.com/";
 
-				public const int PAGE_LIMIT = 25;
+        /// <summary>
+        /// Default result size
+        /// </summary>
+		public const int RESULT_SIZE = 25;
 
         public string Username { get; private set; }
         public string ApplicationId { get; private set; }
         public string ApplicationSecret { get; private set; }
+        public int ResultSize { get; private set; }
         internal string Permissions { get; private set; }
 
         private RestClient iClient;
 
-        public DeezerSession(string aUsername, string aAppId, string aAppSecret, DeezerPermissions aPermissions )
+        /// <summary>
+        /// Creates a new Deezer session with the following options
+        /// </summary>
+        /// <param name="aUsername">User's account name</param>
+        /// <param name="aAppId">Your Deezer application ID</param>
+        /// <param name="aAppSecret">Your Deezer application secret</param>
+        /// <param name="aPermissions">Requested permissions for Deezer API</param>
+        /// <param name="aResultSize">(OPTIONAL)Number of results requested</param>
+        public DeezerSession(string aUsername, string aAppId, string aAppSecret, DeezerPermissions aPermissions, int aResultSize = RESULT_SIZE )
         {
             Username = aUsername;
             ApplicationId = aAppId;
             ApplicationSecret = aAppSecret;
+            ResultSize = aResultSize;
 
             GeneratePermissionString(aPermissions);
 
             iClient = new RestClient(ENDPOINT);
         }
 
-        internal Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, CancellationToken aToken) { return iClient.ExecuteGetTaskAsync<T>(aRequest, aToken); }
-        internal Task<IRestResponse> Execute(IRestRequest aRequest, CancellationToken aToken) { return iClient.ExecuteGetTaskAsync(aRequest, aToken); }
 
+        #region API Requests
+        internal Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, CancellationToken aToken, int aResultSize)
+        {
+            AppendParams(aRequest, aResultSize);
+            return iClient.ExecuteGetTaskAsync<T>(aRequest, aToken);
+        }
+
+        internal Task<IRestResponse> Execute(IRestRequest aRequest, CancellationToken aToken, int aResultSize) 
+        {
+            AppendParams(aRequest, aResultSize);
+            return iClient.ExecuteGetTaskAsync(aRequest, aToken);
+        }
+
+        #endregion
 
         //Adding any addition params we'd like to the requests
-        private void AppendParams(IRestRequest aRequest)
+        private void AppendParams(IRestRequest aRequest, int aResultSize)
         {
-            aRequest.AddParameter("output", "json");
+            aRequest.AddParameter("limit", aResultSize, ParameterType.QueryString);
+            aRequest.AddParameter("output", "json", ParameterType.QueryString);
         }
 
         //Generates a permission string which can be used to grant people
@@ -91,6 +117,8 @@ namespace E.Deezer
             {
                 AddToString(perms, DeezerPermissions.OfflineAccess.PermissionToString());
             }
+
+            iPermissions = perms;
         }
 
         //Adds the permissions in a comma seperated list

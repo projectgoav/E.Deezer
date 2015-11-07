@@ -431,12 +431,11 @@ namespace E.Deezer
 
 		#region Playlists
 
-		internal Task<IPagedResponse<IPlaylist>> GetUserFavouritePlaylists(uint userId, int limit = 25)
+		internal Task<IPagedResponse<IPlaylist>> GetUserFavouritePlaylists(uint userId, int aResultSize)
 		{
 			IRestRequest Request = new RestRequest("/user/{id}/playlists", Method.GET);
 			Request.AddParameter("id", userId, ParameterType.UrlSegment);
-			Request.AddParameter("limit", limit, ParameterType.QueryString);
-			return Execute<PagedResponse<Playlist>>(Request).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
+			return Execute<PagedResponse<Playlist>>(Request, aResultSize).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
 			{
 				List<IPlaylist> items = new List<IPlaylist>();
 				PagedResponse<Playlist> page = aTask.Result.Data;
@@ -466,14 +465,14 @@ namespace E.Deezer
 
 		#endregion //Deezer Methods
 
-		private Task<IRestResponse> Execute(IRestRequest aRequest)
+		private Task<IRestResponse> Execute(IRestRequest aRequest, int aResultSize)
 		{
-			return iSession.Execute(aRequest, iCancellationTokenSource.Token);
+			return iSession.Execute(aRequest, iCancellationTokenSource.Token, aResultSize);
 		}
 
-		private Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest)
+		private Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, int aResultSize)
 		{
-			return iSession.Execute<T>(aRequest, iCancellationTokenSource.Token);
+			return iSession.Execute<T>(aRequest, iCancellationTokenSource.Token, aResultSize);
 		}
 
 
