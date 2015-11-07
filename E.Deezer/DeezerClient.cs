@@ -218,7 +218,7 @@ namespace E.Deezer
 		{
 			IRestRequest Request = new RestRequest("/album/{id}/tracks", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Track>>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+			return Execute<Track>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
 			{
 				List<ITrack> items = new List<ITrack>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -252,7 +252,7 @@ namespace E.Deezer
 		{
 			IRestRequest Request = new RestRequest("/artist/{id}/top", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Track>>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+			return Execute<Track>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
 			{
 				List<ITrack> items = new List<ITrack>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -282,7 +282,7 @@ namespace E.Deezer
 		{
 			IRestRequest Request = new RestRequest("/artist/{id}/albums", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Album>>(Request, aResultSize).ContinueWith<IPagedResponse<IAlbum>>((aTask) =>
+			return Execute<Album>(Request, aResultSize).ContinueWith<IPagedResponse<IAlbum>>((aTask) =>
 			{
 				List<IAlbum> items = new List<IAlbum>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -312,7 +312,7 @@ namespace E.Deezer
 		{
 			IRestRequest Request = new RestRequest("/artist/{id}/related", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Artist>>(Request, aResultSize).ContinueWith<IPagedResponse<IArtist>>((aTask) =>
+			return Execute<Artist>(Request, aResultSize).ContinueWith<IPagedResponse<IArtist>>((aTask) =>
 			{
 				List<IArtist> items = new List<IArtist>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -342,7 +342,7 @@ namespace E.Deezer
 		{
 			IRestRequest Request = new RestRequest("/artist/{id}/radio", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Track>>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+			return Execute<Track>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
 			{
 				List<ITrack> items = new List<ITrack>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -372,7 +372,7 @@ namespace E.Deezer
 		{
 			IRestRequest Request = new RestRequest("/artist/{id}/playlists", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Playlist>>(Request, aResultSize).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
+			return Execute<Playlist>(Request, aResultSize).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
 			{
 				List<IPlaylist> items = new List<IPlaylist>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -405,7 +405,7 @@ namespace E.Deezer
 		{
 			IRestRequest Request = new RestRequest("/playlist/{id}/tracks", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Track>>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+			return Execute<Track>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
 			{
 				List<ITrack> items = new List<ITrack>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -434,7 +434,7 @@ namespace E.Deezer
 		{
 			IRestRequest Request = new RestRequest("/user/{id}/playlists", Method.GET);
 			Request.AddParameter("id", userId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Playlist>>(Request, aResultSize).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
+			return Execute<Playlist>(Request, aResultSize).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
 			{
 				List<IPlaylist> items = new List<IPlaylist>();
 				PagedResponse<Playlist> page = aTask.Result.Data;
@@ -464,25 +464,34 @@ namespace E.Deezer
 
 		#endregion //Deezer Methods
 
+
+
         private Task<IRestResponse> Execute(IRestRequest aRequest)
         {
             return iSession.Execute(aRequest, iCancellationTokenSource.Token);
         }
 
-		private Task<IRestResponse> Execute(IRestRequest aRequest, int aResultSize)
+		private Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest)
 		{
-			return iSession.Execute(aRequest, iCancellationTokenSource.Token, aResultSize);
+            var task = iSession.Execute<T>(aRequest, iCancellationTokenSource.Token).ContinueWith<IRestResponse<T>>((aTask) =>
+            {
+                if (aTask.IsFaulted) { throw aTask.Exception; }
+                else { return aTask.Result; }
+            });
+            task.SuppressExceptions();
+            return task;
 		}
 
-        private Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest)
+        private Task<IRestResponse<PagedResponse<T>>> Execute<T>(IRestRequest aRequest, int aResultSize)
         {
-            return iSession.Execute<T>(aRequest, iCancellationTokenSource.Token);
-        }
-
-		private Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, int aResultSize)
-		{
-			return iSession.Execute<T>(aRequest, iCancellationTokenSource.Token, aResultSize);
-		}
-		
+            if (aResultSize > 0) { aRequest.AddParameter("limit", aResultSize, ParameterType.QueryString); }
+            var task = iSession.Execute<PagedResponse<T>>(aRequest, iCancellationTokenSource.Token).ContinueWith<IRestResponse<PagedResponse<T>>>((aTask) =>
+            {
+                if (aTask.IsFaulted) { throw aTask.Exception; }
+                else { return aTask.Result; }
+            });
+            task.SuppressExceptions();
+            return task;
+        }	
 	}
 }

@@ -64,19 +64,7 @@ namespace E.Deezer
             AppendParams(aRequest);
             var task = iClient.ExecuteGetTaskAsync<T>(aRequest, aToken).ContinueWith<IRestResponse<T>>((aTask) =>
             {
-                if (aTask.IsFaulted) { throw aTask.Exception; }
-                else { return aTask.Result; }
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
-            task.SuppressExceptions();
-            return task;
-        }
-
-        internal Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, CancellationToken aToken, int aResultSize)
-        {
-            AppendParams(aRequest, aResultSize);
-            var task = iClient.ExecuteGetTaskAsync<T>(aRequest, aToken).ContinueWith<IRestResponse<T>>((aTask) =>
-            {
-                if (aTask.IsFaulted) { throw aTask.Exception; }
+                if(aTask.Result.ErrorException != null) { throw aTask.Result.ErrorException; }
                 else { return aTask.Result; }
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
             task.SuppressExceptions();
@@ -94,29 +82,11 @@ namespace E.Deezer
             task.SuppressExceptions();
             return task;
         }
-
-        internal Task<IRestResponse> Execute(IRestRequest aRequest, CancellationToken aToken, int aResultSize) 
-        {
-            AppendParams(aRequest, aResultSize);
-            var task = iClient.ExecuteGetTaskAsync(aRequest, aToken).ContinueWith<IRestResponse>((aTask) =>
-            {
-                if (aTask.IsFaulted) { throw aTask.Exception; }
-                else { return aTask.Result; }
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
-            task.SuppressExceptions();
-            return task;
-        }
-
         #endregion
 
         //Adding any addition params we'd like to the requests
         private void AppendParams(IRestRequest aRequest, int aResultSize = 0)
         {
-            if (aResultSize > 0)
-            {
-                aRequest.AddParameter("limit", aResultSize, ParameterType.QueryString);
-            }
-
             aRequest.AddParameter("output", "json", ParameterType.QueryString);
         }
 
