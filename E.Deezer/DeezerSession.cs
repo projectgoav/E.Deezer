@@ -35,7 +35,8 @@ namespace E.Deezer
         private RestClient iClient;
 
         /// <summary>
-        /// Creates a new Deezer session with the following options
+        /// Creates a new Deezer session with the following options.
+        /// Throws ArgumentOutOfRangeException if aResultSize < 0
         /// </summary>
         /// <param name="aUsername">User's account name</param>
         /// <param name="aAppId">Your Deezer application ID</param>
@@ -47,6 +48,8 @@ namespace E.Deezer
             Username = aUsername;
             ApplicationId = aAppId;
             ApplicationSecret = aAppSecret;
+
+            if (aResultSize < 0) {  throw new ArgumentOutOfRangeException("Result Size must be greater than, or equal to, 0"); }
             ResultSize = aResultSize;
 
             GeneratePermissionString(aPermissions);
@@ -56,10 +59,22 @@ namespace E.Deezer
 
 
         #region API Requests
+        internal Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, CancellationToken aToken)
+        {
+            AppendParams(aRequest);
+            return iClient.ExecuteGetTaskAsync<T>(aRequest, aToken);
+        }
+
         internal Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, CancellationToken aToken, int aResultSize)
         {
             AppendParams(aRequest, aResultSize);
             return iClient.ExecuteGetTaskAsync<T>(aRequest, aToken);
+        }
+
+        internal Task<IRestResponse> Execute(IRestRequest aRequest, CancellationToken aToken)
+        {
+            AppendParams(aRequest);
+            return iClient.ExecuteGetTaskAsync(aRequest, aToken);
         }
 
         internal Task<IRestResponse> Execute(IRestRequest aRequest, CancellationToken aToken, int aResultSize) 
@@ -71,9 +86,13 @@ namespace E.Deezer
         #endregion
 
         //Adding any addition params we'd like to the requests
-        private void AppendParams(IRestRequest aRequest, int aResultSize)
+        private void AppendParams(IRestRequest aRequest, int aResultSize = 0)
         {
-            aRequest.AddParameter("limit", aResultSize, ParameterType.QueryString);
+            if (aResultSize > 0)
+            {
+                aRequest.AddParameter("limit", aResultSize, ParameterType.QueryString);
+            }
+
             aRequest.AddParameter("output", "json", ParameterType.QueryString);
         }
 
@@ -117,8 +136,6 @@ namespace E.Deezer
             {
                 AddToString(perms, DeezerPermissions.OfflineAccess.PermissionToString());
             }
-
-            iPermissions = perms;
         }
 
         //Adds the permissions in a comma seperated list

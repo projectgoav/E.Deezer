@@ -214,11 +214,11 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Album Id</param>
 		/// <returns>First page of Album tracks</returns>
-		internal Task<IPagedResponse<ITrack>> GetAlbumTracks(uint aId)
+		internal Task<IPagedResponse<ITrack>> GetAlbumTracks(uint aId, int aResultSize)
 		{
 			IRestRequest Request = new RestRequest("/album/{id}/tracks", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Track>>(Request).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+			return Execute<PagedResponse<Track>>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
 			{
 				List<ITrack> items = new List<ITrack>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -248,11 +248,11 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
 		/// <returns>First page of top tracks from artist</returns>
-		internal Task<IPagedResponse<ITrack>> GetArtistTopTracks(uint aId)
+		internal Task<IPagedResponse<ITrack>> GetArtistTopTracks(uint aId, int aResultSize)
 		{
 			IRestRequest Request = new RestRequest("/artist/{id}/top", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Track>>(Request).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+			return Execute<PagedResponse<Track>>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
 			{
 				List<ITrack> items = new List<ITrack>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -278,11 +278,11 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
 		/// <returns>First page of albums by artist</returns>
-		internal Task<IPagedResponse<IAlbum>> GetArtistAlbums(uint aId)
+		internal Task<IPagedResponse<IAlbum>> GetArtistAlbums(uint aId, int aResultSize)
 		{
 			IRestRequest Request = new RestRequest("/artist/{id}/albums", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Album>>(Request).ContinueWith<IPagedResponse<IAlbum>>((aTask) =>
+			return Execute<PagedResponse<Album>>(Request, aResultSize).ContinueWith<IPagedResponse<IAlbum>>((aTask) =>
 			{
 				List<IAlbum> items = new List<IAlbum>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -308,11 +308,11 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
 		/// <returns>First page of artists related to given artist</returns>
-		internal Task<IPagedResponse<IArtist>> GetArtistRelated(uint aId)
+		internal Task<IPagedResponse<IArtist>> GetArtistRelated(uint aId, int aResultSize)
 		{
 			IRestRequest Request = new RestRequest("/artist/{id}/related", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Artist>>(Request).ContinueWith<IPagedResponse<IArtist>>((aTask) =>
+			return Execute<PagedResponse<Artist>>(Request, aResultSize).ContinueWith<IPagedResponse<IArtist>>((aTask) =>
 			{
 				List<IArtist> items = new List<IArtist>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -338,11 +338,11 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
 		/// <returns>First page f artist's tracklist</returns>
-		internal Task<IPagedResponse<ITrack>> GetArtistTracklist(uint aId)
+		internal Task<IPagedResponse<ITrack>> GetArtistTracklist(uint aId, int aResultSize)
 		{
 			IRestRequest Request = new RestRequest("/artist/{id}/radio", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Track>>(Request).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+			return Execute<PagedResponse<Track>>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
 			{
 				List<ITrack> items = new List<ITrack>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -368,11 +368,11 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
 		/// <returns>First page of playlists containing the given artist</returns>
-		internal Task<IPagedResponse<IPlaylist>> GetArtistPlaylists(uint aId)
+		internal Task<IPagedResponse<IPlaylist>> GetArtistPlaylists(uint aId, int aResultSize)
 		{
 			IRestRequest Request = new RestRequest("/artist/{id}/playlists", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<PagedResponse<Playlist>>(Request).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
+			return Execute<PagedResponse<Playlist>>(Request, aResultSize).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
 			{
 				List<IPlaylist> items = new List<IPlaylist>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -401,12 +401,11 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Playlist Id</param>
 		/// <returns>FIrst page of tracks in playlist</returns>
-		internal Task<IPagedResponse<ITrack>> GetPlaylistTracks(int aId, int limit)
+		internal Task<IPagedResponse<ITrack>> GetPlaylistTracks(int aId, int aResultSize)
 		{
 			IRestRequest Request = new RestRequest("/playlist/{id}/tracks", Method.GET);
 			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			Request.AddParameter("limit", limit, ParameterType.QueryString);
-			return Execute<PagedResponse<Track>>(Request).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
+			return Execute<PagedResponse<Track>>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
 			{
 				List<ITrack> items = new List<ITrack>();
 				foreach (var item in aTask.Result.Data.Data)
@@ -465,18 +464,25 @@ namespace E.Deezer
 
 		#endregion //Deezer Methods
 
+        private Task<IRestResponse> Execute(IRestRequest aRequest)
+        {
+            return iSession.Execute(aRequest, iCancellationTokenSource.Token);
+        }
+
 		private Task<IRestResponse> Execute(IRestRequest aRequest, int aResultSize)
 		{
 			return iSession.Execute(aRequest, iCancellationTokenSource.Token, aResultSize);
 		}
 
+        private Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest)
+        {
+            return iSession.Execute<T>(aRequest, iCancellationTokenSource.Token);
+        }
+
 		private Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, int aResultSize)
 		{
 			return iSession.Execute<T>(aRequest, iCancellationTokenSource.Token, aResultSize);
 		}
-
-
-
 		
 	}
 }

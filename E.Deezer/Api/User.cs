@@ -69,7 +69,7 @@ namespace E.Deezer.Api
 		/// Gets the user's favourite playlists
 		/// </summary>
 		/// <returns>First page of user's listening history</returns>
-		Task<IPagedResponse<IPlaylist>> GetFavouritePlaylists(int limit = DeezerSession.RESULT_SIZE);
+		Task<IPagedResponse<IPlaylist>> GetFavouritePlaylists(int aResultSize);
 
 
 		/// <summary>
@@ -137,9 +137,9 @@ namespace E.Deezer.Api
             throw new NotImplementedException();
 		}
 
-		public Task<IPagedResponse<IPlaylist>> GetFavouritePlaylists(int limit = DeezerSession.RESULT_SIZE)
+		public Task<IPagedResponse<IPlaylist>> GetFavouritePlaylists(int aResultSize = DeezerSession.RESULT_SIZE)
 		{
-			return Client.GetUserFavouritePlaylists(Id, limit);
+			return Client.GetUserFavouritePlaylists(Id, aResultSize);
 		}
 
 
