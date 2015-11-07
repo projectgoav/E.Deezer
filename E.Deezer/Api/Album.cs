@@ -48,7 +48,7 @@ namespace E.Deezer.Api
         /// Gets the album tracklist
         /// </summary>
         /// <returns>First page of album tracks</returns>
-        Task<IPagedResponse<ITrack>> GetTracks(int aResultSize);
+        Task<IPagedResponse<ITrack>> GetTracks(int aResultSize = DeezerSession.RESULT_SIZE);
 
         /// <summary>
         /// Gets album artist
