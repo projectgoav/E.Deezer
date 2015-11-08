@@ -83,6 +83,17 @@ namespace E.Deezer.Api
         }
 
 
+        public static IPagedResponse<T> GetEmptyResponse<T>()
+        {
+            return new PagedResponse<T>()
+            {
+                Data = new List<T>(),
+                Total = 0,
+                Next = string.Empty,
+                Previous = string.Empty,
+            };
+        }
+
     }
 
     /// <summary>

@@ -69,7 +69,7 @@ namespace E.Deezer.Api
 		/// Gets the user's favourite playlists
 		/// </summary>
 		/// <returns>First page of user's listening history</returns>
-		Task<IPagedResponse<IPlaylist>> GetFavouritePlaylists(int limit = DeezerSession.PAGE_LIMIT);
+		Task<IPagedResponse<IPlaylist>> GetFavouritePlaylists(int aResultSize);
 
 
 		/// <summary>
@@ -114,32 +114,32 @@ namespace E.Deezer.Api
 
 		public Task<IPagedResponse<IAlbum>> GetFavouriteAlbums()
 		{
-			return null;
+            throw new NotImplementedException();
 		}
 
 		public Task<IPagedResponse<IArtist>> GetFavouriteArtists()
 		{
-			return null;
+            throw new NotImplementedException();
 		}
 
 		public Task<IPagedResponse<ITrack>> GetFavouriteTracks()
 		{
-			return null;
+            throw new NotImplementedException();
 		}
 
 		public Task<IPagedResponse<ITrack>> GetUserFlow()
 		{
-			return null;
+            throw new NotImplementedException();
 		}
 
 		public Task<IPagedResponse<ITrack>> GetListenHistory()
 		{
-			return null;
+            throw new NotImplementedException();
 		}
 
-		public Task<IPagedResponse<IPlaylist>> GetFavouritePlaylists(int limit = DeezerSession.PAGE_LIMIT)
+		public Task<IPagedResponse<IPlaylist>> GetFavouritePlaylists(int aResultSize = DeezerSession.RESULT_SIZE)
 		{
-			return Client.GetUserFavouritePlaylists(Id, limit);
+			return Client.GetUserFavouritePlaylists(Id, aResultSize);
 		}
 
 
@@ -147,22 +147,22 @@ namespace E.Deezer.Api
 
 		public Task<IPagedResponse<IAlbum>> GetRecommendedAlbums()
 		{
-			return null;
+            throw new NotImplementedException();
 		}
 
 		public Task<IPagedResponse<IArtist>> GetRecommendedArtists()
 		{
-			return null;
+            throw new NotImplementedException();
 		}
 
 		public Task<IPagedResponse<ITrack>> GetRecommendedTracks()
 		{
-			return null;
+            throw new NotImplementedException();
 		}
 
 		public Task<IPagedResponse<IPlaylist>> GetRecommendedPlaylists()
 		{
-			return null;
+            throw new NotImplementedException();
 		}
 
 

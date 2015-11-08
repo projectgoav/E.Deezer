@@ -57,35 +57,44 @@ namespace E.Deezer.TestConsole
 		private void ServiceInfo()
 		{
 			var T = iClient.GetInfos();
-			T.Wait();
+            Await<IInfos>(T);
 
-			Console.WriteLine("> Deezer Service Info");
-			Console.WriteLine(string.Format("Country: {0}\nCountry ISO: {1}\nDeezer Available: {2}", T.Result.Country, T.Result.Iso, T.Result.IsAvailable));
+            if (!T.IsFaulted)
+            {
+                Console.WriteLine("> Deezer Service Info");
+                Console.WriteLine(string.Format("Country: {0}\nCountry ISO: {1}\nDeezer Available: {2}", T.Result.Country, T.Result.Iso, T.Result.IsAvailable));
+            }
 		}
 
 		//Gets and prints out specific user info
 		private void UserInfo(int userId)
 		{
 			var T = iClient.GetUser(userId);
-			T.Wait();
+            Await<IUser>(T);
 
-			IUser user = T.Result;
-			Console.WriteLine("> User info");
-			Console.WriteLine("Id: {0}\nName: {1}\nCountry: {2}\nLink: {3}", user.Id, user.Name, user.Country, user.Link);
-
+            if(!T.IsFaulted)
+            {
+			    IUser user = T.Result;
+			    Console.WriteLine("> User info");
+			    Console.WriteLine("Id: {0}\nName: {1}\nCountry: {2}\nLink: {3}", user.Id, user.Name, user.Country, user.Link);
+            }
 		}
 
 		//Gets and prints out specific user info
 		private void GetLovedTracksNotInAnyPlaylist(int userId)
 		{
 			var T = iClient.GetUser(userId);
-			T.Wait();
+
+            Await<IUser>(T);
+            if (T.IsFaulted) { return; }
+
 			IUser user = T.Result;
-
 			var playlistsT = user.GetFavouritePlaylists(100);
-			playlistsT.Wait();
-			var playlists = playlistsT.Result;
 
+            Await<IPagedResponse<IPlaylist>>(playlistsT);
+            if (playlistsT.IsFaulted) { return; }
+
+			var playlists = playlistsT.Result;
 			Console.WriteLine("> PLAYLISTS");
 
 			// write all playlists
@@ -104,7 +113,9 @@ namespace E.Deezer.TestConsole
 					{
 						// add tracks id for this playlist
 						var tracksTask = item.GetTracks(500);
-						tracksTask.Wait();
+                        Await<IPagedResponse<ITrack>>(tracksTask);
+                        if (tracksTask.IsFaulted) { return; }
+
 						var tracks = tracksTask.Result;
 
 						tracksInPlaylists.UnionWith(tracks.Data.Select(t => t.Id));
@@ -120,7 +131,9 @@ namespace E.Deezer.TestConsole
 			if (loved != null)
 			{
 				var tracksTask = loved.GetTracks(500);
-				tracksTask.Wait();
+                Await<IPagedResponse<ITrack>>(tracksTask);
+                if (tracksTask.IsFaulted) { return; }
+
 				var tracks = tracksTask.Result;
 				lovedTracksId.UnionWith(tracks.Data.Select(t => t.Id));
 
@@ -143,10 +156,15 @@ namespace E.Deezer.TestConsole
 			Console.WriteLine("> Performing a Search...");
 
 			var T = iClient.SearchAlbums("Abba");
+
+            Await<IPagedResponse<IAlbum>>(T);
+            if (T.IsFaulted) { return; }
+
 			var album = T.Result.Data.ElementAt(0);
 			Console.WriteLine("> Getting track info");
 			var albumTask = album.GetTracks();
-			albumTask.Wait();
+            Await<IPagedResponse<ITrack>>(albumTask);
+            if (albumTask.IsFaulted) { return; }
 
 			Console.WriteLine(string.Format("> ALBUM: {0}", album.Title));
 
@@ -161,13 +179,30 @@ namespace E.Deezer.TestConsole
 		{
 			string artistQuery = "Skillet";
 			Console.WriteLine("> Performing Search...");
-			var artist = iClient.SearchArtists(artistQuery).Result.Data.ElementAt(0);
+
+            var aTask = iClient.SearchArtists(artistQuery);
+            Await<IPagedResponse<IArtist>>(aTask);
+            if (aTask.IsFaulted) { return; }
+
+			var artist = aTask.Result.Data.ElementAt(0);
 
 			var topTracks = artist.GetTopTracks();
 			var related = artist.GetRelated();
 			var albums = artist.GetAlbums();
 			var tracklist = artist.GetTracklist();
-			Task.WaitAll(topTracks, albums, related, tracklist);
+
+            try
+            {
+			    Task.WaitAll(topTracks, albums, related, tracklist);
+            }
+            catch (AggregateException ex)
+            {
+                Exception e = ex.GetBaseException();
+                Console.WriteLine("[EXCEPTION THROWN]");
+                Console.WriteLine(e.GetType().ToString());
+                Console.WriteLine(e.Message);
+                return;
+            }
 
 			Console.WriteLine(">Top Tracks...");
 
@@ -182,6 +217,21 @@ namespace E.Deezer.TestConsole
 			Console.WriteLine("> Got artist info");
 		}
 
+        //Waits the tasks and prints any errors that might have been thrown by the tasks.
+        private void Await<T>(Task<T> aTask)
+        {
+            try
+            {
+                aTask.Wait();
+            }
+            catch(AggregateException ex)
+            {
+                Exception e = ex.GetBaseException();
+                Console.WriteLine("[EXCEPTION THROWN]");
+                Console.WriteLine(e.GetType().ToString());
+                Console.WriteLine(e.Message);
+            }
+        }
 
 	}
 }

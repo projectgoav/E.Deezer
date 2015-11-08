@@ -21,34 +21,73 @@ namespace E.Deezer
         /// </summary>
         public const string ENDPOINT = "https://api.deezer.com/";
 
-				public const int PAGE_LIMIT = 25;
+        /// <summary>
+        /// Default result size
+        /// </summary>
+		public const int RESULT_SIZE = 25;
 
         public string Username { get; private set; }
         public string ApplicationId { get; private set; }
         public string ApplicationSecret { get; private set; }
+        public int ResultSize { get; private set; }
         internal string Permissions { get; private set; }
 
         private RestClient iClient;
 
-        public DeezerSession(string aUsername, string aAppId, string aAppSecret, DeezerPermissions aPermissions )
+        /// <summary>
+        /// Creates a new Deezer session with the following options.
+        /// Throws ArgumentOutOfRangeException if aResultSize < 0
+        /// </summary>
+        /// <param name="aUsername">User's account name</param>
+        /// <param name="aAppId">Your Deezer application ID</param>
+        /// <param name="aAppSecret">Your Deezer application secret</param>
+        /// <param name="aPermissions">Requested permissions for Deezer API</param>
+        /// <param name="aResultSize">(OPTIONAL)Number of results requested</param>
+        public DeezerSession(string aUsername, string aAppId, string aAppSecret, DeezerPermissions aPermissions, int aResultSize = RESULT_SIZE )
         {
             Username = aUsername;
             ApplicationId = aAppId;
             ApplicationSecret = aAppSecret;
+
+            if (aResultSize < 0) {  throw new ArgumentOutOfRangeException("Result Size must be greater than, or equal to, 0"); }
+            ResultSize = aResultSize;
 
             GeneratePermissionString(aPermissions);
 
             iClient = new RestClient(ENDPOINT);
         }
 
-        internal Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, CancellationToken aToken) { return iClient.ExecuteGetTaskAsync<T>(aRequest, aToken); }
-        internal Task<IRestResponse> Execute(IRestRequest aRequest, CancellationToken aToken) { return iClient.ExecuteGetTaskAsync(aRequest, aToken); }
 
+        #region API Requests
+        internal Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, CancellationToken aToken)
+        {
+            AppendParams(aRequest);
+            var task = iClient.ExecuteGetTaskAsync<T>(aRequest, aToken).ContinueWith<IRestResponse<T>>((aTask) =>
+            {
+                if(aTask.Result.ErrorException != null) { throw aTask.Result.ErrorException; }
+                else { return aTask.Result; }
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            task.SuppressExceptions();
+            return task;
+        }
+
+        internal Task<IRestResponse> Execute(IRestRequest aRequest, CancellationToken aToken)
+        {
+            AppendParams(aRequest);
+            var task = iClient.ExecuteGetTaskAsync(aRequest, aToken).ContinueWith<IRestResponse>((aTask) =>
+            {
+                if (aTask.IsFaulted) { throw aTask.Exception; }
+                else { return aTask.Result; }
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            task.SuppressExceptions();
+            return task;
+        }
+        #endregion
 
         //Adding any addition params we'd like to the requests
-        private void AppendParams(IRestRequest aRequest)
+        private void AppendParams(IRestRequest aRequest, int aResultSize = 0)
         {
-            aRequest.AddParameter("output", "json");
+            aRequest.AddParameter("output", "json", ParameterType.QueryString);
         }
 
         //Generates a permission string which can be used to grant people
@@ -99,5 +138,31 @@ namespace E.Deezer
             if(string.IsNullOrEmpty(aString)) {  aString = aAdd; }
             else {  aString += string.Format(",{0}", aAdd); }
         }
+    }
+
+    /// <summary>
+    /// Task Extensions to stop tasks throwing exceptions straight away.
+    /// </summary>
+    public static class TaskExtensions
+    {
+        public static Task SuppressExceptions(this Task aTask)
+        {
+            aTask.ContinueWith((t) => { var ignored = t.Exception; },
+                TaskContinuationOptions.OnlyOnFaulted |
+                TaskContinuationOptions.ExecuteSynchronously);
+            return aTask;
+        }
+        public static Task<T> SuppressExceptions<T>(this Task<T> aTask)
+        {
+            aTask.ContinueWith((t) => { var ignored = t.Exception; },
+                TaskContinuationOptions.OnlyOnFaulted |
+                TaskContinuationOptions.ExecuteSynchronously);
+            return aTask;
+        }
+    }
+
+    public class EmptyResultException : Exception
+    {
+        public EmptyResultException() : base("Task returned an empty result. Check network connection or Deezer API status") { }
     }
 }
