@@ -1,8 +1,11 @@
 # E.Deezer
 An unoffical asynchronous wrapper for the Deezer API and .NET.
 
+PLEASE NOTE: This is still in early development
+
 ## Usage
 
+**Latest Version: 0.0.0.90**
 [Via Nuget](https://www.nuget.org/packages/E.Deezer)
 
 From source:
@@ -44,13 +47,13 @@ See E.Deezer.Examples for C# example usage. *(Source only)*
 *More features later*
 
 ## Requirements
-- Visual Studio 2012 (or later)
+- Visual Studio 2013 (or later)
+- .NET 4.0 (or later)
 - [RestSharp](http://restsharp.org/)
 
 ## Contents
 - E.Deezer **(API Library)**
 - E.Deezer.Examples **(Some C# example usage)**
-- E.Deezer.TestConsole **(Scratch pad for testing)**
 
 ##License
 (MIT)
