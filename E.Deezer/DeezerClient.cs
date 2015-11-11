@@ -76,7 +76,7 @@ namespace E.Deezer
 		/// <returns>First page of search results</returns>
 		public Task<IPage<IAlbum>> SearchAlbums(string aQuery)
 		{
-            return GetSnapshot<Album, IAlbum>(() =>
+            return GetPage<Album, IAlbum>(() =>
             {
                 IRestRequest request = new RestRequest("/search/album", Method.GET);
                 request.AddParameter("q", aQuery);
@@ -89,31 +89,14 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aQuery">Search query</param>
 		/// <returns>First page of search results</returns>
-		public Task<IPagedResponse<IArtist>> SearchArtists(string aQuery)
+		public Task<IPage<IArtist>> SearchArtists(string aQuery)
 		{
-			IRestRequest request = new RestRequest("/search/artist", Method.GET);
-			request.AddParameter("q", aQuery);
-			return Execute<PagedResponse<Artist>>(request).ContinueWith<IPagedResponse<IArtist>>((aTask) =>
-			{
-				List<IArtist> items = new List<IArtist>();
-				//Insert reference to client to get access to client
-				foreach (var item in aTask.Result.Data.Data)
-				{
-					item.Deserialize(this);
-					items.Add(item as IArtist);
-				}
-
-				aTask.Result.Data.Deserialize(this);
-
-				IPagedResponse<IArtist> result = new PagedResponse<IArtist>()
-				{
-					Data = items,
-					Total = aTask.Result.Data.Total,
-					Next = aTask.Result.Data.Next,
-					Previous = aTask.Result.Data.Previous
-				};
-				return result;
-			});
+            return GetPage<Artist, IArtist>(() =>
+            {
+                IRestRequest request = new RestRequest("/search/artist", Method.GET);
+                request.AddParameter("q", aQuery);
+                return request;
+            }, aItem => aItem);
 		}
 
 
@@ -122,31 +105,15 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aQuery">Search query</param>
 		/// <returns>First page of search results</returns>
-		public Task<IPagedResponse<ITrack>> SearchTracks(string aQuery)
+		public Task<IPage<ITrack>> SearchTracks(string aQuery)
 		{
-			IRestRequest request = new RestRequest("/search/track", Method.GET);
-			request.AddParameter("q", aQuery);
-			return Execute<PagedResponse<Track>>(request).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
-			{
-				List<ITrack> items = new List<ITrack>();
-				//Insert reference to client to get access to client
-				foreach (var item in aTask.Result.Data.Data)
-				{
-					item.Deserialize(this);
-					items.Add(item as ITrack);
-				}
-
-				aTask.Result.Data.Deserialize(this);
-
-				IPagedResponse<ITrack> result = new PagedResponse<ITrack>()
-				{
-					Data = items,
-					Total = aTask.Result.Data.Total,
-					Next = aTask.Result.Data.Next,
-					Previous = aTask.Result.Data.Previous
-				};
-				return result;
-			});
+            return GetPage<Track, ITrack>(() =>
+            {
+                IRestRequest request = new RestRequest("/search/track", Method.GET);
+                request.AddParameter("q", aQuery);
+                return request;
+            }, aItem => aItem);
+	
 		}
 
 		/// <summary>
@@ -154,31 +121,14 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aQuery">Search query</param>
 		/// <returns>First page of search results</returns>
-		public Task<IPagedResponse<IPlaylist>> SearchPlaylists(string aQuery)
+		public Task<IPage<IPlaylist>> SearchPlaylists(string aQuery)
 		{
-			IRestRequest request = new RestRequest("/search/playlist", Method.GET);
-			request.AddParameter("q", aQuery);
-			return Execute<PagedResponse<Playlist>>(request).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
-			{
-				List<IPlaylist> items = new List<IPlaylist>();
-				//Insert reference to client to get access to client
-				foreach (var item in aTask.Result.Data.Data)
-				{
-					item.Deserialize(this);
-					items.Add(item as IPlaylist);
-				}
-
-				aTask.Result.Data.Deserialize(this);
-
-				IPagedResponse<IPlaylist> result = new PagedResponse<IPlaylist>()
-				{
-					Data = items,
-					Total = aTask.Result.Data.Total,
-					Next = aTask.Result.Data.Next,
-					Previous = aTask.Result.Data.Previous
-				};
-				return result;
-			});
+            return GetPage<Playlist, IPlaylist>(() =>
+            {
+                IRestRequest request = new RestRequest("/search/playlist", Method.GET);
+                request.AddParameter("q", aQuery);
+                return request;
+            }, aItem => aItem);
 		}
 		#endregion
 
@@ -477,8 +427,7 @@ namespace E.Deezer
 
 
         //TODO DOCS
-
-        private Task<IPage<TDest>> GetSnapshot<TSource, TDest>(Func<IRestRequest> aRequestFn, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
+        private Task<IPage<TDest>> GetPage<TSource, TDest>(Func<IRestRequest> aRequestFn, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
         {
             var request = aRequestFn();
             request.AddParameter("limit", 0);
