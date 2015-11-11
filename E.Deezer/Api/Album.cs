@@ -48,7 +48,7 @@ namespace E.Deezer.Api
         /// Gets the album tracklist
         /// </summary>
         /// <returns>First page of album tracks</returns>
-        Task<IPagedResponse<ITrack>> GetTracks(int aResultSize = DeezerSession.RESULT_SIZE);
+        Task<IPage<ITrack>> GetTracks();
 
         /// <summary>
         /// Gets album artist
@@ -82,9 +82,9 @@ namespace E.Deezer.Api
         public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
-        public Task<IPagedResponse<ITrack>> GetTracks(int aResultSize = DeezerSession.RESULT_SIZE)
+        public Task<IPage<ITrack>> GetTracks()
         {
-            return Client.GetAlbumTracks(Id, aResultSize);
+            return Client.GetAlbumTracks(Id);
         }
 
         public Task<IArtist> GetArtist()

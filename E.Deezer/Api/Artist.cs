@@ -43,31 +43,31 @@ namespace E.Deezer.Api
         /// Gets Album tracklist
         /// </summary>
         /// <returns>First page of tracklist</returns>
-        Task<IPagedResponse<ITrack>> GetTracklist(int aResultSize = DeezerSession.RESULT_SIZE);
+        Task<IPage<ITrack>> GetTracklist();
 
         /// <summary>
         /// Gets the artist's top track
         /// </summary>
         /// <returns>First page of artist's top tracks</returns>
-        Task<IPagedResponse<ITrack>> GetTopTracks(int aResultSize = DeezerSession.RESULT_SIZE);
+        Task<IPage<ITrack>> GetTopTracks();
 
         /// <summary>
         /// Gets a list of artist's albums
         /// </summary>
         /// <returns>First page of artist's album collection</returns>
-        Task<IPagedResponse<IAlbum>> GetAlbums(int aResultSize = DeezerSession.RESULT_SIZE);
+        Task<IPage<IAlbum>> GetAlbums();
 
         /// <summary>
         /// Geta  list of related artists
         /// </summary>
         /// <returns>First page of related artists</returns>
-        Task<IPagedResponse<IArtist>> GetRelated(int aResultSize = DeezerSession.RESULT_SIZE);
+        Task<IPage<IArtist>> GetRelated();
 
         /// <summary>
         /// Gets a list of playlists containing this artist
         /// </summary>
         /// <returns>First page of playlists featuring artist</returns>
-        Task<IPagedResponse<IPlaylist>> GetPlaylistsContaining(int aResultSize = DeezerSession.RESULT_SIZE);
+        Task<IPage<IPlaylist>> GetPlaylistsContaining();
     }
 
     public class Artist : IArtist, IDeserializable<DeezerClient>
@@ -83,29 +83,29 @@ namespace E.Deezer.Api
         public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
-        public Task<IPagedResponse<ITrack>> GetTopTracks(int aResultSize)
+        public Task<IPage<ITrack>> GetTopTracks()
         {
-            return Client.GetArtistTopTracks(Id, aResultSize);
+            return Client.GetArtistTopTracks(Id);
         }
 
-        public Task<IPagedResponse<IAlbum>> GetAlbums(int aResultSize)
+        public Task<IPage<IAlbum>> GetAlbums()
         {
-            return Client.GetArtistAlbums(Id, aResultSize);
+            return Client.GetArtistAlbums(Id);
         }
 
-        public Task<IPagedResponse<IArtist>> GetRelated(int aResultSize)
+        public Task<IPage<IArtist>> GetRelated()
         {
-            return Client.GetArtistRelated(Id, aResultSize);
+            return Client.GetArtistRelated(Id);
         }
 
-        public Task<IPagedResponse<ITrack>> GetTracklist(int aResultSize)
+        public Task<IPage<ITrack>> GetTracklist()
         {
-            return Client.GetArtistTracklist(Id, aResultSize);
+            return Client.GetArtistTracklist(Id);
         }
 
-        public Task<IPagedResponse<IPlaylist>> GetPlaylistsContaining(int aResultSize)
+        public Task<IPage<IPlaylist>> GetPlaylistsContaining()
         {
-            return Client.GetArtistPlaylists(Id, aResultSize);
+            return Client.GetArtistPlaylists(Id);
         }
 
 

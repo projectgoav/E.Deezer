@@ -63,7 +63,7 @@ namespace E.Deezer.Api
 		/// Gets the tracks in the playlist
 		/// </summary>
 		/// <returns>First page of tracks in playlist.</returns>
-		Task<IPagedResponse<ITrack>> GetTracks(int aResultSize = DeezerSession.RESULT_SIZE);
+		Task<IPage<ITrack>> GetTracks();
 
 	}
 
@@ -102,9 +102,9 @@ namespace E.Deezer.Api
 
 
 
-		public Task<IPagedResponse<ITrack>> GetTracks(int aResultSize = DeezerSession.RESULT_SIZE)
+		public Task<IPage<ITrack>> GetTracks()
 		{
-			return Client.GetPlaylistTracks(Id, aResultSize);
+			return Client.GetPlaylistTracks(Id);
 		}
 
 

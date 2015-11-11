@@ -142,29 +142,14 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Album Id</param>
 		/// <returns>First page of Album tracks</returns>
-		internal Task<IPagedResponse<ITrack>> GetAlbumTracks(uint aId, int aResultSize)
+		internal Task<IPage<ITrack>> GetAlbumTracks(uint aId)
 		{
-			IRestRequest Request = new RestRequest("/album/{id}/tracks", Method.GET);
-			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<Track>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
-			{
-				List<ITrack> items = new List<ITrack>();
-				foreach (var item in aTask.Result.Data.Data)
-				{
-					item.Deserialize(this);
-					items.Add(item as ITrack);
-				}
-
-				aTask.Result.Data.Deserialize(this);
-
-				return new PagedResponse<ITrack>()
-				{
-					Data = items,
-					Total = aTask.Result.Data.Total,
-					Next = aTask.Result.Data.Next,
-					Previous = aTask.Result.Data.Previous,
-				};
-			});
+            return GetPage<Track, ITrack>(() =>
+            {
+                IRestRequest Request = new RestRequest("/album/{id}/tracks", Method.GET);
+                Request.AddParameter("id", aId, ParameterType.UrlSegment);
+                return Request;
+            }, aItem => aItem);
 		}
 
 		#endregion //Albums
@@ -176,29 +161,14 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
 		/// <returns>First page of top tracks from artist</returns>
-		internal Task<IPagedResponse<ITrack>> GetArtistTopTracks(uint aId, int aResultSize)
+		internal Task<IPage<ITrack>> GetArtistTopTracks(uint aId)
 		{
-			IRestRequest Request = new RestRequest("/artist/{id}/top", Method.GET);
-			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<Track>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
-			{
-				List<ITrack> items = new List<ITrack>();
-				foreach (var item in aTask.Result.Data.Data)
-				{
-					item.Deserialize(this);
-					items.Add(item as ITrack);
-				}
-
-				aTask.Result.Data.Deserialize(this);
-
-				return new PagedResponse<ITrack>()
-				{
-					Data = items,
-					Total = aTask.Result.Data.Total,
-					Next = aTask.Result.Data.Next,
-					Previous = aTask.Result.Data.Previous,
-				};
-			});
+            return GetPage<Track, ITrack>(() =>
+            {
+                IRestRequest request = new RestRequest("/artist/{id}/top", Method.GET);
+                request.AddParameter("id", aId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
 		}
 
 		/// <summary>
@@ -206,29 +176,14 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
 		/// <returns>First page of albums by artist</returns>
-		internal Task<IPagedResponse<IAlbum>> GetArtistAlbums(uint aId, int aResultSize)
+		internal Task<IPage<IAlbum>> GetArtistAlbums(uint aId)
 		{
-			IRestRequest Request = new RestRequest("/artist/{id}/albums", Method.GET);
-			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<Album>(Request, aResultSize).ContinueWith<IPagedResponse<IAlbum>>((aTask) =>
-			{
-				List<IAlbum> items = new List<IAlbum>();
-				foreach (var item in aTask.Result.Data.Data)
-				{
-					item.Deserialize(this);
-					items.Add(item as IAlbum);
-				}
-
-				aTask.Result.Data.Deserialize(this);
-
-				return new PagedResponse<IAlbum>()
-				{
-					Data = items,
-					Total = aTask.Result.Data.Total,
-					Next = aTask.Result.Data.Next,
-					Previous = aTask.Result.Data.Previous,
-				};
-			});
+            return GetPage<Album, IAlbum>(() =>
+            {
+                IRestRequest request = new RestRequest("/artist/{id}/albums", Method.GET);
+                request.AddParameter("id", aId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
 		}
 
 		/// <summary>
@@ -236,29 +191,14 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
 		/// <returns>First page of artists related to given artist</returns>
-		internal Task<IPagedResponse<IArtist>> GetArtistRelated(uint aId, int aResultSize)
+		internal Task<IPage<IArtist>> GetArtistRelated(uint aId)
 		{
-			IRestRequest Request = new RestRequest("/artist/{id}/related", Method.GET);
-			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<Artist>(Request, aResultSize).ContinueWith<IPagedResponse<IArtist>>((aTask) =>
-			{
-				List<IArtist> items = new List<IArtist>();
-				foreach (var item in aTask.Result.Data.Data)
-				{
-					item.Deserialize(this);
-					items.Add(item as IArtist);
-				}
-
-				aTask.Result.Data.Deserialize(this);
-
-				return new PagedResponse<IArtist>()
-				{
-					Data = items,
-					Total = aTask.Result.Data.Total,
-					Next = aTask.Result.Data.Next,
-					Previous = aTask.Result.Data.Previous,
-				};
-			});
+            return GetPage<Artist, IArtist>(() =>
+            {
+                IRestRequest request = new RestRequest("/artist/{id}/related", Method.GET);
+                request.AddParameter("id", aId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
 		}
 
 		/// <summary>
@@ -266,29 +206,14 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
 		/// <returns>First page f artist's tracklist</returns>
-		internal Task<IPagedResponse<ITrack>> GetArtistTracklist(uint aId, int aResultSize)
+		internal Task<IPage<ITrack>> GetArtistTracklist(uint aId)
 		{
-			IRestRequest Request = new RestRequest("/artist/{id}/radio", Method.GET);
-			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<Track>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
-			{
-				List<ITrack> items = new List<ITrack>();
-				foreach (var item in aTask.Result.Data.Data)
-				{
-					item.Deserialize(this);
-					items.Add(item as ITrack);
-				}
-
-				aTask.Result.Data.Deserialize(this);
-
-				return new PagedResponse<ITrack>()
-				{
-					Data = items,
-					Total = aTask.Result.Data.Total,
-					Next = aTask.Result.Data.Next,
-					Previous = aTask.Result.Data.Previous,
-				};
-			});
+            return GetPage<Track, ITrack>(() =>
+            {
+                IRestRequest request = new RestRequest("/artist/{id}/radio", Method.GET);
+                request.AddParameter("id", aId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
 		}
 
 		/// <summary>
@@ -296,29 +221,14 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
 		/// <returns>First page of playlists containing the given artist</returns>
-		internal Task<IPagedResponse<IPlaylist>> GetArtistPlaylists(uint aId, int aResultSize)
+		internal Task<IPage<IPlaylist>> GetArtistPlaylists(uint aId)
 		{
-			IRestRequest Request = new RestRequest("/artist/{id}/playlists", Method.GET);
-			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<Playlist>(Request, aResultSize).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
-			{
-				List<IPlaylist> items = new List<IPlaylist>();
-				foreach (var item in aTask.Result.Data.Data)
-				{
-					item.Deserialize(this);
-					items.Add(item as IPlaylist);
-				}
-
-				aTask.Result.Data.Deserialize(this);
-
-				return new PagedResponse<IPlaylist>()
-				{
-					Data = items,
-					Total = aTask.Result.Data.Total,
-					Next = aTask.Result.Data.Next,
-					Previous = aTask.Result.Data.Previous,
-				};
-			});
+            return GetPage<Playlist, IPlaylist>(() =>
+            {
+                IRestRequest request = new RestRequest("/artist/{id}/playlists", Method.GET);
+                request.AddParameter("id", aId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
 		}
 		#endregion //Artists
 
@@ -329,61 +239,28 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Playlist Id</param>
 		/// <returns>FIrst page of tracks in playlist</returns>
-		internal Task<IPagedResponse<ITrack>> GetPlaylistTracks(int aId, int aResultSize)
+		internal Task<IPage<ITrack>> GetPlaylistTracks(int aId)
 		{
-			IRestRequest Request = new RestRequest("/playlist/{id}/tracks", Method.GET);
-			Request.AddParameter("id", aId, ParameterType.UrlSegment);
-			return Execute<Track>(Request, aResultSize).ContinueWith<IPagedResponse<ITrack>>((aTask) =>
-			{
-				List<ITrack> items = new List<ITrack>();
-				foreach (var item in aTask.Result.Data.Data)
-				{
-					item.Deserialize(this);
-					items.Add(item as ITrack);
-				}
-
-				aTask.Result.Data.Deserialize(this);
-
-				return new PagedResponse<ITrack>()
-				{
-					Data = items,
-					Total = aTask.Result.Data.Total,
-					Next = aTask.Result.Data.Next,
-					Previous = aTask.Result.Data.Previous,
-				};
-			});
+            return GetPage<Track, ITrack>(() =>
+            {
+                IRestRequest request = new RestRequest("/playlist/{id}/tracks", Method.GET);
+                request.AddParameter("id", aId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
 		}
 
 		#endregion
 
 		#region Playlists
 
-		internal Task<IPagedResponse<IPlaylist>> GetUserFavouritePlaylists(uint userId, int aResultSize)
+		internal Task<IPage<IPlaylist>> GetUserFavouritePlaylists(uint userId)
 		{
-			IRestRequest Request = new RestRequest("/user/{id}/playlists", Method.GET);
-			Request.AddParameter("id", userId, ParameterType.UrlSegment);
-			return Execute<Playlist>(Request, aResultSize).ContinueWith<IPagedResponse<IPlaylist>>((aTask) =>
-			{
-				List<IPlaylist> items = new List<IPlaylist>();
-				PagedResponse<Playlist> page = aTask.Result.Data;
-				page.Deserialize(this);
-
-				foreach (var item in page.Data)
-				{
-					item.Deserialize(this);
-					items.Add(item as IPlaylist);
-				}
-
-				aTask.Result.Data.Deserialize(this);
-
-				return new PagedResponse<IPlaylist>()
-				{
-					Data = items,
-					Total = aTask.Result.Data.Total,
-					Next = aTask.Result.Data.Next,
-					Previous = aTask.Result.Data.Previous,
-				};
-			});
+            return GetPage<Playlist, IPlaylist>(() =>
+            {
+                IRestRequest request = new RestRequest("/user/{id}/playlists", Method.GET);
+                request.AddParameter("id", userId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);	
 		}
 
 		#endregion //Playlists
@@ -409,21 +286,6 @@ namespace E.Deezer
             task.SuppressExceptions();
             return task;
 		}
-        private Task<IRestResponse<PagedResponse<T>>> Execute<T>(IRestRequest aRequest, int aResultSize)
-        {
-            if (aResultSize > 0) { aRequest.AddParameter("limit", aResultSize, ParameterType.QueryString); }
-            var task = iSession.Execute<PagedResponse<T>>(aRequest, iCancellationTokenSource.Token).ContinueWith<IRestResponse<PagedResponse<T>>>((aTask) =>
-            {
-                if (aTask.IsFaulted) { throw aTask.Exception; }
-                else { return aTask.Result; }
-            });
-            task.SuppressExceptions();
-            return task;
-        }
-
-
-
-
 
 
         //TODO DOCS

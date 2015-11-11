@@ -39,62 +39,62 @@ namespace E.Deezer.Api
 		/// Gets the user's favourite albums
 		/// </summary>
 		/// <returns>First page of user's favourite albums</returns>
-		Task<IPagedResponse<IAlbum>> GetFavouriteAlbums();
+		Task<IPage<IAlbum>> GetFavouriteAlbums();
 
 		/// <summary>
 		/// Gets the user's favourite artists
 		/// </summary>
 		/// <returns>First page of user's favourite artists</returns>
-		Task<IPagedResponse<IArtist>> GetFavouriteArtists();
+		Task<IPage<IArtist>> GetFavouriteArtists();
 
 		/// <summary>
 		/// Gets the user's favourite tracks
 		/// </summary>
 		/// <returns>First page of user's favourite tracks</returns>
-		Task<IPagedResponse<ITrack>> GetFavouriteTracks();
+		Task<IPage<ITrack>> GetFavouriteTracks();
 
 		/// <summary>
 		/// Gets the user's "flow"
 		/// </summary>
 		/// <returns>First page of user's "flow"</returns>
-		Task<IPagedResponse<ITrack>> GetUserFlow();
+		Task<IPage<ITrack>> GetUserFlow();
 
 		/// <summary>
 		/// Gets the user;s listening history
 		/// </summary>
 		/// <returns>First page of user's litening history</returns>
-		Task<IPagedResponse<ITrack>> GetListenHistory();
+		Task<IPage<ITrack>> GetListenHistory();
 
 		/// <summary>
 		/// Gets the user's favourite playlists
 		/// </summary>
 		/// <returns>First page of user's listening history</returns>
-		Task<IPagedResponse<IPlaylist>> GetFavouritePlaylists(int aResultSize);
+		Task<IPage<IPlaylist>> GetFavouritePlaylists();
 
 
 		/// <summary>
 		/// Gets recommended albums for the user
 		/// </summary>
 		/// <returns>First page of recommended albums</returns>
-		Task<IPagedResponse<IAlbum>> GetRecommendedAlbums();
+		Task<IPage<IAlbum>> GetRecommendedAlbums();
 
 		/// <summary>
 		/// Gets recommended artists for the user
 		/// </summary>
 		/// <returns>First page of recommended artists</returns>
-		Task<IPagedResponse<IArtist>> GetRecommendedArtists();
+		Task<IPage<IArtist>> GetRecommendedArtists();
 
 		/// <summary>
 		/// Gets recommended tracks for the user
 		/// </summary>
 		/// <returns>First page of recommended tracks</returns>
-		Task<IPagedResponse<ITrack>> GetRecommendedTracks();
+		Task<IPage<ITrack>> GetRecommendedTracks();
 
 		/// <summary>
 		/// Gets recommended playlists for the user
 		/// </summary>
 		/// <returns>First page of recommded playlists</returns>
-		Task<IPagedResponse<IPlaylist>> GetRecommendedPlaylists();
+		Task<IPage<IPlaylist>> GetRecommendedPlaylists();
 
 	}
 
@@ -112,55 +112,55 @@ namespace E.Deezer.Api
 		internal void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
-		public Task<IPagedResponse<IAlbum>> GetFavouriteAlbums()
+		public Task<IPage<IAlbum>> GetFavouriteAlbums()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPagedResponse<IArtist>> GetFavouriteArtists()
+		public Task<IPage<IArtist>> GetFavouriteArtists()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPagedResponse<ITrack>> GetFavouriteTracks()
+		public Task<IPage<ITrack>> GetFavouriteTracks()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPagedResponse<ITrack>> GetUserFlow()
+		public Task<IPage<ITrack>> GetUserFlow()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPagedResponse<ITrack>> GetListenHistory()
+		public Task<IPage<ITrack>> GetListenHistory()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPagedResponse<IPlaylist>> GetFavouritePlaylists(int aResultSize = DeezerSession.RESULT_SIZE)
+		public Task<IPage<IPlaylist>> GetFavouritePlaylists()
 		{
-			return Client.GetUserFavouritePlaylists(Id, aResultSize);
+			return Client.GetUserFavouritePlaylists(Id);
 		}
 
 
 
 
-		public Task<IPagedResponse<IAlbum>> GetRecommendedAlbums()
-		{
-            throw new NotImplementedException();
-		}
-
-		public Task<IPagedResponse<IArtist>> GetRecommendedArtists()
+		public Task<IPage<IAlbum>> GetRecommendedAlbums()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPagedResponse<ITrack>> GetRecommendedTracks()
+		public Task<IPage<IArtist>> GetRecommendedArtists()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPagedResponse<IPlaylist>> GetRecommendedPlaylists()
+		public Task<IPage<ITrack>> GetRecommendedTracks()
+		{
+            throw new NotImplementedException();
+		}
+
+		public Task<IPage<IPlaylist>> GetRecommendedPlaylists()
 		{
             throw new NotImplementedException();
 		}
