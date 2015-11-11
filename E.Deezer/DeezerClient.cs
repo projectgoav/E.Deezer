@@ -73,8 +73,8 @@ namespace E.Deezer
 		/// Searches Deezer for Albums matching the query
 		/// </summary>
 		/// <param name="aQuery">Search query</param>
-		/// <returns>First page of search results</returns>
-		public Task<IPage<IAlbum>> SearchAlbums(string aQuery)
+		/// <returns>A book of search results</returns>
+		public Task<IBook<IAlbum>> SearchAlbums(string aQuery)
 		{
             return GetPage<Album, IAlbum>(() =>
             {
@@ -88,8 +88,8 @@ namespace E.Deezer
 		/// Search deezer for artists matching query
 		/// </summary>
 		/// <param name="aQuery">Search query</param>
-		/// <returns>First page of search results</returns>
-		public Task<IPage<IArtist>> SearchArtists(string aQuery)
+		/// <returns>A book of search results</returns>
+		public Task<IBook<IArtist>> SearchArtists(string aQuery)
 		{
             return GetPage<Artist, IArtist>(() =>
             {
@@ -104,8 +104,8 @@ namespace E.Deezer
 		/// Searches Deezer for track matching query
 		/// </summary>
 		/// <param name="aQuery">Search query</param>
-		/// <returns>First page of search results</returns>
-		public Task<IPage<ITrack>> SearchTracks(string aQuery)
+		/// <returns>A book of search results</returns>
+		public Task<IBook<ITrack>> SearchTracks(string aQuery)
 		{
             return GetPage<Track, ITrack>(() =>
             {
@@ -120,8 +120,8 @@ namespace E.Deezer
 		/// Searches Deezer for playlists
 		/// </summary>
 		/// <param name="aQuery">Search query</param>
-		/// <returns>First page of search results</returns>
-		public Task<IPage<IPlaylist>> SearchPlaylists(string aQuery)
+		/// <returns>A book of search results</returns>
+		public Task<IBook<IPlaylist>> SearchPlaylists(string aQuery)
 		{
             return GetPage<Playlist, IPlaylist>(() =>
             {
@@ -141,8 +141,8 @@ namespace E.Deezer
 		/// Gets the specificed albums tracks
 		/// </summary>
 		/// <param name="aId">Album Id</param>
-		/// <returns>First page of Album tracks</returns>
-		internal Task<IPage<ITrack>> GetAlbumTracks(uint aId)
+		/// <returns>A book of Album tracks</returns>
+		internal Task<IBook<ITrack>> GetAlbumTracks(uint aId)
 		{
             return GetPage<Track, ITrack>(() =>
             {
@@ -160,8 +160,8 @@ namespace E.Deezer
 		/// Gets the top tracks of an artist
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
-		/// <returns>First page of top tracks from artist</returns>
-		internal Task<IPage<ITrack>> GetArtistTopTracks(uint aId)
+		/// <returns>A book of top tracks from artist</returns>
+		internal Task<IBook<ITrack>> GetArtistTopTracks(uint aId)
 		{
             return GetPage<Track, ITrack>(() =>
             {
@@ -175,8 +175,8 @@ namespace E.Deezer
 		/// Gets albums by given artist
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
-		/// <returns>First page of albums by artist</returns>
-		internal Task<IPage<IAlbum>> GetArtistAlbums(uint aId)
+		/// <returns>A book of albums by artist</returns>
+		internal Task<IBook<IAlbum>> GetArtistAlbums(uint aId)
 		{
             return GetPage<Album, IAlbum>(() =>
             {
@@ -190,8 +190,8 @@ namespace E.Deezer
 		/// Gets related artists
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
-		/// <returns>First page of artists related to given artist</returns>
-		internal Task<IPage<IArtist>> GetArtistRelated(uint aId)
+		/// <returns>A book of artists related to given artist</returns>
+		internal Task<IBook<IArtist>> GetArtistRelated(uint aId)
 		{
             return GetPage<Artist, IArtist>(() =>
             {
@@ -206,7 +206,7 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
 		/// <returns>First page f artist's tracklist</returns>
-		internal Task<IPage<ITrack>> GetArtistTracklist(uint aId)
+		internal Task<IBook<ITrack>> GetArtistTracklist(uint aId)
 		{
             return GetPage<Track, ITrack>(() =>
             {
@@ -220,8 +220,8 @@ namespace E.Deezer
 		/// Gets playlists featuring the given artist
 		/// </summary>
 		/// <param name="aId">Artist Id</param>
-		/// <returns>First page of playlists containing the given artist</returns>
-		internal Task<IPage<IPlaylist>> GetArtistPlaylists(uint aId)
+		/// <returns>A book of playlists containing the given artist</returns>
+		internal Task<IBook<IPlaylist>> GetArtistPlaylists(uint aId)
 		{
             return GetPage<Playlist, IPlaylist>(() =>
             {
@@ -238,8 +238,8 @@ namespace E.Deezer
 		/// Gets a tracklist for a playlist
 		/// </summary>
 		/// <param name="aId">Playlist Id</param>
-		/// <returns>FIrst page of tracks in playlist</returns>
-		internal Task<IPage<ITrack>> GetPlaylistTracks(int aId)
+		/// <returns>A book of tracks in playlist</returns>
+		internal Task<IBook<ITrack>> GetPlaylistTracks(int aId)
 		{
             return GetPage<Track, ITrack>(() =>
             {
@@ -253,7 +253,7 @@ namespace E.Deezer
 
 		#region Playlists
 
-		internal Task<IPage<IPlaylist>> GetUserFavouritePlaylists(uint userId)
+		internal Task<IBook<IPlaylist>> GetUserFavouritePlaylists(uint userId)
 		{
             return GetPage<Playlist, IPlaylist>(() =>
             {
@@ -289,15 +289,15 @@ namespace E.Deezer
 
 
         //TODO DOCS
-        private Task<IPage<TDest>> GetPage<TSource, TDest>(Func<IRestRequest> aRequestFn, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
+        private Task<IBook<TDest>> GetPage<TSource, TDest>(Func<IRestRequest> aRequestFn, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
         {
             var request = aRequestFn();
             request.AddParameter("limit", 0);
             request.AddParameter("index", 0);
-            var result = Execute<DeezerFragment<TSource>>(request).ContinueWith<IPage<TDest>>((aTask) =>
+            var result = Execute<DeezerFragment<TSource>>(request).ContinueWith<IBook<TDest>>((aTask) =>
             {
                 var searchResult = aTask.Result.Data;
-                return new Page<TSource, TDest>(searchResult.Total, (aIndex, aCount, aCallback) =>
+                return new Book<TSource, TDest>(searchResult.Total, (aIndex, aCount, aCallback) =>
                 {
                     ReadPage<TSource, TDest>(aRequestFn, aIndex, aCount, iCancellationTokenSource.Token,  aCallback, aCastFn);
                 });
@@ -310,7 +310,7 @@ namespace E.Deezer
 
 
         //TODO DOCS
-        private void ReadPage<TSource, TDest>(Func<IRestRequest> aRequestFn, uint aIndex, uint aCount,CancellationToken aCancellationToken, Action<IExcerpt<TDest>> aCallback, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
+        private void ReadPage<TSource, TDest>(Func<IRestRequest> aRequestFn, uint aIndex, uint aCount,CancellationToken aCancellationToken, Action<IPage<TDest>> aCallback, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
         {
             var request = aRequestFn();
             request.AddParameter("limit", aCount);
@@ -324,7 +324,7 @@ namespace E.Deezer
                     {
                         item.Deserialize(this);
                     }
-                    var fragment = new Excerpt<TDest>(aIndex, (from i in taskResult.Data select aCastFn(i)));
+                    var fragment = new Page<TDest>(aIndex, (from i in taskResult.Data select aCastFn(i)));
                     aCallback(fragment);
                 }
                 catch (AggregateException ex)

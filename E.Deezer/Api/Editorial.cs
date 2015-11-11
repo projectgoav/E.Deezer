@@ -12,8 +12,8 @@ namespace E.Deezer.Api
         int Genre { get; set; }
         string Picture { get; set; }
 
-        IPage<IAlbum> GetSelection();
-        IPage<IAlbum> GetReleases();
+        IBook<IAlbum> GetSelection();
+        IBook<IAlbum> GetReleases();
     }
 
     internal class Editorial : IEditorial
@@ -23,12 +23,12 @@ namespace E.Deezer.Api
         public int Genre { get; set; }
         public string Picture { get; set; }
 
-        public IPage<IAlbum> GetSelection()
+        public IBook<IAlbum> GetSelection()
         {
             return null;
         }
 
-        public IPage<IAlbum> GetReleases()
+        public IBook<IAlbum> GetReleases()
         {
             return null;
         }

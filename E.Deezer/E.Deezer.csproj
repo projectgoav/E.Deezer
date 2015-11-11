@@ -20,7 +20,7 @@
     <AssemblyVersionSettings>None.None.None.Increment</AssemblyVersionSettings>
     <AssemblyFileVersionSettings>None.None.None.Increment</AssemblyFileVersionSettings>
     <AssemblyInfoVersionSettings>IncrementOnDemand.Increment.DateStamp.TimeStamp</AssemblyInfoVersionSettings>
-    <AssemblyVersion>0.0.0.87</AssemblyVersion>
+    <AssemblyVersion>0.0.0.89</AssemblyVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
   <!-- If nothing is specified we build with DEBUG -->

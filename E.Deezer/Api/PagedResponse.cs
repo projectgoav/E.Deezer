@@ -10,24 +10,43 @@ using RestSharp;
 
 namespace E.Deezer.Api
 {
+    /// <summary>
+    /// A Standard Deezer API response.
+    /// </summary>
+    /// <typeparam name="T">Type of data returned</typeparam>
     internal class DeezerFragment<T>
     {
         public List<T> Data { get; set; }
         public uint Total { get; set; }
+
+        //TODO
+        //ADD ERROR HERE AND CHECK FOR IT
     }
 
-    public interface IExcerpt<T>
+    /// <summary>
+    /// An excerpt from a book
+    /// </summary>
+    /// <typeparam name="T">Type of content</typeparam>
+    public interface IPage<T>
     {
+        /// <summary>
+        /// Data of this page
+        /// </summary>
         List<T> Data { get; }
+
+        /// <summary>
+        /// Starting index of this book found in the page
+        /// </summary>
         uint StartIndex { get; }
     }
 
-    internal class Excerpt<T> : IExcerpt<T>
+
+    internal class Page<T> : IPage<T>
     {
         public List<T> Data { get; private set; }
         public uint StartIndex { get; private set; }
 
-        public Excerpt(uint aStart, IEnumerable<T> aItems)
+        public Page(uint aStart, IEnumerable<T> aItems)
         {
             Data = new List<T>();
             Data.AddRange(aItems);
@@ -35,26 +54,44 @@ namespace E.Deezer.Api
         }
     }
 
-    public interface IPage<T>
+    /// <summary>
+    /// A large collection of results from the Deezer API
+    /// </summary>
+    /// <typeparam name="T">Type of these results</typeparam>
+    public interface IBook<T>
     {
+        /// <summary>
+        /// Total number of results found within the book
+        /// </summary>
         uint Total { get; }
-        void Read(uint aStart, uint aEnd, Action<IExcerpt<T>> aCallback);
+
+        /// <summary>
+        /// Read a certain number of items from the book
+        /// </summary>
+        /// <param name="aStart">Starting index</param>
+        /// <param name="aEnd">Ending index</param>
+        /// <param name="aCallback">A callback to return a page from this book containing the requested items</param>
+        void Read(uint aStart, uint aEnd, Action<IPage<T>> aCallback);
     }
 
-    internal class Page<TSource, TDest> : IPage<TDest>
+
+    internal class Book<TSource, TDest> : IBook<TDest>
     {
         public uint Total {get; private set; }
-        private Action<uint, uint, Action<IExcerpt<TDest>>> iReadFunction;
+        private Action<uint, uint, Action<IPage<TDest>>> iReadFunction;
 
-        public Page(uint aTotal, Action<uint, uint, Action<IExcerpt<TDest>>> aReadFunction)
+        public Book(uint aTotal, Action<uint, uint, Action<IPage<TDest>>> aReadFunction)
         {
             Total = aTotal;
             iReadFunction = aReadFunction;
         }
 
-        public void Read(uint aStart, uint aEnd, Action<IExcerpt<TDest>> aCallback )
+        public void Read(uint aStart, uint aEnd, Action<IPage<TDest>> aCallback )
         {
             iReadFunction(aStart, aEnd, aCallback);
         }
+
+
+        //TODO ASYNC READ
     }
 }

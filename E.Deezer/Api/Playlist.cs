@@ -62,8 +62,8 @@ namespace E.Deezer.Api
 		/// <summary>
 		/// Gets the tracks in the playlist
 		/// </summary>
-		/// <returns>First page of tracks in playlist.</returns>
-		Task<IPage<ITrack>> GetTracks();
+		/// <returns>A book of tracks in playlist.</returns>
+		Task<IBook<ITrack>> GetTracks();
 
 	}
 
@@ -102,7 +102,7 @@ namespace E.Deezer.Api
 
 
 
-		public Task<IPage<ITrack>> GetTracks()
+		public Task<IBook<ITrack>> GetTracks()
 		{
 			return Client.GetPlaylistTracks(Id);
 		}

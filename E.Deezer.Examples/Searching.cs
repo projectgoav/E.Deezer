@@ -28,7 +28,7 @@ namespace E.Deezer.Examples
             var searchTask = client.SearchArtists(SearchQuery);
 
             //Grab the result from the task
-            //Contains the first page of results
+            //Contains the A book of results
             var items = searchTask.Result.Data;
 
             //We can get the total results found from the search

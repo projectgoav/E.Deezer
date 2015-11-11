@@ -91,7 +91,7 @@ namespace E.Deezer.TestConsole
 			IUser user = T.Result;
 			var playlistsT = user.GetFavouritePlaylists(100);
 
-            Await<IPage<IPlaylist>>(playlistsT);
+            Await<IBook<IPlaylist>>(playlistsT);
             if (playlistsT.IsFaulted) { return; }
 
 			var playlists = playlistsT.Result;
@@ -113,7 +113,7 @@ namespace E.Deezer.TestConsole
 					{
 						// add tracks id for this playlist
 						var tracksTask = item.GetTracks(500);
-                        Await<IPage<ITrack>>(tracksTask);
+                        Await<IBook<ITrack>>(tracksTask);
                         if (tracksTask.IsFaulted) { return; }
 
 						var tracks = tracksTask.Result;
@@ -131,7 +131,7 @@ namespace E.Deezer.TestConsole
 			if (loved != null)
 			{
 				var tracksTask = loved.GetTracks(500);
-                Await<IPage<ITrack>>(tracksTask);
+                Await<IBook<ITrack>>(tracksTask);
                 if (tracksTask.IsFaulted) { return; }
 
 				var tracks = tracksTask.Result;
@@ -157,7 +157,7 @@ namespace E.Deezer.TestConsole
 
 			var T = iClient.SearchAlbums("Abba");
 
-            Await<IPage<IAlbum>>(T);
+            Await<IBook<IAlbum>>(T);
             if (T.IsFaulted) { return; }
 
             var result = T.Result;
@@ -192,7 +192,7 @@ namespace E.Deezer.TestConsole
 			Console.WriteLine("> Performing Search...");
 
             var aTask = iClient.SearchArtists(artistQuery);
-            Await<IPage<IArtist>>(aTask);
+            Await<IBook<IArtist>>(aTask);
             if (aTask.IsFaulted) { return; }
 
 			var artist = aTask.Result.Data.ElementAt(0);

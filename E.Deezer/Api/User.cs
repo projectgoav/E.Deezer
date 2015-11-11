@@ -38,63 +38,63 @@ namespace E.Deezer.Api
 		/// <summary>
 		/// Gets the user's favourite albums
 		/// </summary>
-		/// <returns>First page of user's favourite albums</returns>
-		Task<IPage<IAlbum>> GetFavouriteAlbums();
+		/// <returns>A book of user's favourite albums</returns>
+		Task<IBook<IAlbum>> GetFavouriteAlbums();
 
 		/// <summary>
 		/// Gets the user's favourite artists
 		/// </summary>
-		/// <returns>First page of user's favourite artists</returns>
-		Task<IPage<IArtist>> GetFavouriteArtists();
+		/// <returns>A book of user's favourite artists</returns>
+		Task<IBook<IArtist>> GetFavouriteArtists();
 
 		/// <summary>
 		/// Gets the user's favourite tracks
 		/// </summary>
-		/// <returns>First page of user's favourite tracks</returns>
-		Task<IPage<ITrack>> GetFavouriteTracks();
+		/// <returns>A book of user's favourite tracks</returns>
+		Task<IBook<ITrack>> GetFavouriteTracks();
 
 		/// <summary>
 		/// Gets the user's "flow"
 		/// </summary>
-		/// <returns>First page of user's "flow"</returns>
-		Task<IPage<ITrack>> GetUserFlow();
+		/// <returns>A book of user's "flow"</returns>
+		Task<IBook<ITrack>> GetUserFlow();
 
 		/// <summary>
 		/// Gets the user;s listening history
 		/// </summary>
-		/// <returns>First page of user's litening history</returns>
-		Task<IPage<ITrack>> GetListenHistory();
+		/// <returns>A book of user's litening history</returns>
+		Task<IBook<ITrack>> GetListenHistory();
 
 		/// <summary>
 		/// Gets the user's favourite playlists
 		/// </summary>
-		/// <returns>First page of user's listening history</returns>
-		Task<IPage<IPlaylist>> GetFavouritePlaylists();
+		/// <returns>A book of user's listening history</returns>
+		Task<IBook<IPlaylist>> GetFavouritePlaylists();
 
 
 		/// <summary>
 		/// Gets recommended albums for the user
 		/// </summary>
-		/// <returns>First page of recommended albums</returns>
-		Task<IPage<IAlbum>> GetRecommendedAlbums();
+		/// <returns>A book of recommended albums</returns>
+		Task<IBook<IAlbum>> GetRecommendedAlbums();
 
 		/// <summary>
 		/// Gets recommended artists for the user
 		/// </summary>
-		/// <returns>First page of recommended artists</returns>
-		Task<IPage<IArtist>> GetRecommendedArtists();
+		/// <returns>A book of recommended artists</returns>
+		Task<IBook<IArtist>> GetRecommendedArtists();
 
 		/// <summary>
 		/// Gets recommended tracks for the user
 		/// </summary>
-		/// <returns>First page of recommended tracks</returns>
-		Task<IPage<ITrack>> GetRecommendedTracks();
+		/// <returns>A book of recommended tracks</returns>
+		Task<IBook<ITrack>> GetRecommendedTracks();
 
 		/// <summary>
 		/// Gets recommended playlists for the user
 		/// </summary>
-		/// <returns>First page of recommded playlists</returns>
-		Task<IPage<IPlaylist>> GetRecommendedPlaylists();
+		/// <returns>A book of recommded playlists</returns>
+		Task<IBook<IPlaylist>> GetRecommendedPlaylists();
 
 	}
 
@@ -112,32 +112,32 @@ namespace E.Deezer.Api
 		internal void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
-		public Task<IPage<IAlbum>> GetFavouriteAlbums()
+		public Task<IBook<IAlbum>> GetFavouriteAlbums()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPage<IArtist>> GetFavouriteArtists()
+		public Task<IBook<IArtist>> GetFavouriteArtists()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPage<ITrack>> GetFavouriteTracks()
+		public Task<IBook<ITrack>> GetFavouriteTracks()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPage<ITrack>> GetUserFlow()
+		public Task<IBook<ITrack>> GetUserFlow()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPage<ITrack>> GetListenHistory()
+		public Task<IBook<ITrack>> GetListenHistory()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPage<IPlaylist>> GetFavouritePlaylists()
+		public Task<IBook<IPlaylist>> GetFavouritePlaylists()
 		{
 			return Client.GetUserFavouritePlaylists(Id);
 		}
@@ -145,22 +145,22 @@ namespace E.Deezer.Api
 
 
 
-		public Task<IPage<IAlbum>> GetRecommendedAlbums()
+		public Task<IBook<IAlbum>> GetRecommendedAlbums()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPage<IArtist>> GetRecommendedArtists()
+		public Task<IBook<IArtist>> GetRecommendedArtists()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPage<ITrack>> GetRecommendedTracks()
+		public Task<IBook<ITrack>> GetRecommendedTracks()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IPage<IPlaylist>> GetRecommendedPlaylists()
+		public Task<IBook<IPlaylist>> GetRecommendedPlaylists()
 		{
             throw new NotImplementedException();
 		}
