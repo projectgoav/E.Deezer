@@ -10,8 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{84ABD1
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E.Deezer.TestConsole", "E.Deezer.TestConsole\E.Deezer.TestConsole.csproj", "{EE6C8716-CF19-4AC1-A658-34845FF9C506}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E.Deezer.Examples", "E.Deezer.Examples\E.Deezer.Examples.csproj", "{E499B25A-B1A5-41FB-BCAC-7FEA893FAC48}"
 EndProject
 Global
