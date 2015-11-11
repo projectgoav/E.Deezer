@@ -90,7 +90,7 @@ namespace E.Deezer
         #endregion
 
         //Adding any addition params we'd like to the requests
-        private void AppendParams(IRestRequest aRequest, int aResultSize = 0)
+        private void AppendParams(IRestRequest aRequest)
         {
             aRequest.AddParameter("output", "json", ParameterType.QueryString);
         }

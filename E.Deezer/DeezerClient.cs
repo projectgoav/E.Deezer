@@ -76,7 +76,7 @@ namespace E.Deezer
 		/// <returns>A book of search results</returns>
 		public Task<IBook<IAlbum>> SearchAlbums(string aQuery)
 		{
-            return GetPage<Album, IAlbum>(() =>
+            return GetBook<Album, IAlbum>(() =>
             {
                 IRestRequest request = new RestRequest("/search/album", Method.GET);
                 request.AddParameter("q", aQuery);
@@ -91,7 +91,7 @@ namespace E.Deezer
 		/// <returns>A book of search results</returns>
 		public Task<IBook<IArtist>> SearchArtists(string aQuery)
 		{
-            return GetPage<Artist, IArtist>(() =>
+            return GetBook<Artist, IArtist>(() =>
             {
                 IRestRequest request = new RestRequest("/search/artist", Method.GET);
                 request.AddParameter("q", aQuery);
@@ -107,7 +107,7 @@ namespace E.Deezer
 		/// <returns>A book of search results</returns>
 		public Task<IBook<ITrack>> SearchTracks(string aQuery)
 		{
-            return GetPage<Track, ITrack>(() =>
+            return GetBook<Track, ITrack>(() =>
             {
                 IRestRequest request = new RestRequest("/search/track", Method.GET);
                 request.AddParameter("q", aQuery);
@@ -123,7 +123,7 @@ namespace E.Deezer
 		/// <returns>A book of search results</returns>
 		public Task<IBook<IPlaylist>> SearchPlaylists(string aQuery)
 		{
-            return GetPage<Playlist, IPlaylist>(() =>
+            return GetBook<Playlist, IPlaylist>(() =>
             {
                 IRestRequest request = new RestRequest("/search/playlist", Method.GET);
                 request.AddParameter("q", aQuery);
@@ -144,7 +144,7 @@ namespace E.Deezer
 		/// <returns>A book of Album tracks</returns>
 		internal Task<IBook<ITrack>> GetAlbumTracks(uint aId)
 		{
-            return GetPage<Track, ITrack>(() =>
+            return GetBook<Track, ITrack>(() =>
             {
                 IRestRequest Request = new RestRequest("/album/{id}/tracks", Method.GET);
                 Request.AddParameter("id", aId, ParameterType.UrlSegment);
@@ -163,7 +163,7 @@ namespace E.Deezer
 		/// <returns>A book of top tracks from artist</returns>
 		internal Task<IBook<ITrack>> GetArtistTopTracks(uint aId)
 		{
-            return GetPage<Track, ITrack>(() =>
+            return GetBook<Track, ITrack>(() =>
             {
                 IRestRequest request = new RestRequest("/artist/{id}/top", Method.GET);
                 request.AddParameter("id", aId, ParameterType.UrlSegment);
@@ -178,7 +178,7 @@ namespace E.Deezer
 		/// <returns>A book of albums by artist</returns>
 		internal Task<IBook<IAlbum>> GetArtistAlbums(uint aId)
 		{
-            return GetPage<Album, IAlbum>(() =>
+            return GetBook<Album, IAlbum>(() =>
             {
                 IRestRequest request = new RestRequest("/artist/{id}/albums", Method.GET);
                 request.AddParameter("id", aId, ParameterType.UrlSegment);
@@ -193,7 +193,7 @@ namespace E.Deezer
 		/// <returns>A book of artists related to given artist</returns>
 		internal Task<IBook<IArtist>> GetArtistRelated(uint aId)
 		{
-            return GetPage<Artist, IArtist>(() =>
+            return GetBook<Artist, IArtist>(() =>
             {
                 IRestRequest request = new RestRequest("/artist/{id}/related", Method.GET);
                 request.AddParameter("id", aId, ParameterType.UrlSegment);
@@ -208,7 +208,7 @@ namespace E.Deezer
 		/// <returns>First page f artist's tracklist</returns>
 		internal Task<IBook<ITrack>> GetArtistTracklist(uint aId)
 		{
-            return GetPage<Track, ITrack>(() =>
+            return GetBook<Track, ITrack>(() =>
             {
                 IRestRequest request = new RestRequest("/artist/{id}/radio", Method.GET);
                 request.AddParameter("id", aId, ParameterType.UrlSegment);
@@ -223,7 +223,7 @@ namespace E.Deezer
 		/// <returns>A book of playlists containing the given artist</returns>
 		internal Task<IBook<IPlaylist>> GetArtistPlaylists(uint aId)
 		{
-            return GetPage<Playlist, IPlaylist>(() =>
+            return GetBook<Playlist, IPlaylist>(() =>
             {
                 IRestRequest request = new RestRequest("/artist/{id}/playlists", Method.GET);
                 request.AddParameter("id", aId, ParameterType.UrlSegment);
@@ -241,7 +241,7 @@ namespace E.Deezer
 		/// <returns>A book of tracks in playlist</returns>
 		internal Task<IBook<ITrack>> GetPlaylistTracks(int aId)
 		{
-            return GetPage<Track, ITrack>(() =>
+            return GetBook<Track, ITrack>(() =>
             {
                 IRestRequest request = new RestRequest("/playlist/{id}/tracks", Method.GET);
                 request.AddParameter("id", aId, ParameterType.UrlSegment);
@@ -255,7 +255,7 @@ namespace E.Deezer
 
 		internal Task<IBook<IPlaylist>> GetUserFavouritePlaylists(uint userId)
 		{
-            return GetPage<Playlist, IPlaylist>(() =>
+            return GetBook<Playlist, IPlaylist>(() =>
             {
                 IRestRequest request = new RestRequest("/user/{id}/playlists", Method.GET);
                 request.AddParameter("id", userId, ParameterType.UrlSegment);
@@ -288,16 +288,19 @@ namespace E.Deezer
 		}
 
 
-        //TODO DOCS
-        private Task<IBook<TDest>> GetPage<TSource, TDest>(Func<IRestRequest> aRequestFn, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
+        /* Gets a book object
+         * --------------------
+         * Creates a quick network call to poll the API for a total number of results.
+         * Adds a reference to a ReadPage() function so we can get a particular number
+         * of items from a specified location in a book */
+        private Task<IBook<TDest>> GetBook<TSource, TDest>(Func<IRestRequest> aRequestFn, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
         {
             var request = aRequestFn();
             request.AddParameter("limit", 0);
             request.AddParameter("index", 0);
             var result = Execute<DeezerFragment<TSource>>(request).ContinueWith<IBook<TDest>>((aTask) =>
             {
-                var searchResult = aTask.Result.Data;
-                return new Book<TSource, TDest>(searchResult.Total, (aIndex, aCount, aCallback) =>
+                return new Book<TSource, TDest>(aTask.Result.Data.Total, (aIndex, aCount, aCallback) =>
                 {
                     ReadPage<TSource, TDest>(aRequestFn, aIndex, aCount, iCancellationTokenSource.Token,  aCallback, aCastFn);
                 });
@@ -306,10 +309,8 @@ namespace E.Deezer
             return result;
         }
 
-
-
-
-        //TODO DOCS
+        /* ReadPage
+         * Gets the specified number of items (aCount) starting from a given place (aIndex) in a Book */
         private void ReadPage<TSource, TDest>(Func<IRestRequest> aRequestFn, uint aIndex, uint aCount,CancellationToken aCancellationToken, Action<IPage<TDest>> aCallback, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
         {
             var request = aRequestFn();
@@ -319,21 +320,15 @@ namespace E.Deezer
             {
                 try
                 {
-                    var taskResult = aTask.Result.Data;
-                    foreach (var item in taskResult.Data)
-                    {
-                        item.Deserialize(this);
-                    }
-                    var fragment = new Page<TDest>(aIndex, (from i in taskResult.Data select aCastFn(i)));
+                    foreach (var item in aTask.Result.Data.Data) {  item.Deserialize(this); }
+
+                    var fragment = new Page<TDest>(aIndex, (from i in aTask.Result.Data.Data select aCastFn(i)));
                     aCallback(fragment);
                 }
                 catch (AggregateException ex)
                 {
-                    // prevent exceptions on finalizer
-                    ex.Handle((e) => true);
-
-                    //TODO
-                    //aErrorCallback(aTask.Exception.InnerException);
+                    Console.WriteLine(ex.GetBaseException().Message);
+                    //TODO, do we want to do something with an Error Callback here?
                 }
             }, aCancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
