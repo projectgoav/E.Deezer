@@ -229,4 +229,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
 E.Deezer/nuget.exe
+E.Deezer.TestConsole/
+
