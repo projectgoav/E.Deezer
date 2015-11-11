@@ -70,7 +70,7 @@ namespace E.Deezer.Api
         Task<IPagedResponse<IPlaylist>> GetPlaylistsContaining(int aResultSize = DeezerSession.RESULT_SIZE);
     }
 
-    public class Artist : IArtist
+    public class Artist : IArtist, IDeserializable<DeezerClient>
     {
         public uint Id { get; set; }
         public string Name { get; set; }
@@ -79,11 +79,8 @@ namespace E.Deezer.Api
         public string Tracklist { get; set; }
 
 
-        private DeezerClient Client { get; set; }
-        internal void Deserialize(DeezerClient aClient)
-        {
-            Client = aClient;
-        }
+        public DeezerClient Client { get; set; }
+        public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
         public Task<IPagedResponse<ITrack>> GetTopTracks(int aResultSize)

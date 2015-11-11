@@ -75,7 +75,7 @@ namespace E.Deezer.Api
     }
 
 
-    internal class Track : ITrack
+    internal class Track : ITrack, IDeserializable<DeezerClient>
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -111,8 +111,8 @@ namespace E.Deezer.Api
         public Album AlbumInternal { get; set; }
 
 
-        private DeezerClient Client { get; set; }
-        internal void Deserialize(DeezerClient aClient) 
+        public DeezerClient Client { get; set; }
+        public void Deserialize(DeezerClient aClient) 
         { 
             Client = aClient;
         }

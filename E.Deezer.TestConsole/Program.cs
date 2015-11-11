@@ -168,9 +168,15 @@ namespace E.Deezer.TestConsole
 
             result.Read(0, 35, (aFragment) =>
             {
+                int i = 0;
                 foreach(var a in aFragment.Data)
                 {
                     Console.WriteLine(string.Format("\t> {0} ({1})", a.Title, a.ArtistName));
+                    if(i == 0)
+                    {
+                        a.GetTracks().ContinueWith((aTask) => Console.WriteLine("No Errors here...")).Wait();
+                        i++; 
+                    }
                 }
                 wh.Set();
             });

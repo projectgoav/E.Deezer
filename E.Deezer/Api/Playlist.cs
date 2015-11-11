@@ -67,7 +67,7 @@ namespace E.Deezer.Api
 
 	}
 
-	internal class Playlist : IPlaylist
+	internal class Playlist : IPlaylist, IDeserializable<DeezerClient>
 	{
 		public int Id { get; set; }
 		public string Title { get; set; }
@@ -97,11 +97,8 @@ namespace E.Deezer.Api
 		[DeserializeAs(Name = "creator")]
 		public User CreatorInternal { get; set; }
 
-		private DeezerClient Client { get; set; }
-		internal void Deserialize(DeezerClient aClient)
-		{
-			Client = aClient;
-		}
+		public DeezerClient Client { get; set; }
+		public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
 
