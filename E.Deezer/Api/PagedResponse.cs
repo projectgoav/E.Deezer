@@ -69,9 +69,9 @@ namespace E.Deezer.Api
         /// Read a certain number of items from the book
         /// </summary>
         /// <param name="aStart">Starting index</param>
-        /// <param name="aEnd">Ending index</param>
+        /// <param name="aCount">Ending index</param>
         /// <param name="aCallback">A callback to return a page from this book containing the requested items</param>
-        void Read(uint aStart, uint aEnd, Action<IPage<T>> aCallback);
+        void Read(uint aStart, uint aCount, Action<IPage<T>> aCallback);
     }
 
 
@@ -86,12 +86,9 @@ namespace E.Deezer.Api
             iReadFunction = aReadFunction;
         }
 
-        public void Read(uint aStart, uint aEnd, Action<IPage<TDest>> aCallback )
+        public void Read(uint aStart, uint aCount, Action<IPage<TDest>> aCallback )
         {
-            iReadFunction(aStart, aEnd, aCallback);
+            iReadFunction(aStart, aCount, aCallback);
         }
-
-
-        //TODO ASYNC READ
     }
 }

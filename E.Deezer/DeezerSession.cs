@@ -29,7 +29,7 @@ namespace E.Deezer
         public string Username { get; private set; }
         public string ApplicationId { get; private set; }
         public string ApplicationSecret { get; private set; }
-        public int ResultSize { get; private set; }
+        public int DefaultResultSize { get; private set; }
         internal string Permissions { get; private set; }
 
         private RestClient iClient;
@@ -50,7 +50,7 @@ namespace E.Deezer
             ApplicationSecret = aAppSecret;
 
             if (aResultSize < 0) {  throw new ArgumentOutOfRangeException("Result Size must be greater than, or equal to, 0"); }
-            ResultSize = aResultSize;
+            DefaultResultSize = aResultSize;
 
             GeneratePermissionString(aPermissions);
 
