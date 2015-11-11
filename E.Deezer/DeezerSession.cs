@@ -29,7 +29,12 @@ namespace E.Deezer
         public string Username { get; private set; }
         public string ApplicationId { get; private set; }
         public string ApplicationSecret { get; private set; }
-        public int DefaultResultSize { get; private set; }
+
+        /// <summary>
+        /// The reference to a fixed size for pages.
+        /// If unset will be set to RESULT_SIZE
+        /// </summary>
+        public int DefaultPageSize { get; private set; }
         internal string Permissions { get; private set; }
 
         private RestClient iClient;
@@ -42,15 +47,15 @@ namespace E.Deezer
         /// <param name="aAppId">Your Deezer application ID</param>
         /// <param name="aAppSecret">Your Deezer application secret</param>
         /// <param name="aPermissions">Requested permissions for Deezer API</param>
-        /// <param name="aResultSize">(OPTIONAL)Number of results requested</param>
-        public DeezerSession(string aUsername, string aAppId, string aAppSecret, DeezerPermissions aPermissions, int aResultSize = RESULT_SIZE )
+        /// <param name="aDefaultPageSize">(OPTIONAL)A referene to a default number of items in a Page</param>
+        public DeezerSession(string aUsername, string aAppId, string aAppSecret, DeezerPermissions aPermissions, int aDefaultPageSize = RESULT_SIZE )
         {
             Username = aUsername;
             ApplicationId = aAppId;
             ApplicationSecret = aAppSecret;
 
-            if (aResultSize < 0) {  throw new ArgumentOutOfRangeException("Result Size must be greater than, or equal to, 0"); }
-            DefaultResultSize = aResultSize;
+            if (aDefaultPageSize < 0) {  throw new ArgumentOutOfRangeException("Result Size must be greater than, or equal to, 0"); }
+            DefaultPageSize = aDefaultPageSize;
 
             GeneratePermissionString(aPermissions);
 
@@ -159,10 +164,5 @@ namespace E.Deezer
                 TaskContinuationOptions.ExecuteSynchronously);
             return aTask;
         }
-    }
-
-    public class EmptyResultException : Exception
-    {
-        public EmptyResultException() : base("Task returned an empty result. Check network connection or Deezer API status") { }
     }
 }
