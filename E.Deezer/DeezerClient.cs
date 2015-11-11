@@ -492,6 +492,64 @@ namespace E.Deezer
             });
             task.SuppressExceptions();
             return task;
-        }	
+        }
+
+
+
+
+
+
+
+
+        //TODO DOCS
+
+        private Task<IPage<TDest>> GetSnapshot<TSource, TDest>(Func<IRestRequest> aRequestFn, Func<TSource, TDest> aCastFn, CancellationToken aCancellationToken) where TSource : IDeserializable<DeezerClient>
+        {
+            var request = aRequestFn();
+            request.AddParameter("limit", 0);
+            request.AddParameter("index", 0);
+            var result = Execute<DeezerFragment<TSource>>(request).ContinueWith<IPage<TDest>>((aTask) =>
+            {
+                var searchResult = aTask.Result.Data;
+                return new Page<TSource, TDest>(searchResult.Total, (aIndex, aCount, aCallback) =>
+                {
+                    ReadPage<TSource, TDest>(aRequestFn, aIndex, aCount, iCancellationTokenSource.Token,  aCallback, aCastFn);
+                });
+            }, aCancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            result.SuppressExceptions();
+            return result;
+        }
+
+
+
+
+        //TODO DOCS
+        private void ReadPage<TSource, TDest>(Func<IRestRequest> aRequestFn, uint aIndex, uint aCount,CancellationToken aCancellationToken, Action<IExcerpt<TDest>> aCallback, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
+        {
+            var request = aRequestFn();
+            request.AddParameter("limit", aCount);
+            request.AddParameter("index", aIndex);
+            Execute<DeezerFragment<TSource>>(request).ContinueWith((aTask) =>
+            {
+                try
+                {
+                    var taskResult = aTask.Result.Data;
+                    foreach (var item in taskResult.Data)
+                    {
+                        item.Deserialize(this);
+                    }
+                    var fragment = new Excerpt<TDest>(aIndex, (from i in taskResult.Data select aCastFn(i)));
+                    aCallback(fragment);
+                }
+                catch (AggregateException ex)
+                {
+                    // prevent exceptions on finalizer
+                    ex.Handle((e) => true);
+
+                    //TODO
+                    //aErrorCallback(aTask.Exception.InnerException);
+                }
+            }, aCancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+        }
 	}
 }
