@@ -115,19 +115,11 @@ namespace E.Deezer.Api
 
         public Task<IPagedResponse<T>> GetNextPage()
         {
-            if (!string.IsNullOrEmpty(Next))
-            {
-                return Client.GetPage<T>(Next);
-            }
             throw new PageNotAvailableException();
         }
 
         public Task<IPagedResponse<T>> GetPreviousPage()
         {
-            if (!string.IsNullOrEmpty(Previous))
-            {
-                return Client.GetPage<T>(Previous);
-            }
             throw new PageNotAvailableException();
         }
 

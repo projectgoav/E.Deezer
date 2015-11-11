@@ -35,15 +35,15 @@ namespace E.Deezer.TestConsole
 			//Sleep so we don't hammer API with calls and use up our limit
 			var runtime = Task.Factory.StartNew(() =>
 			{
-				ServiceInfo();
+				//ServiceInfo();
 				Thread.Sleep(250);
-				UserInfo(1761649);
+				//UserInfo(1761649);
 				Thread.Sleep(250);
-				GetLovedTracksNotInAnyPlaylist(1761649);
+				//GetLovedTracksNotInAnyPlaylist(1761649);
 				Thread.Sleep(250);
 				AlbumStuff();
 				Thread.Sleep(250);
-				ArtistStuff();
+				//ArtistStuff();
 			});
 
 			runtime.Wait();
@@ -157,21 +157,26 @@ namespace E.Deezer.TestConsole
 
 			var T = iClient.SearchAlbums("Abba");
 
-            Await<IPagedResponse<IAlbum>>(T);
+            Await<IPage<IAlbum>>(T);
             if (T.IsFaulted) { return; }
 
-			var album = T.Result.Data.ElementAt(0);
+            var result = T.Result;
+
 			Console.WriteLine("> Getting track info");
-			var albumTask = album.GetTracks();
-            Await<IPagedResponse<ITrack>>(albumTask);
-            if (albumTask.IsFaulted) { return; }
 
-			Console.WriteLine(string.Format("> ALBUM: {0}", album.Title));
+            System.Threading.ManualResetEvent wh = new ManualResetEvent(false);
 
-			foreach (var item in albumTask.Result.Data)
-			{
-				Console.WriteLine(string.Format("\t> {0} ({1}:{2})", item.Title, item.Duration / 60, item.Duration % 60));
-			}
+            result.Read(0, 35, (aFragment) =>
+            {
+                foreach(var a in aFragment.Data)
+                {
+                    Console.WriteLine(string.Format("\t> {0} ({1})", a.Title, a.ArtistName));
+                }
+                wh.Set();
+            });
+
+            wh.WaitOne(5000);
+            wh.Reset();
 		}
 
 

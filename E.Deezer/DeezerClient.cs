@@ -66,11 +66,6 @@ namespace E.Deezer
 			});
 		}
 
-		internal Task<IPagedResponse<T>> GetPage<T>(string aUrl)
-		{
-			throw new NotImplementedException();
-		}
-
 		#region Search
 		//Search Methods for Deezer.com
 
@@ -79,31 +74,14 @@ namespace E.Deezer
 		/// </summary>
 		/// <param name="aQuery">Search query</param>
 		/// <returns>First page of search results</returns>
-		public Task<IPagedResponse<IAlbum>> SearchAlbums(string aQuery)
+		public Task<IPage<IAlbum>> SearchAlbums(string aQuery)
 		{
-			IRestRequest request = new RestRequest("/search/album", Method.GET);
-			request.AddParameter("q", aQuery);
-			return Execute<PagedResponse<Album>>(request).ContinueWith<IPagedResponse<IAlbum>>((aTask) =>
-			{
-				List<IAlbum> items = new List<IAlbum>();
-				//Insert reference to client to get access to client
-				foreach (var item in aTask.Result.Data.Data)
-				{
-					item.Deserialize(this);
-					items.Add(item as IAlbum);
-				}
-
-				aTask.Result.Data.Deserialize(this);
-
-				IPagedResponse<IAlbum> result = new PagedResponse<IAlbum>()
-				{
-					Data = items,
-					Total = aTask.Result.Data.Total,
-					Next = aTask.Result.Data.Next,
-					Previous = aTask.Result.Data.Previous
-				};
-				return result;
-			});
+            return GetSnapshot<Album, IAlbum>(() =>
+            {
+                IRestRequest request = new RestRequest("/search/album", Method.GET);
+                request.AddParameter("q", aQuery);
+                return request;
+            }, aItem => aItem);	
 		}
 
 		/// <summary>
@@ -481,7 +459,6 @@ namespace E.Deezer
             task.SuppressExceptions();
             return task;
 		}
-
         private Task<IRestResponse<PagedResponse<T>>> Execute<T>(IRestRequest aRequest, int aResultSize)
         {
             if (aResultSize > 0) { aRequest.AddParameter("limit", aResultSize, ParameterType.QueryString); }
@@ -499,11 +476,9 @@ namespace E.Deezer
 
 
 
-
-
         //TODO DOCS
 
-        private Task<IPage<TDest>> GetSnapshot<TSource, TDest>(Func<IRestRequest> aRequestFn, Func<TSource, TDest> aCastFn, CancellationToken aCancellationToken) where TSource : IDeserializable<DeezerClient>
+        private Task<IPage<TDest>> GetSnapshot<TSource, TDest>(Func<IRestRequest> aRequestFn, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
         {
             var request = aRequestFn();
             request.AddParameter("limit", 0);
@@ -515,7 +490,7 @@ namespace E.Deezer
                 {
                     ReadPage<TSource, TDest>(aRequestFn, aIndex, aCount, iCancellationTokenSource.Token,  aCallback, aCastFn);
                 });
-            }, aCancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            }, iCancellationTokenSource.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
             result.SuppressExceptions();
             return result;
         }
