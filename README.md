@@ -5,7 +5,7 @@ PLEASE NOTE: This is still in early development
 
 ## Usage
 
-**Latest Version: 0.0.0.90**
+**Latest Version: 0.0.0.94**
 [Via Nuget](https://www.nuget.org/packages/E.Deezer)
 
 From source:
