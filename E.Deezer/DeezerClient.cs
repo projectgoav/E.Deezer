@@ -339,7 +339,8 @@ namespace E.Deezer
             request.AddParameter("index", 0);
             var result = Execute<DeezerFragment<TSource>>(request).ContinueWith<IBook<TDest>>((aTask) =>
             {
-                return new Book<TSource, TDest>(aTask.Result.Data.Total, (aIndex, aCount, aCallback) =>
+                uint total = (aTask.Result.Data.Total == 0) ?  uint.MaxValue : aTask.Result.Data.Total;
+                return new Book<TSource, TDest>(total, (aIndex, aCount, aCallback) =>
                 {
                     ReadPage<TSource, TDest>(aRequestFn, aIndex, aCount, iCancellationTokenSource.Token,  aCallback, aCastFn);
                 });

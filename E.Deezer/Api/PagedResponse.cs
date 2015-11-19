@@ -62,6 +62,7 @@ namespace E.Deezer.Api
     {
         /// <summary>
         /// Total number of results found within the book
+        /// Will be uint.MAX_VALUE if total wasn't obtained from Deezer
         /// </summary>
         uint Total { get; }
 
