@@ -67,15 +67,6 @@ namespace E.Deezer.Api
         uint Total { get; }
 
         /// <summary>
-        /// Read a certain number of items from the book
-        /// </summary>
-        /// <param name="aStart">Starting index</param>
-        /// <param name="aCount">Ending index</param>
-        /// <param name="aCallback">A callback to return a page from this book containing the requested items</param>
-        void Read(uint aStart, uint aCount, Action<IPage<T>> aCallback);
-
-
-        /// <summary>
         /// Read a certain number of items from the book.
         /// Same as read() but returns as a task, not via callbacl
         /// </summary>
