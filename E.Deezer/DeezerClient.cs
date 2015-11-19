@@ -268,11 +268,30 @@ namespace E.Deezer
         #region Genre
 
         /// <summary>
+        /// Gets the common genre from Deezer
+        /// </summary>
+        /// <returns>List of the common genre in the Deezer Library.</returns>
+        public Task<IGenreList> GetCommonGenre()
+        {
+            IRestRequest request = new RestRequest("/genre", Method.GET);
+            return Execute<GenreList>(request).ContinueWith<IGenreList>((aTask) =>
+            {
+                if(aTask.Result != null)
+                {
+                    aTask.Result.Data.Deserialize(this);
+                    return aTask.Result.Data;
+                }
+                return new GenreList();
+            });
+        }
+
+
+        /// <summary>
         /// Gets artists associated with the given genre
         /// </summary>
         /// <param name="aGenreId">Genre to search</param>
         /// <returns></returns>
-        public Task<IBook<IArtist>> GetGenreArtists(uint aGenreId)
+        internal Task<IBook<IArtist>> GetGenreArtists(uint aGenreId)
         {
             return GetBook<Artist, IArtist>(() =>
             {

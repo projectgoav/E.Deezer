@@ -9,6 +9,8 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
+    #region Genre
+
     /// <summary>
     /// A Deezer Genre Object
     /// </summary>
@@ -132,4 +134,41 @@ namespace E.Deezer.Api
             return string.Format("E.Deezer: Genre({0} ({1}))", Name, Id);
         }
     }
+
+    #endregion
+
+    #region GenreList
+
+    /// <summary>
+    /// Contains a list of Genre objects
+    /// </summary>
+    public interface IGenreList
+    {
+        /// <summary>
+        /// List of the common genres in Deezer
+        /// </summary>
+        List<IGenre> Genre { get; set; }
+    }
+
+    internal class GenreList : IGenreList, IDeserializable<DeezerClient>
+    {
+        [DeserializeAs(Name="data")]
+        public List<IGenre> Genre { get; set; }
+
+
+        public DeezerClient Client { get; set; }
+
+        public void Deserialize(DeezerClient aClient)
+        { 
+            Client = aClient; 
+
+            //Make sure to put client referne in the Genre so users
+            //can access genre methods.
+            foreach(IGenre g in Genre) { (g as Genre).Deserialize(aClient); }
+        }
+    }
+
+
+
+    #endregion
 }
