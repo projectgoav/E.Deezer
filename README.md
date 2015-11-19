@@ -1,11 +1,9 @@
 # E.Deezer
 An unoffical asynchronous wrapper for the Deezer API and .NET.
 
-PLEASE NOTE: This is still in early development
-
 ## Usage
 
-**Latest Version: 0.0.0.94**
+**Latest Version: 1.0.0.104**
 [Via Nuget](https://www.nuget.org/packages/E.Deezer)
 
 From source:
@@ -13,7 +11,7 @@ From source:
 git clone https://github.com/projectgoav/e.deezer
 ```
 
-See E.Deezer.Examples for C# example usage. *(Source only)*
+See Wiki for some example usage.
 
 
 ## Features
@@ -31,6 +29,10 @@ See E.Deezer.Examples for C# example usage. *(Source only)*
 	- Tracklist
 	- Related Artists
 	- Featured Playlists
+	
+- Genre
+	- Artists
+	- Common Genre
 	
 - Playlist
 	- Tracklist
