@@ -147,13 +147,20 @@ namespace E.Deezer.Api
         /// <summary>
         /// List of the common genres in Deezer
         /// </summary>
-        List<IGenre> Genre { get; set; }
+        List<IGenre> Genre { get; }
     }
 
     internal class GenreList : IGenreList, IDeserializable<DeezerClient>
     {
-        [DeserializeAs(Name="data")]
-        public List<IGenre> Genre { get; set; }
+        public List<IGenre> Genre
+        {
+            get { return new List<IGenre>(data);  }
+        }
+
+        //Since we need concreate classes for API call
+        //We store them locally and only return the interfaces
+        //Wont be exposed by interface, despite public.
+        public List<Genre> data { get; set; }
 
 
         public DeezerClient Client { get; set; }
