@@ -94,7 +94,9 @@ namespace E.Deezer.Api
             iReadFunction = aReadFunction;
         }
 
-        public void Read(uint aStart, uint aCount, Action<IPage<TDest>> aCallback )
+        //Make this internal, makes the library look odd with everything task based, but this.
+        //Keeping internally for use for now
+        internal void Read(uint aStart, uint aCount, Action<IPage<TDest>> aCallback )
         {
             iReadFunction(aStart, aCount, aCallback);
         }
