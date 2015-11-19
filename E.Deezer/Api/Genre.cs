@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using System.Threading.Tasks;
+
 using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
@@ -37,6 +39,19 @@ namespace E.Deezer.Api
         /// <param name="aSize">Requested image size</param>
         /// <returns>True if picture exists</returns>
         bool HasPicture(PictureSize aSize);
+
+        /// <summary>
+        /// Returns a list of artists associated with this Genre
+        /// </summary>
+        /// <returns>A book of artists associated with this genre</returns>
+        Task<IBook<IArtist>> GetArtists();
+
+
+        //TODO
+        //Task<IBook<IPodcast>> GetPodcasts();
+
+        //Task<IBook<IRadio>> GetRadios();
+
     }
 
     /// <summary>
@@ -61,7 +76,7 @@ namespace E.Deezer.Api
     };
 
 
-    internal class Genre : IGenre
+    internal class Genre : IGenre, IDeserializable<DeezerClient>
     {
         public uint Id { get; set; }
         public string Name { get; set; }
@@ -75,6 +90,10 @@ namespace E.Deezer.Api
 
         [DeserializeAs(Name = "picture_big")]
         private string BGPicture { get; set; }
+
+
+        public DeezerClient Client { get; set; }
+        public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
         //Methods
@@ -99,6 +118,12 @@ namespace E.Deezer.Api
                 case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture); }
                 default: { return false; }
             }
+        }
+
+
+        public Task<IBook<IArtist>> GetArtists()
+        {
+            return Client.GetGenreArtists(Id);
         }
 
 

@@ -265,9 +265,29 @@ namespace E.Deezer
 
 		#endregion //Playlists
 
-		#endregion //Content
+        #region Genre
 
-		#endregion //Deezer Methods
+        /// <summary>
+        /// Gets artists associated with the given genre
+        /// </summary>
+        /// <param name="aGenreId">Genre to search</param>
+        /// <returns></returns>
+        public Task<IBook<IArtist>> GetGenreArtists(uint aGenreId)
+        {
+            return GetBook<Artist, IArtist>(() =>
+            {
+                IRestRequest request = new RestRequest("/genre/{id}/artists", Method.GET);
+                request.AddParameter("id", aGenreId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
+        }
+
+        #endregion //Genre
+
+
+        #endregion //Content
+
+        #endregion //Deezer Methods
 
 
 
