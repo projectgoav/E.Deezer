@@ -73,6 +73,13 @@ namespace E.Deezer.Api
         /// <param name="aCount">Ending index</param>
         /// <param name="aCallback">A callback to return a page from this book containing the requested items</param>
         void Read(uint aStart, uint aCount, Action<IPage<T>> aCallback);
+
+
+        /// <summary>
+        /// Read a certain number of items from the book.
+        /// Same as read() but returns as a task, not via callbacl
+        /// </summary>
+        Task<IPage<T>> Read(uint aStart, uint aCount);
     }
 
 
@@ -90,6 +97,25 @@ namespace E.Deezer.Api
         public void Read(uint aStart, uint aCount, Action<IPage<TDest>> aCallback )
         {
             iReadFunction(aStart, aCount, aCallback);
+        }
+
+        public Task<IPage<TDest>> Read(uint aStart, uint aCount)
+        {
+            return Task.Factory.StartNew<IPage<TDest>>(() =>
+            {
+                ManualResetEvent wh = new ManualResetEvent(false);
+                IPage<TDest> pg = null;
+
+                iReadFunction(aStart, aCount, (aPage) =>
+                {
+                    pg = aPage;
+                    wh.Set();
+                });
+                wh.WaitOne();
+                wh.Dispose();
+
+                return (pg == null) ? new Page<TDest>(int.MaxValue, new List<TDest>()) : pg;
+            });
         }
     }
 }
