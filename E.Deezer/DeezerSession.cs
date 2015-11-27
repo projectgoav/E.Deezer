@@ -48,7 +48,8 @@ namespace E.Deezer
         /// <param name="aAppSecret">Your Deezer application secret</param>
         /// <param name="aPermissions">Requested permissions for Deezer API</param>
         /// <param name="aDefaultPageSize">(OPTIONAL)A referene to a default number of items in a Page</param>
-        public DeezerSession(string aUsername, string aAppId, string aAppSecret, DeezerPermissions aPermissions, int aDefaultPageSize = RESULT_SIZE )
+        /// <param name="aTimeout">(OPTIONAL)How long to wait for a reponse before giving up. Default 2.5seconds.</param>
+        public DeezerSession(string aUsername, string aAppId, string aAppSecret, DeezerPermissions aPermissions, int aDefaultPageSize = RESULT_SIZE, int aTimeout = 2500 )
         {
             Username = aUsername;
             ApplicationId = aAppId;
@@ -60,6 +61,7 @@ namespace E.Deezer
             GeneratePermissionString(aPermissions);
 
             iClient = new RestClient(ENDPOINT);
+            iClient.Timeout = aTimeout;
         }
 
 
