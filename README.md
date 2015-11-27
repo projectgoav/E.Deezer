@@ -3,7 +3,7 @@ An unoffical asynchronous wrapper for the Deezer API and .NET.
 
 ## Usage
 
-**Latest Version: 1.0.0.104**
+**Latest Version: 1.1.0.117**
 [Via Nuget](https://www.nuget.org/packages/E.Deezer)
 
 From source:
@@ -33,6 +33,13 @@ See Wiki for some example usage.
 - Genre
 	- Artists
 	- Common Genre
+	- New Releases
+	- Deezer Selection
+	- Charts
+		- Album
+		- Artist
+		- Playlist
+		- Track
 	
 - Playlist
 	- Tracklist
