@@ -301,6 +301,36 @@ namespace E.Deezer
             }, aItem => aItem);
         }
 
+        /// <summary>
+        /// Gets the Deezer Selection for the given Genre
+        /// </summary>
+        /// <param name="aGenreId">Genre to search</param>
+        /// <returns></returns>
+        internal Task<IBook<IAlbum>> GetGenreSelection(uint aGenreId)
+        {
+            return GetBook<Album, IAlbum>(() =>
+            {
+                var request = new RestRequest("editorial/{id}/selection", Method.GET);
+                request.AddParameter("id", aGenreId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
+        }
+
+        /// <summary>
+        /// Gets the new releases for the given Genre
+        /// </summary>
+        /// <param name="aGenreId">Genre to search</param>
+        /// <returns></returns>
+        internal Task<IBook<IAlbum>> GetGenreReleases(uint aGenreId)
+        {
+            return GetBook<Album, IAlbum>(() =>
+            {
+                var request = new RestRequest("editorial/{id}/releases", Method.GET);
+                request.AddParameter("id", aGenreId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
+        }
+
         #endregion //Genre
 
 

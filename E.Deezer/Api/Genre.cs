@@ -48,6 +48,17 @@ namespace E.Deezer.Api
         /// <returns>A book of artists associated with this genre</returns>
         Task<IBook<IArtist>> GetArtists();
 
+        /// <summary>
+        /// Returns the Deezer Selection for this Genre
+        /// </summary>
+        /// <returns>A book of the Deezer Selection for this Genre</returns>
+        Task<IBook<IAlbum>> GetSelection();
+
+        /// <summary>
+        /// Returns the new releases for this Genre
+        /// </summary>
+        /// <returns>A book of the new releases associated with this Genre</returns>
+        Task<IBook<IAlbum>> GetReleases();
 
         //TODO
         //Task<IBook<IPodcast>> GetPodcasts();
@@ -123,10 +134,11 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<IBook<IArtist>> GetArtists()
-        {
-            return Client.GetGenreArtists(Id);
-        }
+        public Task<IBook<IArtist>> GetArtists()  {  return Client.GetGenreArtists(Id); }
+
+        public Task<IBook<IAlbum>> GetSelection() { return Client.GetGenreSelection(Id); }
+
+        public Task<IBook<IAlbum>> GetReleases() { return Client.GetGenreReleases(Id); }
 
 
         public override string ToString()
