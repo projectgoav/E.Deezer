@@ -62,9 +62,15 @@ namespace E.Deezer.Api
     {
         /// <summary>
         /// Total number of results found within the book
-        /// Will be uint.MAX_VALUE if total wasn't obtained from Deezer
+        /// Will be uint.MaxValue if total wasn't obtained from Deezer
         /// </summary>
         uint Total { get; }
+
+        /// <summary>
+        /// Checks if the Total value is unknown.
+        /// This condition is where Total == uint.MaxValue
+        /// </summary>
+        bool IsTotalUnknown { get; }
 
         /// <summary>
         /// Read a certain number of items from the book.
@@ -77,6 +83,8 @@ namespace E.Deezer.Api
     internal class Book<TSource, TDest> : IBook<TDest>
     {
         public uint Total {get; private set; }
+        public bool IsTotalUnknown { get { return Total == uint.MaxValue; } }
+
         private Action<uint, uint, Action<IPage<TDest>>> iReadFunction;
 
         public Book(uint aTotal, Action<uint, uint, Action<IPage<TDest>>> aReadFunction)
