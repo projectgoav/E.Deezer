@@ -60,6 +60,19 @@ namespace E.Deezer.Api
         /// <returns>A book of the new releases associated with this Genre</returns>
         Task<IBook<IAlbum>> GetReleases();
 
+
+        //Charts!
+
+        Task<IBook<IAlbum>> GetAlbumChart();
+
+        Task<IBook<IArtist>> GetArtistChart();
+
+        Task<IBook<IPlaylist>> GetPlaylistChart();
+
+        Task<IBook<ITrack>> GetTrackChart(); 
+
+
+
         //TODO
         //Task<IBook<IPodcast>> GetPodcasts();
 
@@ -139,6 +152,17 @@ namespace E.Deezer.Api
         public Task<IBook<IAlbum>> GetSelection() { return Client.GetGenreSelection(Id); }
 
         public Task<IBook<IAlbum>> GetReleases() { return Client.GetGenreReleases(Id); }
+
+
+        //Charting
+
+        public Task<IBook<IAlbum>> GetAlbumChart() { return Client.GetAlbumChart(Id); }
+
+        public Task<IBook<IArtist>> GetArtistChart() { return Client.GetArtistChart(Id); }
+
+        public Task<IBook<IPlaylist>> GetPlaylistChart() { return Client.GetPlaylistChart(Id); }
+
+        public Task<IBook<ITrack>> GetTrackChart() { return Client.GetTrackChart(Id); }
 
 
         public override string ToString()

@@ -350,6 +350,49 @@ namespace E.Deezer
 
         #endregion //Genre
 
+        #region Charts
+
+        internal Task<IBook<IAlbum>> GetAlbumChart(uint aGenreId)
+        {
+            return GetBook<Album, IAlbum>(() =>
+            {
+                IRestRequest request = new RestRequest("chart/{id}/albums", Method.GET);
+                request.AddParameter("id", aGenreId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
+        }
+
+        internal Task<IBook<IArtist>> GetArtistChart(uint aGenreId)
+        {
+            return GetBook<Artist, IArtist>(() =>
+            {
+                IRestRequest request = new RestRequest("chart/{id}/artists", Method.GET);
+                request.AddParameter("id", aGenreId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
+        }
+
+        internal Task<IBook<IPlaylist>> GetPlaylistChart(uint aGenreId)
+        {
+            return GetBook<Playlist, IPlaylist>(() =>
+            {
+                IRestRequest request = new RestRequest("chart/{id}/playlists", Method.GET);
+                request.AddParameter("id", aGenreId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
+        }
+
+        internal Task<IBook<ITrack>> GetTrackChart(uint aGenreId)
+        {
+            return GetBook<Track, ITrack>(() =>
+            {
+                IRestRequest request = new RestRequest("chart/{id}/tracks", Method.GET);
+                request.AddParameter("id", aGenreId, ParameterType.UrlSegment);
+                return request;
+            }, aItem => aItem);
+        }
+
+        #endregion //Charts
 
         #endregion //Content
 
