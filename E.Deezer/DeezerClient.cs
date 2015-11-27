@@ -268,6 +268,23 @@ namespace E.Deezer
         #region Genre
 
         /// <summary>
+        /// Returns the default Genre for Deezer
+        /// Corisponds to "All" or GenreId = 0
+        /// </summary>
+        public IGenre AllGenre
+        {
+            get
+            {
+                return new Genre()
+                 {
+                     Id = 0,
+                     Client = this,
+                     Name = "All"
+                 };
+            }
+        }
+
+        /// <summary>
         /// Gets the common genre from Deezer
         /// </summary>
         /// <returns>List of the common genre in the Deezer Library.</returns>
