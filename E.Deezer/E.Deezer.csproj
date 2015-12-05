@@ -20,7 +20,7 @@
     <AssemblyVersionSettings>None.None.None.Increment</AssemblyVersionSettings>
     <AssemblyFileVersionSettings>None.None.None.Increment</AssemblyFileVersionSettings>
     <AssemblyInfoVersionSettings>IncrementOnDemand.Increment.DateStamp.TimeStamp</AssemblyInfoVersionSettings>
-    <AssemblyVersion>1.1.0.117</AssemblyVersion>
+    <AssemblyVersion>2.0.0.121</AssemblyVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
   <!-- If nothing is specified we build with DEBUG -->
@@ -76,6 +76,13 @@
     <Compile Include="DeezerClient.cs" />
     <Compile Include="DeezerPermissions.cs" />
     <Compile Include="DeezerSession.cs" />
+    <Compile Include="Endpoint\AlbumEndpoint.cs" />
+    <Compile Include="Endpoint\ArtistEndpoint.cs" />
+    <Compile Include="Endpoint\DeezerEndpoint.cs" />
+    <Compile Include="Endpoint\GenreEndpoint.cs" />
+    <Compile Include="Endpoint\PlaylistEndpoint.cs" />
+    <Compile Include="Endpoint\SearchEndpoint.cs" />
+    <Compile Include="Endpoint\TrackEndpoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
