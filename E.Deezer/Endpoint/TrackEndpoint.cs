@@ -12,5 +12,9 @@ namespace E.Deezer.Endpoint
 
     internal class TrackEndpoint : ITrackEndpoint
     {
+        private DeezerClient iClient;
+
+
+        public TrackEndpoint(DeezerClient aClient) {  iClient = aClient;  }
     }
 }
