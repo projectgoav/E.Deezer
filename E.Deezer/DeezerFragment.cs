@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using RestSharp.Deserializers;
+
 namespace E.Deezer
 {
     //Grabs an error, if there was one, from the reply
@@ -17,7 +19,9 @@ namespace E.Deezer
     //Retrun value of all Deezer API calls
     internal class DeezerFragmentV2<T>
     {
+        [DeserializeAs(Name="data")]
         public List<T> Items { get; set; }
+
         public uint Total { get; set; }
         public Error Error { get; set; }
     }

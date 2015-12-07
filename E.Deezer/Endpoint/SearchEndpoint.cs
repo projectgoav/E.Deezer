@@ -12,6 +12,8 @@ namespace E.Deezer.Endpoint
     public interface  ISearchEndpoint
     {
         //Task All(string aQuery);
+        //Task All(string aQuery, uint aCount);
+        //Task All(string aQuery, uint aStart, uint aCount);
 
         Task<IEnumerable<IAlbum>> Albums(string aQuery);
         Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aCount);
@@ -37,23 +39,6 @@ namespace E.Deezer.Endpoint
 
         private const string ENDPOINT = "/search/";
 
-        /*public Task All(string aQuery)
-        {
-            return Task.Factory.StartNew(()=>
-            {
-                Task[] tasks = new Task[]
-                {
-                    Albums(aQuery),
-                    Artists(aQuery),
-                    Playlists(aQuery),
-                    Tracks(aQuery),
-                };
-                Task.WaitAll(tasks);
-
-                // Process 
-
-            });
-        }*/
 
         #region Albums
 
