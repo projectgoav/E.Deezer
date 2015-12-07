@@ -15,7 +15,7 @@ namespace E.Deezer
     /// <summary>
     /// Performs requests on the GitHub API.
     /// </summary>
-    internal class DeezerClientV2
+    internal class DeezerClientV2 : IDisposable
     {
         private readonly RestClient iClient;
         private readonly IDeezerSession iSession;
@@ -24,6 +24,8 @@ namespace E.Deezer
         internal DeezerClientV2(IDeezerSession aSession) 
         { 
             iClient = new RestClient(DeezerSessionV2.ENDPOINT);
+            iClient.Timeout = 2500;
+
             iSession = aSession;
             iCancellationTokenSource = new CancellationTokenSource();
         }
@@ -31,11 +33,18 @@ namespace E.Deezer
         internal CancellationToken Token { get { return iCancellationTokenSource.Token; } }
 
 
-        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, Dictionary<string, string> aParams, uint aStart, uint aCount)
+        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams, uint aStart, uint aCount)
         {
             IRestRequest request = new RestRequest(aMethod, Method.GET);
 
-            foreach(string key in aParams.Keys) { request.AddParameter(key, aParams[key], ParameterType.UrlSegment); }
+            for (int i = 0; i < aParams.Length; i+= 3)
+            {
+                switch(aParams[i])
+                {
+                    case "URL": { request.AddParameter(aParams[i + 1], aParams[i + 2], ParameterType.UrlSegment); break; }
+                    default:    { request.AddParameter(aParams[i + 1], aParams[i + 2]); break;  }
+                }           
+            }
 
             request.AddParameter("index", aStart, ParameterType.QueryString);
             request.AddParameter("limit", aCount);
@@ -66,5 +75,10 @@ namespace E.Deezer
         }
 
 
+        public void Dispose()
+        {
+            iCancellationTokenSource.Cancel();
+            iCancellationTokenSource.Dispose();
+        }
     }
 }

@@ -28,6 +28,9 @@ namespace E.Deezer
         /// </summary>
         public const string ENDPOINT = "https://api.deezer.com/";
 
+        public const uint DEFAULT_SIZE = 25;
+
+
 
         /// <summary>
         /// Starts a new session on the Deezer API.

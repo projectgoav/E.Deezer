@@ -10,7 +10,7 @@ namespace E.Deezer
     /// <summary>
     /// Provides access to the Deezer API
     /// </summary>
-    public class Deezer
+    public class Deezer : IDisposable
     {
         private IDeezerSession iSession;
         private IBrowseEndpoint iBrowse;
@@ -28,5 +28,7 @@ namespace E.Deezer
 
         public IBrowseEndpoint Browse { get { return iBrowse; } }
         public ISearchEndpoint Search { get { return iSearch; } }
+
+        public void Dispose() {  iClient.Dispose(); }
     }
 }
