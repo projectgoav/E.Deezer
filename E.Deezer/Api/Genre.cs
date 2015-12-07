@@ -102,7 +102,7 @@ namespace E.Deezer.Api
     };
 
 
-    internal class Genre : IGenre, IDeserializable<DeezerClient>
+    internal class Genre : IGenre, IDeserializable<DeezerClientV2>
     {
         public uint Id { get; set; }
         public string Name { get; set; }
@@ -118,8 +118,8 @@ namespace E.Deezer.Api
         private string BGPicture { get; set; }
 
 
-        public DeezerClient Client { get; set; }
-        public void Deserialize(DeezerClient aClient) { Client = aClient; }
+        public DeezerClientV2 Client { get; set; }
+        public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
 
 
         //Methods
@@ -147,22 +147,22 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<IBook<IArtist>> GetArtists()  {  return Client.GetGenreArtists(Id); }
+        public Task<IBook<IArtist>> GetArtists() { throw new NotImplementedException(); }
 
-        public Task<IBook<IAlbum>> GetSelection() { return Client.GetGenreSelection(Id); }
+        public Task<IBook<IAlbum>> GetSelection() { throw new NotImplementedException(); }
 
-        public Task<IBook<IAlbum>> GetReleases() { return Client.GetGenreReleases(Id); }
+        public Task<IBook<IAlbum>> GetReleases() { throw new NotImplementedException();}
 
 
         //Charting
 
-        public Task<IBook<IAlbum>> GetAlbumChart() { return Client.GetAlbumChart(Id); }
+        public Task<IBook<IAlbum>> GetAlbumChart() { throw new NotImplementedException(); }
 
-        public Task<IBook<IArtist>> GetArtistChart() { return Client.GetArtistChart(Id); }
+        public Task<IBook<IArtist>> GetArtistChart() { throw new NotImplementedException(); }
 
-        public Task<IBook<IPlaylist>> GetPlaylistChart() { return Client.GetPlaylistChart(Id); }
+        public Task<IBook<IPlaylist>> GetPlaylistChart() { throw new NotImplementedException(); }
 
-        public Task<IBook<ITrack>> GetTrackChart() { return Client.GetTrackChart(Id); }
+        public Task<IBook<ITrack>> GetTrackChart() { throw new NotImplementedException(); }
 
 
         public override string ToString()
@@ -207,7 +207,7 @@ namespace E.Deezer.Api
 
             //Make sure to put client referne in the Genre so users
             //can access genre methods.
-            foreach(IGenre g in Genre) { (g as Genre).Deserialize(aClient); }
+            //foreach(IGenre g in Genre) { (g as Genre).Deserialize(aClient); }
         }
     }
 

@@ -54,10 +54,10 @@ namespace E.Deezer
 			request.AddParameter("id", userId, ParameterType.UrlSegment);
 			return Execute<User>(request).ContinueWith<IUser>((aTask) =>
 			{
-				if (aTask.Result != null)
+				if (aTask.Result.Data != null)
 				{
 					//Insert reference to client to get access to client
-					aTask.Result.Data.Deserialize(this);
+					//aTask.Result.Data.Deserialize(this);
 
 					IUser user = aTask.Result.Data;
 					return user;
@@ -278,7 +278,7 @@ namespace E.Deezer
                 return new Genre()
                  {
                      Id = 0,
-                     Client = this,
+                     //Client = this,
                      Name = "All"
                  };
             }
@@ -422,7 +422,7 @@ namespace E.Deezer
          * Creates a quick network call to poll the API for a total number of results.
          * Adds a reference to a ReadPage() function so we can get a particular number
          * of items from a specified location in a book */
-        private Task<IBook<TDest>> GetBook<TSource, TDest>(Func<IRestRequest> aRequestFn, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
+        private Task<IBook<TDest>> GetBook<TSource, TDest>(Func<IRestRequest> aRequestFn, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClientV2>
         {
             var request = aRequestFn();
             request.AddParameter("limit", 0);
@@ -441,7 +441,7 @@ namespace E.Deezer
 
         /* ReadPage
          * Gets the specified number of items (aCount) starting from a given place (aIndex) in a Book */
-        private void ReadPage<TSource, TDest>(Func<IRestRequest> aRequestFn, uint aIndex, uint aCount,CancellationToken aCancellationToken, Action<IPage<TDest>> aCallback, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClient>
+        private void ReadPage<TSource, TDest>(Func<IRestRequest> aRequestFn, uint aIndex, uint aCount,CancellationToken aCancellationToken, Action<IPage<TDest>> aCallback, Func<TSource, TDest> aCastFn) where TSource : IDeserializable<DeezerClientV2>
         {
             var request = aRequestFn();
             request.AddParameter("limit", aCount);
@@ -450,7 +450,7 @@ namespace E.Deezer
             {
                 try
                 {
-                    foreach (var item in aTask.Result.Data.Data) {  item.Deserialize(this); }
+                    //foreach (var item in aTask.Result.Data.Data) {  item.Deserialize(this); }
 
                     var fragment = new Page<TDest>(aIndex, (from i in aTask.Result.Data.Data select aCastFn(i)));
                     aCallback(fragment);

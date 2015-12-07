@@ -98,7 +98,7 @@ namespace E.Deezer.Api
 
 	}
 
-	public class User : IUser
+	public class User : IUser, IDeserializable<DeezerClientV2>
 	{
 		public uint Id { get; set; }
 		public string Name { get; set; }
@@ -108,8 +108,8 @@ namespace E.Deezer.Api
 		public string error { get; set; }
 
 		//Local Serailization info
-		private DeezerClient Client { get; set; }
-		internal void Deserialize(DeezerClient aClient) { Client = aClient; }
+		public DeezerClientV2 Client { get; set; }
+		public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
 
 
 		public Task<IBook<IAlbum>> GetFavouriteAlbums()
@@ -139,7 +139,7 @@ namespace E.Deezer.Api
 
 		public Task<IBook<IPlaylist>> GetFavouritePlaylists()
 		{
-			return Client.GetUserFavouritePlaylists(Id);
+            throw new NotImplementedException();
 		}
 
 

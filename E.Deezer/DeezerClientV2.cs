@@ -15,7 +15,7 @@ namespace E.Deezer
     /// <summary>
     /// Performs requests on the GitHub API.
     /// </summary>
-    internal class DeezerClientV2 : IDisposable
+    public class DeezerClientV2 : IDisposable
     {
         private readonly RestClient iClient;
         private readonly IDeezerSession iSession;

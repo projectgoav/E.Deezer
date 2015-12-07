@@ -67,7 +67,7 @@ namespace E.Deezer.Api
 
 	}
 
-	internal class Playlist : IPlaylist, IDeserializable<DeezerClient>
+	internal class Playlist : IPlaylist, IDeserializable<DeezerClientV2>
 	{
 		public int Id { get; set; }
 		public string Title { get; set; }
@@ -97,14 +97,14 @@ namespace E.Deezer.Api
 		[DeserializeAs(Name = "creator")]
 		public User CreatorInternal { get; set; }
 
-		public DeezerClient Client { get; set; }
-		public void Deserialize(DeezerClient aClient) { Client = aClient; }
+		public DeezerClientV2 Client { get; set; }
+		public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
 
 
 
 		public Task<IBook<ITrack>> GetTracks()
 		{
-			return Client.GetPlaylistTracks(Id);
+            throw new NotImplementedException();
 		}
 
 

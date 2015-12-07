@@ -57,7 +57,7 @@ namespace E.Deezer.Api
         Task<IArtist> GetArtist();
     }
 
-    internal class Album : IAlbum, IDeserializable<DeezerClient>
+    internal class Album : IAlbum, IDeserializable<DeezerClientV2>
     {
         public uint Id { get; set; }
         public string Title { get; set; }
@@ -78,13 +78,14 @@ namespace E.Deezer.Api
         }
 
         //Local Serailization info
-        public DeezerClient Client { get; set; }
-        public void Deserialize(DeezerClient aClient) { Client = aClient; }
+        public DeezerClientV2 Client { get; set; }
+        public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
 
 
         public Task<IBook<ITrack>> GetTracks()
         {
-            return Client.GetAlbumTracks(Id);
+            //return Client.GetAlbumTracks(Id);
+            throw new NotImplementedException();
         }
 
         public Task<IArtist> GetArtist()

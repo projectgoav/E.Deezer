@@ -70,7 +70,7 @@ namespace E.Deezer.Api
         Task<IBook<IPlaylist>> GetPlaylistsContaining();
     }
 
-    public class Artist : IArtist, IDeserializable<DeezerClient>
+    public class Artist : IArtist, IDeserializable<DeezerClientV2>
     {
         public uint Id { get; set; }
         public string Name { get; set; }
@@ -79,33 +79,38 @@ namespace E.Deezer.Api
         public string Tracklist { get; set; }
 
 
-        public DeezerClient Client { get; set; }
-        public void Deserialize(DeezerClient aClient) { Client = aClient; }
+        public DeezerClientV2 Client { get; set; }
+        public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
 
 
         public Task<IBook<ITrack>> GetTopTracks()
         {
-            return Client.GetArtistTopTracks(Id);
+            throw new NotImplementedException();
+            //return Client.GetArtistTopTracks(Id);
         }
 
         public Task<IBook<IAlbum>> GetAlbums()
         {
-            return Client.GetArtistAlbums(Id);
+            throw new NotImplementedException();
+            //return Client.GetArtistAlbums(Id);
         }
 
         public Task<IBook<IArtist>> GetRelated()
         {
-            return Client.GetArtistRelated(Id);
+            throw new NotImplementedException();
+            //return Client.GetArtistRelated(Id);
         }
 
         public Task<IBook<ITrack>> GetTracklist()
         {
-            return Client.GetArtistTracklist(Id);
+            throw new NotImplementedException();
+            //return Client.GetArtistTracklist(Id);
         }
 
         public Task<IBook<IPlaylist>> GetPlaylistsContaining()
         {
-            return Client.GetArtistPlaylists(Id);
+            throw new NotImplementedException();
+            //return Client.GetArtistPlaylists(Id);
         }
 
 
