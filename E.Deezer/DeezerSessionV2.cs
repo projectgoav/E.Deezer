@@ -23,7 +23,10 @@ namespace E.Deezer
         public IBrowseEndpoint Browse  { get { throw new NotImplementedException(); }  }
         public ISearchEndpoint Search {  get { throw new NotImplementedException(); }  }
 
-
+        /// <summary>
+        /// Base Deezer API endpoint
+        /// </summary>
+        public const string ENDPOINT = "https://api.deezer.com/";
 
 
         /// <summary>

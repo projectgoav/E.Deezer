@@ -12,9 +12,9 @@ namespace E.Deezer.Endpoint
 
     internal class GenreEndpoint : IGenreEndpoint
     {
-        private DeezerClient iClient;
+        private DeezerClientV2 iClient;
 
 
-        public GenreEndpoint(DeezerClient aClient) {  iClient = aClient;  }
+        public GenreEndpoint(DeezerClientV2 aClient) {  iClient = aClient;  }
     }
 }

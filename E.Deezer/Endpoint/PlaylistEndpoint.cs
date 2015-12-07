@@ -12,9 +12,9 @@ namespace E.Deezer.Endpoint
 
     internal class PlaylistEndpoint : IPlaylistEndpoint
     {
-        private DeezerClient iClient;
+        private DeezerClientV2 iClient;
 
 
-        public PlaylistEndpoint(DeezerClient aClient) {  iClient = aClient;  }
+        public PlaylistEndpoint(DeezerClientV2 aClient) {  iClient = aClient;  }
     }
 }

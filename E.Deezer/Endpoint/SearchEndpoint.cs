@@ -18,7 +18,7 @@ namespace E.Deezer.Endpoint
 
     internal class SearchEndpoint : ISearchEndpoint
     {
-        private DeezerClient iClient;
+        private DeezerClientV2 iClient;
 
         public Task All(string aQuery)
         {
@@ -46,6 +46,6 @@ namespace E.Deezer.Endpoint
 
         public Task Tracks(string aQuery) {  throw new NotImplementedException(); }
 
-        public SearchEndpoint(DeezerClient aClient) { iClient = aClient; }
+        public SearchEndpoint(DeezerClientV2 aClient) { iClient = aClient; }
     }
 }

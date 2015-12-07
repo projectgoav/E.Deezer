@@ -23,14 +23,14 @@ namespace E.Deezer.Endpoint
         private readonly IPlaylistEndpoint iPlaylists;
         private readonly ITrackEndpoint iTracks;
 
-        private DeezerClient iClient;
+        private DeezerClientV2 iClient;
 
         public IAlbumEndpoint Albums { get { return iAlbums; } }
         public IArtistEndpoint Artists { get { return iArtists; } }
         public IPlaylistEndpoint Playlists { get { return iPlaylists; } }
         public ITrackEndpoint Tracks { get { return iTracks; } }
 
-        public BrowseEndpoint(DeezerClient aClient)
+        public BrowseEndpoint(DeezerClientV2 aClient)
         {
             iClient = aClient;
 
