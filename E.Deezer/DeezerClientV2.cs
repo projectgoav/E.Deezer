@@ -33,6 +33,9 @@ namespace E.Deezer
         internal CancellationToken Token { get { return iCancellationTokenSource.Token; } }
 
 
+        //A nice wee copy of get, incase we want to limit users from picking the start/end points
+        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams) { return Get<T>(aMethod, aParams, uint.MaxValue, uint.MaxValue); }
+
         internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams, uint aStart, uint aCount)
         {
             IRestRequest request = new RestRequest(aMethod, Method.GET);
@@ -46,8 +49,12 @@ namespace E.Deezer
                 }           
             }
 
-            request.AddParameter("index", aStart, ParameterType.QueryString);
-            request.AddParameter("limit", aCount);
+            if (aCount < uint.MaxValue && aStart < uint.MaxValue)
+            {
+                request.AddParameter("index", aStart, ParameterType.QueryString);
+                request.AddParameter("limit", aCount, ParameterType.QueryString);
+            }
+
             request.AddParameter("output", "json", ParameterType.QueryString);
 
             var task = iClient.ExecuteGetTaskAsync<DeezerFragmentV2<T>>(request, Token).ContinueWith<DeezerFragmentV2<T>>((aTask) =>

@@ -14,46 +14,15 @@ namespace E.Deezer.Api
     /// </summary>
     public interface IAlbum
     {
-        /// <summary>
-        /// Deezer library ID mumber
-        /// </summary>
         uint Id { get; set; }
-        
-        /// <summary>
-        /// Album Title
-        /// </summary>
         string Title { get; set; }
-        
-        /// <summary>
-        /// Deezer.com link to album
-        /// </summary>
         string Url { get; set; }
-
-        /// <summary>
-        /// Link to album cover
-        /// </summary>
         string Cover { get; set; }
-        
-        /// <summary>
-        /// Link to album tracklist
-        /// </summary>
         string Tracklist { get; set; }
-
-        /// <summary>
-        /// Album artist
-        /// </summary>
         string ArtistName { get; }
 
-        /// <summary>
-        /// Gets the album tracklist
-        /// </summary>
-        /// <returns>A book of album tracks</returns>
-        Task<IBook<ITrack>> GetTracks();
+        Task<IEnumerable<ITrack>> GetTracks();
 
-        /// <summary>
-        /// Gets album artist
-        /// </summary>
-        /// <returns>Album Artist</returns>
         Task<IArtist> GetArtist();
     }
 
@@ -82,11 +51,16 @@ namespace E.Deezer.Api
         public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
 
 
-        public Task<IBook<ITrack>> GetTracks()
+        public Task<IEnumerable<ITrack>> GetTracks()
         {
-            //return Client.GetAlbumTracks(Id);
-            throw new NotImplementedException();
+            string[] parms = new string[] { "URL", "id", Id.ToString() };
+
+            return Client.Get<Track>("album/{id}/tracks", parms).ContinueWith<IEnumerable<ITrack>>((aTask) =>
+            {
+                return aTask.Result.Items;
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);  
         }
+
 
         public Task<IArtist> GetArtist()
         {
