@@ -1,59 +1,48 @@
 # E.Deezer
 An unoffical asynchronous wrapper for the Deezer API and .NET.
 
+*This is a development branch of the V2 API restructure.*
+
 ## Usage
 
-**Latest Version: 1.1.0.117**
-[Via Nuget](https://www.nuget.org/packages/E.Deezer)
-
-From source:
+Source: 
 ```
 git clone https://github.com/projectgoav/e.deezer
+git checkout V2
 ```
 
-See Wiki for some example usage.
+Open solution in VS and build it.
+
+Once E.Deezer has been referenced in your new project:
+ ```
+ //Create a new DeezerSession for your application
+ //You'll retrieve a 'Deezer' object which you can browse the API from.
+ var Deezer = DeezerSessionV2.CreateNew();
+ 
+ //This performs an async search on Deezer for albums matching "Abba"
+ //Mapping to API: search/album?q=Abba&index=0&limit=25
+ var search = await Deezer.Search.Albums("Abba");
+ 
+ //You can vary the size and starting position of querys...
+
+ //Will only return UP-TO a maximum of 10 artists matching "Queen"
+ //Mapping to API: search/artist?q=Queen&index=0&limit=10
+ var small_search = await Deezer.Search.Artists("Queen", 10);
+
+ //This will return for UP-TO a maximum of 15 tracks by Elvis. 
+ //These will be offset by 20 places in the results. This is useful for pagination.
+ //Mapping to API: search/track/?q=Elivs&index=20&limt=15
+ var offset_search = await Deezer.Search.Tracks("Elivs", 20, 15);
+ ```
 
 
-## Features
-- Searching
-- Service Information
-- Variable result sizes
+## TODO
+- Re-implement exisiting object methods
+- Wrap some into Deezer.Browse ...
+- Genre support in Deeser.Browse ....
+- Cleanup of debug code
+- Unit Testing
 
-**Object Methods**
-- Album
-	- Artist
-	- Tracklist
-- Artist
-	- Albums
-	- Top Tracks
-	- Tracklist
-	- Related Artists
-	- Featured Playlists
-	
-- Genre
-	- Artists
-	- Common Genre
-	- New Releases
-	- Deezer Selection
-	- Charts
-		- Album
-		- Artist
-		- Playlist
-		- Track
-	
-- Playlist
-	- Tracklist
-	
-- Track
-	- Artist
-	- Album
-	
-- User
-	- Current User
-	- Favourite Playlists 
-	
-
-*More features later*
 
 ## Requirements
 - Visual Studio 2013 (or later)
