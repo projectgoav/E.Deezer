@@ -11,7 +11,7 @@ namespace E.Deezer.Endpoint
 {
     public interface IAlbumEndpoint
     {
-        Task<IEnumerable<ITrack>> GetTracks(uint aAlbumId);
+        //Task<IEnumerable<ITrack>> GetTracks(uint aAlbumId);
     }
 
     internal class AlbumEndpoint : IAlbumEndpoint

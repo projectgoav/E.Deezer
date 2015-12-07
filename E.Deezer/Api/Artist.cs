@@ -38,36 +38,26 @@ namespace E.Deezer.Api
         string Tracklist { get; set; }
 
         //Methods
+        Task<IEnumerable<ITrack>> GetTracklist();
+        Task<IEnumerable<ITrack>> GetTracklist(uint aCount);
+        Task<IEnumerable<ITrack>> GetTracklist(uint aStart, uint aCount);
 
-        /// <summary>
-        /// Gets Album tracklist
-        /// </summary>
-        /// <returns>A book of tracklist</returns>
-        Task<IBook<ITrack>> GetTracklist();
+        Task<IEnumerable<ITrack>> GetTopTracks();
+        Task<IEnumerable<ITrack>> GetTopTracks(uint aCount);
+        Task<IEnumerable<ITrack>> GetTopTracks(uint aStart, uint aCount);
 
-        /// <summary>
-        /// Gets the artist's top track
-        /// </summary>
-        /// <returns>A book of artist's top tracks</returns>
-        Task<IBook<ITrack>> GetTopTracks();
+        Task<IEnumerable<IAlbum>> GetAlbums();
+        Task<IEnumerable<IAlbum>> GetAlbums(uint aCount);
+        Task<IEnumerable<IAlbum>> GetAlbums(uint aStart, uint aCount);
 
-        /// <summary>
-        /// Gets a list of artist's albums
-        /// </summary>
-        /// <returns>A book of artist's album collection</returns>
-        Task<IBook<IAlbum>> GetAlbums();
+        Task<IEnumerable<IArtist>> GetRelated();
+        Task<IEnumerable<IArtist>> GetRelated(uint aCount);
+        Task<IEnumerable<IArtist>> GetRelated(uint aStart, uint aCount);
 
-        /// <summary>
-        /// Geta  list of related artists
-        /// </summary>
-        /// <returns>A book of related artists</returns>
-        Task<IBook<IArtist>> GetRelated();
+        Task<IEnumerable<IPlaylist>> GetPlaylistsContaining();
+        Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aCount);
+        Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(int aStart, uint aCount);
 
-        /// <summary>
-        /// Gets a list of playlists containing this artist
-        /// </summary>
-        /// <returns>A book of playlists featuring artist</returns>
-        Task<IBook<IPlaylist>> GetPlaylistsContaining();
     }
 
     public class Artist : IArtist, IDeserializable<DeezerClientV2>
@@ -83,34 +73,91 @@ namespace E.Deezer.Api
         public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
 
 
-        public Task<IBook<ITrack>> GetTopTracks()
+        public Task<IEnumerable<ITrack>> GetTracklist() {  return GetTracklist(0, DeezerSessionV2.DEFAULT_SIZE); }
+        public Task<IEnumerable<ITrack>> GetTracklist(uint aCount)  { return GetTracklist(0, aCount); }
+
+        public Task<IEnumerable<ITrack>> GetTracklist(uint aStart, uint aCount)
         {
-            throw new NotImplementedException();
-            //return Client.GetArtistTopTracks(Id);
+            string[] parms = new string[] { "URL", "id", Id.ToString() };
+
+            return Client.Get<Track>("artist/{id}/radio", parms, aStart, aCount).ContinueWith<IEnumerable<ITrack>>((aTask) =>
+            {
+               return aTask.Result.Items;
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
-        public Task<IBook<IAlbum>> GetAlbums()
+
+
+
+
+        public Task<IEnumerable<ITrack>> GetTopTracks()
         {
             throw new NotImplementedException();
-            //return Client.GetArtistAlbums(Id);
         }
 
-        public Task<IBook<IArtist>> GetRelated()
+        public Task<IEnumerable<ITrack>> GetTopTracks(uint aCount)
         {
             throw new NotImplementedException();
-            //return Client.GetArtistRelated(Id);
         }
 
-        public Task<IBook<ITrack>> GetTracklist()
+        public Task<IEnumerable<ITrack>> GetTopTracks(uint aStart, uint aCount)
         {
             throw new NotImplementedException();
-            //return Client.GetArtistTracklist(Id);
         }
 
-        public Task<IBook<IPlaylist>> GetPlaylistsContaining()
+
+
+
+
+        public Task<IEnumerable<IAlbum>> GetAlbums()
         {
             throw new NotImplementedException();
-            //return Client.GetArtistPlaylists(Id);
+        }
+
+        public Task<IEnumerable<IAlbum>> GetAlbums(uint aCount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IAlbum>> GetAlbums(uint aStart, uint aCount)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+
+        public Task<IEnumerable<IArtist>> GetRelated()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IArtist>> GetRelated(uint aCount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IArtist>> GetRelated(uint aStart, uint aCount)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+
+        public Task<IEnumerable<IPlaylist>> GetPlaylistsContaining()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aCount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(int aStart, uint aCount)
+        {
+            throw new NotImplementedException();
         }
 
 
