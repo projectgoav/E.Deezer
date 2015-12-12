@@ -14,29 +14,39 @@ namespace E.Deezer.Api
         uint Id { get; set; }
         string Title { get; set; }
         string Link { get; set; }
-        string Artwork { get; set; }
         string Tracklist { get; set; }
         string ArtistName { get; }
 
+        //Methods
         Task<IEnumerable<ITrack>> GetTracks();
-
         Task<IArtist> GetArtist();
+
+        string GetCover(PictureSize aSize);
+        bool HasCover(PictureSize aSize);
     }
 
     internal class Album : IAlbum, IDeserializable<DeezerClientV2>
     {
         public uint Id { get; set; }
         public string Title { get; set; }
-
-        [DeserializeAs(Name="Url")]
-        public string Link { get; set; }
-
-        [DeserializeAs(Name="cover")]
-        public string Artwork { get; set; }
         public string Tracklist { get; set; }
 
         [DeserializeAs(Name = "artist")]
         public Artist ArtistInternal { get; set; }
+
+        [DeserializeAs(Name = "Url")]
+        public string Link { get; set; }
+
+        //Pictures
+        [DeserializeAs(Name = "cover_small")]
+        private string SMPicture { get; set; }
+
+        [DeserializeAs(Name = "cover_medium")]
+        private string MDPicture { get; set; }
+
+        [DeserializeAs(Name = "cover_big")]
+        private string BGPicture { get; set; }
+
 
         public string ArtistName
         {
@@ -44,6 +54,28 @@ namespace E.Deezer.Api
             {
                 if (ArtistInternal == null) { return string.Empty; }
                 else { return ArtistInternal.Name; }
+            }
+        }
+
+        public string GetCover(PictureSize aSize)
+        {
+            switch (aSize)
+            {
+                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture) ? string.Empty : SMPicture; }
+                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture) ? string.Empty : MDPicture; }
+                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture) ? string.Empty : BGPicture; }
+                default: { return string.Empty; }
+            }
+        }
+
+        public bool HasCover(PictureSize aSize)
+        {
+            switch (aSize)
+            {
+                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture); }
+                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture); }
+                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture); }
+                default: { return false; }
             }
         }
 

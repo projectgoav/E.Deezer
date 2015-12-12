@@ -41,4 +41,16 @@ namespace E.Deezer
 
         public void Dispose() {  iClient.Dispose(); }
     }
+
+    /// <summary>
+    /// Defines the Picutre size you can obtain from Deezer
+    /// </summary>
+    public enum PictureSize
+    {
+        SMALL,
+        MEDIUM,
+        LARGE,
+    };
+
+
 }

@@ -17,13 +17,15 @@ namespace E.Deezer.Api
         uint Duration { get; set;  }
         DateTime ReleaseDate { get; set; }
         bool Explicit { get; set; }
-        string Artwork { get; set; }
         string ArtistName { get; }
         string AlbumName { get; }
 
         //Methods
         Task<IArtist> GetArtist();
         Task<IAlbum> GetAlbum();
+
+        string GetCover(PictureSize aSize);
+        bool HasCover(PictureSize aSize);
     }
 
 
@@ -62,11 +64,43 @@ namespace E.Deezer.Api
         [DeserializeAs(Name = "album")]
         public Album AlbumInternal { get; set; }
 
+        //Pictures
+        [DeserializeAs(Name = "picture_small")]
+        private string SMPicture { get; set; }
+
+        [DeserializeAs(Name = "picture_medium")]
+        private string MDPicture { get; set; }
+
+        [DeserializeAs(Name = "picture_big")]
+        private string BGPicture { get; set; }
 
         public DeezerClientV2 Client { get; set; }
         public void Deserialize(DeezerClientV2 aClient) 
         { 
             Client = aClient;
+        }
+
+
+        public string GetCover(PictureSize aSize)
+        {
+            switch (aSize)
+            {
+                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture) ? string.Empty : SMPicture; }
+                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture) ? string.Empty : MDPicture; }
+                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture) ? string.Empty : BGPicture; }
+                default: { return string.Empty; }
+            }
+        }
+
+        public bool HasCover(PictureSize aSize)
+        {
+            switch (aSize)
+            {
+                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture); }
+                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture); }
+                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture); }
+                default: { return false; }
+            }
         }
 
 

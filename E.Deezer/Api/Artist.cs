@@ -14,7 +14,6 @@ namespace E.Deezer.Api
         uint Id { get; set; }
         string Name { get; set; }
         string Link { get; set; }
-        string Artwork { get; set; }
 
         //Methods
         Task<IEnumerable<ITrack>> GetTracklist();
@@ -37,6 +36,8 @@ namespace E.Deezer.Api
         Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aCount);
         Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aStart, uint aCount);
 
+        string GetPicture(PictureSize aSize);
+        bool HasPicture(PictureSize aSize);
     }
 
     public class Artist : IArtist, IDeserializable<DeezerClientV2>
@@ -47,9 +48,37 @@ namespace E.Deezer.Api
         [DeserializeAs(Name="url")]
         public string Link { get; set; }
 
-        [DeserializeAs(Name="picture")]
-        public string Artwork { get; set; }
+        //Pictures
+        [DeserializeAs(Name = "picture_small")]
+        private string SMPicture { get; set; }
 
+        [DeserializeAs(Name = "picture_medium")]
+        private string MDPicture { get; set; }
+
+        [DeserializeAs(Name = "picture_big")]
+        private string BGPicture { get; set; }
+
+        public string GetPicture(PictureSize aSize)
+        {
+            switch (aSize)
+            {
+                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture) ? string.Empty : SMPicture; }
+                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture) ? string.Empty : MDPicture; }
+                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture) ? string.Empty : BGPicture; }
+                default: { return string.Empty; }
+            }
+        }
+
+        public bool HasPicture(PictureSize aSize)
+        {
+            switch (aSize)
+            {
+                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture); }
+                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture); }
+                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture); }
+                default: { return false; }
+            }
+        }
 
         public DeezerClientV2 Client { get; set; }
         public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }

@@ -50,7 +50,7 @@ namespace E.Deezer.Api
 
         Task<IEnumerable<ITrack>> GetTrackChart();
         Task<IEnumerable<ITrack>> GetTrackChart(uint aCount);
-        Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount); 
+        Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount);
 
 
         //TODO
@@ -60,32 +60,13 @@ namespace E.Deezer.Api
 
     }
 
-    public enum PictureSize
-    {
-        /// <summary>
-        /// Small picture size -> 56x56 pixels
-        /// </summary>
-        SMALL,
- 
-        /// <summary>
-        /// Medium picture size -> 250x250 pixels
-        /// </summary>
-        MEDIUM,
-        
-        /// <summary>
-        /// Large picture size -> 500x500 pixels
-        /// </summary>
-        LARGE,
-    };
-
-
     internal class Genre : IGenre, IDeserializable<DeezerClientV2>
     {
         public uint Id { get; set; }
         public string Name { get; set; }
 
         //Pictures
-        [DeserializeAs(Name="picture_small")]
+        [DeserializeAs(Name = "picture_small")]
         private string SMPicture { get; set; }
 
         [DeserializeAs(Name = "picture_medium")]
@@ -103,7 +84,7 @@ namespace E.Deezer.Api
 
         public string GetPicture(PictureSize aSize)
         {
-            switch(aSize)
+            switch (aSize)
             {
                 case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture) ? string.Empty : SMPicture; }
                 case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture) ? string.Empty : MDPicture; }
@@ -133,7 +114,7 @@ namespace E.Deezer.Api
 
         public Task<IEnumerable<IAlbum>> GetReleases() { return GetReleases(0, DeezerSessionV2.DEFAULT_SIZE); }
         public Task<IEnumerable<IAlbum>> GetReleases(uint aCount) { return GetReleases(0, aCount); }
-        public Task<IEnumerable<IAlbum>> GetReleases(uint aStart, uint aCount) { return Get<Album , IAlbum>("genre/{id}/releases", aStart, aCount); }
+        public Task<IEnumerable<IAlbum>> GetReleases(uint aStart, uint aCount) { return Get<Album, IAlbum>("genre/{id}/releases", aStart, aCount); }
 
         //Charting
 
@@ -179,36 +160,4 @@ namespace E.Deezer.Api
         }
     }
 
-    public interface IGenreList
-    {
-        /// <summary>
-        /// List of the common genres in Deezer
-        /// </summary>
-        List<IGenre> Genre { get; }
-    }
-
-    internal class GenreList : IGenreList, IDeserializable<DeezerClientV2>
-    {
-        public List<IGenre> Genre
-        {
-            get { return new List<IGenre>(data);  }
-        }
-
-        //Since we need concreate classes for API call
-        //We store them locally and only return the interfaces
-        //Wont be exposed by interface, despite public.
-        public List<Genre> data { get; set; }
-
-
-        public DeezerClientV2 Client { get; set; }
-
-        public void Deserialize(DeezerClientV2 aClient)
-        { 
-            Client = aClient; 
-
-            //Make sure to put client referne in the Genre so users
-            //can access genre methods.
-            //foreach(IGenre g in Genre) { (g as Genre).Deserialize(aClient); }
-        }
-    }
 }
