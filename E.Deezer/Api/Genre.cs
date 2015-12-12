@@ -42,35 +42,31 @@ namespace E.Deezer.Api
         /// <returns>True if picture exists</returns>
         bool HasPicture(PictureSize aSize);
 
-        /// <summary>
-        /// Returns a list of artists associated with this Genre
-        /// </summary>
-        /// <returns>A book of artists associated with this genre</returns>
-        Task<IBook<IArtist>> GetArtists();
 
-        /// <summary>
-        /// Returns the Deezer Selection for this Genre
-        /// </summary>
-        /// <returns>A book of the Deezer Selection for this Genre</returns>
-        Task<IBook<IAlbum>> GetSelection();
 
-        /// <summary>
-        /// Returns the new releases for this Genre
-        /// </summary>
-        /// <returns>A book of the new releases associated with this Genre</returns>
-        Task<IBook<IAlbum>> GetReleases();
+        Task<IEnumerable<IArtist>> GetArtists(uint aCount);
+        Task<IEnumerable<IArtist>> GetArtists(uint aStart, uint aCount);
+
+        Task<IEnumerable<IAlbum>> GetSelection(uint aCount);
+        Task<IEnumerable<IAlbum>> GetSelection(uint aStart, uint aCount);
+
+        Task<IEnumerable<IAlbum>> GetReleases(uint aCount);
+        Task<IEnumerable<IAlbum>> GetReleases(uint aStart, uint aCount);
 
 
         //Charts!
 
-        Task<IBook<IAlbum>> GetAlbumChart();
+        Task<IEnumerable<IAlbum>> GetAlbumChart(uint aCount);
+        Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart, uint aCount);
 
-        Task<IBook<IArtist>> GetArtistChart();
+        Task<IEnumerable<IArtist>> GetArtistChart(uint aCount);
+        Task<IEnumerable<IArtist>> GetArtistChart(uint aStart, uint aCount);
 
-        Task<IBook<IPlaylist>> GetPlaylistChart();
+        Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aCount);
+        Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart, uint aCount);
 
-        Task<IBook<ITrack>> GetTrackChart(); 
-
+        Task<IEnumerable<ITrack>> GetTrackChart(uint aCount);
+        Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount); 
 
 
         //TODO
@@ -147,22 +143,47 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<IBook<IArtist>> GetArtists() { throw new NotImplementedException(); }
+        public Task<IEnumerable<IArtist>> GetArtists(uint aCount) { return GetArtists(0, aCount); }
+        public Task<IEnumerable<IArtist>> GetArtists(uint aStart, uint aCount) { return Get<Artist, IArtist>("genre/{id}/artists", aStart, aCount); }
 
-        public Task<IBook<IAlbum>> GetSelection() { throw new NotImplementedException(); }
+        public Task<IEnumerable<IAlbum>> GetSelection(uint aCount) { return GetSelection(0, aCount); }
+        public Task<IEnumerable<IAlbum>> GetSelection(uint aStart, uint aCount) { return Get<Album, IAlbum>("genre/{id}/selection", aStart, aCount); }
 
-        public Task<IBook<IAlbum>> GetReleases() { throw new NotImplementedException();}
-
+        public Task<IEnumerable<IAlbum>> GetReleases(uint aCount) { return GetReleases(0, aCount); }
+        public Task<IEnumerable<IAlbum>> GetReleases(uint aStart, uint aCount) { return Get<Album , IAlbum>("genre/{id}/releases", aStart, aCount); }
 
         //Charting
 
-        public Task<IBook<IAlbum>> GetAlbumChart() { throw new NotImplementedException(); }
+        public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aCount) { return GetAlbumChart(0, aCount); }
+        public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart, uint aCount) { return Get<Album, IAlbum>("chart/{id}/albums", aStart, aCount); }
 
-        public Task<IBook<IArtist>> GetArtistChart() { throw new NotImplementedException(); }
+        public Task<IEnumerable<IArtist>> GetArtistChart(uint aCount) { return GetArtistChart(0, aCount); }
+        public Task<IEnumerable<IArtist>> GetArtistChart(uint aStart, uint aCount) { return Get<Artist, IArtist>("chart/{id}/artists", aStart, aCount); }
 
-        public Task<IBook<IPlaylist>> GetPlaylistChart() { throw new NotImplementedException(); }
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aCount) { return GetPlaylistChart(0, aCount); }
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart, uint aCount) { return Get<Playlist, IPlaylist>("chart/{id}/playlists", aStart, aCount); }
 
-        public Task<IBook<ITrack>> GetTrackChart() { throw new NotImplementedException(); }
+        public Task<IEnumerable<ITrack>> GetTrackChart(uint aCount) { return GetTrackChart(0, aCount); }
+        public Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount) { return Get<Track, ITrack>("chart/{id}/tracks", aStart, aCount); }
+
+
+        //Internal wrapper around get for all genre methods :)
+        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClientV2>
+        {
+            string[] parms = new string[] { "URL", "id", Id.ToString() };
+            return Client.Get<TSource>(aMethod, parms, aStart, aCount).ContinueWith<IEnumerable<TDest>>((aTask) =>
+            {
+                List<TDest> items = new List<TDest>();
+
+                foreach (var item in aTask.Result.Items)
+                {
+                    item.Deserialize(Client);
+                    items.Add(item);
+                }
+                return items;
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+
 
 
         public override string ToString()
