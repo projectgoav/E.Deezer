@@ -60,7 +60,7 @@ namespace E.Deezer.Api
 
     }
 
-    internal class Genre : IGenre, IDeserializable<DeezerClientV2>
+    internal class Genre : IGenre, IDeserializable<DeezerClient>
     {
         public uint Id { get; set; }
         public string Name { get; set; }
@@ -76,8 +76,8 @@ namespace E.Deezer.Api
         private string BGPicture { get; set; }
 
 
-        public DeezerClientV2 Client { get; set; }
-        public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
+        public DeezerClient Client { get; set; }
+        public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
         //Methods
@@ -104,39 +104,39 @@ namespace E.Deezer.Api
             }
         }
 
-        public Task<IEnumerable<IArtist>> GetArtists() { return GetArtists(0, DeezerSessionV2.DEFAULT_SIZE); }
+        public Task<IEnumerable<IArtist>> GetArtists() { return GetArtists(0, DeezerSession.DEFAULT_SIZE); }
         public Task<IEnumerable<IArtist>> GetArtists(uint aCount) { return GetArtists(0, aCount); }
         public Task<IEnumerable<IArtist>> GetArtists(uint aStart, uint aCount) { return Get<Artist, IArtist>("genre/{id}/artists", aStart, aCount); }
 
-        public Task<IEnumerable<IAlbum>> GetSelection() { return GetSelection(0, DeezerSessionV2.DEFAULT_SIZE); }
+        public Task<IEnumerable<IAlbum>> GetSelection() { return GetSelection(0, DeezerSession.DEFAULT_SIZE); }
         public Task<IEnumerable<IAlbum>> GetSelection(uint aCount) { return GetSelection(0, aCount); }
         public Task<IEnumerable<IAlbum>> GetSelection(uint aStart, uint aCount) { return Get<Album, IAlbum>("genre/{id}/selection", aStart, aCount); }
 
-        public Task<IEnumerable<IAlbum>> GetReleases() { return GetReleases(0, DeezerSessionV2.DEFAULT_SIZE); }
+        public Task<IEnumerable<IAlbum>> GetReleases() { return GetReleases(0, DeezerSession.DEFAULT_SIZE); }
         public Task<IEnumerable<IAlbum>> GetReleases(uint aCount) { return GetReleases(0, aCount); }
         public Task<IEnumerable<IAlbum>> GetReleases(uint aStart, uint aCount) { return Get<Album, IAlbum>("genre/{id}/releases", aStart, aCount); }
 
         //Charting
 
-        public Task<IEnumerable<IAlbum>> GetAlbumChart() { return GetAlbumChart(0, DeezerSessionV2.DEFAULT_SIZE); }
+        public Task<IEnumerable<IAlbum>> GetAlbumChart() { return GetAlbumChart(0, DeezerSession.DEFAULT_SIZE); }
         public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aCount) { return GetAlbumChart(0, aCount); }
         public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart, uint aCount) { return Get<Album, IAlbum>("chart/{id}/albums", aStart, aCount); }
 
-        public Task<IEnumerable<IArtist>> GetArtistChart() { return GetArtistChart(0, DeezerSessionV2.DEFAULT_SIZE); }
+        public Task<IEnumerable<IArtist>> GetArtistChart() { return GetArtistChart(0, DeezerSession.DEFAULT_SIZE); }
         public Task<IEnumerable<IArtist>> GetArtistChart(uint aCount) { return GetArtistChart(0, aCount); }
         public Task<IEnumerable<IArtist>> GetArtistChart(uint aStart, uint aCount) { return Get<Artist, IArtist>("chart/{id}/artists", aStart, aCount); }
 
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart() { return GetPlaylistChart(0, DeezerSessionV2.DEFAULT_SIZE); }
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChart() { return GetPlaylistChart(0, DeezerSession.DEFAULT_SIZE); }
         public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aCount) { return GetPlaylistChart(0, aCount); }
         public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart, uint aCount) { return Get<Playlist, IPlaylist>("chart/{id}/playlists", aStart, aCount); }
 
-        public Task<IEnumerable<ITrack>> GetTrackChart() { return GetTrackChart(0, DeezerSessionV2.DEFAULT_SIZE); }
+        public Task<IEnumerable<ITrack>> GetTrackChart() { return GetTrackChart(0, DeezerSession.DEFAULT_SIZE); }
         public Task<IEnumerable<ITrack>> GetTrackChart(uint aCount) { return GetTrackChart(0, aCount); }
         public Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount) { return Get<Track, ITrack>("chart/{id}/tracks", aStart, aCount); }
 
 
         //Internal wrapper around get for all genre methods :)
-        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClientV2>
+        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
         {
             string[] parms = new string[] { "URL", "id", Id.ToString() };
             return Client.Get<TSource>(aMethod, parms, aStart, aCount).ContinueWith<IEnumerable<TDest>>((aTask) =>

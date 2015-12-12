@@ -29,7 +29,7 @@ namespace E.Deezer.Api
     }
 
 
-    internal class Track : ITrack, IDeserializable<DeezerClientV2>
+    internal class Track : ITrack, IDeserializable<DeezerClient>
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -74,8 +74,8 @@ namespace E.Deezer.Api
         [DeserializeAs(Name = "picture_big")]
         private string BGPicture { get; set; }
 
-        public DeezerClientV2 Client { get; set; }
-        public void Deserialize(DeezerClientV2 aClient) 
+        public DeezerClient Client { get; set; }
+        public void Deserialize(DeezerClient aClient) 
         { 
             Client = aClient;
         }

@@ -30,7 +30,7 @@ namespace E.Deezer.Endpoint
         private readonly IGenreEndpoint iGenre;
         private readonly IChartsEndpoint iCharts;
 
-        private DeezerClientV2 iClient;
+        private DeezerClient iClient;
 
         public IAlbumEndpoint Albums { get { return iAlbums; } }
         public IArtistEndpoint Artists { get { return iArtists; } }
@@ -39,7 +39,7 @@ namespace E.Deezer.Endpoint
         public IGenreEndpoint Genre { get { return iGenre; } }
         public IChartsEndpoint Charts { get { return iCharts; } }
 
-        public BrowseEndpoint(DeezerClientV2 aClient)
+        public BrowseEndpoint(DeezerClient aClient)
         {
             iClient = aClient;
 

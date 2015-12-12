@@ -25,7 +25,7 @@ namespace E.Deezer.Api
         bool HasCover(PictureSize aSize);
     }
 
-    internal class Album : IAlbum, IDeserializable<DeezerClientV2>
+    internal class Album : IAlbum, IDeserializable<DeezerClient>
     {
         public uint Id { get; set; }
         public string Title { get; set; }
@@ -80,8 +80,8 @@ namespace E.Deezer.Api
         }
 
         //Local Serailization info
-        public DeezerClientV2 Client { get; set; }
-        public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
+        public DeezerClient Client { get; set; }
+        public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
         public Task<IEnumerable<ITrack>> GetTracks()

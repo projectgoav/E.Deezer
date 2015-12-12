@@ -15,15 +15,15 @@ namespace E.Deezer
     /// <summary>
     /// Performs requests on the GitHub API.
     /// </summary>
-    public class DeezerClientV2 : IDisposable
+    public class DeezerClient : IDisposable
     {
         private readonly RestClient iClient;
         private readonly IDeezerSession iSession;
         private readonly CancellationTokenSource iCancellationTokenSource;
 
-        internal DeezerClientV2(IDeezerSession aSession) 
+        internal DeezerClient(IDeezerSession aSession) 
         { 
-            iClient = new RestClient(DeezerSessionV2.ENDPOINT);
+            iClient = new RestClient(DeezerSession.ENDPOINT);
             iClient.Timeout = 2500;
 
             iSession = aSession;

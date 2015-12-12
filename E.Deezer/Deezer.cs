@@ -18,12 +18,12 @@ namespace E.Deezer
         private IDeezerSession iSession;
         private IBrowseEndpoint iBrowse;
         private ISearchEndpoint iSearch;
-        private DeezerClientV2 iClient;
+        private DeezerClient iClient;
 
         internal Deezer(IDeezerSession aSession)
         {
             iSession = aSession;
-            iClient = new DeezerClientV2(null);   //TODO FIX
+            iClient = new DeezerClient(null);   //TODO FIX
 
             iBrowse = new BrowseEndpoint(iClient);
             iSearch = new SearchEndpoint(iClient);

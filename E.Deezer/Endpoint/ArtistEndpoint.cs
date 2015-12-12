@@ -34,9 +34,9 @@ namespace E.Deezer.Endpoint
 
     internal class ArtistEndpoint : IArtistEndpoint
     {
-        private DeezerClientV2 iClient;
+        private DeezerClient iClient;
 
 
-        public ArtistEndpoint(DeezerClientV2 aClient) {  iClient = aClient;  }
+        public ArtistEndpoint(DeezerClient aClient) {  iClient = aClient;  }
     }
 }

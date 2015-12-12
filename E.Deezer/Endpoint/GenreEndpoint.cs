@@ -16,7 +16,7 @@ namespace E.Deezer.Endpoint
 
     internal class GenreEndpoint : IGenreEndpoint
     {
-        private DeezerClientV2 iClient;
+        private DeezerClient iClient;
 
         public Task<IEnumerable<IGenre>> GetCommonGenre()
         {
@@ -35,6 +35,6 @@ namespace E.Deezer.Endpoint
         }
 
 
-        public GenreEndpoint(DeezerClientV2 aClient) {  iClient = aClient;  }
+        public GenreEndpoint(DeezerClient aClient) {  iClient = aClient;  }
     }
 }

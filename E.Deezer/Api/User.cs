@@ -29,7 +29,7 @@ namespace E.Deezer.Api
 
 	}
 
-	public class User : IUser, IDeserializable<DeezerClientV2>
+	public class User : IUser, IDeserializable<DeezerClient>
 	{
 		public uint Id { get; set; }
 		public string Name { get; set; }
@@ -39,8 +39,8 @@ namespace E.Deezer.Api
 		public string error { get; set; }
 
 		//Local Serailization info
-		public DeezerClientV2 Client { get; set; }
-		public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
+		public DeezerClient Client { get; set; }
+		public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
 		public Task<IEnumerable<IAlbum>> GetFavouriteAlbums()

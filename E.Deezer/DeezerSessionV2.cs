@@ -18,7 +18,7 @@ namespace E.Deezer
         //void Logout();
     }
 
-    public class DeezerSessionV2 : IDeezerSession
+    public class DeezerSession : IDeezerSession
     {
         public IBrowseEndpoint Browse  { get { throw new NotImplementedException(); }  }
         public ISearchEndpoint Search {  get { throw new NotImplementedException(); }  }
@@ -88,7 +88,7 @@ namespace E.Deezer
         /// </summary>
         public static Deezer CreateNew()
         {
-            return new Deezer(new DeezerSessionV2());
+            return new Deezer(new DeezerSession());
         }
 
 

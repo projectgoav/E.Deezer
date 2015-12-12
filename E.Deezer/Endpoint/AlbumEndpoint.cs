@@ -16,9 +16,9 @@ namespace E.Deezer.Endpoint
 
     internal class AlbumEndpoint : IAlbumEndpoint
     {
-        private DeezerClientV2 iClient;
+        private DeezerClient iClient;
 
-        public AlbumEndpoint(DeezerClientV2 aClient) {  iClient = aClient;  }
+        public AlbumEndpoint(DeezerClient aClient) {  iClient = aClient;  }
 
         public Task<IEnumerable<ITrack>> GetTracks(uint aAlbumId)
         {

@@ -27,7 +27,7 @@ namespace E.Deezer.Api
         bool HasPicture(PictureSize aSize);
 	}
 
-	internal class Playlist : IPlaylist, IDeserializable<DeezerClientV2>
+	internal class Playlist : IPlaylist, IDeserializable<DeezerClient>
 	{
 		public int Id { get; set; }
 		public string Title { get; set; }
@@ -69,8 +69,8 @@ namespace E.Deezer.Api
         [DeserializeAs(Name = "picture_big")]
         private string BGPicture { get; set; }
 
-		public DeezerClientV2 Client { get; set; }
-		public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
+		public DeezerClient Client { get; set; }
+		public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
         public string GetPicture(PictureSize aSize)
@@ -96,7 +96,7 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<IEnumerable<ITrack>> GetTracks() { return GetTracks(0, DeezerSessionV2.DEFAULT_SIZE); }
+        public Task<IEnumerable<ITrack>> GetTracks() { return GetTracks(0, DeezerSession.DEFAULT_SIZE); }
         public Task<IEnumerable<ITrack>> GetTracks(uint aCount) {  return GetTracks(0, aCount); }
 		public Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount)
 		{
