@@ -9,49 +9,15 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-    /// <summary>
-    /// Represents an Playlist in the Deezer Library
-    /// </summary>
 	public interface IPlaylist
     {
-        /// <summary>
-        /// Gets the Deezer ID of this Playlist
-        /// </summary>
 		int Id { get; set; }
-
-        /// <summary>
-        /// Gets the title of this Playlist
-        /// </summary>
 		string Title { get; set; }
-
-        /// <summary>
-        /// Gets if the Playlist is public or not
-        /// </summary>
 		bool Public { get; set; }
-        
-        /// <summary>
-        /// Gets the number of tracks contained in Playlist
-        /// </summary>
 		uint NumTracks { get; set; }
-
-        /// <summary>
-        /// Gets the www.deezer.com link to this Playlist
-        /// </summary>
 		string Link { get; set; }
-
-        /// <summary>
-        /// Gets the link to the artwork for this Playlist
-        /// </summary>
 		string Artwork { get; set; }
-        
-        /// <summary>
-        /// Gets the name of the aUthor of this Playlist
-        /// </summary>
 		string CreatorName { get; }
-        
-        /// <summary>
-        /// Gets if this Playlist is the "loved tracks" playlist
-        /// </summary>
 		bool IsLovedTrack { get; set; }
 
         Task<IEnumerable<ITrack>> GetTracks();

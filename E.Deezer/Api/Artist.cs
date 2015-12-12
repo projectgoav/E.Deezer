@@ -9,29 +9,11 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-    /// <summary>
-    /// Represents an Artist in the Deezer Library
-    /// </summary>
     public interface IArtist
     {
-        /// <summary>
-        /// Deezer ID of this Artist
-        /// </summary>
         uint Id { get; set; }
-
-        /// <summary>
-        /// Gets the name of this Artist
-        /// </summary>
         string Name { get; set; }
-
-        /// <summary>
-        /// www.deezer.com link to this Artist
-        /// </summary>
         string Link { get; set; }
-
-        /// <summary>
-        /// Gets the link to the artwork of this Artist
-        /// </summary>
         string Artwork { get; set; }
 
         //Methods

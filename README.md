@@ -37,9 +37,7 @@ Once E.Deezer has been referenced in your new project:
 
 
 ## TODO
-- Re-implement exisiting object methods
-- Wrap some into Deezer.Browse ...
-- Genre support in Deeser.Browse ....
+- Update Wiki with new information
 - Cleanup of debug code
 - Unit Testing
 
