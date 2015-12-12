@@ -21,7 +21,7 @@ namespace E.Deezer.Api
 		string CreatorName { get; }
 		bool IsLovedTrack { get; set; }
 
-
+        Task<IEnumerable<ITrack>> GetTracks();
         Task<IEnumerable<ITrack>> GetTracks(uint aCount);
 		Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount);
 
@@ -61,8 +61,8 @@ namespace E.Deezer.Api
 		public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
 
 
+        public Task<IEnumerable<ITrack>> GetTracks() { return GetTracks(0, DeezerSessionV2.DEFAULT_SIZE); }
         public Task<IEnumerable<ITrack>> GetTracks(uint aCount) {  return GetTracks(0, aCount); }
-
 		public Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount)
 		{
             string[] parms = new string[] { "URL", "id", Id.ToString() };
@@ -80,10 +80,6 @@ namespace E.Deezer.Api
                 return items;
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
 		}
-
-
-
-
 
 		public override string ToString()
 		{
