@@ -14,6 +14,8 @@ namespace E.Deezer.Endpoint
 
         //TODO
         //IUserEndpoint User { get; }
+
+
     }
 
     internal class BrowseEndpoint : IBrowseEndpoint

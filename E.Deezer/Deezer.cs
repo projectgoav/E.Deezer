@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using System.Threading.Tasks;
+
+using E.Deezer.Api;
 using E.Deezer.Endpoint;
 
 namespace E.Deezer
@@ -28,6 +31,13 @@ namespace E.Deezer
 
         public IBrowseEndpoint Browse { get { return iBrowse; } }
         public ISearchEndpoint Search { get { return iSearch; } }
+
+
+        public Task<IInfos> GetServiceInformation()
+        {
+           return iClient.Get<Infos>("infos").ContinueWith<IInfos>((aTask) => { return aTask.Result; }, TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+        
 
         public void Dispose() {  iClient.Dispose(); }
     }

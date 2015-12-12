@@ -81,6 +81,34 @@ namespace E.Deezer
             return task;
         }
 
+        //Copy fo Get() for a single object result!
+        internal Task<T> Get<T>(string aMethod)
+        {
+            IRestRequest request = new RestRequest(aMethod, Method.GET);
+
+            var task = iClient.ExecuteGetTaskAsync<DeezerObject<T>>(request, Token).ContinueWith<T>((aTask) =>
+            {
+                //Is faulty?
+                if (aTask.IsFaulted)
+                {
+                    if (aTask.Result.ErrorException != null) { throw aTask.Result.ErrorException; }
+                    else { throw new Exception("The specified request did not complete successfully."); }       //TODO - wording
+                }
+                else
+                {
+                    //Did the Deezer API call fail?
+                    if (aTask.Result.Data != null)
+                    {
+                        var r = aTask.Result.Data;
+                        if (r.Error != null) { throw new DeezerException(r.Error); }
+                    }
+                }
+
+                return aTask.Result.Data.Data;
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            task.SuppressExceptions();
+            return task;
+        }
 
         public void Dispose()
         {

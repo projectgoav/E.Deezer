@@ -25,4 +25,10 @@ namespace E.Deezer
         public uint Total { get; set; }
         public Error Error { get; set; }
     }
+
+    internal class DeezerObject<T>
+    {
+        public T Data { get; set; }
+        public Error Error { get; set; }
+    }
 }
