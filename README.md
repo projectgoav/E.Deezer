@@ -1,14 +1,13 @@
 # E.Deezer
 An unoffical asynchronous wrapper for the Deezer API and .NET.
 
-*This is a development branch of the V2 API restructure.*
-
 ## Usage
+
+Latest Nuget: *(BETA)* [2.0.0.158](http://nuget.org/packages/e.deezer)
 
 Source: 
 ```
 git clone https://github.com/projectgoav/e.deezer
-git checkout V2
 ```
 
 Open solution in VS and build it.
@@ -34,13 +33,6 @@ Once E.Deezer has been referenced in your new project:
  //Mapping to API: search/track/?q=Elivs&index=20&limt=15
  var offset_search = await Deezer.Search.Tracks("Elivs", 20, 15);
  ```
-
-
-## TODO
-- Update Wiki with new information
-- Cleanup of debug code
-- Unit Testing
-
 
 ## Requirements
 - Visual Studio 2013 (or later)
