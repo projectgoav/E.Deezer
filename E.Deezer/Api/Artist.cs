@@ -5,15 +5,34 @@ using System.Text;
 
 using System.Threading.Tasks;
 
+using RestSharp.Deserializers;
+
 namespace E.Deezer.Api
 {
+    /// <summary>
+    /// Represents an Artist in the Deezer Library
+    /// </summary>
     public interface IArtist
     {
+        /// <summary>
+        /// Deezer ID of this Artist
+        /// </summary>
         uint Id { get; set; }
+
+        /// <summary>
+        /// Gets the name of this Artist
+        /// </summary>
         string Name { get; set; }
-        string Url { get; set; }
-        string Picture { get; set; }
-        string Tracklist { get; set; }
+
+        /// <summary>
+        /// www.deezer.com link to this Artist
+        /// </summary>
+        string Link { get; set; }
+
+        /// <summary>
+        /// Gets the link to the artwork of this Artist
+        /// </summary>
+        string Artwork { get; set; }
 
         //Methods
         Task<IEnumerable<ITrack>> GetTracklist();
@@ -42,9 +61,12 @@ namespace E.Deezer.Api
     {
         public uint Id { get; set; }
         public string Name { get; set; }
-        public string Url { get; set; }
-        public string Picture { get; set; }
-        public string Tracklist { get; set; }
+
+        [DeserializeAs(Name="url")]
+        public string Link { get; set; }
+
+        [DeserializeAs(Name="picture")]
+        public string Artwork { get; set; }
 
 
         public DeezerClientV2 Client { get; set; }

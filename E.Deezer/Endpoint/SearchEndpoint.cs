@@ -11,10 +11,6 @@ namespace E.Deezer.Endpoint
 {
     public interface  ISearchEndpoint
     {
-        //Task All(string aQuery);
-        //Task All(string aQuery, uint aCount);
-        //Task All(string aQuery, uint aStart, uint aCount);
-
         Task<IEnumerable<IAlbum>> Albums(string aQuery);
         Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aCount);
         Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aStart, uint aCount);

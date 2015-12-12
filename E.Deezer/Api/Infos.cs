@@ -7,10 +7,25 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
+    /// <summary>
+    /// Represents Deezer Service Information for the user's country
+    /// </summary>
     public interface IInfos
     {
+        /// <summary>
+        /// Gets the country name that Deezer thinks the user is from
+        /// </summary>
         string Country { get; set; }
+
+        /// <summary>
+        /// Gets the country ISO code that Deezer thinks the user is from
+        /// <example>GB</example>
+        /// </summary>
         string Iso { get; set; }
+
+        /// <summary>
+        /// Gets if Deezer is available in the country Deezer thinks the user is from
+        /// </summary>
         bool IsAvailable { get; set; }
     }
 

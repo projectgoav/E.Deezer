@@ -9,12 +9,30 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
+    /// <summary>
+    /// Represents an Album in the Deezer Library
+    /// </summary>
     public interface IAlbum
     {
+        /// <summary>
+        /// Deezer ID of this Album
+        /// </summary>
         uint Id { get; set; }
+
+        /// <summary>
+        /// Gets the name of the Album
+        /// </summary>
         string Title { get; set; }
-        string Url { get; set; }
-        string Cover { get; set; }
+
+        /// <summary>
+        /// www.deezer.com link to this Album
+        /// </summary>
+        string Link { get; set; }
+
+        /// <summary>
+        /// Gets the link to the artwork for this Album
+        /// </summary>
+        string Artwork { get; set; }
         string Tracklist { get; set; }
         string ArtistName { get; }
 
@@ -27,8 +45,12 @@ namespace E.Deezer.Api
     {
         public uint Id { get; set; }
         public string Title { get; set; }
-        public string Url { get; set; }
-        public string Cover { get; set; }
+
+        [DeserializeAs(Name="Url")]
+        public string Link { get; set; }
+
+        [DeserializeAs(Name="cover")]
+        public string Artwork { get; set; }
         public string Tracklist { get; set; }
 
         [DeserializeAs(Name = "artist")]

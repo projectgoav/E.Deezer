@@ -9,9 +9,19 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
+    /// <summary>
+    /// Represents an Genre in the Deezer Library
+    /// </summary>
     public interface IGenre
     {
+        /// <summary>
+        /// Gets the Deezer ID of this Genre
+        /// </summary>
         uint Id { get; set; }
+
+        /// <summary>
+        /// Gets the name of this Genre
+        /// </summary>
         string Name { get; set; }
 
         //METHODS

@@ -9,21 +9,68 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
+    /// <summary>
+    /// Represents an Track in the Deezer Library
+    /// </summary>
     public interface ITrack
     {
+        /// <summary>
+        /// Gets the Deezer ID of this Track
+        /// </summary>
         int Id { get; set;  }
+
+        /// <summary>
+        /// Gets the Title of Track
+        /// </summary>
         string Title { get; set;  }
+
+        /// <summary>
+        /// Gets the www.deezer.com link to this Track
+        /// </summary>
         string Link { get; set;  }
+        
+        /// <summary>
+        /// Gets the duration of Track, in seconds
+        /// </summary>
         uint Duration { get; set;  }
+
+        /// <summary>
+        /// Gets the Track's release date
+        /// </summary>
         DateTime ReleaseDate { get; set; }
-        bool Explicit { get; set;  }
-        string Artwork { get; set;  }
+
+        /// <summary>
+        /// Gets if the Track has explicit content
+        /// </summary>
+        bool Explicit { get; set; }
+
+        /// <summary>
+        /// Gets the link to the artwork for this Track
+        /// </summary>
+        string Artwork { get; set; }
+
+        /// <summary>
+        /// Gets the name of the Track's artist
+        /// </summary>
         string ArtistName { get; }
+
+        /// <summary>
+        /// Gets the name of the album to which this Track belongs
+        /// </summary>
         string AlbumName { get; }
 
         //Methods
 
+        /// <summary>
+        /// Get the Track's artist object
+        /// </summary>
+        /// <returns>Artist object who is the author of this Track</returns>
         Task<IArtist> GetArtist();
+
+        /// <summary>
+        /// Gets the Track's album object
+        /// </summary>
+        /// <returns>Album object to which the Track belongs</returns>
         Task<IAlbum> GetAlbum();
     }
 
