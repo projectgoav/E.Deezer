@@ -7,10 +7,13 @@ namespace E.Deezer.Endpoint
 {
     public interface IBrowseEndpoint
     {
-        IAlbumEndpoint Albums { get; }
-        IArtistEndpoint Artists { get; }
-        IPlaylistEndpoint Playlists { get; }
-        ITrackEndpoint Tracks { get; }
+        //IAlbumEndpoint Albums { get; }
+        //IArtistEndpoint Artists { get; }
+        //IPlaylistEndpoint Playlists { get; }
+        //ITrackEndpoint Tracks { get; }
+
+        IGenreEndpoint Genre { get; }
+        IChartsEndpoint Charts { get; }
 
         //TODO
         //IUserEndpoint User { get; }
@@ -24,6 +27,8 @@ namespace E.Deezer.Endpoint
         private readonly IArtistEndpoint iArtists;
         private readonly IPlaylistEndpoint iPlaylists;
         private readonly ITrackEndpoint iTracks;
+        private readonly IGenreEndpoint iGenre;
+        private readonly IChartsEndpoint iCharts;
 
         private DeezerClientV2 iClient;
 
@@ -31,6 +36,8 @@ namespace E.Deezer.Endpoint
         public IArtistEndpoint Artists { get { return iArtists; } }
         public IPlaylistEndpoint Playlists { get { return iPlaylists; } }
         public ITrackEndpoint Tracks { get { return iTracks; } }
+        public IGenreEndpoint Genre { get { return iGenre; } }
+        public IChartsEndpoint Charts { get { return iCharts; } }
 
         public BrowseEndpoint(DeezerClientV2 aClient)
         {
@@ -40,6 +47,8 @@ namespace E.Deezer.Endpoint
             iArtists = new ArtistEndpoint(iClient);
             iPlaylists = new PlaylistEndpoint(iClient);
             iTracks = new TrackEndpoint(iClient);
+            iGenre = new GenreEndpoint(iClient);
+            iCharts = new ChartsEndpoint(iClient);
         }
     }
 }
