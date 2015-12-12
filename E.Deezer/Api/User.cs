@@ -39,62 +39,62 @@ namespace E.Deezer.Api
 		/// Gets the user's favourite albums
 		/// </summary>
 		/// <returns>A book of user's favourite albums</returns>
-		Task<IBook<IAlbum>> GetFavouriteAlbums();
+		Task<IEnumerable<IAlbum>> GetFavouriteAlbums();
 
 		/// <summary>
 		/// Gets the user's favourite artists
 		/// </summary>
 		/// <returns>A book of user's favourite artists</returns>
-		Task<IBook<IArtist>> GetFavouriteArtists();
+		Task<IEnumerable<IArtist>> GetFavouriteArtists();
 
 		/// <summary>
 		/// Gets the user's favourite tracks
 		/// </summary>
 		/// <returns>A book of user's favourite tracks</returns>
-		Task<IBook<ITrack>> GetFavouriteTracks();
+		Task<IEnumerable<ITrack>> GetFavouriteTracks();
 
 		/// <summary>
 		/// Gets the user's "flow"
 		/// </summary>
 		/// <returns>A book of user's "flow"</returns>
-		Task<IBook<ITrack>> GetUserFlow();
+		Task<IEnumerable<ITrack>> GetUserFlow();
 
 		/// <summary>
 		/// Gets the user;s listening history
 		/// </summary>
 		/// <returns>A book of user's litening history</returns>
-		Task<IBook<ITrack>> GetListenHistory();
+		Task<IEnumerable<ITrack>> GetListenHistory();
 
 		/// <summary>
 		/// Gets the user's favourite playlists
 		/// </summary>
 		/// <returns>A book of user's listening history</returns>
-		Task<IBook<IPlaylist>> GetFavouritePlaylists();
+		Task<IEnumerable<IPlaylist>> GetFavouritePlaylists();
 
 
 		/// <summary>
 		/// Gets recommended albums for the user
 		/// </summary>
 		/// <returns>A book of recommended albums</returns>
-		Task<IBook<IAlbum>> GetRecommendedAlbums();
+		Task<IEnumerable<IAlbum>> GetRecommendedAlbums();
 
 		/// <summary>
 		/// Gets recommended artists for the user
 		/// </summary>
 		/// <returns>A book of recommended artists</returns>
-		Task<IBook<IArtist>> GetRecommendedArtists();
+		Task<IEnumerable<IArtist>> GetRecommendedArtists();
 
 		/// <summary>
 		/// Gets recommended tracks for the user
 		/// </summary>
 		/// <returns>A book of recommended tracks</returns>
-		Task<IBook<ITrack>> GetRecommendedTracks();
+		Task<IEnumerable<ITrack>> GetRecommendedTracks();
 
 		/// <summary>
 		/// Gets recommended playlists for the user
 		/// </summary>
 		/// <returns>A book of recommded playlists</returns>
-		Task<IBook<IPlaylist>> GetRecommendedPlaylists();
+		Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists();
 
 	}
 
@@ -112,32 +112,32 @@ namespace E.Deezer.Api
 		public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
 
 
-		public Task<IBook<IAlbum>> GetFavouriteAlbums()
+		public Task<IEnumerable<IAlbum>> GetFavouriteAlbums()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IBook<IArtist>> GetFavouriteArtists()
+		public Task<IEnumerable<IArtist>> GetFavouriteArtists()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IBook<ITrack>> GetFavouriteTracks()
+		public Task<IEnumerable<ITrack>> GetFavouriteTracks()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IBook<ITrack>> GetUserFlow()
+		public Task<IEnumerable<ITrack>> GetUserFlow()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IBook<ITrack>> GetListenHistory()
+		public Task<IEnumerable<ITrack>> GetListenHistory()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IBook<IPlaylist>> GetFavouritePlaylists()
+		public Task<IEnumerable<IPlaylist>> GetFavouritePlaylists()
 		{
             throw new NotImplementedException();
 		}
@@ -145,22 +145,22 @@ namespace E.Deezer.Api
 
 
 
-		public Task<IBook<IAlbum>> GetRecommendedAlbums()
+		public Task<IEnumerable<IAlbum>> GetRecommendedAlbums()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IBook<IArtist>> GetRecommendedArtists()
+		public Task<IEnumerable<IArtist>> GetRecommendedArtists()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IBook<ITrack>> GetRecommendedTracks()
+		public Task<IEnumerable<ITrack>> GetRecommendedTracks()
 		{
             throw new NotImplementedException();
 		}
 
-		public Task<IBook<IPlaylist>> GetRecommendedPlaylists()
+		public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists()
 		{
             throw new NotImplementedException();
 		}

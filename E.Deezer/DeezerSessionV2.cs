@@ -31,6 +31,56 @@ namespace E.Deezer
         public const uint DEFAULT_SIZE = 25;
 
 
+        //Generates a permission string which can be used to grant people
+        //Access to features of the app
+        private void GeneratePermissionString(DeezerPermissions iPermissions)
+        {
+            string perms = null;
+
+            if((iPermissions & DeezerPermissions.BasicAccess) == DeezerPermissions.BasicAccess)
+            { 
+                AddToString(perms, DeezerPermissions.BasicAccess.PermissionToString());
+            }
+
+            if ((iPermissions & DeezerPermissions.DeleteLibrary) == DeezerPermissions.DeleteLibrary)
+            {
+                AddToString(perms, DeezerPermissions.DeleteLibrary.PermissionToString());
+            }
+
+            if ((iPermissions & DeezerPermissions.Email) == DeezerPermissions.Email)
+            {
+                AddToString(perms, DeezerPermissions.Email.PermissionToString());
+            }
+
+            if ((iPermissions & DeezerPermissions.ListeningHistory) == DeezerPermissions.ListeningHistory)
+            {
+                AddToString(perms, DeezerPermissions.ListeningHistory.PermissionToString());
+            }
+
+            if ((iPermissions & DeezerPermissions.ManageCommunity) == DeezerPermissions.ManageCommunity)
+            {
+                AddToString(perms, DeezerPermissions.ManageCommunity.PermissionToString());
+            }
+
+            if ((iPermissions & DeezerPermissions.ManageLibrary) == DeezerPermissions.ManageLibrary)
+            {
+                AddToString(perms, DeezerPermissions.ManageLibrary.PermissionToString());
+            }
+
+            if ((iPermissions & DeezerPermissions.OfflineAccess) == DeezerPermissions.OfflineAccess)
+            {
+                AddToString(perms, DeezerPermissions.OfflineAccess.PermissionToString());
+            }
+        }
+
+        //Adds the permissions in a comma seperated list
+        private void AddToString(string aString, string aAdd)
+        {
+            if(string.IsNullOrEmpty(aString)) {  aString = aAdd; }
+            else {  aString += string.Format(",{0}", aAdd); }
+        }
+
+
 
         /// <summary>
         /// Starts a new session on the Deezer API.

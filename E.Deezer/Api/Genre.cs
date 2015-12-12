@@ -207,7 +207,7 @@ namespace E.Deezer.Api
         List<IGenre> Genre { get; }
     }
 
-    internal class GenreList : IGenreList, IDeserializable<DeezerClient>
+    internal class GenreList : IGenreList, IDeserializable<DeezerClientV2>
     {
         public List<IGenre> Genre
         {
@@ -220,9 +220,9 @@ namespace E.Deezer.Api
         public List<Genre> data { get; set; }
 
 
-        public DeezerClient Client { get; set; }
+        public DeezerClientV2 Client { get; set; }
 
-        public void Deserialize(DeezerClient aClient)
+        public void Deserialize(DeezerClientV2 aClient)
         { 
             Client = aClient; 
 
