@@ -59,11 +59,9 @@ namespace E.Deezer.Api
 		/// </summary>
 		bool IsLovedTrack { get; set; }
 
-		/// <summary>
-		/// Gets the tracks in the playlist
-		/// </summary>
-		/// <returns>A book of tracks in playlist.</returns>
-		Task<IBook<ITrack>> GetTracks();
+        Task<IEnumerable<ITrack>> GetTracks(uint aCount);
+
+		Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount);
 
 	}
 
@@ -101,11 +99,28 @@ namespace E.Deezer.Api
 		public void Deserialize(DeezerClientV2 aClient) { Client = aClient; }
 
 
+        public Task<IEnumerable<ITrack>> GetTracks(uint aCount) {  return GetTracks(0, aCount); }
 
-		public Task<IBook<ITrack>> GetTracks()
+		public Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount)
 		{
-            throw new NotImplementedException();
+            string[] parms = new string[] { "URL", "id", Id.ToString() };
+
+            return Client.Get<Track>("playlist/{id}/tracks", parms, aStart, aCount).ContinueWith<IEnumerable<ITrack>>((aTask) =>
+            {
+                List<ITrack> items = new List<ITrack>();
+
+                foreach(var t in aTask.Result.Items)
+                {
+                    t.Deserialize(Client);
+                    items.Add(t);
+                }
+
+                return items;
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
 		}
+
+
+
 
 
 		public override string ToString()
