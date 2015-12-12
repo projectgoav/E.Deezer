@@ -110,11 +110,11 @@ namespace E.Deezer.Api
 
         public Task<IEnumerable<IAlbum>> GetSelection() { return GetSelection(0, DeezerSession.DEFAULT_SIZE); }
         public Task<IEnumerable<IAlbum>> GetSelection(uint aCount) { return GetSelection(0, aCount); }
-        public Task<IEnumerable<IAlbum>> GetSelection(uint aStart, uint aCount) { return Get<Album, IAlbum>("genre/{id}/selection", aStart, aCount); }
+        public Task<IEnumerable<IAlbum>> GetSelection(uint aStart, uint aCount) { return Get<Album, IAlbum>("editorial/{id}/selection", aStart, aCount); }
 
         public Task<IEnumerable<IAlbum>> GetReleases() { return GetReleases(0, DeezerSession.DEFAULT_SIZE); }
         public Task<IEnumerable<IAlbum>> GetReleases(uint aCount) { return GetReleases(0, aCount); }
-        public Task<IEnumerable<IAlbum>> GetReleases(uint aStart, uint aCount) { return Get<Album, IAlbum>("genre/{id}/releases", aStart, aCount); }
+        public Task<IEnumerable<IAlbum>> GetReleases(uint aStart, uint aCount) { return Get<Album, IAlbum>("editorial/{id}/releases", aStart, aCount); }
 
         //Charting
 

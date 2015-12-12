@@ -14,12 +14,11 @@ namespace E.Deezer.Api
         uint Id { get; set; }
         string Title { get; set; }
         string Link { get; set; }
-        string Tracklist { get; set; }
         string ArtistName { get; }
+        IArtist Artist { get; }
 
         //Methods
         Task<IEnumerable<ITrack>> GetTracks();
-        Task<IArtist> GetArtist();
 
         string GetCover(PictureSize aSize);
         bool HasCover(PictureSize aSize);
@@ -29,7 +28,7 @@ namespace E.Deezer.Api
     {
         public uint Id { get; set; }
         public string Title { get; set; }
-        public string Tracklist { get; set; }
+        public IArtist Artist { get { return ArtistInternal; } }
 
         [DeserializeAs(Name = "artist")]
         public Artist ArtistInternal { get; set; }
@@ -95,11 +94,6 @@ namespace E.Deezer.Api
             }, TaskContinuationOptions.OnlyOnRanToCompletion);  
         }
 
-
-        public Task<IArtist> GetArtist()
-        {
-            return Task.Factory.StartNew<IArtist>(() => ArtistInternal);
-        }
 
 
         public override string ToString()

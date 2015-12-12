@@ -19,10 +19,8 @@ namespace E.Deezer.Api
         bool Explicit { get; set; }
         string ArtistName { get; }
         string AlbumName { get; }
-
-        //Methods
-        Task<IArtist> GetArtist();
-        Task<IAlbum> GetAlbum();
+        IArtist Artist { get; }
+        IAlbum Album { get; }
 
         string GetCover(PictureSize aSize);
         bool HasCover(PictureSize aSize);
@@ -38,6 +36,8 @@ namespace E.Deezer.Api
         public DateTime ReleaseDate { get; set; }
         public string Artwork { get; set; }
         public bool Explicit { get; set; }
+        public IArtist Artist { get { return ArtistInternal; } }
+        public IAlbum Album { get { return AlbumInternal; } }
 
         public string ArtistName
         {
@@ -103,10 +103,6 @@ namespace E.Deezer.Api
             }
         }
 
-
-        public Task<IArtist> GetArtist() { return Task.Factory.StartNew<IArtist>(() => ArtistInternal); }
-
-        public Task<IAlbum> GetAlbum() { return Task.Factory.StartNew<IAlbum>(() => AlbumInternal); }
 
 
         public override string ToString()
