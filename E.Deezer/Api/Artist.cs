@@ -7,34 +7,12 @@ using System.Threading.Tasks;
 
 namespace E.Deezer.Api
 {
-    /// <summary>
-    /// A Deezer artist object
-    /// </summary>
     public interface IArtist
     {
-        /// <summary>
-        /// Deezer library ID number
-        /// </summary>
         uint Id { get; set; }
-
-        /// <summary>
-        /// Artist's name
-        /// </summary>
         string Name { get; set; }
-
-        /// <summary>
-        /// Deezer.com link to artist
-        /// </summary>
         string Url { get; set; }
-
-        /// <summary>
-        /// Link to artist's image
-        /// </summary>
         string Picture { get; set; }
-
-        /// <summary>
-        /// Link to artist tracklist
-        /// </summary>
         string Tracklist { get; set; }
 
         //Methods

@@ -9,9 +9,6 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-    /// <summary>
-    /// A Deezer Album object
-    /// </summary>
     public interface IAlbum
     {
         uint Id { get; set; }

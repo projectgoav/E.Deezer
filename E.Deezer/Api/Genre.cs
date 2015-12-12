@@ -9,37 +9,14 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-    #region Genre
-
-    /// <summary>
-    /// A Deezer Genre Object
-    /// </summary>
     public interface IGenre
     {
-        /// <summary>
-        /// Deezer library ID number
-        /// </summary>
         uint Id { get; set; }
-
-        /// <summary>
-        /// Genre name
-        /// </summary>
         string Name { get; set; }
 
         //METHODS
 
-        /// <summary>
-        /// Gets Genre's image
-        /// </summary>
-        /// <param name="aSize">Requested image size</param>
-        /// <returns>Url to image, or empty string if no such image exists.</returns>
         string GetPicture(PictureSize aSize);
-
-        /// <summary>
-        /// Gets if the Genre has the specified image
-        /// </summary>
-        /// <param name="aSize">Requested image size</param>
-        /// <returns>True if picture exists</returns>
         bool HasPicture(PictureSize aSize);
 
 
@@ -76,9 +53,6 @@ namespace E.Deezer.Api
 
     }
 
-    /// <summary>
-    /// Defines a picture size for Deezer Genre
-    /// </summary>
     public enum PictureSize
     {
         /// <summary>
@@ -192,13 +166,6 @@ namespace E.Deezer.Api
         }
     }
 
-    #endregion
-
-    #region GenreList
-
-    /// <summary>
-    /// Contains a list of Genre objects
-    /// </summary>
     public interface IGenreList
     {
         /// <summary>
@@ -231,8 +198,4 @@ namespace E.Deezer.Api
             //foreach(IGenre g in Genre) { (g as Genre).Deserialize(aClient); }
         }
     }
-
-
-
-    #endregion
 }

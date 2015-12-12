@@ -9,68 +9,21 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-    /// <summary>
-    /// Deezer tack object
-    /// </summary>
     public interface ITrack
     {
-        /// <summary>
-        /// Deezer libray ID number
-        /// </summary>
         int Id { get; set;  }
-
-        /// <summary>
-        /// Track title
-        /// </summary>
         string Title { get; set;  }
-
-        /// <summary>
-        /// Deezer.come link to track
-        /// </summary>
         string Link { get; set;  }
-
-        /// <summary>
-        /// Length of track (in seconds)
-        /// </summary>
         uint Duration { get; set;  }
-
-        /// <summary>
-        /// Track release date
-        /// </summary>
         DateTime ReleaseDate { get; set; }
-
-        /// <summary>
-        /// Track Explicit rating
-        /// </summary>
         bool Explicit { get; set;  }
-
-        /// <summary>
-        /// Link to track artwork
-        /// </summary>
         string Artwork { get; set;  }
-
-        /// <summary>
-        /// Track artist name
-        /// </summary>
         string ArtistName { get; }
-
-        /// <summary>
-        /// Track album name
-        /// </summary>
         string AlbumName { get; }
 
         //Methods
 
-        /// <summary>
-        /// Gets track artist
-        /// </summary>
-        /// <returns>Track's artist</returns>
         Task<IArtist> GetArtist();
-
-        /// <summary>
-        /// Gets album that track belongs to
-        /// </summary>
-        /// <returns>Containing album</returns>
         Task<IAlbum> GetAlbum();
     }
 
