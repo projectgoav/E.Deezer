@@ -7,28 +7,19 @@ using E.Deezer.Endpoint;
 
 namespace E.Deezer
 {
-    public interface IDeezerSession
+    public class DeezerSession
     {
-        IBrowseEndpoint Browse { get; }
-        ISearchEndpoint Search { get; }
-
-        //TODO
-        //User Stuff
-        //void Login(String aUsername);
-        //void Logout();
-    }
-
-    public class DeezerSession : IDeezerSession
-    {
-        public IBrowseEndpoint Browse  { get { throw new NotImplementedException(); }  }
-        public ISearchEndpoint Search {  get { throw new NotImplementedException(); }  }
-
-        /// <summary>
-        /// Base Deezer API endpoint
-        /// </summary>
+        //Base Deezer API endpoint
         public const string ENDPOINT = "https://api.deezer.com/";
 
+        //Private default response size.
         public const uint DEFAULT_SIZE = 25;
+
+        //Internal access to this size.
+        private uint iSize = 0;
+        internal uint ResultSize { get { return iSize; } }
+
+        public DeezerSession(uint aResultSize) { iSize = aResultSize; }
 
 
         //Generates a permission string which can be used to grant people
@@ -81,14 +72,15 @@ namespace E.Deezer
         }
 
 
-
         /// <summary>
         /// Starts a new session on the Deezer API.
         /// Setup internal workings of E.Deezer
         /// </summary>
-        public static Deezer CreateNew()
+        public static Deezer CreateNew() { return CreateNew(DEFAULT_SIZE); }
+
+        public static Deezer CreateNew(uint aDefaultResponseSize)
         {
-            return new Deezer(new DeezerSession());
+            return new Deezer(new DeezerSession(aDefaultResponseSize)); 
         }
 
 

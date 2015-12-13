@@ -96,7 +96,7 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<IEnumerable<ITrack>> GetTracks() { return GetTracks(0, DeezerSession.DEFAULT_SIZE); }
+        public Task<IEnumerable<ITrack>> GetTracks() { return GetTracks(0, Client.ResultSize); }
         public Task<IEnumerable<ITrack>> GetTracks(uint aCount) {  return GetTracks(0, aCount); }
 		public Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount)
 		{

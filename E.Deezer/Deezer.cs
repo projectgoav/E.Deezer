@@ -15,15 +15,15 @@ namespace E.Deezer
     /// </summary>
     public class Deezer : IDisposable
     {
-        private IDeezerSession iSession;
+        private DeezerSession iSession;
         private IBrowseEndpoint iBrowse;
         private ISearchEndpoint iSearch;
         private DeezerClient iClient;
 
-        internal Deezer(IDeezerSession aSession)
+        internal Deezer(DeezerSession aSession)
         {
             iSession = aSession;
-            iClient = new DeezerClient(null);   //TODO FIX
+            iClient = new DeezerClient(iSession);   //TODO FIX
 
             iBrowse = new BrowseEndpoint(iClient);
             iSearch = new SearchEndpoint(iClient);

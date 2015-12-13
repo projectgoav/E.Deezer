@@ -18,10 +18,10 @@ namespace E.Deezer
     public class DeezerClient : IDisposable
     {
         private readonly RestClient iClient;
-        private readonly IDeezerSession iSession;
+        private readonly DeezerSession iSession;
         private readonly CancellationTokenSource iCancellationTokenSource;
 
-        internal DeezerClient(IDeezerSession aSession) 
+        internal DeezerClient(DeezerSession aSession) 
         { 
             iClient = new RestClient(DeezerSession.ENDPOINT);
             iClient.Timeout = 2500;
@@ -31,7 +31,7 @@ namespace E.Deezer
         }
 
         internal CancellationToken Token { get { return iCancellationTokenSource.Token; } }
-
+        internal uint ResultSize { get { return iSession.ResultSize; } }
 
         //A nice wee copy of get, incase we want to limit users from picking the start/end points
         internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams) { return Get<T>(aMethod, aParams, uint.MaxValue, uint.MaxValue); }

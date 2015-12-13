@@ -35,7 +35,7 @@ namespace E.Deezer.Endpoint
 
         private const string ENDPOINT = "search/";
 
-        public Task<IEnumerable<IAlbum>> Albums(string aQuery) { return Albums(aQuery, 0, DeezerSession.DEFAULT_SIZE); }
+        public Task<IEnumerable<IAlbum>> Albums(string aQuery) { return Albums(aQuery, 0, iClient.ResultSize); }
         public Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aCount) { return Albums(aQuery, 0, aCount); }
         public Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aStart, uint aCount)
         {
@@ -47,7 +47,7 @@ namespace E.Deezer.Endpoint
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
-        public Task<IEnumerable<IArtist>> Artists(string aQuery) { return Artists(aQuery, 0, DeezerSession.DEFAULT_SIZE); }
+        public Task<IEnumerable<IArtist>> Artists(string aQuery) { return Artists(aQuery, 0, iClient.ResultSize); }
         public Task<IEnumerable<IArtist>> Artists(string aQuery, uint aCount) { return Artists(aQuery, 0, aCount); }
         public Task<IEnumerable<IArtist>> Artists(string aQuery, uint aStart, uint aCount)
         {
@@ -60,7 +60,7 @@ namespace E.Deezer.Endpoint
         }
 
 
-        public Task<IEnumerable<IPlaylist>> Playlists(string aQuery) { return Playlists(aQuery, 0, DeezerSession.DEFAULT_SIZE); }
+        public Task<IEnumerable<IPlaylist>> Playlists(string aQuery) { return Playlists(aQuery, 0, iClient.ResultSize); }
         public Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aCount) { return Playlists(aQuery, 0, aCount); }
         public Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aStart, uint aCount)
         {
@@ -72,7 +72,7 @@ namespace E.Deezer.Endpoint
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
-        public Task<IEnumerable<ITrack>> Tracks(string aQuery) { return Tracks(aQuery, 0, DeezerSession.DEFAULT_SIZE); }
+        public Task<IEnumerable<ITrack>> Tracks(string aQuery) { return Tracks(aQuery, 0, iClient.ResultSize); }
         public Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aCount) { return Tracks(aQuery, 0, aCount); }
         public Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aStart, uint aCount)
         {
