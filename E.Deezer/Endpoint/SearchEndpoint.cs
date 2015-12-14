@@ -41,11 +41,13 @@ namespace E.Deezer.Endpoint
         {
             string[] parms = new string[] { string.Empty, "q", aQuery };
 
-            return iClient.Get<Album>(ENDPOINT + "album", parms, aStart, aCount).ContinueWith<IEnumerable<IAlbum>>((aTask) =>
+            var t = iClient.Get<Album>(ENDPOINT + "album", parms, aStart, aCount).ContinueWith<IEnumerable<IAlbum>>((aTask) =>
             {
-                aTask.Result.Items.Deserialize(iClient);
-                return aTask.Result.Items;
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+                    aTask.Result.Items.Deserialize(iClient);
+                    return aTask.Result.Items;
+            }, iClient.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            t.SuppressExceptions();
+            return t;
         }
 
         public Task<IEnumerable<IArtist>> Artists(string aQuery) { return Artists(aQuery, 0, iClient.ResultSize); }
@@ -58,7 +60,7 @@ namespace E.Deezer.Endpoint
             {
                 aTask.Result.Items.Deserialize(iClient);
                 return aTask.Result.Items;
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            }, iClient.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
 
@@ -72,7 +74,7 @@ namespace E.Deezer.Endpoint
             {
                 aTask.Result.Items.Deserialize(iClient);
                 return aTask.Result.Items;
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            }, iClient.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
         public Task<IEnumerable<ITrack>> Tracks(string aQuery) { return Tracks(aQuery, 0, iClient.ResultSize); }
@@ -85,7 +87,7 @@ namespace E.Deezer.Endpoint
             {
                 aTask.Result.Items.Deserialize(iClient);
                 return aTask.Result.Items;
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            }, iClient.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
 

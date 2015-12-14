@@ -66,7 +66,7 @@ namespace E.Deezer
                 CheckResponse<DeezerFragmentV2<T>>(aTask);
 
                 return aTask.Result.Data;
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            },Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
             task.SuppressExceptions();
             return task;
         }
@@ -81,7 +81,7 @@ namespace E.Deezer
                 CheckResponse<DeezerObject<T>>(aTask);
 
                 return aTask.Result.Data.Data;
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
             task.SuppressExceptions();
             return task;
         }
@@ -103,7 +103,7 @@ namespace E.Deezer
                     CheckResponse<DeezerPermissionRequest>(aTask);
 
                     iPermissions = aTask.Result.Data.Permissions;
-                }, TaskContinuationOptions.OnlyOnRanToCompletion);
+                }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
             });
         }
 
@@ -115,8 +115,12 @@ namespace E.Deezer
             if (aResponse.IsFaulted)
             {
                 iSession.Logout();
+                throw aResponse.Exception;
+            }
+            else if (aResponse.Result.ErrorException != null)
+            {
+                 iSession.Logout();
                 if (aResponse.Result.ErrorException != null) { throw aResponse.Result.ErrorException; }
-                else { throw new Exception("The specified request did not complete successfully."); }       //TODO - wording
             }
             else
             {
