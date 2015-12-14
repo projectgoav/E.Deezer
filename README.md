@@ -3,7 +3,7 @@ An unoffical asynchronous wrapper for the Deezer API and .NET.
 
 ## Usage
 
-Latest Nuget: *(BETA)* [2.0.0.158](http://nuget.org/packages/e.deezer)
+Latest Nuget: *(BETA)* [2.0.1.172](http://nuget.org/packages/e.deezer)
 
 Source: 
 ```
