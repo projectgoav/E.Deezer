@@ -1,14 +1,13 @@
 # E.Deezer
 An unoffical asynchronous wrapper for the Deezer API and .NET.
 
-*This is a development branch of the V2 API restructure.*
-
 ## Usage
+
+Latest Nuget: *(BETA)* [2.0.0.158](http://nuget.org/packages/e.deezer)
 
 Source: 
 ```
 git clone https://github.com/projectgoav/e.deezer
-git checkout V2
 ```
 
 Open solution in VS and build it.
@@ -39,7 +38,6 @@ See more in the [Wiki](http://github.com/projectgoav/E.Deezer/wiki)
 
 
 ## TODO
-- Update Wiki with new information
 - Cleanup of debug code
 - Unit Testing
 
