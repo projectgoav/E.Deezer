@@ -63,21 +63,7 @@ namespace E.Deezer
 
             var task = iClient.ExecuteGetTaskAsync<DeezerFragmentV2<T>>(request, Token).ContinueWith<DeezerFragmentV2<T>>((aTask) =>
             {
-                //Is faulty?
-                if(aTask.IsFaulted)
-                {
-                    if (aTask.Result.ErrorException != null) { throw aTask.Result.ErrorException; }
-                    else { throw new Exception("The specified request did not complete successfully."); }       //TODO - wording
-                }
-                else
-                {
-                    //Did the Deezer API call fail?
-                    if(aTask.Result.Data != null)
-                    {
-                        var r = aTask.Result.Data;
-                        if (r.Error != null) { throw new DeezerException(r.Error); }
-                    }
-                }
+                CheckResponse<DeezerFragmentV2<T>>(aTask);
 
                 return aTask.Result.Data;
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
@@ -92,21 +78,7 @@ namespace E.Deezer
 
             var task = iClient.ExecuteGetTaskAsync<DeezerObject<T>>(request, Token).ContinueWith<T>((aTask) =>
             {
-                //Is faulty?
-                if (aTask.IsFaulted)
-                {
-                    if (aTask.Result.ErrorException != null) { throw aTask.Result.ErrorException; }
-                    else { throw new Exception("The specified request did not complete successfully."); }       //TODO - wording
-                }
-                else
-                {
-                    //Did the Deezer API call fail?
-                    if (aTask.Result.Data != null)
-                    {
-                        var r = aTask.Result.Data;
-                        if (r.Error != null) { throw new DeezerException(r.Error); }
-                    }
-                }
+                CheckResponse<DeezerObject<T>>(aTask);
 
                 return aTask.Result.Data.Data;
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
@@ -128,27 +100,34 @@ namespace E.Deezer
 
                 iClient.ExecuteGetTaskAsync<DeezerPermissionRequest>(request, Token).ContinueWith((aTask) =>
                 {
-                    //Is faulty?
-                    if (aTask.IsFaulted)
-                    {
-                        iSession.Logout();
-                        if (aTask.Result.ErrorException != null) { throw aTask.Result.ErrorException; }
-                        else { throw new Exception("The specified request did not complete successfully."); }       //TODO - wording
-                    }
-                    else
-                    {
-                        //Did the Deezer API call fail?
-                        if (aTask.Result.Data != null)
-                        {
-                            var r = aTask.Result.Data;
-                            if (r.Error != null) { throw new DeezerException(r.Error); }
-                            else { iPermissions = aTask.Result.Data.Permissions; }
-                        }  
-                    }
+                    CheckResponse<DeezerPermissionRequest>(aTask);
+
+                    iPermissions = aTask.Result.Data.Permissions;
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
             });
         }
 
+
+        //Checks a response for errors and exceptions
+        private void CheckResponse<T>(Task<IRestResponse<T>> aResponse) where T : IHasError
+        {
+            //Is faulty?
+            if (aResponse.IsFaulted)
+            {
+                iSession.Logout();
+                if (aResponse.Result.ErrorException != null) { throw aResponse.Result.ErrorException; }
+                else { throw new Exception("The specified request did not complete successfully."); }       //TODO - wording
+            }
+            else
+            {
+                //Did the Deezer API call fail?
+                if (aResponse.Result.Data != null)
+                {
+                    var r = aResponse.Result.Data;
+                    if (r.Error != null) { throw new DeezerException(r.Error); }
+                }
+            }
+        }
 
 
         //Performs a transform from Deezer Fragment to IEnumerable.

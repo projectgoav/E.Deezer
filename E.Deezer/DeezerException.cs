@@ -12,10 +12,10 @@ namespace E.Deezer
     /// </summary>
     public class DeezerException : Exception
     {
-        private Error iError;
+        private IError iError;
         private Exception iException;
 
-        internal DeezerException(Error aError) 
+        internal DeezerException(IError aError) 
         { 
             iError = aError;
 
