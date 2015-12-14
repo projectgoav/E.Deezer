@@ -31,4 +31,10 @@ namespace E.Deezer
         public T Data { get; set; }
         public Error Error { get; set; }
     }
+
+    internal class DeezerPermissionRequest
+    {
+        public E.Deezer.Api.OAuthPermissions Permissions { get; set; }
+        public Error Error { get; set; }
+    }
 }

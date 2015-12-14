@@ -20,6 +20,7 @@ namespace E.Deezer
         private readonly RestClient iClient;
         private readonly DeezerSession iSession;
         private readonly CancellationTokenSource iCancellationTokenSource;
+        private IPermissions iPermissions;
 
         internal DeezerClient(DeezerSession aSession) 
         { 
@@ -112,6 +113,43 @@ namespace E.Deezer
             task.SuppressExceptions();
             return task;
         }
+
+
+
+
+        //'OAuth' Stuff
+
+        //Grabs the user's permissions when the user Logs into the library.
+        internal void Login()
+        {
+            Task.Factory.StartNew(() =>
+            {
+                IRestRequest request = new RestRequest("user/me/permissions", Method.GET);
+
+                iClient.ExecuteGetTaskAsync<DeezerPermissionRequest>(request, Token).ContinueWith((aTask) =>
+                {
+                    //Is faulty?
+                    if (aTask.IsFaulted)
+                    {
+                        iSession.Logout();
+                        if (aTask.Result.ErrorException != null) { throw aTask.Result.ErrorException; }
+                        else { throw new Exception("The specified request did not complete successfully."); }       //TODO - wording
+                    }
+                    else
+                    {
+                        //Did the Deezer API call fail?
+                        if (aTask.Result.Data != null)
+                        {
+                            var r = aTask.Result.Data;
+                            if (r.Error != null) { throw new DeezerException(r.Error); }
+                            else { iPermissions = aTask.Result.Data.Permissions; }
+                        }  
+                    }
+                }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            });
+        }
+
+
 
         //Performs a transform from Deezer Fragment to IEnumerable.
         internal IEnumerable<TDest> Transform<TSource, TDest>(DeezerFragmentV2<TSource> aFragment) where TSource : TDest, IDeserializable<DeezerClient>
