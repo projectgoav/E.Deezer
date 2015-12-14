@@ -23,7 +23,7 @@ namespace E.Deezer
         internal Deezer(DeezerSession aSession)
         {
             iSession = aSession;
-            iClient = new DeezerClient(iSession);   //TODO FIX
+            iClient = new DeezerClient(iSession);
 
             iBrowse = new BrowseEndpoint(iClient);
             iSearch = new SearchEndpoint(iClient);
