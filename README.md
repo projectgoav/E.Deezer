@@ -35,6 +35,8 @@ Once E.Deezer has been referenced in your new project:
  var offset_search = await Deezer.Search.Tracks("Elivs", 20, 15);
  ```
 
+See more in the [Wiki](http://github.com/projectgoav/E.Deezer/wiki)
+
 
 ## TODO
 - Update Wiki with new information
