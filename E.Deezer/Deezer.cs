@@ -38,6 +38,10 @@ namespace E.Deezer
            return iClient.Get<Infos>("infos").ContinueWith<IInfos>((aTask) => { return aTask.Result; }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
         
+        //'OAuth'
+        public void Login(string aAccessToken) {  iSession.Login(aAccessToken); }
+        public void Logout() { iSession.Logout(); }
+        public bool IsAuthenticated { get { return iSession.Authenticated; } }
 
         public void Dispose() {  iClient.Dispose(); }
     }

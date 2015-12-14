@@ -19,8 +19,13 @@ namespace E.Deezer
         private uint iSize = 0;
         internal uint ResultSize { get { return iSize; } }
 
-        public DeezerSession(uint aResultSize) { iSize = aResultSize; }
+        public DeezerSession(uint aResultSize) { iSize = aResultSize; AccessToken = string.Empty; }
 
+        internal void Login(string aAccessToken) { AccessToken = aAccessToken; }
+        internal void Logout() {  AccessToken = string.Empty; }
+
+        internal string AccessToken { get; private set; }
+        internal bool Authenticated { get { return AccessToken == string.Empty; } }
 
         //Generates a permission string which can be used to grant people
         //Access to features of the app
@@ -82,7 +87,6 @@ namespace E.Deezer
         {
             return new Deezer(new DeezerSession(aDefaultResponseSize)); 
         }
-
 
     }
 }

@@ -33,6 +33,9 @@ namespace E.Deezer
         internal CancellationToken Token { get { return iCancellationTokenSource.Token; } }
         internal uint ResultSize { get { return iSession.ResultSize; } }
 
+        internal string AccessToken { get { return iSession.AccessToken; } }
+        internal bool IsAuthenticated { get { return iSession.Authenticated; } }
+
         //A nice wee copy of get, incase we want to limit users from picking the start/end points
         internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams) { return Get<T>(aMethod, aParams, uint.MaxValue, uint.MaxValue); }
 
