@@ -12,21 +12,10 @@ using E.Deezer.Api;
 
 namespace E.Deezer
 {
-    internal interface IDeezerClient
-    {
-        Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams);
-        Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams, uint aStart, uint aCount);
-        Task<T> Get<T>(string aMethod);
-
-        //Converting the concrete classes into their interfaces.
-        Task<IEnumerable<TDest>> GetEnumerable<TSource, TDest>(DeezerFragmentV2<TSource> aSource);
-    }
-
-
     /// <summary>
     /// Performs requests on the GitHub API.
     /// </summary>
-    internal class DeezerClient : IDeezerClient, IDisposable
+    public class DeezerClient : IDisposable
     {
         private readonly RestClient iClient;
         private readonly DeezerSession iSession;
@@ -45,9 +34,9 @@ namespace E.Deezer
         internal uint ResultSize { get { return iSession.ResultSize; } }
 
         //A nice wee copy of get, incase we want to limit users from picking the start/end points
-        public Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams) { return Get<T>(aMethod, aParams, uint.MaxValue, uint.MaxValue); }
+        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams) { return Get<T>(aMethod, aParams, uint.MaxValue, uint.MaxValue); }
 
-        public Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams, uint aStart, uint aCount)
+        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams, uint aStart, uint aCount)
         {
             IRestRequest request = new RestRequest(aMethod, Method.GET);
 
@@ -120,6 +109,21 @@ namespace E.Deezer
             task.SuppressExceptions();
             return task;
         }
+
+        //Performs a transform from Deezer Fragment to IEnumerable.
+        internal IEnumerable<TDest> Transform<TSource, TDest>(DeezerFragmentV2<TSource> aFragment) where TSource : TDest, IDeserializable<DeezerClient>
+        {
+            List<TDest> items = new List<TDest>();
+
+            foreach(var item in aFragment.Items)
+            {
+                item.Deserialize(this);
+                items.Add(item);
+            }
+
+            return items;
+        }
+
 
         public void Dispose()
         {

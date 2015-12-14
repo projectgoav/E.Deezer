@@ -89,8 +89,7 @@ namespace E.Deezer.Api
 
             return Client.Get<Track>("album/{id}/tracks", parms).ContinueWith<IEnumerable<ITrack>>((aTask) =>
             {
-                aTask.Result.Items.Deserialize(Client);
-                return aTask.Result.Items;
+                return Client.Transform<Track, ITrack>(aTask.Result);
             }, TaskContinuationOptions.OnlyOnRanToCompletion);  
         }
 

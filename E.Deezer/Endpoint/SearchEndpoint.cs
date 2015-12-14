@@ -43,6 +43,7 @@ namespace E.Deezer.Endpoint
 
             return iClient.Get<Album>(ENDPOINT + "album", parms, aStart, aCount).ContinueWith<IEnumerable<IAlbum>>((aTask) =>
             {
+                aTask.Result.Items.Deserialize(iClient);
                 return aTask.Result.Items;
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
@@ -55,6 +56,7 @@ namespace E.Deezer.Endpoint
 
             return iClient.Get<Artist>(ENDPOINT + "artist", parms, aStart, aCount).ContinueWith<IEnumerable<IArtist>>((aTask) =>
             {
+                aTask.Result.Items.Deserialize(iClient);
                 return aTask.Result.Items;
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
@@ -68,6 +70,7 @@ namespace E.Deezer.Endpoint
 
             return iClient.Get<Playlist>(ENDPOINT + "playlist", parms, aStart, aCount).ContinueWith<IEnumerable<IPlaylist>>((aTask) =>
             {
+                aTask.Result.Items.Deserialize(iClient);
                 return aTask.Result.Items;
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
@@ -80,6 +83,7 @@ namespace E.Deezer.Endpoint
 
             return iClient.Get<Track>(ENDPOINT + "track", parms, aStart, aCount).ContinueWith<IEnumerable<ITrack>>((aTask) =>
             {
+                aTask.Result.Items.Deserialize(iClient);
                 return aTask.Result.Items;
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
