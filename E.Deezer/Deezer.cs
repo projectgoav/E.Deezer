@@ -39,7 +39,11 @@ namespace E.Deezer
         }
         
         //'OAuth'
-        public void Login(string aAccessToken) {  iSession.Login(aAccessToken); }
+        public void Login(string aAccessToken) 
+        {  
+            iSession.Login(aAccessToken);
+            iClient.Login();    //Grab permissions and ensure code is valid
+        }
         public void Logout() { iSession.Logout(); }
         public bool IsAuthenticated { get { return iSession.Authenticated; } }
 

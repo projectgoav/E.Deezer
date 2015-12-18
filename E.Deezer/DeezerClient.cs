@@ -97,6 +97,7 @@ namespace E.Deezer
             Task.Factory.StartNew(() =>
             {
                 IRestRequest request = new RestRequest("user/me/permissions", Method.GET);
+                request.AddParameter("access_token", AccessToken, ParameterType.QueryString);
 
                 iClient.ExecuteGetTaskAsync<DeezerPermissionRequest>(request, Token).ContinueWith((aTask) =>
                 {

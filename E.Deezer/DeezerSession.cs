@@ -25,7 +25,7 @@ namespace E.Deezer
         internal void Logout() {  AccessToken = string.Empty; }
 
         internal string AccessToken { get; private set; }
-        internal bool Authenticated { get { return AccessToken == string.Empty; } }
+        internal bool Authenticated { get { return AccessToken != string.Empty; } }
 
         //Generates a permission string which can be used to grant people
         //Access to features of the app
