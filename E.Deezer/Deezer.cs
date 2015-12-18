@@ -39,10 +39,10 @@ namespace E.Deezer
         }
         
         //'OAuth'
-        public void Login(string aAccessToken) 
-        {  
+        public Task Login(string aAccessToken) 
+        {
             iSession.Login(aAccessToken);
-            iClient.Login();    //Grab permissions and ensure code is valid
+            return iClient.Login(); //Obtaining the permissions this token grants E.Deezer
         }
         public void Logout() { iSession.Logout(); }
         public bool IsAuthenticated { get { return iSession.Authenticated; } }

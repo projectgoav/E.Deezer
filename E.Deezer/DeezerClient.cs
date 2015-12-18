@@ -92,20 +92,17 @@ namespace E.Deezer
         //'OAuth' Stuff
 
         //Grabs the user's permissions when the user Logs into the library.
-        internal void Login()
+        internal Task Login()
         {
-            Task.Factory.StartNew(() =>
+            IRestRequest request = new RestRequest("user/me/permissions", Method.GET);
+            request.AddParameter("access_token", AccessToken, ParameterType.QueryString);
+
+            return iClient.ExecuteGetTaskAsync<DeezerPermissionRequest>(request, Token).ContinueWith((aTask) =>
             {
-                IRestRequest request = new RestRequest("user/me/permissions", Method.GET);
-                request.AddParameter("access_token", AccessToken, ParameterType.QueryString);
+                CheckResponse<DeezerPermissionRequest>(aTask);
 
-                iClient.ExecuteGetTaskAsync<DeezerPermissionRequest>(request, Token).ContinueWith((aTask) =>
-                {
-                    CheckResponse<DeezerPermissionRequest>(aTask);
-
-                    iPermissions = aTask.Result.Data.Permissions;
-                }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-            });
+                iPermissions = aTask.Result.Data.Permissions;
+            }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
 
@@ -115,12 +112,10 @@ namespace E.Deezer
             //Is faulty?
             if (aResponse.IsFaulted)
             {
-                iSession.Logout();
                 throw aResponse.Exception;
             }
             else if (aResponse.Result.ErrorException != null)
             {
-                 iSession.Logout();
                 if (aResponse.Result.ErrorException != null) { throw aResponse.Result.ErrorException; }
             }
             else
@@ -129,7 +124,12 @@ namespace E.Deezer
                 if (aResponse.Result.Data != null)
                 {
                     var r = aResponse.Result.Data;
-                    if (r.Error != null) { throw new DeezerException(r.Error); }
+                    if (r.TheError != null) 
+                    { 
+                        //If we've got an invalid code, we auto logout :)
+                        if(r.TheError.Code == 300) { iSession.Logout(); }
+                        throw new DeezerException(r.TheError); 
+                    }
                 }
             }
         }

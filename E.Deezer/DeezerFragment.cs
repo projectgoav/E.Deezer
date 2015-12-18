@@ -9,7 +9,7 @@ namespace E.Deezer
 {
     internal interface IHasError
     {
-        IError Error { get; }
+        IError TheError { get; }
     }
 
     internal interface IError
@@ -34,31 +34,24 @@ namespace E.Deezer
         [DeserializeAs(Name="data")]
         public List<T> Items { get; set; }
         public uint Total { get; set; }
+        public Error Error { get; set; }
 
-        [DeserializeAs(Name = "error")]
-        private Error iError { get; set; }
-
-        public IError Error { get { return iError; } }
+        public IError TheError { get { return Error; } }
     }
 
     internal class DeezerObject<T> : IHasError
     {
         public T Data { get; set; }
+        private Error Error { get; set; }
 
-        [DeserializeAs(Name = "error")]
-        private Error iError { get; set; }
-
-        public IError Error { get { return iError; } }
+        public IError TheError { get { return Error; } }
     }
 
     internal class DeezerPermissionRequest : IHasError
     {
         public E.Deezer.Api.OAuthPermissions Permissions { get; set; }
+        public Error Error { get; set; }
 
-
-        [DeserializeAs(Name = "error")]
-        private Error iError { get; set; }
-
-        public IError Error { get { return iError; } }
+        public IError TheError { get { return Error; } }
     }
 }
