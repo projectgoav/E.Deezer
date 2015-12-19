@@ -73,4 +73,11 @@ namespace E.Deezer
 
         public override string Message { get { return string.Format("{0}\n{1}", iMessage, MSG_END); } }
     }
+
+
+    public class NotLoggedInException : Exception
+    {
+        private const string MSG = "There is no active access token. This operation couldn't be performed";
+        public override string Message { get { return MSG; } }
+    }
 }

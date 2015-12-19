@@ -21,6 +21,7 @@ namespace E.Deezer
         private readonly DeezerSession iSession;
         private readonly CancellationTokenSource iCancellationTokenSource;
         private IPermissions iPermissions;
+        private IUser iUser;
 
         internal DeezerClient(DeezerSession aSession) 
         { 
@@ -36,9 +37,10 @@ namespace E.Deezer
 
         internal string AccessToken { get { return iSession.AccessToken; } }
         internal bool IsAuthenticated { get { return iSession.Authenticated; } }
+        internal IUser User { get { return iUser; } }
 
         //Another copy for those without params!
-        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, uint aStart, uint aCount) {  return Get<T>(aMethod, new string[0], aStart, aCount); }
+        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, uint aStart, uint aCount) {  return Get<T>(aMethod, new string[] { "QRY", "access_token", AccessToken} , aStart, aCount); }
 
         //A nice wee copy of get, incase we want to limit users from picking the start/end points
         internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams) { return Get<T>(aMethod, aParams, uint.MaxValue, uint.MaxValue); }
@@ -51,6 +53,7 @@ namespace E.Deezer
             {
                 switch(aParams[i])
                 {
+                    case "QRY": { request.AddParameter(aParams[i + 1], aParams[i + 2], ParameterType.QueryString); break; }
                     case "URL": { request.AddParameter(aParams[i + 1], aParams[i + 2], ParameterType.UrlSegment); break; }
                     default:    { request.AddParameter(aParams[i + 1], aParams[i + 2]); break;  }
                 }           
@@ -100,32 +103,51 @@ namespace E.Deezer
             IRestRequest request = new RestRequest("user/me/permissions", Method.GET);
             request.AddParameter("access_token", AccessToken, ParameterType.QueryString);
 
-            return iClient.ExecuteGetTaskAsync<DeezerPermissionRequest>(request, Token).ContinueWith((aTask) =>
+            var loginTask = iClient.ExecuteGetTaskAsync<DeezerPermissionRequest>(request, Token).ContinueWith((aTask) =>
             {
                 CheckResponse<DeezerPermissionRequest>(aTask);
 
                 iPermissions = aTask.Result.Data.Permissions;
             }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+
+            //Create a local copy of the user so access by the User Endpoint
+            Task.Factory.StartNew(() =>
+            {
+                IRestRequest uRequest = new RestRequest("user/me", Method.GET);
+                uRequest.AddParameter("access_token", AccessToken, ParameterType.QueryString);
+
+                iClient.ExecuteGetTaskAsync<DeezerObject<User>>(uRequest, Token).ContinueWith((aTask) =>
+                {
+                    try { CheckResponse<DeezerObject<User>>(aTask); }
+                    catch { iUser = null; }
+                    iUser = aTask.Result.Data.Data;
+                }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            }, Token);
+
+            return loginTask;
         }
 
         //Wrapper around permissions, matching to DeezerPermissions Enum
         internal bool HasPermission(DeezerPermissions aPermission)
         {
-            if (iPermissions != null)
+            if (!IsAuthenticated)
             {
-                switch(aPermission)
+                if (iPermissions != null)
                 {
-                    case DeezerPermissions.BasicAccess:      { return iPermissions.BasicAccess; }
-                    case DeezerPermissions.DeleteLibrary:    { return iPermissions.DeleteLibrary; }
-                    case DeezerPermissions.Email:            { return iPermissions.Email; }
-                    case DeezerPermissions.ListeningHistory: { return iPermissions.ListeningHistory; }
-                    case DeezerPermissions.ManageCommunity:  { return iPermissions.ManageCommunity; }
-                    case DeezerPermissions.ManageLibrary:    { return iPermissions.ManageLibrary; }
-                    case DeezerPermissions.OfflineAccess:    { return iPermissions.OfflineAccess; }
-                    default: { return false; }
+                    switch (aPermission)
+                    {
+                        case DeezerPermissions.BasicAccess: { return iPermissions.BasicAccess; }
+                        case DeezerPermissions.DeleteLibrary: { return iPermissions.DeleteLibrary; }
+                        case DeezerPermissions.Email: { return iPermissions.Email; }
+                        case DeezerPermissions.ListeningHistory: { return iPermissions.ListeningHistory; }
+                        case DeezerPermissions.ManageCommunity: { return iPermissions.ManageCommunity; }
+                        case DeezerPermissions.ManageLibrary: { return iPermissions.ManageLibrary; }
+                        case DeezerPermissions.OfflineAccess: { return iPermissions.OfflineAccess; }
+                        default: { return false; }
+                    }
                 }
             }
-            else { return false; }
+            return false;
         }
 
 
@@ -149,8 +171,13 @@ namespace E.Deezer
                     var r = aResponse.Result.Data;
                     if (r.TheError != null) 
                     { 
-                        //If we've got an invalid code, we auto logout :)
-                        if(r.TheError.Code == 300) { iSession.Logout(); }
+                        //If we've got an invalid code, we auto logout + clear internals
+                        if(r.TheError.Code == 300) 
+                        { 
+                            iSession.Logout();
+                            iPermissions = null;
+                            iUser = null;
+                        }
                         throw new DeezerException(r.TheError); 
                     }
                 }

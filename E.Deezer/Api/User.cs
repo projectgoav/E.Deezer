@@ -39,9 +39,9 @@ namespace E.Deezer.Api
         Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart, uint aCount);
 
 
-		Task<IEnumerable<ITrack>> GetUserFlow();
-        Task<IEnumerable<ITrack>> GetUserFlow(uint aCount);
-        Task<IEnumerable<ITrack>> GetUserFlow(uint aStart, uint aCount);
+		Task<IEnumerable<ITrack>> GetFlow();
+        Task<IEnumerable<ITrack>> GetFlow(uint aCount);
+        Task<IEnumerable<ITrack>> GetFlow(uint aStart, uint aCount);
 
 		Task<IEnumerable<ITrack>> GetHistory();
         Task<IEnumerable<ITrack>> GetHistory(uint aCount);
@@ -86,6 +86,8 @@ namespace E.Deezer.Api
         //Internal wrapper around get for all user methods :)
         private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
         {
+            if (!Client.IsAuthenticated) { throw new NotLoggedInException(); }
+
             string method = string.Format("user/me/{0}", aMethod);
             return Client.Get<TSource>(method, aStart, aCount).ContinueWith<IEnumerable<TDest>>((aTask) =>
             {
@@ -137,9 +139,9 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<IEnumerable<ITrack>> GetUserFlow() { return GetUserFlow(0, Client.ResultSize);  }
-        public Task<IEnumerable<ITrack>> GetUserFlow(uint aCount) { return GetUserFlow(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetUserFlow(uint aStart, uint aCount)
+        public Task<IEnumerable<ITrack>> GetFlow() { return GetFlow(0, Client.ResultSize);  }
+        public Task<IEnumerable<ITrack>> GetFlow(uint aCount) { return GetFlow(0, aCount); }
+        public Task<IEnumerable<ITrack>> GetFlow(uint aStart, uint aCount)
         {
             if (!Client.HasPermission(DeezerPermissions.BasicAccess)) { throw new DeezerPermissionsException(DeezerPermissions.BasicAccess); }
             else { return Get<Track, ITrack>("flow", aStart, aCount); }

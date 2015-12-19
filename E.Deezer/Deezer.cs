@@ -18,6 +18,7 @@ namespace E.Deezer
         private DeezerSession iSession;
         private IBrowseEndpoint iBrowse;
         private ISearchEndpoint iSearch;
+        private IUserEndpoint iUser;
         private DeezerClient iClient;
 
         internal Deezer(DeezerSession aSession)
@@ -27,10 +28,12 @@ namespace E.Deezer
 
             iBrowse = new BrowseEndpoint(iClient);
             iSearch = new SearchEndpoint(iClient);
+            iUser =   new UserEndpoint(iClient);
         }
 
         public IBrowseEndpoint Browse { get { return iBrowse; } }
         public ISearchEndpoint Search { get { return iSearch; } }
+        public IUserEndpoint   User   { get { return iUser; } }
 
 
         public Task<IInfos> GetServiceInformation()
