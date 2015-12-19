@@ -38,8 +38,8 @@ See more in the [Wiki](http://github.com/projectgoav/E.Deezer/wiki)
 
 
 ## TODO
-- Cleanup of debug code
 - Unit Testing
+- [See More](http://github.com/projectgoav/E.Deezer/issues)
 
 
 ## Requirements
