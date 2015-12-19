@@ -24,7 +24,7 @@ namespace E.Deezer
         private const string SERVICE_EXCEPTION = "Deezer reported that it's service was busy. Deezer responded with result 700 - Exception";
         private const string DATA_EXCEPTION = "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException";
 
-        public DeezerException(IError aError) 
+        public DeezerException(IError aError)
         { 
             iError = aError;
             switch (aError.Code)
@@ -41,11 +41,36 @@ namespace E.Deezer
             }
         }
 
+
         /// <summary>
         /// Gets the message returned from the Deezer API
         /// </summary>
         public override string Message  { get {  return iMessage;  } }
 
         internal IError DeezerError { get { return iError; } }
+    }
+
+
+    internal class DeezerPermissionsException : Exception
+    {
+        private string iMessage;
+
+        private const string UNKNOWN = "The provided access token doesn't provide the required access rights to perform this operation.";
+        private const string MSG_END = "Please ensure the token hasn't expired.";
+        private const string BASIC = "The provided access token doesn't provide 'basic_access' rights for this user and so this operation can't be performed.";
+        private const string HISTORY = "The provided access token doesn't provide 'lisntening_history' rights for this user and so this operation can't be performed"; 
+        
+        public DeezerPermissionsException(DeezerPermissions aPermission)
+        {
+            switch(aPermission)
+            {
+                case DeezerPermissions.BasicAccess:      { iMessage = BASIC; break; }
+                case DeezerPermissions.ListeningHistory: {iMessage = HISTORY; break; }
+                default: { iMessage = UNKNOWN; break; }
+            }
+        }
+
+
+        public override string Message { get { return string.Format("{0}\n{1}", iMessage, MSG_END); } }
     }
 }

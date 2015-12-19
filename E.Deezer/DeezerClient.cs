@@ -37,6 +37,9 @@ namespace E.Deezer
         internal string AccessToken { get { return iSession.AccessToken; } }
         internal bool IsAuthenticated { get { return iSession.Authenticated; } }
 
+        //Another copy for those without params!
+        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, uint aStart, uint aCount) {  return Get<T>(aMethod, new string[0], aStart, aCount); }
+
         //A nice wee copy of get, incase we want to limit users from picking the start/end points
         internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams) { return Get<T>(aMethod, aParams, uint.MaxValue, uint.MaxValue); }
 
@@ -103,6 +106,26 @@ namespace E.Deezer
 
                 iPermissions = aTask.Result.Data.Permissions;
             }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+        }
+
+        //Wrapper around permissions, matching to DeezerPermissions Enum
+        internal bool HasPermission(DeezerPermissions aPermission)
+        {
+            if (iPermissions != null)
+            {
+                switch(aPermission)
+                {
+                    case DeezerPermissions.BasicAccess:      { return iPermissions.BasicAccess; }
+                    case DeezerPermissions.DeleteLibrary:    { return iPermissions.DeleteLibrary; }
+                    case DeezerPermissions.Email:            { return iPermissions.Email; }
+                    case DeezerPermissions.ListeningHistory: { return iPermissions.ListeningHistory; }
+                    case DeezerPermissions.ManageCommunity:  { return iPermissions.ManageCommunity; }
+                    case DeezerPermissions.ManageLibrary:    { return iPermissions.ManageLibrary; }
+                    case DeezerPermissions.OfflineAccess:    { return iPermissions.OfflineAccess; }
+                    default: { return false; }
+                }
+            }
+            else { return false; }
         }
 
 
