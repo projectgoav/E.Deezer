@@ -116,11 +116,13 @@ namespace E.Deezer
                 IRestRequest uRequest = new RestRequest("user/me", Method.GET);
                 uRequest.AddParameter("access_token", AccessToken, ParameterType.QueryString);
 
-                iClient.ExecuteGetTaskAsync<DeezerObject<User>>(uRequest, Token).ContinueWith((aTask) =>
+                iClient.ExecuteGetTaskAsync<User>(uRequest, Token).ContinueWith((aTask) =>
                 {
-                    try { CheckResponse<DeezerObject<User>>(aTask); }
-                    catch { iUser = null; }
-                    iUser = aTask.Result.Data.Data;
+                    if (aTask.Result.ErrorException == null)
+                    {
+                        aTask.Result.Data.Deserialize(this);
+                        iUser = aTask.Result.Data;        
+                    }
                 }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
             }, Token);
 
@@ -130,7 +132,7 @@ namespace E.Deezer
         //Wrapper around permissions, matching to DeezerPermissions Enum
         internal bool HasPermission(DeezerPermissions aPermission)
         {
-            if (!IsAuthenticated)
+            if (IsAuthenticated)
             {
                 if (iPermissions != null)
                 {
