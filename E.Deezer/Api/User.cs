@@ -72,8 +72,6 @@ namespace E.Deezer.Api
 		public string Link { get; set; }
 		public string Country { get; set; }
 
-		public string error { get; set; }
-
 		//Local Serailization info
 		public DeezerClient Client { get; set; }
 		public void Deserialize(DeezerClient aClient) { Client = aClient; }
