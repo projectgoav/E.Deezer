@@ -10,7 +10,7 @@ namespace E.Deezer
     /// Defines an exception that may be returned from the Deezer API
     /// More information: http://developers.deezer.com/api/errors
     /// </summary>
-    internal class DeezerException : Exception
+    public  class DeezerException : Exception
     {
         private IError iError;
         private string iMessage;
@@ -24,7 +24,7 @@ namespace E.Deezer
         private const string SERVICE_EXCEPTION = "Deezer reported that it's service was busy. Deezer responded with result 700 - Exception";
         private const string DATA_EXCEPTION = "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException";
 
-        public DeezerException(IError aError)
+        internal DeezerException(IError aError)
         { 
             iError = aError;
             switch (aError.Code)
@@ -51,7 +51,7 @@ namespace E.Deezer
     }
 
 
-    internal class DeezerPermissionsException : Exception
+    public class DeezerPermissionsException : Exception
     {
         private string iMessage;
 
