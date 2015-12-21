@@ -10,8 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{84ABD1
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E.Deezer.Examples", "E.Deezer.Examples\E.Deezer.Examples.csproj", "{E499B25A-B1A5-41FB-BCAC-7FEA893FAC48}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,12 +20,6 @@ Global
 		{221A1A79-D36F-4400-A73C-8932CFAAAC78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{221A1A79-D36F-4400-A73C-8932CFAAAC78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{221A1A79-D36F-4400-A73C-8932CFAAAC78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EE6C8716-CF19-4AC1-A658-34845FF9C506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE6C8716-CF19-4AC1-A658-34845FF9C506}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE6C8716-CF19-4AC1-A658-34845FF9C506}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE6C8716-CF19-4AC1-A658-34845FF9C506}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E499B25A-B1A5-41FB-BCAC-7FEA893FAC48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E499B25A-B1A5-41FB-BCAC-7FEA893FAC48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

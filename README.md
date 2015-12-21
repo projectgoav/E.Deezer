@@ -3,14 +3,20 @@ An unoffical asynchronous wrapper for the Deezer API and .NET.
 
 ## Usage
 
-Latest Nuget: *(BETA)* [2.0.1.172](http://nuget.org/packages/e.deezer)
+Latest Nuget:[2.1.0](http://nuget.org/packages/e.deezer)
 
-Source: 
+Via Nuget:
+```
+Package Manager> Install-Package E.Deezer
+```
+
+Via Source: 
 ```
 git clone https://github.com/projectgoav/e.deezer
 ```
 
 Open solution in VS and build it.
+
 
 Once E.Deezer has been referenced in your new project:
  ```
@@ -37,19 +43,11 @@ Once E.Deezer has been referenced in your new project:
 See more in the [Wiki](http://github.com/projectgoav/E.Deezer/wiki)
 
 
-## TODO
-- Unit Testing
-- [See More](http://github.com/projectgoav/E.Deezer/issues)
-
-
 ## Requirements
 - Visual Studio 2013 (or later)
 - .NET 4.0 (or later)
 - [RestSharp](http://restsharp.org/)
 
-## Contents
-- E.Deezer **(API Library)**
-- E.Deezer.Examples **(Some C# example usage)**
 
 ##License
 (MIT)
