@@ -17,6 +17,7 @@ namespace E.Deezer.Api
         uint Duration { get; set;  }
         DateTime ReleaseDate { get; set; }
         bool Explicit { get; set; }
+        string Preview { get; set; }
         string ArtistName { get; }
         string AlbumName { get; }
         IArtist Artist { get; }
@@ -36,6 +37,7 @@ namespace E.Deezer.Api
         public DateTime ReleaseDate { get; set; }
         public string Artwork { get; set; }
         public bool Explicit { get; set; }
+        public string Preview { get; set; }
         public IArtist Artist { get { return ArtistInternal; } }
         public IAlbum Album { get { return AlbumInternal; } }
 
