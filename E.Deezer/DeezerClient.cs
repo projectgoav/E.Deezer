@@ -111,7 +111,7 @@ namespace E.Deezer
             }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
 
             //Create a local copy of the user so access by the User Endpoint
-            Task.Factory.StartNew(() =>
+            var usrTask = Task.Factory.StartNew(() =>
             {
                 IRestRequest uRequest = new RestRequest("user/me", Method.GET);
                 uRequest.AddParameter("access_token", AccessToken, ParameterType.QueryString);
@@ -126,6 +126,7 @@ namespace E.Deezer
                 }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
             }, Token);
 
+            usrTask.Wait();
             return loginTask;
         }
 
