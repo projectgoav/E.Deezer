@@ -93,6 +93,32 @@ namespace E.Deezer
         }
 
 
+        //Performs a POST request
+        public Task<bool> Post(string aMethod, string[] aParams)
+        {
+            IRestRequest request = new RestRequest(aMethod, Method.POST);
+
+            for (int i = 0; i < aParams.Length; i += 3)
+            {
+                switch (aParams[i])
+                {
+                    case "QRY": { request.AddParameter(aParams[i + 1], aParams[i + 2], ParameterType.QueryString); break; }
+                    case "URL": { request.AddParameter(aParams[i + 1], aParams[i + 2], ParameterType.UrlSegment); break; }
+                    default: { request.AddParameter(aParams[i + 1], aParams[i + 2]); break; }
+                }
+            }
+
+            request.AddParameter("output", "json", ParameterType.QueryString);
+
+            var task = iClient.ExecutePostTaskAsync(request).ContinueWith<bool>((aTask) =>
+            {
+                if (aTask.IsFaulted) { return false; }
+                return true;
+            }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            task.SuppressExceptions();
+            return task;
+        }
+
 
 
         //'OAuth' Stuff

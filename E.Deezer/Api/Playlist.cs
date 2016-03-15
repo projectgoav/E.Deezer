@@ -17,11 +17,14 @@ namespace E.Deezer.Api
 		uint NumTracks { get; set; }
 		string Link { get; set; }
 		string CreatorName { get; }
+        int Rating { get; }
 		bool IsLovedTrack { get; set; }
 
         Task<IEnumerable<ITrack>> GetTracks();
         Task<IEnumerable<ITrack>> GetTracks(uint aCount);
 		Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount);
+
+        Task<bool> Rate(int aRating);
 
         string GetPicture(PictureSize aSize);
         bool HasPicture(PictureSize aSize);
@@ -33,6 +36,7 @@ namespace E.Deezer.Api
 		public string Title { get; set; }
         public bool Public { get; set; }
 		public string Link { get; set; }
+        public int Rating { get; set; }
 		public string CreatorName
 		{
 			//Required as sometime playlist creator is references as Creator and sometimes references as User
@@ -107,6 +111,18 @@ namespace E.Deezer.Api
                 return Client.Transform<Track, ITrack>(aTask.Result);
             }, Client.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
 		}
+
+
+        public Task<bool> Rate(int aRating)
+        {
+            if (aRating < 1 || aRating > 5) { throw new ArgumentOutOfRangeException("aRating", "Rating value should be between 1 and 5 (inclusive)"); }
+
+            string[] parms = { "URL", "id", Id.ToString(),
+                               "QRY", "note", aRating.ToString() };
+
+            return Client.Post("playlist/{id}", parms);
+        }
+
 
 		public override string ToString()
 		{

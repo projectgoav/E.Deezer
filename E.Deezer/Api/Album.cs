@@ -15,10 +15,12 @@ namespace E.Deezer.Api
         string Title { get; set; }
         string Link { get; set; }
         string ArtistName { get; }
+        int Rating { get; }
         IArtist Artist { get; }
 
         //Methods
         Task<IEnumerable<ITrack>> GetTracks();
+        Task<bool> Rate(int aRating);
 
         string GetCover(PictureSize aSize);
         bool HasCover(PictureSize aSize);
@@ -28,6 +30,7 @@ namespace E.Deezer.Api
     {
         public uint Id { get; set; }
         public string Title { get; set; }
+        public int Rating { get; set; }
         public IArtist Artist { get { return ArtistInternal; } }
 
         [DeserializeAs(Name = "artist")]
@@ -93,6 +96,15 @@ namespace E.Deezer.Api
             }, Client.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);  
         }
 
+        public Task<bool> Rate(int aRating)
+        {
+            if (aRating < 1 || aRating > 5) { throw new ArgumentOutOfRangeException("aRating", "Rating value should be between 1 and 5 (inclusive)"); }
+
+            string [] parms = { "URL", "id", Id.ToString(),
+                                "QRY", "note", aRating.ToString() };
+
+            return Client.Post("album/{id}", parms);
+        }
 
 
         public override string ToString()
