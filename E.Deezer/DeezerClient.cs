@@ -94,6 +94,9 @@ namespace E.Deezer
 
 
         //Performs a POST request
+
+        //TODO Make this work with the desired permissions
+        // And make sure the client is authenticated before doing this
         public Task<bool> Post(string aMethod, string[] aParams)
         {
             IRestRequest request = new RestRequest(aMethod, Method.POST);
