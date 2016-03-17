@@ -38,7 +38,7 @@ namespace E.Deezer
 
         public Task<IInfos> GetServiceInformation()
         {
-           return iClient.Get<Infos>("infos").ContinueWith<IInfos>((aTask) => { return aTask.Result; }, iClient.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+           return iClient.Get<Infos>("infos").ContinueWith<IInfos>((aTask) => { return aTask.Result; }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
         
         //'OAuth'

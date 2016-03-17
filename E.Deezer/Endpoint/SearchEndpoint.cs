@@ -45,7 +45,7 @@ namespace E.Deezer.Endpoint
             {
                     aTask.Result.Items.Deserialize(iClient);
                     return aTask.Result.Items;
-            }, iClient.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
             t.SuppressExceptions();
             return t;
         }
@@ -60,7 +60,7 @@ namespace E.Deezer.Endpoint
             {
                 aTask.Result.Items.Deserialize(iClient);
                 return aTask.Result.Items;
-            }, iClient.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
 
@@ -74,7 +74,7 @@ namespace E.Deezer.Endpoint
             {
                 aTask.Result.Items.Deserialize(iClient);
                 return aTask.Result.Items;
-            }, iClient.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
         public Task<IEnumerable<ITrack>> Tracks(string aQuery) { return Tracks(aQuery, 0, iClient.ResultSize); }
@@ -87,7 +87,7 @@ namespace E.Deezer.Endpoint
             {
                 aTask.Result.Items.Deserialize(iClient);
                 return aTask.Result.Items;
-            }, iClient.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
 

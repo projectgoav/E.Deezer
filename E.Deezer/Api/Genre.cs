@@ -142,7 +142,7 @@ namespace E.Deezer.Api
             return Client.Get<TSource>(aMethod, parms, aStart, aCount).ContinueWith<IEnumerable<TDest>>((aTask) =>
             {
                 return Client.Transform<TSource, TDest>(aTask.Result);
-            }, Client.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
 

@@ -10,7 +10,7 @@ using RestSharp;
 
 namespace E.Deezer
 {
-    internal class ExecutorService
+    internal class ExecutorService : IDisposable
     {
         private const int DEFAULT_TIMEOUT = 2500;
 
@@ -45,7 +45,9 @@ namespace E.Deezer
             IRestRequest request = new RestRequest(aMethodUrl, aMethodType);
             AddParamsToRequest(request, aParams);
 
-            return iClient.ExecuteTaskAsync<T>(request, CancellationToken);
+            var task = iClient.ExecuteTaskAsync<T>(request, CancellationToken);
+            task.SuppressExceptions();
+            return task;
         }
 
         private void AddParamsToRequest(IRestRequest aRequest, IEnumerable<IRequestParameter> aParams)
@@ -60,5 +62,10 @@ namespace E.Deezer
         }
 
 
+        public void Dispose()
+        {
+            iCancellationTokenSource.Cancel();
+            iCancellationTokenSource.Dispose();
+        }
     }
 }

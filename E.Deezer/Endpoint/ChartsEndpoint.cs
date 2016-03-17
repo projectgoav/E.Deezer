@@ -65,7 +65,7 @@ namespace E.Deezer.Endpoint
                     items.Add(item);
                 }
                 return items;
-            }, iClient.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
     }
 }

@@ -17,22 +17,20 @@ namespace E.Deezer
     /// </summary>
     public class DeezerClient : IDisposable
     {
-        private readonly RestClient iClient;
         private readonly DeezerSession iSession;
-        private readonly CancellationTokenSource iCancellationTokenSource;
-        private IPermissions iPermissions;
+        private readonly ExecutorService iExecutor;
+
         private IUser iUser;
+        private IPermissions iPermissions;
 
         internal DeezerClient(DeezerSession aSession) 
         { 
-            iClient = new RestClient(DeezerSession.ENDPOINT);
-            iClient.Timeout = 2500;
-
             iSession = aSession;
-            iCancellationTokenSource = new CancellationTokenSource();
+
+            iExecutor = new ExecutorService();
         }
 
-        internal CancellationToken Token { get { return iCancellationTokenSource.Token; } }
+        internal CancellationToken CancellationToken { get { return iExecutor.CancellationToken; } }
         internal uint ResultSize { get { return iSession.ResultSize; } }
 
         internal string AccessToken { get { return iSession.AccessToken; } }
@@ -40,90 +38,41 @@ namespace E.Deezer
         internal IUser User { get { return iUser; } }
 
         //Another copy for those without params!
-        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, uint aStart, uint aCount) {  return Get<T>(aMethod, new string[] { "QRY", "access_token", AccessToken} , aStart, aCount); }
-
-        //A nice wee copy of get, incase we want to limit users from picking the start/end points
-        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams) { return Get<T>(aMethod, aParams, uint.MaxValue, uint.MaxValue); }
-
-        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, string[] aParams, uint aStart, uint aCount)
+        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, uint aStart, uint aCount) {  return Get<T>(aMethod, RequestParameter.EmptyList, aStart, aCount); }
+        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams) { return Get<T>(aMethod, aParams, uint.MaxValue, uint.MaxValue); }
+        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
         {
-            IRestRequest request = new RestRequest(aMethod, Method.GET);
+            AppendToParameterList(aParams, aStart, aCount);
 
-            for (int i = 0; i < aParams.Length; i+= 3)
+            return DoGet<DeezerFragmentV2<T>>(aMethod, aParams);
+        }
+        internal Task<T> Get<T>(string aMethod)
+        {
+            return DoGet<DeezerObject<T>>(aMethod, RequestParameter.EmptyList).ContinueWith<T>((aTask) => aTask.Result.Data, iExecutor.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+        }
+
+        private Task<T> DoGet<T>(string aMethod, IEnumerable<IRequestParameter> aParams) where T : IHasError
+        {
+            var task = iExecutor.ExecuteGet<T>(aMethod, aParams).ContinueWith<T>((aTask) =>
             {
-                switch(aParams[i])
-                {
-                    case "QRY": { request.AddParameter(aParams[i + 1], aParams[i + 2], ParameterType.QueryString); break; }
-                    case "URL": { request.AddParameter(aParams[i + 1], aParams[i + 2], ParameterType.UrlSegment); break; }
-                    default:    { request.AddParameter(aParams[i + 1], aParams[i + 2]); break;  }
-                }           
-            }
-
-            if (aCount < uint.MaxValue && aStart < uint.MaxValue)
-            {
-                request.AddParameter("index", aStart, ParameterType.QueryString);
-                request.AddParameter("limit", aCount, ParameterType.QueryString);
-            }
-
-            request.AddParameter("output", "json", ParameterType.QueryString);
-
-            var task = iClient.ExecuteGetTaskAsync<DeezerFragmentV2<T>>(request, Token).ContinueWith<DeezerFragmentV2<T>>((aTask) =>
-            {
-                CheckResponse<DeezerFragmentV2<T>>(aTask);
+                CheckResponse<T>(aTask);
 
                 return aTask.Result.Data;
-            },Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            }, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
             task.SuppressExceptions();
             return task;
         }
-
-        //Copy of Get() for a single object result!
-        public Task<T> Get<T>(string aMethod)
-        {
-            IRestRequest request = new RestRequest(aMethod, Method.GET);
-
-            var task = iClient.ExecuteGetTaskAsync<DeezerObject<T>>(request, Token).ContinueWith<T>((aTask) =>
-            {
-                CheckResponse<DeezerObject<T>>(aTask);
-
-                return aTask.Result.Data.Data;
-            }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-            task.SuppressExceptions();
-            return task;
-        }
-
 
         //Performs a POST request
-        public Task<bool> Post(string aMethod, string[] aParams, DeezerPermissions aRequiredPermission)
+        internal Task<bool> Post(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission)
         {
             if (!IsAuthenticated) { throw new NotLoggedInException(); }
             if (!HasPermission(aRequiredPermission)) { throw new DeezerPermissionsException(aRequiredPermission); }
 
-            IRestRequest request = new RestRequest(aMethod, Method.POST);
+            AppendDefaultToParamterList(aParams);
 
-            for (int i = 0; i < aParams.Length; i += 3)
-            {
-                switch (aParams[i])
-                {
-                    case "QRY": { request.AddParameter(aParams[i + 1], aParams[i + 2], ParameterType.QueryString); break; }
-                    case "URL": { request.AddParameter(aParams[i + 1], aParams[i + 2], ParameterType.UrlSegment); break; }
-                    default: { request.AddParameter(aParams[i + 1], aParams[i + 2]); break; }
-                }
-            }
-
-            //All POST requests will require the access token to be added
-            request.AddParameter("access_token", AccessToken, ParameterType.QueryString);
-            request.AddParameter("output", "json", ParameterType.QueryString);
-
-            var task = iClient.ExecutePostTaskAsync(request).ContinueWith<bool>((aTask) =>
-            {
-                if (aTask.IsFaulted) { return false; }
-                return true;
-            }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-            task.SuppressExceptions();
-            return task;
+            return iExecutor.ExecutePost<bool>(aMethod, aParams).ContinueWith<bool>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
-
 
 
         //'OAuth' Stuff
@@ -131,31 +80,23 @@ namespace E.Deezer
         //Grabs the user's permissions when the user Logs into the library.
         internal Task Login()
         {
-            IRestRequest request = new RestRequest("user/me/permissions", Method.GET);
-            request.AddParameter("access_token", AccessToken, ParameterType.QueryString);
+            IList<IRequestParameter> parms = RequestParameter.EmptyList;
+            AppendDefaultToParamterList(parms);
 
-            var loginTask = iClient.ExecuteGetTaskAsync<DeezerPermissionRequest>(request, Token).ContinueWith((aTask) =>
-            {
-                CheckResponse<DeezerPermissionRequest>(aTask);
-
-                iPermissions = aTask.Result.Data.Permissions;
-            }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            var loginTask = DoGet<DeezerPermissionRequest>("user/me/permissions", parms).ContinueWith((aTask) => iPermissions = aTask.Result.Permissions, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
 
             //Create a local copy of the user so access by the User Endpoint
             var usrTask = Task.Factory.StartNew(() =>
             {
-                IRestRequest uRequest = new RestRequest("user/me", Method.GET);
-                uRequest.AddParameter("access_token", AccessToken, ParameterType.QueryString);
-
-                iClient.ExecuteGetTaskAsync<User>(uRequest, Token).ContinueWith((aTask) =>
+                iExecutor.ExecuteGet<User>("user/me", parms).ContinueWith((aTask) =>
                 {
                     if (aTask.Result.ErrorException == null)
                     {
                         aTask.Result.Data.Deserialize(this);
                         iUser = aTask.Result.Data;        
                     }
-                }, Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-            }, Token);
+                }, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            }, CancellationToken);
 
             usrTask.Wait();
             return loginTask;
@@ -234,10 +175,19 @@ namespace E.Deezer
         }
 
 
-        public void Dispose()
+        private void AppendDefaultToParamterList(IList<IRequestParameter> aParams) { AppendToParameterList(aParams, uint.MaxValue, uint.MaxValue);  }
+        private void AppendToParameterList(IList<IRequestParameter> aParams, uint aStart, uint aCount)
         {
-            iCancellationTokenSource.Cancel();
-            iCancellationTokenSource.Dispose();
+            if (aCount < uint.MaxValue && aStart < uint.MaxValue)
+            {
+                aParams.Add(RequestParameter.GetNewQueryStringParameter("index", aStart));
+                aParams.Add(RequestParameter.GetNewQueryStringParameter("limit", aCount));
+            }
+
+            if (IsAuthenticated) { aParams.Add(RequestParameter.GetAccessTokenParamter(AccessToken)); }
         }
+
+
+        public void Dispose() { iExecutor.Dispose();  }
     }
 }

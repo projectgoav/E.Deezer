@@ -11,17 +11,17 @@ namespace E.Deezer
     {
         ParameterType Type { get; }
         string Id          { get; }
-        string Value       { get; }
+        object Value       { get; }
     }
 
 
-    internal class RequestParameter
+    internal class RequestParameter : IRequestParameter
     {
         private ParameterType iType;
         private string iId;
-        private string iValue;
+        private object iValue;
 
-        public RequestParameter(string aId, string aValue, ParameterType aType)
+        public RequestParameter(string aId, object aValue, ParameterType aType)
         {
             iType = aType;
             iId = aId;
@@ -30,6 +30,31 @@ namespace E.Deezer
 
         public ParameterType Type { get { return iType; } }
         public string Id          { get { return iId; } }
-        public string Value       { get { return iValue; } }
+        public object Value       { get { return iValue; } }
+
+
+        public static IRequestParameter GetAccessTokenParamter(string aAccessToken)
+        {
+            return GetNewQueryStringParameter("access_token", aAccessToken);
+        }
+
+        public static IRequestParameter GetNewQueryStringParameter(string aId, object aValue)
+        {
+            return new RequestParameter(aId, aValue, ParameterType.QueryString);
+        }
+
+        public static IRequestParameter GetNewUrlSegmentParamter(string aId, object aValue)
+        {
+            return new RequestParameter(aId, aValue, ParameterType.UrlSegment);
+        }
+
+        public static IList<IRequestParameter> EmptyList
+        {
+            get
+            {
+                return new List<IRequestParameter>();
+            }
+        }
     }
+
 }

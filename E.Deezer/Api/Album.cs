@@ -93,7 +93,7 @@ namespace E.Deezer.Api
             return Client.Get<Track>("album/{id}/tracks", parms).ContinueWith<IEnumerable<ITrack>>((aTask) =>
             {
                 return Client.Transform<Track, ITrack>(aTask.Result);
-            }, Client.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);  
+            }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);  
         }
 
         public Task<bool> Rate(int aRating)

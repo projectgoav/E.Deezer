@@ -31,7 +31,7 @@ namespace E.Deezer.Endpoint
                 }
 
                 return items;
-            }, iClient.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
 
