@@ -39,7 +39,10 @@ namespace E.Deezer.Endpoint
         public Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aCount) { return Albums(aQuery, 0, aCount); }
         public Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aStart, uint aCount)
         {
-            string[] parms = new string[] { string.Empty, "q", aQuery };
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewQueryStringParameter("q", aQuery)
+            };
 
             var t = iClient.Get<Album>(ENDPOINT + "album", parms, aStart, aCount).ContinueWith<IEnumerable<IAlbum>>((aTask) =>
             {
@@ -54,7 +57,10 @@ namespace E.Deezer.Endpoint
         public Task<IEnumerable<IArtist>> Artists(string aQuery, uint aCount) { return Artists(aQuery, 0, aCount); }
         public Task<IEnumerable<IArtist>> Artists(string aQuery, uint aStart, uint aCount)
         {
-            string[] parms = new string[] { string.Empty, "q", aQuery };
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewQueryStringParameter("q", aQuery)
+            };
 
             return iClient.Get<Artist>(ENDPOINT + "artist", parms, aStart, aCount).ContinueWith<IEnumerable<IArtist>>((aTask) =>
             {
@@ -68,7 +74,10 @@ namespace E.Deezer.Endpoint
         public Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aCount) { return Playlists(aQuery, 0, aCount); }
         public Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aStart, uint aCount)
         {
-            string[] parms = new string[] { string.Empty, "q", aQuery };
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewQueryStringParameter("q", aQuery)
+            };
 
             return iClient.Get<Playlist>(ENDPOINT + "playlist", parms, aStart, aCount).ContinueWith<IEnumerable<IPlaylist>>((aTask) =>
             {
@@ -81,7 +90,10 @@ namespace E.Deezer.Endpoint
         public Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aCount) { return Tracks(aQuery, 0, aCount); }
         public Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aStart, uint aCount)
         {
-            string[] parms = new string[] { string.Empty, "q", aQuery };
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewQueryStringParameter("q", aQuery)
+            };
 
             return iClient.Get<Track>(ENDPOINT + "track", parms, aStart, aCount).ContinueWith<IEnumerable<ITrack>>((aTask) =>
             {

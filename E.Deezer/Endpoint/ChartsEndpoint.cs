@@ -54,7 +54,11 @@ namespace E.Deezer.Endpoint
         //Internal wrapper around get for all ChartEndpoint methods :)
         private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aId, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
         {
-            string[] parms = new string[] { "URL", "id", aId.ToString() };
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", aId)
+            };
+
             return iClient.Get<TSource>(aMethod, parms, aStart, aCount).ContinueWith<IEnumerable<TDest>>((aTask) =>
             {
                 List<TDest> items = new List<TDest>();

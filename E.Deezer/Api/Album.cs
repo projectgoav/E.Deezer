@@ -88,7 +88,10 @@ namespace E.Deezer.Api
 
         public Task<IEnumerable<ITrack>> GetTracks()
         {
-            string[] parms = new string[] { "URL", "id", Id.ToString() };
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", Id)
+            };
 
             return Client.Get<Track>("album/{id}/tracks", parms).ContinueWith<IEnumerable<ITrack>>((aTask) =>
             {
@@ -100,8 +103,11 @@ namespace E.Deezer.Api
         {
             if (aRating < 1 || aRating > 5) { throw new ArgumentOutOfRangeException("aRating", "Rating value should be between 1 and 5 (inclusive)"); }
 
-            string [] parms = { "URL", "id", Id.ToString(),
-                                "QRY", "note", aRating.ToString() };
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", Id),
+                RequestParameter.GetNewQueryStringParameter("note", aRating)
+            };
 
             return Client.Post("album/{id}", parms, DeezerPermissions.BasicAccess);
         }

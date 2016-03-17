@@ -20,7 +20,7 @@ namespace E.Deezer.Endpoint
 
         public Task<IEnumerable<IGenre>> GetCommonGenre()
         {
-            return iClient.Get<Genre>("genre", new string[] {}).ContinueWith<IEnumerable<IGenre>>((aTask) =>
+            return iClient.Get<Genre>("genre", RequestParameter.EmptyList).ContinueWith<IEnumerable<IGenre>>((aTask) =>
             {
                 List<IGenre> items = new List<IGenre>();
 

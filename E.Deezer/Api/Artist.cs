@@ -110,8 +110,11 @@ namespace E.Deezer.Api
 
         //Internal wrapper around get for all artist methods :)
         private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
-        {     
-            string[] parms = new string[] { "URL", "id", Id.ToString() };
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", Id)
+            };
 
             return Client.Get<TSource>(aMethod, parms, aStart, aCount).ContinueWith<IEnumerable<TDest>>((aTask) =>
             {
