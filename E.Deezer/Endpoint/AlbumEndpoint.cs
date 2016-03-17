@@ -28,5 +28,14 @@ namespace E.Deezer.Endpoint
                 Client = iClient,
             }.GetTracks();
         }
+
+        public Task<bool> Rate(uint aAlbumId, int aRating)
+        {
+            return new Album()
+            {
+                Id = aAlbumId,
+                Client = iClient
+            }.Rate(aRating);
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace E.Deezer.Api
 {
 	public interface IPlaylist
     {
-		int Id { get; set; }
+		uint Id { get; set; }
 		string Title { get; set; }
 		bool Public { get; set; }
 		uint NumTracks { get; set; }
@@ -32,7 +32,7 @@ namespace E.Deezer.Api
 
 	internal class Playlist : IPlaylist, IDeserializable<DeezerClient>
 	{
-		public int Id { get; set; }
+		public uint Id { get; set; }
 		public string Title { get; set; }
         public bool Public { get; set; }
 		public string Link { get; set; }

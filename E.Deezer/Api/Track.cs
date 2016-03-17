@@ -11,7 +11,7 @@ namespace E.Deezer.Api
 {
     public interface ITrack
     {
-        int Id { get; set;  }
+        uint Id { get; set;  }
         string Title { get; set;  }
         string Link { get; set;  }
         uint Duration { get; set;  }
@@ -30,7 +30,7 @@ namespace E.Deezer.Api
 
     internal class Track : ITrack, IDeserializable<DeezerClient>
     {
-        public int Id { get; set; }
+        public uint Id { get; set; }
         public string Title { get; set; }
         public string Link { get; set; }
         public uint Duration { get; set; }

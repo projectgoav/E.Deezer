@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using System.Threading.Tasks;
+
+using E.Deezer.Api;
+
 namespace E.Deezer.Endpoint
 {
     public interface IPlaylistEndpoint
@@ -16,5 +20,15 @@ namespace E.Deezer.Endpoint
 
 
         public PlaylistEndpoint(DeezerClient aClient) {  iClient = aClient;  }
+
+
+        public Task<bool> Rate(uint aPlaylistId, int aRating)
+        {
+            return new Playlist()
+            {
+                Id = aPlaylistId,
+                Client = iClient
+            }.Rate(aRating);
+        }
     }
 }
