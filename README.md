@@ -3,7 +3,7 @@ An unoffical asynchronous wrapper for the Deezer API and .NET.
 
 ## Usage
 
-Latest Nuget:[2.1.0](http://nuget.org/packages/e.deezer)
+Latest Nuget:[2.2.0](http://nuget.org/packages/e.deezer)
 
 Via Nuget:
 ```
@@ -51,7 +51,7 @@ See more in the [Wiki](http://github.com/projectgoav/E.Deezer/wiki)
 
 ##License
 (MIT)
-Copyright (c) 2015
+Copyright (c) 2016
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
