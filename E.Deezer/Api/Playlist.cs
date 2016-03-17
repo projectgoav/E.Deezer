@@ -120,7 +120,7 @@ namespace E.Deezer.Api
             string[] parms = { "URL", "id", Id.ToString(),
                                "QRY", "note", aRating.ToString() };
 
-            return Client.Post("playlist/{id}", parms);
+            return Client.Post("playlist/{id}", parms, DeezerPermissions.BasicAccess);
         }
 
 

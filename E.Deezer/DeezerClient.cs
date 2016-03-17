@@ -94,11 +94,11 @@ namespace E.Deezer
 
 
         //Performs a POST request
-
-        //TODO Make this work with the desired permissions
-        // And make sure the client is authenticated before doing this
-        public Task<bool> Post(string aMethod, string[] aParams)
+        public Task<bool> Post(string aMethod, string[] aParams, DeezerPermissions aRequiredPermission)
         {
+            if (!IsAuthenticated) { throw new NotLoggedInException(); }
+            if (!HasPermission(aRequiredPermission)) { throw new DeezerPermissionsException(aRequiredPermission); }
+
             IRestRequest request = new RestRequest(aMethod, Method.POST);
 
             for (int i = 0; i < aParams.Length; i += 3)
@@ -111,6 +111,8 @@ namespace E.Deezer
                 }
             }
 
+            //All POST requests will require the access token to be added
+            request.AddParameter("access_token", AccessToken, ParameterType.QueryString);
             request.AddParameter("output", "json", ParameterType.QueryString);
 
             var task = iClient.ExecutePostTaskAsync(request).ContinueWith<bool>((aTask) =>
