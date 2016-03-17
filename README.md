@@ -1,5 +1,5 @@
 # E.Deezer
-An unoffical asynchronous wrapper for the Deezer API and .NET.
+Unoffical asynchronous Deezer .NET API.
 
 ## Usage
 
