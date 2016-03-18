@@ -23,13 +23,22 @@ namespace E.Deezer.Api
     internal class ObjectWithImage : IObjectWithImage
     {
         [DeserializeAs(Name = "picture_small")]
-        private string SmallPicture { get; set; }
+        public string SmallPicture { get; set; }
 
         [DeserializeAs(Name = "picture_medium")]
-        private string MediumPicture { get; set; }
+        public string MediumPicture { get; set; }
 
         [DeserializeAs(Name = "picture_big")]
-        private string LargePicture { get; set; }
+        public string LargePicture { get; set; }
+
+        [DeserializeAs(Name = "cover_small")]
+        public string SmallCover { get; set; }
+
+        [DeserializeAs(Name = "cover_medium")]
+        public string MediumCover { get; set; }
+
+        [DeserializeAs(Name = "cover_big")]
+        public string LargeCover { get; set; }
 
 
 
@@ -37,10 +46,10 @@ namespace E.Deezer.Api
         {
             switch (aSize)
             {
-                case PictureSize.SMALL: { return string.IsNullOrEmpty(SmallPicture) ? string.Empty : SmallPicture; }
-                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MediumPicture) ? string.Empty : MediumPicture; }
-                case PictureSize.LARGE: { return string.IsNullOrEmpty(LargePicture) ? string.Empty : LargePicture; }
-                default: { return string.Empty; }
+                case PictureSize.SMALL:     { return GetImage(SmallPicture, SmallCover); }
+                case PictureSize.MEDIUM:    { return GetImage(MediumPicture, MediumCover); }
+                case PictureSize.LARGE:     { return GetImage(LargePicture, LargeCover); }
+                default:                    { return string.Empty; }
             }
         }
 
@@ -48,11 +57,22 @@ namespace E.Deezer.Api
         {
             switch (aSize)
             {
-                case PictureSize.SMALL: { return string.IsNullOrEmpty(SmallPicture); }
-                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MediumPicture); }
-                case PictureSize.LARGE: { return string.IsNullOrEmpty(LargePicture); }
-                default: { return false; }
+                case PictureSize.SMALL:     { return string.IsNullOrEmpty(GetImage(SmallPicture, SmallCover)); }
+                case PictureSize.MEDIUM:    { return string.IsNullOrEmpty(GetImage(MediumPicture, MediumCover)); }
+                case PictureSize.LARGE:     { return string.IsNullOrEmpty(GetImage(LargePicture, LargeCover)); }
+                default:                    { return false; }
             }
+        }
+
+
+        private string GetImage(string aPicture, string aCover)
+        {
+            bool isPictureEmpty = string.IsNullOrEmpty(aPicture);
+            bool isCoverEmpty = string.IsNullOrEmpty(aCover);
+
+            if (!isPictureEmpty && isCoverEmpty)        { return aPicture; }        //We have a picture but no cover
+            else if (isPictureEmpty && !isCoverEmpty)   { return aCover; }          //We have a cover but no picture
+            else                                        { return string.Empty; }    //We have neither...
         }
     }
 }

@@ -30,7 +30,7 @@ namespace E.Deezer
 
         public Task<IRestResponse<T>> ExecuteGet<T>(string aMethod, IEnumerable<IRequestParameter> aParams)
         {
-            return Execute<T>(aMethod, Method.POST, aParams);
+            return Execute<T>(aMethod, Method.GET, aParams);
         }
 
         public Task<IRestResponse<T>> ExecutePost<T>(string aMethod, IEnumerable<IRequestParameter> aParams)
