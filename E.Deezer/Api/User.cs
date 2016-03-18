@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace E.Deezer.Api
 {
 
-	public interface IUser
+	public interface IUser : IObjectWithImage
 	{
 		uint Id { get; set; }
 		string Name { get; set; }
@@ -65,7 +65,7 @@ namespace E.Deezer.Api
         Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount);
 	}
 
-	public class User : IUser, IDeserializable<DeezerClient>
+	internal class User : ObjectWithImage, IUser, IDeserializable<DeezerClient>
 	{
 		public uint Id { get; set; }
 		public string Name { get; set; }

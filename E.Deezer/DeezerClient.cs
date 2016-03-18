@@ -112,7 +112,7 @@ namespace E.Deezer
         {
             if (IsAuthenticated && iPermissions != null)
             {
-                iPermissions.HasPermission(aPermission);
+                return iPermissions.HasPermission(aPermission);
             }
             return false;
         }
