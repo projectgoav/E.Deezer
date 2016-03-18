@@ -12,21 +12,15 @@ namespace E.Deezer
             switch (aPermission)
             {
 
-                case DeezerPermissions.BasicAccess: { return "basic_access"; }
-                case DeezerPermissions.Email: { return "email"; }
-                case DeezerPermissions.OfflineAccess: { return "offline_access"; }
-                case DeezerPermissions.ManageLibrary: { return "manage_library"; }
-                case DeezerPermissions.ManageCommunity: { return "manage_community"; }
-                case DeezerPermissions.DeleteLibrary: { return "delete_history"; }
-                case DeezerPermissions.ListeningHistory: { return "listening_history"; }
-                default: { throw new UnknownPermissionException(); }
+                case DeezerPermissions.BasicAccess:         { return "basic_access"; }
+                case DeezerPermissions.Email:               { return "email"; }
+                case DeezerPermissions.OfflineAccess:       { return "offline_access"; }
+                case DeezerPermissions.ManageLibrary:       { return "manage_library"; }
+                case DeezerPermissions.ManageCommunity:     { return "manage_community"; }
+                case DeezerPermissions.DeleteLibrary:       { return "delete_history"; }
+                case DeezerPermissions.ListeningHistory:    { return "listening_history"; }
+                default:                                    { return string.Empty; }
             }
-        }
-
-
-        public class UnknownPermissionException : Exception
-        {
-            public UnknownPermissionException() : base("An unknown DeezerPermission value was given to PermissionToString()") { }
         }
     }
 
