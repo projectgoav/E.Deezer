@@ -38,13 +38,13 @@ namespace E.Deezer
         internal IUser User { get { return iUser; } }
 
         //Another copy for those without params!
-        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, uint aStart, uint aCount) {  return Get<T>(aMethod, RequestParameter.EmptyList, aStart, aCount); }
-        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams) { return Get<T>(aMethod, aParams, uint.MaxValue, uint.MaxValue); }
-        internal Task<DeezerFragmentV2<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
+        internal Task<DeezerFragment<T>> Get<T>(string aMethod, uint aStart, uint aCount) {  return Get<T>(aMethod, RequestParameter.EmptyList, aStart, aCount); }
+        internal Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams) { return Get<T>(aMethod, aParams, uint.MaxValue, uint.MaxValue); }
+        internal Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
         {
             AppendToParameterList(aParams, aStart, aCount);
 
-            return DoGet<DeezerFragmentV2<T>>(aMethod, aParams);
+            return DoGet<DeezerFragment<T>>(aMethod, aParams);
         }
         internal Task<T> Get<T>(string aMethod)
         {
@@ -162,7 +162,7 @@ namespace E.Deezer
 
 
         //Performs a transform from Deezer Fragment to IEnumerable.
-        internal IEnumerable<TDest> Transform<TSource, TDest>(DeezerFragmentV2<TSource> aFragment) where TSource : TDest, IDeserializable<DeezerClient>
+        internal IEnumerable<TDest> Transform<TSource, TDest>(DeezerFragment<TSource> aFragment) where TSource : TDest, IDeserializable<DeezerClient>
         {
             List<TDest> items = new List<TDest>();
 
