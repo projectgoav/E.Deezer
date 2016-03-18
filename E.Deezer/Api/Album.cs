@@ -9,7 +9,7 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-    public interface IAlbum
+    public interface IAlbum : IObjectWithImage
     {
         uint Id { get; set; }
         string Title { get; set; }
@@ -21,12 +21,9 @@ namespace E.Deezer.Api
         //Methods
         Task<IEnumerable<ITrack>> GetTracks();
         Task<bool> Rate(int aRating);
-
-        string GetCover(PictureSize aSize);
-        bool HasCover(PictureSize aSize);
     }
 
-    internal class Album : IAlbum, IDeserializable<DeezerClient>
+    internal class Album : ObjectWithImage, IAlbum, IDeserializable<DeezerClient>
     {
         public uint Id { get; set; }
         public string Title { get; set; }
@@ -39,45 +36,12 @@ namespace E.Deezer.Api
         [DeserializeAs(Name = "Url")]
         public string Link { get; set; }
 
-        //Pictures
-        [DeserializeAs(Name = "cover_small")]
-        private string SMPicture { get; set; }
-
-        [DeserializeAs(Name = "cover_medium")]
-        private string MDPicture { get; set; }
-
-        [DeserializeAs(Name = "cover_big")]
-        private string BGPicture { get; set; }
-
-
         public string ArtistName
         {
             get
             {
                 if (ArtistInternal == null) { return string.Empty; }
                 else { return ArtistInternal.Name; }
-            }
-        }
-
-        public string GetCover(PictureSize aSize)
-        {
-            switch (aSize)
-            {
-                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture) ? string.Empty : SMPicture; }
-                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture) ? string.Empty : MDPicture; }
-                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture) ? string.Empty : BGPicture; }
-                default: { return string.Empty; }
-            }
-        }
-
-        public bool HasCover(PictureSize aSize)
-        {
-            switch (aSize)
-            {
-                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture); }
-                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture); }
-                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture); }
-                default: { return false; }
             }
         }
 

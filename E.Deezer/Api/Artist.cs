@@ -9,7 +9,7 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-    public interface IArtist
+    public interface IArtist : IObjectWithImage
     {
         uint Id { get; set; }
         string Name { get; set; }
@@ -35,50 +35,15 @@ namespace E.Deezer.Api
         Task<IEnumerable<IPlaylist>> GetPlaylistsContaining();
         Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aCount);
         Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aStart, uint aCount);
-
-        string GetPicture(PictureSize aSize);
-        bool HasPicture(PictureSize aSize);
     }
 
-    public class Artist : IArtist, IDeserializable<DeezerClient>
+    internal class Artist : ObjectWithImage, IArtist, IDeserializable<DeezerClient>
     {
         public uint Id { get; set; }
         public string Name { get; set; }
 
         [DeserializeAs(Name="url")]
         public string Link { get; set; }
-
-        //Pictures
-        [DeserializeAs(Name = "picture_small")]
-        private string SMPicture { get; set; }
-
-        [DeserializeAs(Name = "picture_medium")]
-        private string MDPicture { get; set; }
-
-        [DeserializeAs(Name = "picture_big")]
-        private string BGPicture { get; set; }
-
-        public string GetPicture(PictureSize aSize)
-        {
-            switch (aSize)
-            {
-                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture) ? string.Empty : SMPicture; }
-                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture) ? string.Empty : MDPicture; }
-                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture) ? string.Empty : BGPicture; }
-                default: { return string.Empty; }
-            }
-        }
-
-        public bool HasPicture(PictureSize aSize)
-        {
-            switch (aSize)
-            {
-                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture); }
-                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture); }
-                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture); }
-                default: { return false; }
-            }
-        }
 
         public DeezerClient Client { get; set; }
         public void Deserialize(DeezerClient aClient) { Client = aClient; }

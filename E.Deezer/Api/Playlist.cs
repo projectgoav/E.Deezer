@@ -9,7 +9,7 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-	public interface IPlaylist
+	public interface IPlaylist : IObjectWithImage
     {
 		uint Id { get; set; }
 		string Title { get; set; }
@@ -25,12 +25,9 @@ namespace E.Deezer.Api
 		Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount);
 
         Task<bool> Rate(int aRating);
-
-        string GetPicture(PictureSize aSize);
-        bool HasPicture(PictureSize aSize);
 	}
 
-	internal class Playlist : IPlaylist, IDeserializable<DeezerClient>
+	internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<DeezerClient>
 	{
 		public uint Id { get; set; }
 		public string Title { get; set; }
@@ -50,9 +47,6 @@ namespace E.Deezer.Api
         [DeserializeAs(Name = "nb_tracks")]
         public uint NumTracks { get; set; }
 
-        [DeserializeAs(Name = "picture")]
-        public string Artwork { get; set; }
-
         [DeserializeAs(Name = "is_loved_track")]
         public bool IsLovedTrack { get; set; }
 
@@ -63,41 +57,8 @@ namespace E.Deezer.Api
 		public User CreatorInternal { get; set; }
 
 
-        //Pictures
-        [DeserializeAs(Name = "picture_small")]
-        private string SMPicture { get; set; }
-
-        [DeserializeAs(Name = "picture_medium")]
-        private string MDPicture { get; set; }
-
-        [DeserializeAs(Name = "picture_big")]
-        private string BGPicture { get; set; }
-
-		public DeezerClient Client { get; set; }
+    	public DeezerClient Client { get; set; }
 		public void Deserialize(DeezerClient aClient) { Client = aClient; }
-
-
-        public string GetPicture(PictureSize aSize)
-        {
-            switch (aSize)
-            {
-                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture) ? string.Empty : SMPicture; }
-                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture) ? string.Empty : MDPicture; }
-                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture) ? string.Empty : BGPicture; }
-                default: { return string.Empty; }
-            }
-        }
-
-        public bool HasPicture(PictureSize aSize)
-        {
-            switch (aSize)
-            {
-                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture); }
-                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture); }
-                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture); }
-                default: { return false; }
-            }
-        }
 
 
         public Task<IEnumerable<ITrack>> GetTracks() { return GetTracks(0, Client.ResultSize); }

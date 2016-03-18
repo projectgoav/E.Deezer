@@ -9,7 +9,7 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-    public interface ITrack
+    public interface ITrack : IObjectWithImage
     {
         uint Id { get; set;  }
         string Title { get; set;  }
@@ -28,7 +28,7 @@ namespace E.Deezer.Api
     }
 
 
-    internal class Track : ITrack, IDeserializable<DeezerClient>
+    internal class Track : ObjectWithImage, ITrack, IDeserializable<DeezerClient>
     {
         public uint Id { get; set; }
         public string Title { get; set; }
@@ -66,46 +66,17 @@ namespace E.Deezer.Api
         [DeserializeAs(Name = "album")]
         public Album AlbumInternal { get; set; }
 
-        //Pictures
-        [DeserializeAs(Name = "picture_small")]
-        private string SMPicture { get; set; }
-
-        [DeserializeAs(Name = "picture_medium")]
-        private string MDPicture { get; set; }
-
-        [DeserializeAs(Name = "picture_big")]
-        private string BGPicture { get; set; }
-
         public DeezerClient Client { get; set; }
         public void Deserialize(DeezerClient aClient) 
         { 
             Client = aClient;
         }
 
+        [Obsolete("Please use GetPicture instead.")]
+        public string GetCover(PictureSize aSize) {  return GetPicture(aSize); }
 
-        public string GetCover(PictureSize aSize)
-        {
-            switch (aSize)
-            {
-                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture) ? string.Empty : SMPicture; }
-                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture) ? string.Empty : MDPicture; }
-                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture) ? string.Empty : BGPicture; }
-                default: { return string.Empty; }
-            }
-        }
-
-        public bool HasCover(PictureSize aSize)
-        {
-            switch (aSize)
-            {
-                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture); }
-                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture); }
-                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture); }
-                default: { return false; }
-            }
-        }
-
-
+        [Obsolete("Please use HasPicture instead.")]
+        public bool HasCover(PictureSize aSize) {  return HasPicture(aSize); }
 
         public override string ToString()
         {

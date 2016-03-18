@@ -9,18 +9,13 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-    public interface IGenre
+    public interface IGenre : IObjectWithImage
     {
 
         uint Id { get; set; }
         string Name { get; set; }
 
         //METHODS
-
-        string GetPicture(PictureSize aSize);
-        bool HasPicture(PictureSize aSize);
-
-
         Task<IEnumerable<IArtist>> GetArtists();
         Task<IEnumerable<IArtist>> GetArtists(uint aCount);
         Task<IEnumerable<IArtist>> GetArtists(uint aStart, uint aCount);
@@ -60,49 +55,15 @@ namespace E.Deezer.Api
 
     }
 
-    internal class Genre : IGenre, IDeserializable<DeezerClient>
+    internal class Genre : ObjectWithImage, IGenre, IDeserializable<DeezerClient>
     {
         public uint Id { get; set; }
         public string Name { get; set; }
 
-        //Pictures
-        [DeserializeAs(Name = "picture_small")]
-        private string SMPicture { get; set; }
-
-        [DeserializeAs(Name = "picture_medium")]
-        private string MDPicture { get; set; }
-
-        [DeserializeAs(Name = "picture_big")]
-        private string BGPicture { get; set; }
-
-
         public DeezerClient Client { get; set; }
         public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
-
         //Methods
-
-        public string GetPicture(PictureSize aSize)
-        {
-            switch (aSize)
-            {
-                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture) ? string.Empty : SMPicture; }
-                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture) ? string.Empty : MDPicture; }
-                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture) ? string.Empty : BGPicture; }
-                default: { return string.Empty; }
-            }
-        }
-
-        public bool HasPicture(PictureSize aSize)
-        {
-            switch (aSize)
-            {
-                case PictureSize.SMALL: { return string.IsNullOrEmpty(SMPicture); }
-                case PictureSize.MEDIUM: { return string.IsNullOrEmpty(MDPicture); }
-                case PictureSize.LARGE: { return string.IsNullOrEmpty(BGPicture); }
-                default: { return false; }
-            }
-        }
 
         public Task<IEnumerable<IArtist>> GetArtists() { return GetArtists(0, Client.ResultSize); }
         public Task<IEnumerable<IArtist>> GetArtists(uint aCount) { return GetArtists(0, aCount); }

@@ -127,6 +127,7 @@ namespace E.Deezer
 
 
         //Checks a response for errors and exceptions
+        //TODO Refactor?
         private void CheckResponse<T>(Task<IRestResponse<T>> aResponse) where T : IHasError
         {
             //Is faulty?

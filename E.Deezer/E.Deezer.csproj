@@ -20,7 +20,7 @@
     <AssemblyVersionSettings>None.None.None.Increment</AssemblyVersionSettings>
     <AssemblyFileVersionSettings>None.None.None.Increment</AssemblyFileVersionSettings>
     <AssemblyInfoVersionSettings>IncrementOnDemand.Increment.DateStamp.TimeStamp</AssemblyInfoVersionSettings>
-    <AssemblyVersion>2.2.0.235</AssemblyVersion>
+    <AssemblyVersion>2.2.0.240</AssemblyVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
   <!-- If nothing is specified we build with DEBUG -->
@@ -69,6 +69,7 @@
     <Compile Include="Api\Genre.cs" />
     <Compile Include="Api\IDeserializable.cs" />
     <Compile Include="Api\Infos.cs" />
+    <Compile Include="Api\ObjectWithImage.cs" />
     <Compile Include="Api\Permissions.cs" />
     <Compile Include="Api\Playlist.cs" />
     <Compile Include="Api\Radio.cs" />
