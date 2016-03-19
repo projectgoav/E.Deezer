@@ -22,7 +22,7 @@ Once E.Deezer has been referenced in your new project:
  ```
  //Create a new DeezerSession for your application
  //You'll retrieve a 'Deezer' object which you can browse the API from.
- var Deezer = DeezerSessionV2.CreateNew();
+ var Deezer = DeezerSession.CreateNew();
  
  //This performs an async search on Deezer for albums matching "Abba"
  //Mapping to API: search/album?q=Abba&index=0&limit=25
