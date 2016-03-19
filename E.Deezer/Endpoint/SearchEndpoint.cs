@@ -27,82 +27,57 @@ namespace E.Deezer.Endpoint
         Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aCount);
         Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aStart, uint aCount);
 
+        Task<IEnumerable<IRadio>> Radio(string aQuery);
+        Task<IEnumerable<IRadio>> Radio(string aQuery, uint aCount);
+        Task<IEnumerable<IRadio>> Radio(string aQuery, uint aStart, uint aCount);
+
     }
 
     internal class SearchEndpoint : ISearchEndpoint
     {
+        private const string SEARCH_BASE = "search/";
+
         private DeezerClient iClient;
 
-        private const string ENDPOINT = "search/";
+        public SearchEndpoint(DeezerClient aClient) { iClient = aClient; }
+
 
         public Task<IEnumerable<IAlbum>> Albums(string aQuery) { return Albums(aQuery, 0, iClient.ResultSize); }
         public Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aCount) { return Albums(aQuery, 0, aCount); }
-        public Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aStart, uint aCount)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewQueryStringParameter("q", aQuery)
-            };
-
-            var t = iClient.Get<Album>(ENDPOINT + "album", parms, aStart, aCount).ContinueWith<IEnumerable<IAlbum>>((aTask) =>
-            {
-                    aTask.Result.Items.Deserialize(iClient);
-                    return aTask.Result.Items;
-            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-            t.SuppressExceptions();
-            return t;
-        }
+        public Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aStart, uint aCount) { return Get<Album, IAlbum>("album", aQuery, aStart, aCount); }
 
         public Task<IEnumerable<IArtist>> Artists(string aQuery) { return Artists(aQuery, 0, iClient.ResultSize); }
         public Task<IEnumerable<IArtist>> Artists(string aQuery, uint aCount) { return Artists(aQuery, 0, aCount); }
-        public Task<IEnumerable<IArtist>> Artists(string aQuery, uint aStart, uint aCount)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewQueryStringParameter("q", aQuery)
-            };
-
-            return iClient.Get<Artist>(ENDPOINT + "artist", parms, aStart, aCount).ContinueWith<IEnumerable<IArtist>>((aTask) =>
-            {
-                aTask.Result.Items.Deserialize(iClient);
-                return aTask.Result.Items;
-            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-        }
+        public Task<IEnumerable<IArtist>> Artists(string aQuery, uint aStart, uint aCount) { return Get<Artist, IArtist>("artist", aQuery, aStart, aCount); }
 
 
         public Task<IEnumerable<IPlaylist>> Playlists(string aQuery) { return Playlists(aQuery, 0, iClient.ResultSize); }
         public Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aCount) { return Playlists(aQuery, 0, aCount); }
-        public Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aStart, uint aCount)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewQueryStringParameter("q", aQuery)
-            };
-
-            return iClient.Get<Playlist>(ENDPOINT + "playlist", parms, aStart, aCount).ContinueWith<IEnumerable<IPlaylist>>((aTask) =>
-            {
-                aTask.Result.Items.Deserialize(iClient);
-                return aTask.Result.Items;
-            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-        }
+        public Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aStart, uint aCount) { return Get<Playlist, IPlaylist>("playlist", aQuery, aStart, aCount); }
 
         public Task<IEnumerable<ITrack>> Tracks(string aQuery) { return Tracks(aQuery, 0, iClient.ResultSize); }
         public Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aCount) { return Tracks(aQuery, 0, aCount); }
-        public Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aStart, uint aCount)
+        public Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aStart, uint aCount) { return Get<Track, ITrack>("track", aQuery, aStart, aCount);   }
+
+        public Task<IEnumerable<IRadio>> Radio(string aQuery) { return Radio(aQuery, 0, iClient.ResultSize); }
+        public Task<IEnumerable<IRadio>> Radio(string aQuery, uint aCount) { return Radio(aQuery, 0, aCount); }
+        public Task<IEnumerable<IRadio>> Radio(string aQuery, uint aStart, uint aCount) { return Get<Radio, IRadio>("radio", aQuery, aStart, aCount); }
+
+
+        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aSearchEndpoint, string aQuery, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
         {
+            string method = string.Format("{0}{1}", SEARCH_BASE, aSearchEndpoint);
+
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
                 RequestParameter.GetNewQueryStringParameter("q", aQuery)
             };
 
-            return iClient.Get<Track>(ENDPOINT + "track", parms, aStart, aCount).ContinueWith<IEnumerable<ITrack>>((aTask) =>
+            return iClient.Get<TSource>(method, parms, aStart, aCount).ContinueWith<IEnumerable<TDest>>((aTask) =>
             {
-                aTask.Result.Items.Deserialize(iClient);
-                return aTask.Result.Items;
+                return iClient.Transform<TSource, TDest>(aTask.Result);
             }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
-
-        public SearchEndpoint(DeezerClient aClient) { iClient = aClient; }
     }
 }
