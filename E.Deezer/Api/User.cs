@@ -82,9 +82,10 @@ namespace E.Deezer.Api
 		}
 
         //Internal wrapper around get for all user methods :)
-        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
+        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, DeezerPermissions aPermisisons, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
         {
             if (!Client.IsAuthenticated) { throw new NotLoggedInException(); }
+            if (!Client.HasPermission(aPermisisons)) { throw new DeezerPermissionsException(aPermisisons); }
 
             string method = string.Format("user/me/{0}", aMethod);
             return Client.Get<TSource>(method, aStart, aCount).ContinueWith<IEnumerable<TDest>>((aTask) =>
@@ -96,97 +97,53 @@ namespace E.Deezer.Api
 
         public Task<IEnumerable<IAlbum>> GetFavouriteAlbums() { return GetFavouriteAlbums(0, Client.ResultSize);  }
         public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aCount) { return GetFavouriteAlbums(0, aCount); }
-        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart, uint aCount)
-        {
-            if (!Client.HasPermission(DeezerPermissions.BasicAccess)) { throw new DeezerPermissionsException(DeezerPermissions.BasicAccess); }
-            else { return Get<Album, IAlbum>("albums", aStart, aCount); }
-        }
+        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart, uint aCount) { return Get<Album, IAlbum>("albums", DeezerPermissions.BasicAccess, aStart, aCount); }
 
         public Task<IEnumerable<IArtist>> GetFavouriteArtists() { return GetFavouriteArtists(0, Client.ResultSize); }
         public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aCount) {  return GetFavouriteArtists(0, aCount); }
-        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart, uint aCount)
-        {
-            if (!Client.HasPermission(DeezerPermissions.BasicAccess)) { throw new DeezerPermissionsException(DeezerPermissions.BasicAccess); }
-            else { return Get<Artist, IArtist>("artists", aStart, aCount); }
-        }
+        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart, uint aCount) { return Get<Artist, IArtist>("artists", DeezerPermissions.BasicAccess, aStart, aCount); }
 
         public Task<IEnumerable<ITrack>> GetFavouriteTracks() { return GetFavouriteTracks(0, Client.ResultSize); }
         public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aCount) { return GetFavouriteTracks(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart, uint aCount)
-        {
-            if (!Client.HasPermission(DeezerPermissions.BasicAccess)) { throw new DeezerPermissionsException(DeezerPermissions.BasicAccess); }
-            else { return Get<Track, ITrack>("tracks", aStart, aCount); }
-        }
+        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart, uint aCount) { return Get<Track, ITrack>("tracks", DeezerPermissions.BasicAccess, aStart, aCount); }
 
 
         public Task<IEnumerable<ITrack>> GetPersonalTracks() {  return GetPersonalTracks(0, Client.ResultSize); }
         public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aCount) {  return GetPersonalTracks(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart, uint aCount)
-        {
-            if (!Client.HasPermission(DeezerPermissions.BasicAccess)) { throw new DeezerPermissionsException(DeezerPermissions.BasicAccess); }
-            else { return Get<Track, ITrack>("personal_songs", aStart, aCount); }
-        }
+        public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart, uint aCount) { return Get<Track, ITrack>("personal_songs", DeezerPermissions.BasicAccess, aStart, aCount); }
 
 
         public Task<IEnumerable<IPlaylist>> GetPlaylists() { return GetPlaylists(0, Client.ResultSize); }
         public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aCount) { return GetPlaylists(0, aCount); }
-        public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart, uint aCount)
-        {
-            if (!Client.HasPermission(DeezerPermissions.BasicAccess)) { throw new DeezerPermissionsException(DeezerPermissions.BasicAccess); }
-            else { return Get<Playlist, IPlaylist>("[playlists", aStart, aCount); }
-        }
+        public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart, uint aCount) { return Get<Playlist, IPlaylist>("playlists", DeezerPermissions.BasicAccess, aStart, aCount); }
+
 
 
         public Task<IEnumerable<ITrack>> GetFlow() { return GetFlow(0, Client.ResultSize);  }
         public Task<IEnumerable<ITrack>> GetFlow(uint aCount) { return GetFlow(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetFlow(uint aStart, uint aCount)
-        {
-            if (!Client.HasPermission(DeezerPermissions.BasicAccess)) { throw new DeezerPermissionsException(DeezerPermissions.BasicAccess); }
-            else { return Get<Track, ITrack>("flow", aStart, aCount); }
-        }
+        public Task<IEnumerable<ITrack>> GetFlow(uint aStart, uint aCount) { return Get<Track, ITrack>("flow", DeezerPermissions.BasicAccess, aStart, aCount); }
 
 
         public Task<IEnumerable<ITrack>> GetHistory() { return GetHistory(0, Client.ResultSize); }
         public Task<IEnumerable<ITrack>> GetHistory(uint aCount) { return GetHistory(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetHistory(uint aStart, uint aCount)
-        {
-            if (!Client.HasPermission(DeezerPermissions.ListeningHistory)) { throw new DeezerPermissionsException(DeezerPermissions.ListeningHistory); }
-            else { return Get<Track, ITrack>("history", aStart, aCount); }
-        }
+        public Task<IEnumerable<ITrack>> GetHistory(uint aStart, uint aCount) {  return Get<Track, ITrack>("history", DeezerPermissions.ListeningHistory, aStart, aCount); }
 
 
         public Task<IEnumerable<IAlbum>> GetRecommendedAlbums() { return GetRecommendedAlbums(0, Client.ResultSize); }
         public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aCount) { return GetRecommendedAlbums(0, aCount); }
-        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart, uint aCount)
-        {
-            if (!Client.HasPermission(DeezerPermissions.BasicAccess)) { throw new DeezerPermissionsException(DeezerPermissions.BasicAccess); }
-            else { return Get<Album, IAlbum>("recommendations/albums", aStart, aCount); }
-        }
+        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart, uint aCount) { return Get<Album, IAlbum>("recommendations/albums", DeezerPermissions.BasicAccess, aStart, aCount); }
 
         public Task<IEnumerable<IArtist>> GetRecommendedArtists() { return GetRecommendedArtists(0, Client.ResultSize); }
         public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aCount) { return GetRecommendedArtists(0, aCount); }
-        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart, uint aCount)
-        {
-            if (!Client.HasPermission(DeezerPermissions.BasicAccess)) { throw new DeezerPermissionsException(DeezerPermissions.BasicAccess); }
-            else { return Get<Artist, IArtist>("recommendations/artists", aStart, aCount); }
-        }
+        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart, uint aCount) { return Get<Artist, IArtist>("recommendations/artists", DeezerPermissions.BasicAccess, aStart, aCount); }
 
         public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists() { return GetRecommendedPlaylists(0, Client.ResultSize); }
         public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aCount) { return GetRecommendedPlaylists(0, aCount); }
-        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount)
-        {
-            if (!Client.HasPermission(DeezerPermissions.BasicAccess)) { throw new DeezerPermissionsException(DeezerPermissions.BasicAccess); }
-            else { return Get<Playlist, IPlaylist>("recommendations/playlists", aStart, aCount); }
-        }
+        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount) { return Get<Playlist, IPlaylist>("recommendations/playlists",DeezerPermissions.BasicAccess, aStart, aCount);}
 
         public Task<IEnumerable<ITrack>> GetRecommendedTracks() { return GetRecommendedTracks(0, Client.ResultSize); }
         public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aCount) { return GetRecommendedTracks(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount)
-        {
-            if (!Client.HasPermission(DeezerPermissions.BasicAccess)) { throw new DeezerPermissionsException(DeezerPermissions.BasicAccess); }
-            else { return Get<Track, ITrack>("recommendations/tracks", aStart, aCount); }
-        }
-
+        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount) { return Get<Track, ITrack>("recommendations/tracks", DeezerPermissions.BasicAccess, aStart, aCount); }
 
     }
 }

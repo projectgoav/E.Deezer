@@ -112,59 +112,31 @@ namespace E.Deezer.Endpoint
         //Favourites
         public Task<IEnumerable<IAlbum>> GetFavouriteAlbums() { return GetFavouriteAlbums(0, iClient.ResultSize); }
         public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aCount) { return GetFavouriteAlbums(0, aCount); }
-        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart, uint aCount)
-        {
-            if (!iClient.IsAuthenticated) { throw new NotLoggedInException(); }
-            return Current.GetFavouriteAlbums(aStart, aCount);
-        }
+        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart, uint aCount) { return Current.GetFavouriteAlbums(aStart, aCount); }
 
         public Task<IEnumerable<IArtist>> GetFavouriteArtists() { return GetFavouriteArtists(0, iClient.ResultSize); }
         public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aCount) { return GetFavouriteArtists(0, aCount); }
-        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart, uint aCount)
-        {
-            if (!iClient.IsAuthenticated) { throw new NotLoggedInException(); }
-            return Current.GetFavouriteArtists(aStart, aCount);
-        }
+        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart, uint aCount) { return Current.GetFavouriteArtists(aStart, aCount); }
 
         public Task<IEnumerable<ITrack>> GetFavouriteTracks() { return GetFavouriteTracks(0, iClient.ResultSize); }
         public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aCount) { return GetFavouriteTracks(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart, uint aCount)
-        {
-            if (!iClient.IsAuthenticated) { throw new NotLoggedInException(); }
-            return Current.GetFavouriteTracks(aStart, aCount);
-        }
+        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart, uint aCount) { return Current.GetFavouriteTracks(aStart, aCount); }
 
         //Recomends
         public Task<IEnumerable<IAlbum>> GetRecommendedAlbums() { return GetRecommendedAlbums(0, iClient.ResultSize); }
         public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aCount) { return GetRecommendedAlbums(0, aCount); }
-        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart, uint aCount)
-        {
-            if (!iClient.IsAuthenticated) { throw new NotLoggedInException(); }
-            return Current.GetRecommendedAlbums(aStart, aCount);
-        }
+        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart, uint aCount) { return Current.GetRecommendedAlbums(aStart, aCount); }
 
         public Task<IEnumerable<IArtist>> GetRecommendedArtists() { return GetRecommendedArtists(0, iClient.ResultSize); }
         public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aCount) { return GetRecommendedArtists(0, aCount); }
-        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart, uint aCount)
-        {
-            if (!iClient.IsAuthenticated) { throw new NotLoggedInException(); }
-            return Current.GetRecommendedArtists(aStart, aCount);
-        }
+        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart, uint aCount) { return Current.GetRecommendedArtists(aStart, aCount); }
 
         public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists() { return GetRecommendedPlaylists(0, iClient.ResultSize); }
         public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aCount) { return GetRecommendedPlaylists(0, aCount); }
-        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount)
-        {
-            if (!iClient.IsAuthenticated) { throw new NotLoggedInException(); }
-            return Current.GetRecommendedPlaylists(aStart, aCount);
-        }
+        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount) { return Current.GetRecommendedPlaylists(aStart, aCount); }
 
         public Task<IEnumerable<ITrack>> GetRecommendedTracks() { return GetRecommendedTracks(0, iClient.ResultSize); }
         public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aCount) { return GetRecommendedTracks(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount)
-        {
-            if (!iClient.IsAuthenticated) { throw new NotLoggedInException(); }
-            return Current.GetRecommendedTracks(aStart, aCount);
-        }
+        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount) { return Current.GetRecommendedTracks(aStart, aCount); }
     }
 }
