@@ -1,17 +1,16 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Resources;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("E.Deezer")]
-[assembly: AssemblyDescription(".NET Deezer API wrapper.")]
+[assembly: AssemblyTitle("E.Deezer.Tests")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("BigE")]
-[assembly: AssemblyProduct("E.Deezer")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("E.Deezer.Tests")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,7 +20,7 @@ using System.Resources;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("146f0316-9a69-426b-87e8-20ef79416f2d")]
+[assembly: Guid("d43888ee-ce3e-4856-a8d8-ed3281113c91")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -33,9 +32,5 @@ using System.Resources;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.2.0.267")]
-[assembly: AssemblyFileVersion("2.2.0.267")]
-[assembly: NeutralResourcesLanguageAttribute("en-GB")]
-
-// Make sure we can access some of the internals to the testing library.
-[assembly: InternalsVisibleTo("E.Deezer.Tests")]
+[assembly: AssemblyVersion("1.0.0.13")]
+[assembly: AssemblyFileVersion("1.0.0.13")]

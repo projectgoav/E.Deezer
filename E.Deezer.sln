@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{84ABD1
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E.Deezer.Tests", "E.Deezer.Tests\E.Deezer.Tests.csproj", "{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{221A1A79-D36F-4400-A73C-8932CFAAAC78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{221A1A79-D36F-4400-A73C-8932CFAAAC78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{221A1A79-D36F-4400-A73C-8932CFAAAC78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
