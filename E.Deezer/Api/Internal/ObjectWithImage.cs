@@ -57,9 +57,9 @@ namespace E.Deezer.Api
         {
             switch (aSize)
             {
-                case PictureSize.SMALL:     { return string.IsNullOrEmpty(GetImage(SmallPicture, SmallCover)); }
-                case PictureSize.MEDIUM:    { return string.IsNullOrEmpty(GetImage(MediumPicture, MediumCover)); }
-                case PictureSize.LARGE:     { return string.IsNullOrEmpty(GetImage(LargePicture, LargeCover)); }
+                case PictureSize.SMALL:     { return !string.IsNullOrEmpty(GetImage(SmallPicture, SmallCover)); }
+                case PictureSize.MEDIUM:    { return !string.IsNullOrEmpty(GetImage(MediumPicture, MediumCover)); }
+                case PictureSize.LARGE:     { return !string.IsNullOrEmpty(GetImage(LargePicture, LargeCover)); }
                 default:                    { return false; }
             }
         }
