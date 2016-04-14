@@ -49,8 +49,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\Entities\AlbumTests.cs" />
+    <Compile Include="Api\Entities\AlbumPropertyTests.cs" />
+    <Compile Include="Api\Entities\ArtistPropertyTests.cs" />
+    <Compile Include="Api\Entities\GenrePropertyTests.cs" />
     <Compile Include="Api\Entities\ObjectWithImageTestBase.cs" />
+    <Compile Include="Api\Entities\PlaylistPropertyTests.cs" />
+    <Compile Include="Api\Entities\RadioPropertyTests.cs" />
+    <Compile Include="Api\Entities\TrackPropertyTests.cs" />
+    <Compile Include="Api\Entities\UserPropertyTests.cs" />
+    <Compile Include="Str.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
