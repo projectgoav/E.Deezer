@@ -23,11 +23,15 @@ namespace E.Deezer
         private IUser iUser;
         private IPermissions iPermissions;
 
-        internal DeezerClient(DeezerSession aSession) 
+        internal DeezerClient(DeezerSession aSession, bool isUnderTest = false) 
         { 
             iSession = aSession;
 
-            iExecutor = new ExecutorService();
+            if (isUnderTest)
+            {
+                iExecutor = new ExecutorService("http://localhost:10024");
+            }
+            else { iExecutor = new ExecutorService(); }
         }
 
         internal CancellationToken CancellationToken { get { return iExecutor.CancellationToken; } }

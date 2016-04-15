@@ -25,6 +25,14 @@ namespace E.Deezer
             iClient.Timeout = DEFAULT_TIMEOUT;
         }
 
+        internal ExecutorService(string testUrl)
+        {
+            iCancellationTokenSource = new CancellationTokenSource();
+
+            iClient = new RestClient(testUrl);
+            iClient.Timeout = DEFAULT_TIMEOUT;
+        }
+
         internal CancellationToken CancellationToken { get { return iCancellationTokenSource.Token; } }
 
 

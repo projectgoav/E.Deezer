@@ -22,10 +22,12 @@ namespace E.Deezer
         private IRadioEndpoint iRadio;
         private DeezerClient iClient;
 
-        internal Deezer(DeezerSession aSession)
+        internal Deezer(DeezerSession aSession, bool underTest = false)
         {
             iSession = aSession;
-            iClient = new DeezerClient(iSession);
+            if (underTest) { iClient = new DeezerClient(iSession, true); }
+            else           { iClient = new DeezerClient(iSession); }
+            
 
             iBrowse = new BrowseEndpoint(iClient);
             iSearch = new SearchEndpoint(iClient);

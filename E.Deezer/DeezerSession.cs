@@ -88,5 +88,14 @@ namespace E.Deezer
             return new Deezer(new DeezerSession(aDefaultResponseSize)); 
         }
 
+        internal static Deezer CreateNew(bool underTest)
+        {
+            if (underTest)
+            {
+                return new Deezer(new DeezerSession(DEFAULT_SIZE), true);
+            }
+            else { return CreateNew(); }
+        }
+
     }
 }
