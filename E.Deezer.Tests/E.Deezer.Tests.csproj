@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\TestServerTests.cs" />
     <Compile Include="Utils\TestService.cs" />
+    <Compile Include="Utils\TestServiceResponder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -86,9 +87,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Genre.All.txt.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\GenreAll.txt" />

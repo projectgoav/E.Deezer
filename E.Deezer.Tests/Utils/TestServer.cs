@@ -32,9 +32,10 @@ namespace E.Deezer.Tests.Utils
 
         public void Run()
         {
+            Console.WriteLine("Webserver starting...");
+
             ThreadPool.QueueUserWorkItem((o) =>
             {
-                Console.WriteLine("Webserver running...");
                 try
                 {
                     while (_listener.IsListening)
@@ -68,8 +69,12 @@ namespace E.Deezer.Tests.Utils
 
         public void Stop()
         {
+            Console.WriteLine("Webserver stopping...");
+
             _listener.Stop();
             _listener.Close();
+
+            Console.WriteLine("Webserver stopped.");
         }
     }
 }

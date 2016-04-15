@@ -16,9 +16,11 @@ namespace E.Deezer.Tests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
+            Console.WriteLine("Starting up test server...");
+
             ts = new TestService(10024);
 
-            ts.RegisterEndpoint("genre", GenreTest);
+            ts.RegisterEndpoint("genre", TestServiceResponder.GenreAll);
             ts.Start();
 
             Assert.NotNull(ts);
@@ -27,13 +29,10 @@ namespace E.Deezer.Tests
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
+            Console.WriteLine("Stopping test server...");
+
             ts.Stop();
             ts = null;
-        }
-
-        private string GenreTest(System.Collections.Generic.Dictionary<string, string> queryString)
-        {
-            return Resources.GenreAll;
         }
     }
 }
