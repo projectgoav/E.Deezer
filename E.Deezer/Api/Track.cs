@@ -11,11 +11,12 @@ namespace E.Deezer.Api
 {
     public interface ITrack : IObjectWithImage
     {
-        uint Id { get; set;  }
+        Int64 Id { get; set;  }
         string Title { get; set;  }
         string Link { get; set;  }
         uint Duration { get; set;  }
         DateTime ReleaseDate { get; set; }
+        DateTime TimeAdd { get; set; }
         bool Explicit { get; set; }
         string Preview { get; set; }
         string ArtistName { get; }
@@ -30,9 +31,11 @@ namespace E.Deezer.Api
 
     internal class Track : ObjectWithImage, ITrack, IDeserializable<DeezerClient>
     {
-        public uint Id { get; set; }
+        public Int64 Id { get; set; }
         public string Title { get; set; }
         public string Link { get; set; }
+        [DeserializeAs(Name = "time_add")]
+        public DateTime TimeAdd { get; set; }
         public uint Duration { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string Artwork { get; set; }

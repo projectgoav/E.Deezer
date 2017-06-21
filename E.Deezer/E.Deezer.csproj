@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Api\Album.cs" />
     <Compile Include="Api\Artist.cs" />
+    <Compile Include="Api\Internal\DeezerCreateResponse.cs" />
     <Compile Include="Api\Internal\DeezerObject.cs" />
     <Compile Include="Api\Internal\DeezerPermissionRequest.cs" />
     <Compile Include="Api\Error.cs" />

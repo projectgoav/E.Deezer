@@ -70,7 +70,15 @@ namespace E.Deezer
 
             return iExecutor.ExecutePost<bool>(aMethod, aParams).ContinueWith<bool>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
+        internal Task<DeezerCreateResponse> PostForCreate(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission)
+        {
+            if (!IsAuthenticated) { throw new NotLoggedInException(); }
+            if (!HasPermission(aRequiredPermission)) { throw new DeezerPermissionsException(aRequiredPermission); }
 
+            AddDefaultsToParamList(aParams);
+
+            return iExecutor.ExecutePost<DeezerCreateResponse>(aMethod, aParams).ContinueWith<DeezerCreateResponse>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+        }
 
         //'OAuth' Stuff
 
