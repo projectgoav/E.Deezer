@@ -9,64 +9,35 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-    /// <summary>
-    /// A Deezer Album object
-    /// </summary>
-    public interface IAlbum
+    public interface IAlbum : IObjectWithImage
     {
-        /// <summary>
-        /// Deezer library ID mumber
-        /// </summary>
         uint Id { get; set; }
-        
-        /// <summary>
-        /// Album Title
-        /// </summary>
         string Title { get; set; }
-        
-        /// <summary>
-        /// Deezer.com link to album
-        /// </summary>
-        string Url { get; set; }
-
-        /// <summary>
-        /// Link to album cover
-        /// </summary>
-        string Cover { get; set; }
-        
-        /// <summary>
-        /// Link to album tracklist
-        /// </summary>
-        string Tracklist { get; set; }
-
-        /// <summary>
-        /// Album artist
-        /// </summary>
+        string Link { get; set; }
         string ArtistName { get; }
+        int Rating { get; }
+        IArtist Artist { get; }
 
-        /// <summary>
-        /// Gets the album tracklist
-        /// </summary>
-        /// <returns>A book of album tracks</returns>
-        Task<IBook<ITrack>> GetTracks();
+        //Methods
+        Task<IEnumerable<ITrack>> GetTracks();
+        Task<bool> Rate(int aRating);
 
-        /// <summary>
-        /// Gets album artist
-        /// </summary>
-        /// <returns>Album Artist</returns>
-        Task<IArtist> GetArtist();
+        string GetCover(PictureSize aSize);
+        bool HasCover(PictureSize aSize);
     }
 
-    internal class Album : IAlbum, IDeserializable<DeezerClient>
+    internal class Album : ObjectWithImage, IAlbum, IDeserializable<DeezerClient>
     {
         public uint Id { get; set; }
         public string Title { get; set; }
-        public string Url { get; set; }
-        public string Cover { get; set; }
-        public string Tracklist { get; set; }
+        public int Rating { get; set; }
+        public IArtist Artist { get { return ArtistInternal; } }
 
         [DeserializeAs(Name = "artist")]
         public Artist ArtistInternal { get; set; }
+
+        [DeserializeAs(Name = "Url")]
+        public string Link { get; set; }
 
         public string ArtistName
         {
@@ -81,15 +52,37 @@ namespace E.Deezer.Api
         public DeezerClient Client { get; set; }
         public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
+        [Obsolete("Please use GetPicture instead.")]
+        public string GetCover(PictureSize aSize) { return GetPicture(aSize); }
 
-        public Task<IBook<ITrack>> GetTracks()
+        [Obsolete("Please use HasPicture instead.")]
+        public bool HasCover(PictureSize aSize) { return HasPicture(aSize); }
+
+
+        public Task<IEnumerable<ITrack>> GetTracks()
         {
-            return Client.GetAlbumTracks(Id);
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", Id)
+            };
+
+            return Client.Get<Track>("album/{id}/tracks", parms).ContinueWith<IEnumerable<ITrack>>((aTask) =>
+            {
+                return Client.Transform<Track, ITrack>(aTask.Result);
+            }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);  
         }
 
-        public Task<IArtist> GetArtist()
+        public Task<bool> Rate(int aRating)
         {
-            return Task.Factory.StartNew<IArtist>(() => ArtistInternal);
+            if (aRating < 1 || aRating > 5) { throw new ArgumentOutOfRangeException("aRating", "Rating value should be between 1 and 5 (inclusive)"); }
+
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", Id),
+                RequestParameter.GetNewQueryStringParameter("note", aRating)
+            };
+
+            return Client.Post("album/{id}", parms, DeezerPermissions.BasicAccess);
         }
 
 

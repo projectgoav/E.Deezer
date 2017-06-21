@@ -9,78 +9,31 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-	/// <summary>
-	/// Deezer Playlist object
-	/// </summary>
-	public interface IPlaylist
-	{
-		/// <summary>
-		/// Deezer library ID number
-		/// </summary>
-		int Id { get; set; }
-
-		/// <summary>
-		/// Playlist title
-		/// </summary>
+	public interface IPlaylist : IObjectWithImage
+    {
+		uint Id { get; set; }
 		string Title { get; set; }
-
-		/// <summary>
-		/// Public availablity of playlist
-		/// </summary>
 		bool Public { get; set; }
-
-		/// <summary>
-		/// Number of tracks in playlist
-		/// </summary>
 		uint NumTracks { get; set; }
-
-		/// <summary>
-		/// Deezer.com link to playlist
-		/// </summary>
 		string Link { get; set; }
-
-		/// <summary>
-		/// Link to playlist picture
-		/// </summary>
-		string Picture { get; set; }
-
-		/// <summary>
-		/// Link to playlist tracklist
-		/// </summary>
-		string Tracklist { get; set; }
-
-		/// <summary>
-		/// Username of playlist creator
-		/// </summary>
 		string CreatorName { get; }
-
-		/// <summary>
-		/// If true, then playlist is "loved tracks"
-		/// </summary>
+        int Rating { get; }
 		bool IsLovedTrack { get; set; }
 
-		/// <summary>
-		/// Gets the tracks in the playlist
-		/// </summary>
-		/// <returns>A book of tracks in playlist.</returns>
-		Task<IBook<ITrack>> GetTracks();
+        Task<IEnumerable<ITrack>> GetTracks();
+        Task<IEnumerable<ITrack>> GetTracks(uint aCount);
+		Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount);
 
+        Task<bool> Rate(int aRating);
 	}
 
-	internal class Playlist : IPlaylist, IDeserializable<DeezerClient>
+	internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<DeezerClient>
 	{
-		public int Id { get; set; }
+		public uint Id { get; set; }
 		public string Title { get; set; }
-		public bool Public { get; set; }
-
-		[DeserializeAs(Name = "nb_tracks")]
-		public uint NumTracks { get; set; }
-
+        public bool Public { get; set; }
 		public string Link { get; set; }
-		public string Picture { get; set; }
-		public string Tracklist { get; set; }
-		[DeserializeAs(Name = "is_loved_track")]
-		public bool IsLovedTrack { get; set; }
+        public int Rating { get; set; }
 		public string CreatorName
 		{
 			//Required as sometime playlist creator is references as Creator and sometimes references as User
@@ -91,21 +44,51 @@ namespace E.Deezer.Api
 			}
 		}
 
+        [DeserializeAs(Name = "nb_tracks")]
+        public uint NumTracks { get; set; }
+
+        [DeserializeAs(Name = "is_loved_track")]
+        public bool IsLovedTrack { get; set; }
+
 		[DeserializeAs(Name = "user")]
 		public User UserInternal { get; set; }
 
 		[DeserializeAs(Name = "creator")]
 		public User CreatorInternal { get; set; }
 
-		public DeezerClient Client { get; set; }
+
+    	public DeezerClient Client { get; set; }
 		public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 
-
-		public Task<IBook<ITrack>> GetTracks()
+        public Task<IEnumerable<ITrack>> GetTracks() { return GetTracks(0, Client.ResultSize); }
+        public Task<IEnumerable<ITrack>> GetTracks(uint aCount) {  return GetTracks(0, aCount); }
+		public Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount)
 		{
-			return Client.GetPlaylistTracks(Id);
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", Id)
+            };
+
+            return Client.Get<Track>("playlist/{id}/tracks", parms, aStart, aCount).ContinueWith<IEnumerable<ITrack>>((aTask) =>
+            {
+                return Client.Transform<Track, ITrack>(aTask.Result);
+            }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
 		}
+
+
+        public Task<bool> Rate(int aRating)
+        {
+            if (aRating < 1 || aRating > 5) { throw new ArgumentOutOfRangeException("aRating", "Rating value should be between 1 and 5 (inclusive)"); }
+
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", Id),
+                RequestParameter.GetNewQueryStringParameter("note", aRating)
+            };
+
+            return Client.Post("playlist/{id}", parms, DeezerPermissions.BasicAccess);
+        }
 
 
 		public override string ToString()

@@ -3,97 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using System.Threading;
-using System.Threading.Tasks;
-
-using RestSharp;
+using E.Deezer.Endpoint;
 
 namespace E.Deezer
 {
-    /// <summary>
-    /// This class will become useful once there's support for getting the user's permission
-    /// from Deezer API with (or without) throwing up a web window to get a code :(
-    /// </summary>
     public class DeezerSession
     {
-        /// <summary>
-        /// Base Deezer API endpoint
-        /// </summary>
+        //Base Deezer API endpoint
         public const string ENDPOINT = "https://api.deezer.com/";
 
-        /// <summary>
-        /// Default result size
-        /// </summary>
-		public const int RESULT_SIZE = 25;
+        //Private default response size.
+        public const uint DEFAULT_SIZE = 25;
 
-        public string Username { get; private set; }
-        public string ApplicationId { get; private set; }
-        public string ApplicationSecret { get; private set; }
+        //Internal access to this size.
+        private uint iSize = 0;
+        internal uint ResultSize { get { return iSize; } }
 
-        /// <summary>
-        /// The reference to a fixed size for pages.
-        /// If unset will be set to RESULT_SIZE
-        /// </summary>
-        public int DefaultPageSize { get; private set; }
-        internal string Permissions { get; private set; }
+        public DeezerSession(uint aResultSize) { iSize = aResultSize; AccessToken = string.Empty; }
 
-        private RestClient iClient;
+        internal void Login(string aAccessToken) { AccessToken = aAccessToken; }
+        internal void Logout() {  AccessToken = string.Empty; }
 
-        /// <summary>
-        /// Creates a new Deezer session with the following options.
-        /// Throws ArgumentOutOfRangeException if aResultSize < 0
-        /// </summary>
-        /// <param name="aUsername">User's account name</param>
-        /// <param name="aAppId">Your Deezer application ID</param>
-        /// <param name="aAppSecret">Your Deezer application secret</param>
-        /// <param name="aPermissions">Requested permissions for Deezer API</param>
-        /// <param name="aDefaultPageSize">(OPTIONAL)A referene to a default number of items in a Page</param>
-        public DeezerSession(string aUsername, string aAppId, string aAppSecret, DeezerPermissions aPermissions, int aDefaultPageSize = RESULT_SIZE )
-        {
-            Username = aUsername;
-            ApplicationId = aAppId;
-            ApplicationSecret = aAppSecret;
-
-            if (aDefaultPageSize < 0) {  throw new ArgumentOutOfRangeException("Result Size must be greater than, or equal to, 0"); }
-            DefaultPageSize = aDefaultPageSize;
-
-            GeneratePermissionString(aPermissions);
-
-            iClient = new RestClient(ENDPOINT);
-        }
-
-
-        #region API Requests
-        internal Task<IRestResponse<T>> Execute<T>(IRestRequest aRequest, CancellationToken aToken)
-        {
-            AppendParams(aRequest);
-            var task = iClient.ExecuteGetTaskAsync<T>(aRequest, aToken).ContinueWith<IRestResponse<T>>((aTask) =>
-            {
-                if(aTask.Result.ErrorException != null) { throw aTask.Result.ErrorException; }
-                else { return aTask.Result; }
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
-            task.SuppressExceptions();
-            return task;
-        }
-
-        internal Task<IRestResponse> Execute(IRestRequest aRequest, CancellationToken aToken)
-        {
-            AppendParams(aRequest);
-            var task = iClient.ExecuteGetTaskAsync(aRequest, aToken).ContinueWith<IRestResponse>((aTask) =>
-            {
-                if (aTask.IsFaulted) { throw aTask.Exception; }
-                else { return aTask.Result; }
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
-            task.SuppressExceptions();
-            return task;
-        }
-        #endregion
-
-        //Adding any addition params we'd like to the requests
-        private void AppendParams(IRestRequest aRequest)
-        {
-            aRequest.AddParameter("output", "json", ParameterType.QueryString);
-        }
+        internal string AccessToken { get; private set; }
+        internal bool Authenticated { get { return AccessToken != string.Empty; } }
 
         //Generates a permission string which can be used to grant people
         //Access to features of the app
@@ -143,26 +75,18 @@ namespace E.Deezer
             if(string.IsNullOrEmpty(aString)) {  aString = aAdd; }
             else {  aString += string.Format(",{0}", aAdd); }
         }
-    }
 
-    /// <summary>
-    /// Task Extensions to stop tasks throwing exceptions straight away.
-    /// </summary>
-    public static class TaskExtensions
-    {
-        public static Task SuppressExceptions(this Task aTask)
+
+        /// <summary>
+        /// Starts a new session on the Deezer API.
+        /// Setup internal workings of E.Deezer
+        /// </summary>
+        public static Deezer CreateNew() { return CreateNew(DEFAULT_SIZE); }
+
+        public static Deezer CreateNew(uint aDefaultResponseSize)
         {
-            aTask.ContinueWith((t) => { var ignored = t.Exception; },
-                TaskContinuationOptions.OnlyOnFaulted |
-                TaskContinuationOptions.ExecuteSynchronously);
-            return aTask;
+            return new Deezer(new DeezerSession(aDefaultResponseSize)); 
         }
-        public static Task<T> SuppressExceptions<T>(this Task<T> aTask)
-        {
-            aTask.ContinueWith((t) => { var ignored = t.Exception; },
-                TaskContinuationOptions.OnlyOnFaulted |
-                TaskContinuationOptions.ExecuteSynchronously);
-            return aTask;
-        }
+
     }
 }

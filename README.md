@@ -1,63 +1,57 @@
 # E.Deezer
-An unoffical asynchronous wrapper for the Deezer API and .NET.
-
-PLEASE NOTE: This is still in early development
+Unoffical asynchronous Deezer .NET API.
 
 ## Usage
 
-**Latest Version: 0.0.0.94**
-[Via Nuget](https://www.nuget.org/packages/E.Deezer)
+Latest Nuget:[2.2.0](http://nuget.org/packages/e.deezer)
 
-From source:
+Via Nuget:
+```
+Package Manager> Install-Package E.Deezer
+```
+
+Via Source: 
 ```
 git clone https://github.com/projectgoav/e.deezer
 ```
 
-See E.Deezer.Examples for C# example usage. *(Source only)*
+Open solution in VS and build it.
 
 
-## Features
-- Searching
-- Service Information
-- Variable result sizes
+Once E.Deezer has been referenced in your new project:
+ ```
+ //Create a new DeezerSession for your application
+ //You'll retrieve a 'Deezer' object which you can browse the API from.
+ var Deezer = DeezerSession.CreateNew();
+ 
+ //This performs an async search on Deezer for albums matching "Abba"
+ //Mapping to API: search/album?q=Abba&index=0&limit=25
+ var search = await Deezer.Search.Albums("Abba");
+ 
+ //You can vary the size and starting position of querys...
 
-**Object Methods**
-- Album
-	- Artist
-	- Tracklist
-- Artist
-	- Albums
-	- Top Tracks
-	- Tracklist
-	- Related Artists
-	- Featured Playlists
-	
-- Playlist
-	- Tracklist
-	
-- Track
-	- Artist
-	- Album
-	
-- User
-	- Current User
-	- Favourite Playlists 
-	
+ //Will only return UP-TO a maximum of 10 artists matching "Queen"
+ //Mapping to API: search/artist?q=Queen&index=0&limit=10
+ var small_search = await Deezer.Search.Artists("Queen", 10);
 
-*More features later*
+ //This will return for UP-TO a maximum of 15 tracks by Elvis. 
+ //These will be offset by 20 places in the results. This is useful for pagination.
+ //Mapping to API: search/track/?q=Elivs&index=20&limt=15
+ var offset_search = await Deezer.Search.Tracks("Elivs", 20, 15);
+ ```
+
+See more in the [Wiki](http://github.com/projectgoav/E.Deezer/wiki)
+
 
 ## Requirements
 - Visual Studio 2013 (or later)
 - .NET 4.0 (or later)
 - [RestSharp](http://restsharp.org/)
 
-## Contents
-- E.Deezer **(API Library)**
-- E.Deezer.Examples **(Some C# example usage)**
 
 ##License
 (MIT)
-Copyright (c) 2015
+Copyright (c) 2016
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

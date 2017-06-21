@@ -6,170 +6,144 @@ using System.Threading.Tasks;
 
 namespace E.Deezer.Api
 {
-	/// <summary>
-	/// Deezer user object
-	/// </summary>
-	public interface IUser
+
+	public interface IUser : IObjectWithImage
 	{
-		/// <summary>
-		/// Deezer library ID number
-		/// </summary>
 		uint Id { get; set; }
-
-		/// <summary>
-		/// Username
-		/// </summary>
 		string Name { get; set; }
-
-		/// <summary>
-		/// Deezer.com link to user
-		/// </summary>
 		string Link { get; set; }
-
-		/// <summary>
-		/// Country
-		/// </summary>
 		string Country { get; set; }
 
 
-		//Methods
+		// ** Methods **
+        //Favourites
+		Task<IEnumerable<IAlbum>> GetFavouriteAlbums();
+        Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aCount);
+        Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart, uint aCount);
+
+		Task<IEnumerable<IArtist>> GetFavouriteArtists();
+        Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aCount);
+        Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart, uint aCount);
+
+		Task<IEnumerable<ITrack>> GetFavouriteTracks();
+        Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aCount);
+        Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart, uint aCount);
 
 
-		/// <summary>
-		/// Gets the user's favourite albums
-		/// </summary>
-		/// <returns>A book of user's favourite albums</returns>
-		Task<IBook<IAlbum>> GetFavouriteAlbums();
+        Task<IEnumerable<ITrack>> GetPersonalTracks();
+        Task<IEnumerable<ITrack>> GetPersonalTracks(uint aCount);
+        Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart, uint aCount);
 
-		/// <summary>
-		/// Gets the user's favourite artists
-		/// </summary>
-		/// <returns>A book of user's favourite artists</returns>
-		Task<IBook<IArtist>> GetFavouriteArtists();
-
-		/// <summary>
-		/// Gets the user's favourite tracks
-		/// </summary>
-		/// <returns>A book of user's favourite tracks</returns>
-		Task<IBook<ITrack>> GetFavouriteTracks();
-
-		/// <summary>
-		/// Gets the user's "flow"
-		/// </summary>
-		/// <returns>A book of user's "flow"</returns>
-		Task<IBook<ITrack>> GetUserFlow();
-
-		/// <summary>
-		/// Gets the user;s listening history
-		/// </summary>
-		/// <returns>A book of user's litening history</returns>
-		Task<IBook<ITrack>> GetListenHistory();
-
-		/// <summary>
-		/// Gets the user's favourite playlists
-		/// </summary>
-		/// <returns>A book of user's listening history</returns>
-		Task<IBook<IPlaylist>> GetFavouritePlaylists();
+        Task<IEnumerable<IPlaylist>> GetPlaylists();
+        Task<IEnumerable<IPlaylist>> GetPlaylists(uint aCount);
+        Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart, uint aCount);
 
 
-		/// <summary>
-		/// Gets recommended albums for the user
-		/// </summary>
-		/// <returns>A book of recommended albums</returns>
-		Task<IBook<IAlbum>> GetRecommendedAlbums();
+		Task<IEnumerable<ITrack>> GetFlow();
+        Task<IEnumerable<ITrack>> GetFlow(uint aCount);
+        Task<IEnumerable<ITrack>> GetFlow(uint aStart, uint aCount);
 
-		/// <summary>
-		/// Gets recommended artists for the user
-		/// </summary>
-		/// <returns>A book of recommended artists</returns>
-		Task<IBook<IArtist>> GetRecommendedArtists();
+		Task<IEnumerable<ITrack>> GetHistory();
+        Task<IEnumerable<ITrack>> GetHistory(uint aCount);
+        Task<IEnumerable<ITrack>> GetHistory(uint aStart, uint aCount);
 
-		/// <summary>
-		/// Gets recommended tracks for the user
-		/// </summary>
-		/// <returns>A book of recommended tracks</returns>
-		Task<IBook<ITrack>> GetRecommendedTracks();
+        //Recommendations
+		Task<IEnumerable<IAlbum>> GetRecommendedAlbums();
+        Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aCount);
+        Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart, uint aCount);
 
-		/// <summary>
-		/// Gets recommended playlists for the user
-		/// </summary>
-		/// <returns>A book of recommded playlists</returns>
-		Task<IBook<IPlaylist>> GetRecommendedPlaylists();
+		Task<IEnumerable<IArtist>> GetRecommendedArtists();
+        Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aCount);
+        Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart, uint aCount);
 
+		Task<IEnumerable<ITrack>> GetRecommendedTracks();
+        Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aCount);
+        Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount);
+
+		Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists();
+        Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aCount);
+        Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount);
 	}
 
-	public class User : IUser
+	internal class User : ObjectWithImage, IUser, IDeserializable<DeezerClient>
 	{
 		public uint Id { get; set; }
 		public string Name { get; set; }
 		public string Link { get; set; }
 		public string Country { get; set; }
 
-		public string error { get; set; }
-
 		//Local Serailization info
-		private DeezerClient Client { get; set; }
-		internal void Deserialize(DeezerClient aClient) { Client = aClient; }
-
-
-		public Task<IBook<IAlbum>> GetFavouriteAlbums()
-		{
-            throw new NotImplementedException();
-		}
-
-		public Task<IBook<IArtist>> GetFavouriteArtists()
-		{
-            throw new NotImplementedException();
-		}
-
-		public Task<IBook<ITrack>> GetFavouriteTracks()
-		{
-            throw new NotImplementedException();
-		}
-
-		public Task<IBook<ITrack>> GetUserFlow()
-		{
-            throw new NotImplementedException();
-		}
-
-		public Task<IBook<ITrack>> GetListenHistory()
-		{
-            throw new NotImplementedException();
-		}
-
-		public Task<IBook<IPlaylist>> GetFavouritePlaylists()
-		{
-			return Client.GetUserFavouritePlaylists(Id);
-		}
-
-
-
-
-		public Task<IBook<IAlbum>> GetRecommendedAlbums()
-		{
-            throw new NotImplementedException();
-		}
-
-		public Task<IBook<IArtist>> GetRecommendedArtists()
-		{
-            throw new NotImplementedException();
-		}
-
-		public Task<IBook<ITrack>> GetRecommendedTracks()
-		{
-            throw new NotImplementedException();
-		}
-
-		public Task<IBook<IPlaylist>> GetRecommendedPlaylists()
-		{
-            throw new NotImplementedException();
-		}
-
-
+		public DeezerClient Client { get; set; }
+		public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
 		public override string ToString()
 		{
 			return Name;
 		}
-	}
+
+        //Internal wrapper around get for all user methods :)
+        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, DeezerPermissions aPermisisons, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
+        {
+            if (!Client.IsAuthenticated) { throw new NotLoggedInException(); }
+            if (!Client.HasPermission(aPermisisons)) { throw new DeezerPermissionsException(aPermisisons); }
+
+            string method = string.Format("user/me/{0}", aMethod);
+            return Client.Get<TSource>(method, aStart, aCount).ContinueWith<IEnumerable<TDest>>((aTask) =>
+            {
+                return Client.Transform<TSource, TDest>(aTask.Result);
+            }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+        }
+
+
+        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums() { return GetFavouriteAlbums(0, Client.ResultSize);  }
+        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aCount) { return GetFavouriteAlbums(0, aCount); }
+        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart, uint aCount) { return Get<Album, IAlbum>("albums", DeezerPermissions.BasicAccess, aStart, aCount); }
+
+        public Task<IEnumerable<IArtist>> GetFavouriteArtists() { return GetFavouriteArtists(0, Client.ResultSize); }
+        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aCount) {  return GetFavouriteArtists(0, aCount); }
+        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart, uint aCount) { return Get<Artist, IArtist>("artists", DeezerPermissions.BasicAccess, aStart, aCount); }
+
+        public Task<IEnumerable<ITrack>> GetFavouriteTracks() { return GetFavouriteTracks(0, Client.ResultSize); }
+        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aCount) { return GetFavouriteTracks(0, aCount); }
+        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart, uint aCount) { return Get<Track, ITrack>("tracks", DeezerPermissions.BasicAccess, aStart, aCount); }
+
+
+        public Task<IEnumerable<ITrack>> GetPersonalTracks() {  return GetPersonalTracks(0, Client.ResultSize); }
+        public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aCount) {  return GetPersonalTracks(0, aCount); }
+        public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart, uint aCount) { return Get<Track, ITrack>("personal_songs", DeezerPermissions.BasicAccess, aStart, aCount); }
+
+
+        public Task<IEnumerable<IPlaylist>> GetPlaylists() { return GetPlaylists(0, Client.ResultSize); }
+        public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aCount) { return GetPlaylists(0, aCount); }
+        public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart, uint aCount) { return Get<Playlist, IPlaylist>("playlists", DeezerPermissions.BasicAccess, aStart, aCount); }
+
+
+
+        public Task<IEnumerable<ITrack>> GetFlow() { return GetFlow(0, Client.ResultSize);  }
+        public Task<IEnumerable<ITrack>> GetFlow(uint aCount) { return GetFlow(0, aCount); }
+        public Task<IEnumerable<ITrack>> GetFlow(uint aStart, uint aCount) { return Get<Track, ITrack>("flow", DeezerPermissions.BasicAccess, aStart, aCount); }
+
+
+        public Task<IEnumerable<ITrack>> GetHistory() { return GetHistory(0, Client.ResultSize); }
+        public Task<IEnumerable<ITrack>> GetHistory(uint aCount) { return GetHistory(0, aCount); }
+        public Task<IEnumerable<ITrack>> GetHistory(uint aStart, uint aCount) {  return Get<Track, ITrack>("history", DeezerPermissions.ListeningHistory, aStart, aCount); }
+
+
+        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums() { return GetRecommendedAlbums(0, Client.ResultSize); }
+        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aCount) { return GetRecommendedAlbums(0, aCount); }
+        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart, uint aCount) { return Get<Album, IAlbum>("recommendations/albums", DeezerPermissions.BasicAccess, aStart, aCount); }
+
+        public Task<IEnumerable<IArtist>> GetRecommendedArtists() { return GetRecommendedArtists(0, Client.ResultSize); }
+        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aCount) { return GetRecommendedArtists(0, aCount); }
+        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart, uint aCount) { return Get<Artist, IArtist>("recommendations/artists", DeezerPermissions.BasicAccess, aStart, aCount); }
+
+        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists() { return GetRecommendedPlaylists(0, Client.ResultSize); }
+        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aCount) { return GetRecommendedPlaylists(0, aCount); }
+        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount) { return Get<Playlist, IPlaylist>("recommendations/playlists",DeezerPermissions.BasicAccess, aStart, aCount);}
+
+        public Task<IEnumerable<ITrack>> GetRecommendedTracks() { return GetRecommendedTracks(0, Client.ResultSize); }
+        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aCount) { return GetRecommendedTracks(0, aCount); }
+        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount) { return Get<Track, ITrack>("recommendations/tracks", DeezerPermissions.BasicAccess, aStart, aCount); }
+
+    }
 }

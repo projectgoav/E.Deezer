@@ -9,81 +9,37 @@ using RestSharp.Deserializers;
 
 namespace E.Deezer.Api
 {
-    /// <summary>
-    /// Deezer tack object
-    /// </summary>
-    public interface ITrack
+    public interface ITrack : IObjectWithImage
     {
-        /// <summary>
-        /// Deezer libray ID number
-        /// </summary>
-        int Id { get; set;  }
-
-        /// <summary>
-        /// Track title
-        /// </summary>
+        uint Id { get; set;  }
         string Title { get; set;  }
-
-        /// <summary>
-        /// Deezer.come link to track
-        /// </summary>
         string Link { get; set;  }
-
-        /// <summary>
-        /// Length of track (in seconds)
-        /// </summary>
         uint Duration { get; set;  }
-
-        /// <summary>
-        /// Track release date
-        /// </summary>
         DateTime ReleaseDate { get; set; }
-
-        /// <summary>
-        /// Track Explicit rating
-        /// </summary>
-        bool Explicit { get; set;  }
-
-        /// <summary>
-        /// Link to track artwork
-        /// </summary>
-        string Artwork { get; set;  }
-
-        /// <summary>
-        /// Track artist name
-        /// </summary>
+        bool Explicit { get; set; }
+        string Preview { get; set; }
         string ArtistName { get; }
-
-        /// <summary>
-        /// Track album name
-        /// </summary>
         string AlbumName { get; }
+        IArtist Artist { get; }
+        IAlbum Album { get; }
 
-        //Methods
-
-        /// <summary>
-        /// Gets track artist
-        /// </summary>
-        /// <returns>Track's artist</returns>
-        Task<IArtist> GetArtist();
-
-        /// <summary>
-        /// Gets album that track belongs to
-        /// </summary>
-        /// <returns>Containing album</returns>
-        Task<IAlbum> GetAlbum();
+        string GetCover(PictureSize aSize);
+        bool HasCover(PictureSize aSize);
     }
 
 
-    internal class Track : ITrack, IDeserializable<DeezerClient>
+    internal class Track : ObjectWithImage, ITrack, IDeserializable<DeezerClient>
     {
-        public int Id { get; set; }
+        public uint Id { get; set; }
         public string Title { get; set; }
         public string Link { get; set; }
         public uint Duration { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string Artwork { get; set; }
         public bool Explicit { get; set; }
+        public string Preview { get; set; }
+        public IArtist Artist { get { return ArtistInternal; } }
+        public IAlbum Album { get { return AlbumInternal; } }
 
         public string ArtistName
         {
@@ -110,18 +66,17 @@ namespace E.Deezer.Api
         [DeserializeAs(Name = "album")]
         public Album AlbumInternal { get; set; }
 
-
         public DeezerClient Client { get; set; }
         public void Deserialize(DeezerClient aClient) 
         { 
             Client = aClient;
         }
 
+        [Obsolete("Please use GetPicture instead.")]
+        public string GetCover(PictureSize aSize) {  return GetPicture(aSize); }
 
-        public Task<IArtist> GetArtist() { return Task.Factory.StartNew<IArtist>(() => ArtistInternal); }
-
-        public Task<IAlbum> GetAlbum() { return Task.Factory.StartNew<IAlbum>(() => AlbumInternal); }
-
+        [Obsolete("Please use HasPicture instead.")]
+        public bool HasCover(PictureSize aSize) {  return HasPicture(aSize); }
 
         public override string ToString()
         {
