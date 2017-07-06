@@ -72,6 +72,9 @@ namespace E.Deezer.Api
             }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);  
         }
 
+        //TODO
+        //Check permissions
+        //Perhaps abstract into abstract/base class?
         public Task<bool> Rate(int aRating)
         {
             if (aRating < 1 || aRating > 5) { throw new ArgumentOutOfRangeException("aRating", "Rating value should be between 1 and 5 (inclusive)"); }
