@@ -51,7 +51,7 @@ See more in the [Wiki](http://github.com/projectgoav/E.Deezer/wiki)
 
 ##License
 (MIT)
-Copyright (c) 2016
+Copyright (c) 2017
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

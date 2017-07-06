@@ -7,20 +7,55 @@ namespace E.Deezer
 {
     public static class Permissions
     {
+        private const string dBasicAccess = "basic_access";
+        private const string dEmail = "email";
+        private const string dOffliceAccess = "offline_access";
+        private const string dManageLibrary = "manage_library";
+        private const string dManageCommunity = "manage_community";
+        private const string dDeleteLibrary = "delete_library";
+        private const string dListeningHistory = "listening_history";
+
+
         public static string PermissionToString(this DeezerPermissions aPermission)
         {
-            switch (aPermission)
-            {
+            List<string> perms = new List<string>(10);
 
-                case DeezerPermissions.BasicAccess:         { return "basic_access"; }
-                case DeezerPermissions.Email:               { return "email"; }
-                case DeezerPermissions.OfflineAccess:       { return "offline_access"; }
-                case DeezerPermissions.ManageLibrary:       { return "manage_library"; }
-                case DeezerPermissions.ManageCommunity:     { return "manage_community"; }
-                case DeezerPermissions.DeleteLibrary:       { return "delete_history"; }
-                case DeezerPermissions.ListeningHistory:    { return "listening_history"; }
-                default:                                    { return string.Empty; }
+            if (aPermission.HasFlag(DeezerPermissions.BasicAccess))
+            {
+                perms.Add(dBasicAccess);
             }
+
+            if (aPermission.HasFlag(DeezerPermissions.DeleteLibrary))
+            {
+                perms.Add(dDeleteLibrary);
+            }
+
+            if (aPermission.HasFlag(DeezerPermissions.Email))
+            {
+                perms.Add(dEmail);
+            }
+
+            if (aPermission.HasFlag(DeezerPermissions.ListeningHistory))
+            {
+                perms.Add(dListeningHistory);
+            }
+
+            if (aPermission.HasFlag(DeezerPermissions.ManageCommunity))
+            {
+                perms.Add(dManageCommunity);
+            }
+
+            if (aPermission.HasFlag(DeezerPermissions.ManageLibrary))
+            {
+                perms.Add(dManageLibrary);
+            }
+
+            if (aPermission.HasFlag(DeezerPermissions.OfflineAccess))
+            {
+                perms.Add(dOffliceAccess);
+            }
+
+            return string.Join(", ", perms);
         }
     }
 
