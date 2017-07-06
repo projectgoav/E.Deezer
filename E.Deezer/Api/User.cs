@@ -160,6 +160,7 @@ namespace E.Deezer.Api
             return Client.Post<DeezerCreateResponse>("user/{id}/playlists", parms, DeezerPermissions.ManageLibrary).ContinueWith(t => t.Result.Id);                        
         }
 
+        [Obsolete("Preferable to use IPlaylist.AddTrack(s) methods instead")]
         public Task<bool> AddToPlaylist(uint playlistId, string songids)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()

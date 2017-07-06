@@ -42,6 +42,7 @@ namespace E.Deezer.Api
         [DeserializeAs(Name="listening_history")]
         public bool HasListeningHistory {get; set; }
 
+        //TODO - Check a method that has multiple permissions...
         public bool HasPermission(DeezerPermissions aPermission)
         {
             switch (aPermission)

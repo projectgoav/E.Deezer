@@ -181,7 +181,7 @@ namespace E.Deezer.Api
                 RequestParameter.GetNewQueryStringParameter("songs", aTrackIds)
             };
 
-            return Client.Delete("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary);
+            return Client.Delete("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
 
 
