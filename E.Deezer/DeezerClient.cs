@@ -48,7 +48,13 @@ namespace E.Deezer
         }
         internal Task<T> Get<T>(string aMethod)
         {
-            return DoGet<DeezerObject<T>>(aMethod, RequestParameter.EmptyList).ContinueWith<T>((aTask) => aTask.Result.Data, iExecutor.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            return DoGet<DeezerObject<T>>(aMethod, RequestParameter.EmptyList).ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+        }
+
+        internal Task<T> GetPlain<T>(string aMethod)
+        {
+            return iExecutor.ExecuteGet<T>(aMethod, RequestParameter.EmptyList)
+                    .ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
         private Task<T> DoGet<T>(string aMethod, IEnumerable<IRequestParameter> aParams) where T : IHasError
