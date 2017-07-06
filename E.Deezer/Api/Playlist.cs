@@ -30,10 +30,17 @@ namespace E.Deezer.Api
         Task<bool> AddTrack(ITrack aTrack);
         Task<bool> AddTrack(Int64 aTrackId);
 
+        Task<bool> AddTracks(IEnumerable<ITrack> aTracks);
         Task<bool> AddTracks(IEnumerable<Int64> aTrackIds);
-        Task<bool> AddTracks(IEnumerable<ITrack> aTrackIds);
         Task<bool> AddTracks(string aTrackIds);
-	}
+
+        Task<bool> RemoveTrack(ITrack aTrack);
+        Task<bool> RemoveTrack(Int64 aTrackId);
+
+        Task<bool> RemoveTracks(IEnumerable<ITrack> aTracks);
+        Task<bool> RemoveTracks(IEnumerable<Int64> aTrackIds);
+        Task<bool> RemoveTracks(string aTrackIds);
+    }
 
 	internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<DeezerClient>
 	{
@@ -114,11 +121,11 @@ namespace E.Deezer.Api
 
         }
 
-        public Task<bool> AddTracks(IEnumerable<ITrack> aTrackIds)
+        public Task<bool> AddTracks(IEnumerable<ITrack> aTracks)
         {
-            if (aTrackIds.Count() > 0)
+            if (aTracks.Count() > 0)
             {
-                return AddTracks(string.Join(",", aTrackIds.Select((v) => v.Id.ToString())));
+                return AddTracks(string.Join(",", aTracks.Select((v) => v.Id.ToString())));
             }
             else
             {
@@ -138,8 +145,48 @@ namespace E.Deezer.Api
         }
 
 
+        public Task<bool> RemoveTrack(ITrack aTrack) { return RemoveTrack(aTrack.Id); }
+        public Task<bool> RemoveTrack(Int64 aTrackId) { return RemoveTracks(aTrackId.ToString()); }
 
-		public override string ToString()
+        public Task<bool> RemoveTracks(IEnumerable<Int64> aTrackIds)
+        {
+            if (aTrackIds.Count() > 0)
+            {
+                return RemoveTracks(string.Join(",", aTrackIds.Select((v) => v.ToString())));
+            }
+            else
+            {
+                throw new ArgumentException("Must provide at least one track ID", "aTrackIds");
+            }
+
+        }
+
+        public Task<bool> RemoveTracks(IEnumerable<ITrack> aTracks)
+        {
+            if (aTracks.Count() > 0)
+            {
+                return RemoveTracks(string.Join(",", aTracks.Select((v) => v.Id.ToString())));
+            }
+            else
+            {
+                throw new ArgumentException("Must provide at least one track ID", "aTrackIds");
+            }
+        }
+
+        public Task<bool> RemoveTracks(string aTrackIds)
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("playlist_id", Id),
+                RequestParameter.GetNewQueryStringParameter("songs", aTrackIds)
+            };
+
+            return Client.Delete("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary);
+        }
+
+
+
+        public override string ToString()
 		{
 			return string.Format("E.Deezer: Playlist({0} [{1}])", Title, CreatorName);
 		}
