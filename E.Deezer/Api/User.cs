@@ -157,7 +157,7 @@ namespace E.Deezer.Api
                 RequestParameter.GetNewQueryStringParameter("title", title)
             };
 
-            return Client.PostForCreate("user/{id}/playlists", parms, DeezerPermissions.ManageLibrary).ContinueWith(t => t.Result.Id);                        
+            return Client.Post<DeezerCreateResponse>("user/{id}/playlists", parms, DeezerPermissions.ManageLibrary).ContinueWith(t => t.Result.Id);                        
         }
 
         public Task<bool> AddToPlaylist(uint playlistId, string songids)

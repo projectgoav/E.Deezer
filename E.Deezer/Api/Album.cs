@@ -52,10 +52,10 @@ namespace E.Deezer.Api
         public DeezerClient Client { get; set; }
         public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
-        [Obsolete("Please use GetPicture instead.")]
+        [Obsolete("Please use GetPicture instead.", true)]
         public string GetCover(PictureSize aSize) { return GetPicture(aSize); }
 
-        [Obsolete("Please use HasPicture instead.")]
+        [Obsolete("Please use HasPicture instead.", true)]
         public bool HasCover(PictureSize aSize) { return HasPicture(aSize); }
 
 
@@ -72,9 +72,6 @@ namespace E.Deezer.Api
             }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);  
         }
 
-        //TODO
-        //Check permissions
-        //Perhaps abstract into abstract/base class?
         public Task<bool> Rate(int aRating)
         {
             if (aRating < 1 || aRating > 5) { throw new ArgumentOutOfRangeException("aRating", "Rating value should be between 1 and 5 (inclusive)"); }
