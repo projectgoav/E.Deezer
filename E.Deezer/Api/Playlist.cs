@@ -25,6 +25,14 @@ namespace E.Deezer.Api
 		Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount);
 
         Task<bool> Rate(int aRating);
+
+        //Manage Tracks
+        Task<bool> AddTrack(ITrack aTrack);
+        Task<bool> AddTrack(Int64 aTrackId);
+
+        Task<bool> AddTracks(IEnumerable<Int64> aTrackIds);
+        Task<bool> AddTracks(IEnumerable<ITrack> aTrackIds);
+        Task<bool> AddTracks(string aTrackIds);
 	}
 
 	internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<DeezerClient>
@@ -88,6 +96,47 @@ namespace E.Deezer.Api
 
             return Client.Post("playlist/{id}", parms, DeezerPermissions.BasicAccess);
         }
+
+
+        public Task<bool> AddTrack(ITrack aTrack) { return AddTrack(aTrack.Id); }
+        public Task<bool> AddTrack(Int64 aTrackId) { return AddTracks(aTrackId.ToString()); }
+
+        public Task<bool> AddTracks(IEnumerable<Int64> aTrackIds)
+        {
+            if (aTrackIds.Count() > 0)
+            {
+                return AddTracks(string.Join(",", aTrackIds.Select((v) => v.ToString())));
+            }
+            else
+            {
+                throw new ArgumentException("Must provide at least one track ID", "aTrackIds");
+            }
+
+        }
+
+        public Task<bool> AddTracks(IEnumerable<ITrack> aTrackIds)
+        {
+            if (aTrackIds.Count() > 0)
+            {
+                return AddTracks(string.Join(",", aTrackIds.Select((v) => v.Id.ToString())));
+            }
+            else
+            {
+                throw new ArgumentException("Must provide at least one track ID", "aTrackIds");
+            }
+        }
+
+        public Task<bool> AddTracks(string aTrackIds)
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("playlist_id", Id),
+                RequestParameter.GetNewQueryStringParameter("songs", aTrackIds)
+            };
+
+            return Client.Post("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary);
+        }
+
 
 
 		public override string ToString()
