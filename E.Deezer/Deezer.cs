@@ -15,15 +15,19 @@ namespace E.Deezer
     /// </summary>
     public class Deezer : IDisposable
     {
+        private string iVersion;
+
         private DeezerSession iSession;
-        private IBrowseEndpoint iBrowse;
-        private ISearchEndpoint iSearch;
-        private IUserEndpoint iUser;
-        private IRadioEndpoint iRadio;
-        private DeezerClient iClient;
+        private readonly IBrowseEndpoint iBrowse;
+        private readonly ISearchEndpoint iSearch;
+        private readonly IUserEndpoint iUser;
+        private readonly IRadioEndpoint iRadio;
+        private readonly DeezerClient iClient;
 
         internal Deezer(DeezerSession aSession)
         {
+            //iVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
             iSession = aSession;
             iClient = new DeezerClient(iSession);
 
@@ -41,7 +45,7 @@ namespace E.Deezer
 
         public Task<IInfos> GetServiceInformation()
         {
-           return iClient.Get<Infos>("infos").ContinueWith<IInfos>((aTask) => { return aTask.Result; }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+           return iClient.GetPlain<Infos>("infos").ContinueWith<IInfos>((aTask) => { return aTask.Result; }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
         
         //'OAuth'

@@ -23,6 +23,8 @@ namespace E.Deezer.Api
         string AlbumName { get; }
         IArtist Artist { get; }
         IAlbum Album { get; }
+        uint Number { get; }
+        uint Disc { get; }
 
         string GetCover(PictureSize aSize);
         bool HasCover(PictureSize aSize);
@@ -43,6 +45,12 @@ namespace E.Deezer.Api
         public string Preview { get; set; }
         public IArtist Artist { get { return ArtistInternal; } }
         public IAlbum Album { get { return AlbumInternal; } }
+
+        [DeserializeAs(Name = "track_position")]
+        public uint Number { get; set; }
+
+        [DeserializeAs(Name = "disc_number")]
+        public uint Disc { get; set; }
 
         public string ArtistName
         {
