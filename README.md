@@ -3,7 +3,7 @@ Unoffical asynchronous Deezer .NET API.
 
 ## Usage
 
-Latest Nuget:[2.2.0](http://nuget.org/packages/e.deezer)
+Latest Nuget:[2.3.0](http://nuget.org/packages/e.deezer)
 
 Via Nuget:
 ```
