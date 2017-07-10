@@ -46,6 +46,11 @@ namespace E.Deezer
             return Execute<T>(aMethod, Method.POST, aParams);
         }
 
+        public Task<IRestResponse<T>> ExecuteDelete<T>(string aMethod, IEnumerable<IRequestParameter> aParams)
+        {
+            return Execute<T>(aMethod, Method.DELETE, aParams);
+        }
+
 
 
         private Task<IRestResponse<T>> Execute<T>(string aMethodUrl, Method aMethodType, IEnumerable<IRequestParameter> aParams)

@@ -52,10 +52,10 @@ namespace E.Deezer.Api
         public DeezerClient Client { get; set; }
         public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
-        [Obsolete("Please use GetPicture instead.")]
+        [Obsolete("Please use GetPicture instead.", true)]
         public string GetCover(PictureSize aSize) { return GetPicture(aSize); }
 
-        [Obsolete("Please use HasPicture instead.")]
+        [Obsolete("Please use HasPicture instead.", true)]
         public bool HasCover(PictureSize aSize) { return HasPicture(aSize); }
 
 

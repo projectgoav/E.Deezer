@@ -11,17 +11,20 @@ namespace E.Deezer.Api
 {
     public interface ITrack : IObjectWithImage
     {
-        uint Id { get; set;  }
+        Int64 Id { get; set;  }
         string Title { get; set;  }
         string Link { get; set;  }
         uint Duration { get; set;  }
         DateTime ReleaseDate { get; set; }
+        DateTime TimeAdd { get; set; }
         bool Explicit { get; set; }
         string Preview { get; set; }
         string ArtistName { get; }
         string AlbumName { get; }
         IArtist Artist { get; }
         IAlbum Album { get; }
+        uint Number { get; }
+        uint Disc { get; }
 
         string GetCover(PictureSize aSize);
         bool HasCover(PictureSize aSize);
@@ -30,9 +33,11 @@ namespace E.Deezer.Api
 
     internal class Track : ObjectWithImage, ITrack, IDeserializable<DeezerClient>
     {
-        public uint Id { get; set; }
+        public Int64 Id { get; set; }
         public string Title { get; set; }
         public string Link { get; set; }
+        [DeserializeAs(Name = "time_add")]
+        public DateTime TimeAdd { get; set; }
         public uint Duration { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string Artwork { get; set; }
@@ -40,6 +45,12 @@ namespace E.Deezer.Api
         public string Preview { get; set; }
         public IArtist Artist { get { return ArtistInternal; } }
         public IAlbum Album { get { return AlbumInternal; } }
+
+        [DeserializeAs(Name = "track_position")]
+        public uint Number { get; set; }
+
+        [DeserializeAs(Name = "disc_number")]
+        public uint Disc { get; set; }
 
         public string ArtistName
         {
@@ -72,10 +83,10 @@ namespace E.Deezer.Api
             Client = aClient;
         }
 
-        [Obsolete("Please use GetPicture instead.")]
+        [Obsolete("Please use GetPicture instead.", true)]
         public string GetCover(PictureSize aSize) {  return GetPicture(aSize); }
 
-        [Obsolete("Please use HasPicture instead.")]
+        [Obsolete("Please use HasPicture instead.", true)]
         public bool HasCover(PictureSize aSize) {  return HasPicture(aSize); }
 
         public override string ToString()

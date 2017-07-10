@@ -42,19 +42,47 @@ namespace E.Deezer.Api
         [DeserializeAs(Name="listening_history")]
         public bool HasListeningHistory {get; set; }
 
+        //TODO - Check a method that has multiple permissions...
         public bool HasPermission(DeezerPermissions aPermission)
         {
-            switch (aPermission)
+            bool permission = true;
+
+            if (aPermission.HasFlag(DeezerPermissions.BasicAccess))
             {
-                case DeezerPermissions.BasicAccess:         { return HasBasicAccess; }
-                case DeezerPermissions.DeleteLibrary:       { return HasDeleteLibrary; }
-                case DeezerPermissions.Email:               { return HasEmail; }
-                case DeezerPermissions.ListeningHistory:    { return HasListeningHistory; }
-                case DeezerPermissions.ManageCommunity:     { return HasManageCommunity; }
-                case DeezerPermissions.ManageLibrary:       { return HasManageLibrary; }
-                case DeezerPermissions.OfflineAccess:       { return HasOfflineAccess; }
-                default: { return false; }
+                permission &= HasBasicAccess;
             }
+
+            if (aPermission.HasFlag(DeezerPermissions.DeleteLibrary))
+            {
+                permission &= HasDeleteLibrary;
+            }
+
+            if (aPermission.HasFlag(DeezerPermissions.Email))
+            {
+                permission &= HasEmail; 
+            }
+
+            if (aPermission.HasFlag(DeezerPermissions.ListeningHistory))
+            {
+                permission &= HasListeningHistory; 
+            }
+
+            if (aPermission.HasFlag(DeezerPermissions.ManageCommunity))
+            {
+                permission &= HasManageCommunity; 
+            }
+
+            if (aPermission.HasFlag(DeezerPermissions.ManageLibrary))
+            {
+                permission &= HasManageLibrary;
+            }
+
+            if (aPermission.HasFlag(DeezerPermissions.OfflineAccess))
+            {
+                permission &= HasOfflineAccess;
+            }
+
+            return permission;
         }
     }
 }

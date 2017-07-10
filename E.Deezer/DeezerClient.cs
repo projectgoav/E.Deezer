@@ -52,7 +52,13 @@ namespace E.Deezer
         }
         internal Task<T> Get<T>(string aMethod)
         {
-            return DoGet<DeezerObject<T>>(aMethod, RequestParameter.EmptyList).ContinueWith<T>((aTask) => aTask.Result.Data, iExecutor.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            return DoGet<DeezerObject<T>>(aMethod, RequestParameter.EmptyList).ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+        }
+
+        internal Task<T> GetPlain<T>(string aMethod)
+        {
+            return iExecutor.ExecuteGet<T>(aMethod, RequestParameter.EmptyList)
+                    .ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
         private Task<T> DoGet<T>(string aMethod, IEnumerable<IRequestParameter> aParams) where T : IHasError
@@ -75,6 +81,36 @@ namespace E.Deezer
             return iExecutor.ExecutePost<bool>(aMethod, aParams).ContinueWith<bool>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
+        internal Task<T> Post<T>(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission)
+        {
+            if (!IsAuthenticated) { throw new NotLoggedInException(); }
+            if (!HasPermission(aRequiredPermission)) { throw new DeezerPermissionsException(aRequiredPermission); }
+
+            AddDefaultsToParamList(aParams);
+
+            return iExecutor.ExecutePost<T>(aMethod, aParams).ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+        }
+
+        //Performs a DELETE request
+        internal Task<bool> Delete(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission)
+        {
+            if (!IsAuthenticated) { throw new NotLoggedInException(); }
+            if (!HasPermission(aRequiredPermission)) { throw new DeezerPermissionsException(aRequiredPermission); }
+
+            AddDefaultsToParamList(aParams);
+
+            return iExecutor.ExecuteDelete<bool>(aMethod, aParams).ContinueWith<bool>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+        }
+
+        internal Task<T> Delete<T>(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission)
+        {
+            if (!IsAuthenticated) { throw new NotLoggedInException(); }
+            if (!HasPermission(aRequiredPermission)) { throw new DeezerPermissionsException(aRequiredPermission); }
+
+            AddDefaultsToParamList(aParams);
+
+            return iExecutor.ExecuteDelete<T>(aMethod, aParams).ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+        }
 
         //'OAuth' Stuff
 
@@ -174,10 +210,10 @@ namespace E.Deezer
         }
 
 
-        private void AddDefaultsToParamList(IList<IRequestParameter> aParams) { AddToParamList(aParams, uint.MaxValue, uint.MaxValue);  }
+        private void AddDefaultsToParamList(IList<IRequestParameter> aParams) { AddToParamList(aParams, uint.MinValue, uint.MaxValue);  }
         private void AddToParamList(IList<IRequestParameter> aParams, uint aStart, uint aCount)
         {
-            if (aCount < uint.MaxValue && aStart < uint.MaxValue)
+            if (aCount <= uint.MaxValue && aStart <= uint.MaxValue)
             {
                 aParams.Add(RequestParameter.GetNewQueryStringParameter("index", aStart));
                 aParams.Add(RequestParameter.GetNewQueryStringParameter("limit", aCount));

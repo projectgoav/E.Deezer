@@ -63,7 +63,11 @@ namespace E.Deezer.Api
 		Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists();
         Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aCount);
         Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount);
-	}
+
+        Task<uint> CreatePlaylist(string title);
+
+        Task<bool> AddToPlaylist(uint playlistId, string songids);
+    }
 
 	internal class User : ObjectWithImage, IUser, IDeserializable<DeezerClient>
 	{
@@ -145,5 +149,27 @@ namespace E.Deezer.Api
         public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aCount) { return GetRecommendedTracks(0, aCount); }
         public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount) { return Get<Track, ITrack>("recommendations/tracks", DeezerPermissions.BasicAccess, aStart, aCount); }
 
+        public Task<uint> CreatePlaylist(string title)
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", Id),
+                RequestParameter.GetNewQueryStringParameter("title", title)
+            };
+
+            return Client.Post<DeezerCreateResponse>("user/{id}/playlists", parms, DeezerPermissions.ManageLibrary).ContinueWith(t => t.Result.Id);                        
+        }
+
+        [Obsolete("Preferable to use IPlaylist.AddTrack(s) methods instead")]
+        public Task<bool> AddToPlaylist(uint playlistId, string songids)
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("playlist_id", playlistId),
+                RequestParameter.GetNewQueryStringParameter("songs", songids)
+            };
+
+            return Client.Post("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary);
+        }
     }
 }
