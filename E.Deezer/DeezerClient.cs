@@ -206,10 +206,10 @@ namespace E.Deezer
         }
 
 
-        private void AddDefaultsToParamList(IList<IRequestParameter> aParams) { AddToParamList(aParams, uint.MaxValue, uint.MaxValue);  }
+        private void AddDefaultsToParamList(IList<IRequestParameter> aParams) { AddToParamList(aParams, uint.MinValue, uint.MaxValue);  }
         private void AddToParamList(IList<IRequestParameter> aParams, uint aStart, uint aCount)
         {
-            if (aCount < uint.MaxValue && aStart < uint.MaxValue)
+            if (aCount <= uint.MaxValue && aStart <= uint.MaxValue)
             {
                 aParams.Add(RequestParameter.GetNewQueryStringParameter("index", aStart));
                 aParams.Add(RequestParameter.GetNewQueryStringParameter("limit", aCount));
