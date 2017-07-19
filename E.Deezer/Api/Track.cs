@@ -83,6 +83,23 @@ namespace E.Deezer.Api
             Client = aClient;
         }
 
+
+        //Tracks don't often come with their own images so if there is none, we can use that from the album in which it belongs.
+        public override string GetPicture(PictureSize aSize)
+        {
+            string url = AlbumInternal.GetPicture(aSize);
+            return (url == string.Empty) ? AlbumInternal.GetPicture(aSize) : url;
+        }
+
+        public override bool HasPicture(PictureSize aSize)
+        {
+            bool baseResult = base.HasPicture(aSize);
+            return (baseResult) ? baseResult : AlbumInternal.HasPicture(aSize);
+        }
+
+
+
+
         [Obsolete("Please use GetPicture instead.", true)]
         public string GetCover(PictureSize aSize) {  return GetPicture(aSize); }
 

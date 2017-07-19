@@ -42,7 +42,7 @@ namespace E.Deezer.Api
 
 
 
-        public string GetPicture(PictureSize aSize)
+        public virtual string GetPicture(PictureSize aSize)
         {
             switch (aSize)
             {
@@ -53,7 +53,7 @@ namespace E.Deezer.Api
             }
         }
 
-        public bool HasPicture(PictureSize aSize)
+        public virtual bool HasPicture(PictureSize aSize)
         {
             switch (aSize)
             {
