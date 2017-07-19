@@ -48,7 +48,7 @@ namespace E.Deezer.Endpoint
 
         public Task<IEnumerable<ITrack>> GetTrackChart() { return GetTrackChart(0, iClient.ResultSize); }
         public Task<IEnumerable<ITrack>> GetTrackChart(uint aCount) { return GetTrackChart(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount) { return Get<Track, ITrack>("chart/{id}/track", 0, aStart, aCount); }
+        public Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount) { return Get<Track, ITrack>("chart/{id}/tracks", 0, aStart, aCount); }
 
 
         //Internal wrapper around get for all ChartEndpoint methods :)
