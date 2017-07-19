@@ -43,7 +43,7 @@ namespace E.Deezer
 
         //Another copy for those without params!
         internal Task<DeezerFragment<T>> Get<T>(string aMethod, uint aStart, uint aCount) {  return Get<T>(aMethod, RequestParameter.EmptyList, aStart, aCount); }
-        internal Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams) { return Get<T>(aMethod, aParams, uint.MaxValue, uint.MaxValue); }
+        internal Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams) { return Get<T>(aMethod, aParams, uint.MinValue, uint.MaxValue); }
         internal Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
         {
             AddToParamList(aParams, aStart, aCount);

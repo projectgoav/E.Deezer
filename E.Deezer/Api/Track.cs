@@ -87,7 +87,7 @@ namespace E.Deezer.Api
         //Tracks don't often come with their own images so if there is none, we can use that from the album in which it belongs.
         public override string GetPicture(PictureSize aSize)
         {
-            string url = AlbumInternal.GetPicture(aSize);
+            string url = base.GetPicture(aSize);
             return (url == string.Empty) ? AlbumInternal.GetPicture(aSize) : url;
         }
 
