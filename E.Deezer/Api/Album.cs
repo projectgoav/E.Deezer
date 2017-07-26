@@ -50,7 +50,15 @@ namespace E.Deezer.Api
 
         //Local Serailization info
         public DeezerClient Client { get; set; }
-        public void Deserialize(DeezerClient aClient) { Client = aClient; }
+        public void Deserialize(DeezerClient aClient)
+        {
+            Client = aClient;
+
+            if (ArtistInternal != null)
+            {
+                ArtistInternal.Deserialize(aClient);
+            }
+        }
 
         [Obsolete("Please use GetPicture instead.", true)]
         public string GetCover(PictureSize aSize) { return GetPicture(aSize); }

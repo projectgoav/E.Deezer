@@ -81,6 +81,16 @@ namespace E.Deezer.Api
         public void Deserialize(DeezerClient aClient) 
         { 
             Client = aClient;
+
+            if (ArtistInternal != null)
+            {
+                ArtistInternal.Deserialize(aClient);
+            }
+
+            if (AlbumInternal != null)
+            {
+                AlbumInternal.Deserialize(aClient);
+            }
         }
 
 

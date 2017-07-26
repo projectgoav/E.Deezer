@@ -73,7 +73,20 @@ namespace E.Deezer.Api
 
 
     	public DeezerClient Client { get; set; }
-		public void Deserialize(DeezerClient aClient) { Client = aClient; }
+		public void Deserialize(DeezerClient aClient)
+        {
+            Client = aClient;
+
+            if (UserInternal != null)
+            {
+                UserInternal.Deserialize(aClient);
+            }
+
+            if (CreatorInternal != null)
+            {
+                CreatorInternal.Deserialize(aClient);
+            }
+        }
 
 
         public Task<IEnumerable<ITrack>> GetTracks() { return GetTracks(0, Client.ResultSize); }
