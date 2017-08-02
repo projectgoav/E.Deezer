@@ -17,4 +17,18 @@ namespace E.Deezer.Api
 
         public IError TheError { get { return Error; } }
     }
+
+
+
+    //ChartFragment is used to get all 4 charts at once
+    internal class DeezerChartFragment
+    {
+        DeezerFragment<ITrack> Tracks { get; }
+
+        DeezerFragment<IAlbum> Albums { get; }
+
+        DeezerFragment<IArtist> Artists {get; }
+
+        DeezerFragment<IPlaylist> Playlists {get; }
+    }
 }
