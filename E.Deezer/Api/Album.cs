@@ -12,10 +12,12 @@ namespace E.Deezer.Api
     public interface IAlbum : IObjectWithImage
     {
         uint Id { get; set; }
+        uint Tracks {get; set; }
         string Title { get; set; }
         string Link { get; set; }
         string ArtistName { get; }
         int Rating { get; }
+        DateTime ReleaseDate {get; set; }
         IArtist Artist { get; }
 
         //Methods
@@ -31,6 +33,7 @@ namespace E.Deezer.Api
         public uint Id { get; set; }
         public string Title { get; set; }
         public int Rating { get; set; }
+        public DateTime ReleaseDate {get; set; }
         public IArtist Artist { get { return ArtistInternal; } }
 
         [DeserializeAs(Name = "artist")]
@@ -38,6 +41,9 @@ namespace E.Deezer.Api
 
         [DeserializeAs(Name = "Url")]
         public string Link { get; set; }
+
+        [DeserializeAs(Name = "nb_tracks")]
+        public uint Tracks {get; set; }
 
         public string ArtistName
         {
