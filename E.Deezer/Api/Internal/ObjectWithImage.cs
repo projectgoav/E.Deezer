@@ -42,7 +42,7 @@ namespace E.Deezer.Api
 
 
 
-        public string GetPicture(PictureSize aSize)
+        public virtual string GetPicture(PictureSize aSize)
         {
             switch (aSize)
             {
@@ -53,13 +53,13 @@ namespace E.Deezer.Api
             }
         }
 
-        public bool HasPicture(PictureSize aSize)
+        public virtual bool HasPicture(PictureSize aSize)
         {
             switch (aSize)
             {
-                case PictureSize.SMALL:     { return string.IsNullOrEmpty(GetImage(SmallPicture, SmallCover)); }
-                case PictureSize.MEDIUM:    { return string.IsNullOrEmpty(GetImage(MediumPicture, MediumCover)); }
-                case PictureSize.LARGE:     { return string.IsNullOrEmpty(GetImage(LargePicture, LargeCover)); }
+                case PictureSize.SMALL:     { return !string.IsNullOrEmpty(GetImage(SmallPicture, SmallCover)); }
+                case PictureSize.MEDIUM:    { return !string.IsNullOrEmpty(GetImage(MediumPicture, MediumCover)); }
+                case PictureSize.LARGE:     { return !string.IsNullOrEmpty(GetImage(LargePicture, LargeCover)); }
                 default:                    { return false; }
             }
         }

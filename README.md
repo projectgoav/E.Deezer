@@ -3,7 +3,7 @@ Unoffical asynchronous Deezer .NET API.
 
 ## Usage
 
-Latest Nuget:[2.2.0](http://nuget.org/packages/e.deezer)
+Latest Nuget: [v2.3.1](http://nuget.org/packages/e.deezer)
 
 Via Nuget:
 ```
@@ -42,6 +42,8 @@ Once E.Deezer has been referenced in your new project:
 
 See more in the [Wiki](http://github.com/projectgoav/E.Deezer/wiki)
 
+An example UI demo can be found [here](http://github.com/projectgoav/E.ExploreDeezer)
+
 
 ## Requirements
 - Visual Studio 2013 (or later)
@@ -51,7 +53,7 @@ See more in the [Wiki](http://github.com/projectgoav/E.Deezer/wiki)
 
 ##License
 (MIT)
-Copyright (c) 2016
+Copyright (c) 2017
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

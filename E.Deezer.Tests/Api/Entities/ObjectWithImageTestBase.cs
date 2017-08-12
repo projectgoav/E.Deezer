@@ -21,7 +21,7 @@ namespace E.Deezer.Tests.Api.Entities
         protected abstract void OnSetUp();
 
         [Test]
-        public void TestGetPictureSmall()
+        public void Test_GetPictureSmall()
         {
             string pictureUrl = objectWithImage.GetPicture(PictureSize.SMALL);
 
@@ -31,7 +31,7 @@ namespace E.Deezer.Tests.Api.Entities
         }
 
         [Test]
-        public void TestGetPictureMedium()
+        public void Test_GetPictureMedium()
         {
             string pictureUrl = objectWithImage.GetPicture(PictureSize.MEDIUM);
 
@@ -41,13 +41,21 @@ namespace E.Deezer.Tests.Api.Entities
         }
 
         [Test]
-        public void TestGetPictureLarge()
+        public void Test_GetPictureLarge()
         {
             string pictureUrl = objectWithImage.GetPicture(PictureSize.LARGE);
 
             Assert.NotNull(pictureUrl);
             Assert.True(pictureUrl.Contains("large"));
             Assert.True(pictureUrl.Contains("picture"));
+        }
+
+        [Test]
+        public void Test_HasPicture()
+        {
+            Assert.True(objectWithImage.HasPicture(PictureSize.SMALL));
+            Assert.True(objectWithImage.HasPicture(PictureSize.MEDIUM));
+            Assert.True(objectWithImage.HasPicture(PictureSize.LARGE));
         }
 
     }

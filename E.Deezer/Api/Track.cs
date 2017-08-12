@@ -23,6 +23,8 @@ namespace E.Deezer.Api
         string AlbumName { get; }
         IArtist Artist { get; }
         IAlbum Album { get; }
+        uint Number { get; }
+        uint Disc { get; }
 
         string GetCover(PictureSize aSize);
         bool HasCover(PictureSize aSize);
@@ -43,6 +45,12 @@ namespace E.Deezer.Api
         public string Preview { get; set; }
         public IArtist Artist { get { return ArtistInternal; } }
         public IAlbum Album { get { return AlbumInternal; } }
+
+        [DeserializeAs(Name = "track_position")]
+        public uint Number { get; set; }
+
+        [DeserializeAs(Name = "disc_number")]
+        public uint Disc { get; set; }
 
         public string ArtistName
         {
@@ -73,12 +81,39 @@ namespace E.Deezer.Api
         public void Deserialize(DeezerClient aClient) 
         { 
             Client = aClient;
+
+            if (ArtistInternal != null)
+            {
+                ArtistInternal.Deserialize(aClient);
+            }
+
+            if (AlbumInternal != null)
+            {
+                AlbumInternal.Deserialize(aClient);
+            }
         }
 
-        [Obsolete("Please use GetPicture instead.")]
+
+        //Tracks don't often come with their own images so if there is none, we can use that from the album in which it belongs.
+        public override string GetPicture(PictureSize aSize)
+        {
+            string url = base.GetPicture(aSize);
+            return (url == string.Empty) ? AlbumInternal.GetPicture(aSize) : url;
+        }
+
+        public override bool HasPicture(PictureSize aSize)
+        {
+            bool baseResult = base.HasPicture(aSize);
+            return (baseResult) ? baseResult : AlbumInternal.HasPicture(aSize);
+        }
+
+
+
+
+        [Obsolete("Please use GetPicture instead.", true)]
         public string GetCover(PictureSize aSize) {  return GetPicture(aSize); }
 
-        [Obsolete("Please use HasPicture instead.")]
+        [Obsolete("Please use HasPicture instead.", true)]
         public bool HasCover(PictureSize aSize) {  return HasPicture(aSize); }
 
         public override string ToString()

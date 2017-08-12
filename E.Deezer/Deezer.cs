@@ -15,17 +15,23 @@ namespace E.Deezer
     /// </summary>
     public class Deezer : IDisposable
     {
-        private DeezerSession iSession;
-        private IBrowseEndpoint iBrowse;
-        private ISearchEndpoint iSearch;
-        private IUserEndpoint iUser;
-        private IRadioEndpoint iRadio;
-        private DeezerClient iClient;
+        private string iVersion;
 
-        internal Deezer(DeezerSession aSession)
+        private DeezerSession iSession;
+        private readonly IBrowseEndpoint iBrowse;
+        private readonly ISearchEndpoint iSearch;
+        private readonly IUserEndpoint iUser;
+        private readonly IRadioEndpoint iRadio;
+        private readonly DeezerClient iClient;
+
+        internal Deezer(DeezerSession aSession, bool underTest = false)
         {
+            //iVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
             iSession = aSession;
-            iClient = new DeezerClient(iSession);
+            if (underTest) { iClient = new DeezerClient(iSession, true); }
+            else           { iClient = new DeezerClient(iSession); }
+            
 
             iBrowse = new BrowseEndpoint(iClient);
             iSearch = new SearchEndpoint(iClient);
@@ -41,7 +47,7 @@ namespace E.Deezer
 
         public Task<IInfos> GetServiceInformation()
         {
-           return iClient.Get<Infos>("infos").ContinueWith<IInfos>((aTask) => { return aTask.Result; }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+           return iClient.GetPlain<Infos>("infos").ContinueWith<IInfos>((aTask) => { return aTask.Result; }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
         
         //'OAuth'

@@ -36,19 +36,19 @@ namespace E.Deezer.Endpoint
 
         public Task<IEnumerable<IAlbum>> GetAlbumChart() { return GetAlbumChart(0, iClient.ResultSize); }
         public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aCount) { return GetAlbumChart(0, aCount); }
-        public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart, uint aCount) { return Get<Album, IAlbum>("charts/{id}/albums", 0, aStart, aCount); }
+        public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart, uint aCount) { return Get<Album, IAlbum>("chart/{id}/albums", 0, aStart, aCount); }
 
         public Task<IEnumerable<IArtist>> GetArtistChart() { return GetArtistChart(0, iClient.ResultSize); }
         public Task<IEnumerable<IArtist>> GetArtistChart(uint aCount) { return GetArtistChart(0, aCount); }
-        public Task<IEnumerable<IArtist>> GetArtistChart(uint aStart, uint aCount) { return Get<Artist, IArtist>("charts/{id}/artists", 0, aStart, aCount); }
+        public Task<IEnumerable<IArtist>> GetArtistChart(uint aStart, uint aCount) { return Get<Artist, IArtist>("chart/{id}/artists", 0, aStart, aCount); }
 
         public Task<IEnumerable<IPlaylist>> GetPlaylistChart() { return GetPlaylistChart(0, iClient.ResultSize); }
         public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aCount) { return GetPlaylistChart(0, aCount); }
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart, uint aCount) { return Get<Playlist, IPlaylist>("charts/{id}/playlists", 0, aStart, aCount); }
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart, uint aCount) { return Get<Playlist, IPlaylist>("chart/{id}/playlists", 0, aStart, aCount); }
 
         public Task<IEnumerable<ITrack>> GetTrackChart() { return GetTrackChart(0, iClient.ResultSize); }
         public Task<IEnumerable<ITrack>> GetTrackChart(uint aCount) { return GetTrackChart(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount) { return Get<Track, ITrack>("charts/{id}/track", 0, aStart, aCount); }
+        public Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount) { return Get<Track, ITrack>("chart/{id}/tracks", 0, aStart, aCount); }
 
 
         //Internal wrapper around get for all ChartEndpoint methods :)
