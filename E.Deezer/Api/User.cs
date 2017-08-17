@@ -68,9 +68,13 @@ namespace E.Deezer.Api
 
         Task<bool> AddToPlaylist(uint playlistId, string songids);
 
+        Task<bool> AddRadioToFavorite(int radioId);
+        Task<bool> RemoveRadioFromFavorite(int radioId);
+
         Task<bool> AddTrackToFavorite(int trackId);
 
         Task<bool> RemoveTrackFromFavorite(int trackId);
+        
     }
 
 	internal class User : ObjectWithImage, IUser, IDeserializable<DeezerClient>
@@ -175,6 +179,26 @@ namespace E.Deezer.Api
 
             return Client.Post("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary);
         }
+
+        public Task<bool> AddRadioToFavorite(int radioId)
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewQueryStringParameter("radio_id", radioId),
+            };
+
+            return Client.Post("user/me/radios", parms, DeezerPermissions.ManageLibrary);
+        }
+
+        public Task<bool> RemoveRadioFromFavorite(int radioId)
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewQueryStringParameter("radio_id", radioId),
+            };
+
+            return Client.Delete("user/me/radios", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
+        }        
 
         public Task<bool> AddTrackToFavorite(int trackId)
         {

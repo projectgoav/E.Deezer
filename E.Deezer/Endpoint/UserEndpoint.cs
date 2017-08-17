@@ -21,6 +21,9 @@ namespace E.Deezer.Endpoint
         Task<IEnumerable<ITrack>> GetFlow(uint aCount);
         Task<IEnumerable<ITrack>> GetFlow(uint aStart, uint aCount);
 
+        Task<bool> AddRadioToFavorite(int radioId);
+        Task<bool> RemoveRadioFromFavorite(int radioId);
+
         Task<IEnumerable<ITrack>> GetPersonalTracks();
         Task<IEnumerable<ITrack>> GetPersonalTracks(uint aCount);
         Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart, uint aCount);
@@ -94,6 +97,8 @@ namespace E.Deezer.Endpoint
             return Current.GetFlow(aStart, aCount);
         }
 
+        public Task<bool> AddRadioToFavorite(int radioId) => Current.AddRadioToFavorite(radioId);
+        public Task<bool> RemoveRadioFromFavorite(int radioId) => Current.RemoveRadioFromFavorite(radioId);
 
         public Task<IEnumerable<ITrack>> GetPersonalTracks() { return GetPersonalTracks(0, iClient.ResultSize); }
         public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aCount) { return GetPersonalTracks(0, aCount); }
@@ -143,6 +148,8 @@ namespace E.Deezer.Endpoint
 
         public Task<IEnumerable<ITrack>> GetRecommendedTracks() { return GetRecommendedTracks(0, iClient.ResultSize); }
         public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aCount) { return GetRecommendedTracks(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount) { return Current.GetRecommendedTracks(aStart, aCount); }        
+        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount) { return Current.GetRecommendedTracks(aStart, aCount); }
+
+                
     }
 }
