@@ -34,28 +34,42 @@ namespace E.Deezer.Endpoint
         Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aCount);
         Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart, uint aCount);
 
-        Task<bool> AddAlbumToFavorite(ulong albumId);
-        Task<bool> RemoveAlbumFromFavorite(ulong albumId);
-
         Task<IEnumerable<IArtist>> GetFavouriteArtists();
         Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aCount);
         Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart, uint aCount);
-
-        Task<bool> AddArtistToFavorite(ulong artistId);
-        Task<bool> RemoveArtistFromFavorite(ulong artistId);
 
         Task<IEnumerable<ITrack>> GetFavouriteTracks();
         Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aCount);
         Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart, uint aCount);
 
-        Task<bool> AddTrackToFavorite(ulong trackId);
-        Task<bool> RemoveTrackFromFavorite(ulong trackId);
+        
+        //Favourites Managers
+        Task<bool> AddAlbumToFavourite(ulong albumId);
+        Task<bool> AddAlbumToFavourite(IAlbum aAlbum);
 
-        Task<bool> AddPlaylistToFavorite(ulong playlistd);
-        Task<bool> RemovePlaylistFromFavorite(ulong playlistId);
+        Task<bool> RemoveAlbumFromFavourite(ulong albumId);
+        Task<bool> RemoveAlbumFromFavourite(IAlbum aAlbum);
 
-        Task<bool> AddRadioToFavorite(ulong radioId);
-        Task<bool> RemoveRadioFromFavorite(ulong radioId);
+        Task<bool> AddArtistToFavourite(ulong artistId);
+        Task<bool> AddArtistToFavourite(IArtist artistId);
+
+        Task<bool> RemoveArtistFromFavourite(ulong artistId);
+        Task<bool> RemoveArtistFromFavourite(IArtist artistId);
+
+        Task<bool> AddTrackToFavourite(ulong trackId);
+        Task<bool> RemoveTrackFromFavourite(ulong trackId);
+
+        Task<bool> AddPlaylistToFavourite(ulong playlistd);
+        Task<bool> AddPlaylistToFavourite(IPlaylist playlistd);
+
+        Task<bool> RemovePlaylistFromFavourite(ulong playlistId);
+        Task<bool> RemovePlaylistFromFavourite(IPlaylist playlistId);
+
+        Task<bool> AddRadioToFavourite(ulong radioId);
+        Task<bool> AddRadioToFavourite(IRadio aRadio);
+
+        Task<bool> RemoveRadioFromFavourite(ulong radioId);
+        Task<bool> RemoveRadioFromFavourite(IRadio aRadio);
 
         //Recommendation Wrappers
         Task<IEnumerable<IAlbum>> GetRecommendedAlbums();
@@ -127,28 +141,49 @@ namespace E.Deezer.Endpoint
         public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aCount) { return GetFavouriteAlbums(0, aCount); }
         public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart, uint aCount) { return Current.GetFavouriteAlbums(aStart, aCount); }
 
-        public Task<bool> AddAlbumToFavorite(ulong albumId) => Current.AddAlbumToFavorite(albumId);
-        public Task<bool> RemoveAlbumFromFavorite(ulong albumId) => Current.RemoveAlbumFromFavorite(albumId);
-
         public Task<IEnumerable<IArtist>> GetFavouriteArtists() { return GetFavouriteArtists(0, iClient.ResultSize); }
         public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aCount) { return GetFavouriteArtists(0, aCount); }
         public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart, uint aCount) { return Current.GetFavouriteArtists(aStart, aCount); }
-
-        public Task<bool> AddArtistToFavorite(ulong artistId) => Current.AddArtistToFavorite(artistId);
-        public Task<bool> RemoveArtistFromFavorite(ulong artistId) => Current.RemoveArtistFromFavorite(artistId);
 
         public Task<IEnumerable<ITrack>> GetFavouriteTracks() { return GetFavouriteTracks(0, iClient.ResultSize); }
         public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aCount) { return GetFavouriteTracks(0, aCount); }
         public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart, uint aCount) { return Current.GetFavouriteTracks(aStart, aCount); }
 
-        public Task<bool> AddTrackToFavorite(ulong trackId) => Current.AddTrackToFavorite(trackId);
-        public Task<bool> RemoveTrackFromFavorite(ulong trackId) => Current.RemoveTrackFromFavorite(trackId);
+        //Favourites Managers
+        public Task<bool> AddAlbumToFavourite(IAlbum aAlbum) => AddAlbumToFavourite(aAlbum.Id);
+        public Task<bool> AddAlbumToFavourite(ulong artistId) => Current.AddArtistToFavourite(artistId);
 
-        public Task<bool> AddRadioToFavorite(ulong radioId) => Current.AddRadioToFavorite(radioId);
-        public Task<bool> RemoveRadioFromFavorite(ulong radioId) => Current.RemoveRadioFromFavorite(radioId);
+        public Task<bool> RemoveAlbumFromFavourite(IAlbum aAlbum) => RemoveAlbumFromFavourite(aAlbum.Id);
+        public Task<bool> RemoveAlbumFromFavourite(ulong AlbumId) => Current.RemoveAlbumFromFavourite(AlbumId);
 
-        public Task<bool> AddPlaylistToFavorite(ulong playlistd) => Current.AddPlaylistToFavorite(playlistd);
-        public Task<bool> RemovePlaylistFromFavorite(ulong playlistId) => Current.RemovePlaylistFromFavorite(playlistId);
+
+        public Task<bool> AddArtistToFavourite(IArtist aArtist) => AddArtistToFavourite(aArtist.Id);
+        public Task<bool> AddArtistToFavourite(ulong artistId) => Current.AddArtistToFavourite(artistId);
+
+        public Task<bool> RemoveArtistFromFavourite(IArtist aArtist) => RemoveArtistFromFavourite(aArtist.Id);
+        public Task<bool> RemoveArtistFromFavourite(ulong artistId) => Current.RemoveArtistFromFavourite(artistId);
+
+
+        public Task<bool> AddPlaylistToFavourite(IPlaylist aPlaylist) => AddPlaylistToFavourite(aPlaylist.Id);
+        public Task<bool> AddPlaylistToFavourite(ulong PlaylistId) => Current.AddPlaylistToFavourite(PlaylistId);
+
+        public Task<bool> RemovePlaylistFromFavourite(IPlaylist aPlaylist) => RemovePlaylistFromFavourite(aPlaylist.Id);
+        public Task<bool> RemovePlaylistFromFavourite(ulong PlaylistId) => Current.RemovePlaylistFromFavourite(PlaylistId);
+
+
+        public Task<bool> AddTrackToFavourite(ITrack aTrack) => AddTrackToFavourite(aTrack.Id);
+        public Task<bool> AddTrackToFavourite(ulong TrackId) => Current.AddTrackToFavourite(TrackId);
+
+        public Task<bool> RemoveTrackFromFavourite(ITrack aTrack) => RemoveTrackFromFavourite(aTrack.Id);
+        public Task<bool> RemoveTrackFromFavourite(ulong TrackId) => Current.RemoveTrackFromFavourite(TrackId);
+
+
+        public Task<bool> AddRadioToFavourite(IRadio aRadio) => AddRadioToFavourite(aRadio.Id);
+        public Task<bool> AddRadioToFavourite(ulong RadioId) => Current.AddRadioToFavourite(RadioId);
+
+        public Task<bool> RemoveRadioFromFavourite(IRadio aRadio) => RemoveRadioFromFavourite(aRadio.Id);
+        public Task<bool> RemoveRadioFromFavourite(ulong RadioId) => Current.RemoveRadioFromFavourite(RadioId);
+
 
         //Recomends
         public Task<IEnumerable<IAlbum>> GetRecommendedAlbums() { return GetRecommendedAlbums(0, iClient.ResultSize); }

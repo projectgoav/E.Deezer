@@ -67,20 +67,20 @@ namespace E.Deezer.Api
         Task<uint> CreatePlaylist(string title);
         Task<bool> AddToPlaylist(ulong playlistId, string songids);
 
-        Task<bool> AddRadioToFavorite(ulong radioId);
-        Task<bool> RemoveRadioFromFavorite(ulong radioId);
+        Task<bool> AddRadioToFavourite(ulong radioId);
+        Task<bool> RemoveRadioFromFavourite(ulong radioId);
 
-        Task<bool> AddTrackToFavorite(ulong trackId);
-        Task<bool> RemoveTrackFromFavorite(ulong trackId);
+        Task<bool> AddTrackToFavourite(ulong trackId);
+        Task<bool> RemoveTrackFromFavourite(ulong trackId);
 
-        Task<bool> AddPlaylistToFavorite(ulong playlistId);
-        Task<bool> RemovePlaylistFromFavorite(ulong playlistId);
+        Task<bool> AddPlaylistToFavourite(ulong playlistId);
+        Task<bool> RemovePlaylistFromFavourite(ulong playlistId);
 
-        Task<bool> AddArtistToFavorite(ulong artistId);
-        Task<bool> RemoveArtistFromFavorite(ulong artistId);
+        Task<bool> AddArtistToFavourite(ulong artistId);
+        Task<bool> RemoveArtistFromFavourite(ulong artistId);
 
-        Task<bool> AddAlbumToFavorite(ulong albumId);
-        Task<bool> RemoveAlbumFromFavorite(ulong albumId);
+        Task<bool> AddAlbumToFavourite(ulong albumId);
+        Task<bool> RemoveAlbumFromFavourite(ulong albumId);
     }
 
 	internal class User : ObjectWithImage, IUser, IDeserializable<DeezerClient>
@@ -186,7 +186,7 @@ namespace E.Deezer.Api
             return Client.Post("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary);
         }
 
-        public Task<bool> AddRadioToFavorite(ulong radioId)
+        public Task<bool> AddRadioToFavourite(ulong radioId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
@@ -196,7 +196,7 @@ namespace E.Deezer.Api
             return Client.Post("user/me/radios", parms, DeezerPermissions.ManageLibrary);
         }
 
-        public Task<bool> RemoveRadioFromFavorite(ulong radioId)
+        public Task<bool> RemoveRadioFromFavourite(ulong radioId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
@@ -206,7 +206,7 @@ namespace E.Deezer.Api
             return Client.Delete("user/me/radios", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }        
 
-        public Task<bool> AddTrackToFavorite(ulong trackId)
+        public Task<bool> AddTrackToFavourite(ulong trackId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
@@ -216,7 +216,7 @@ namespace E.Deezer.Api
             return Client.Post("user/me/tracks", parms, DeezerPermissions.ManageLibrary);
         }
 
-        public Task<bool> RemoveTrackFromFavorite(ulong trackId)
+        public Task<bool> RemoveTrackFromFavourite(ulong trackId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
@@ -226,7 +226,7 @@ namespace E.Deezer.Api
             return Client.Delete("user/me/tracks", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
 
-        public Task<bool> AddPlaylistToFavorite(ulong playlistId)
+        public Task<bool> AddPlaylistToFavourite(ulong playlistId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
@@ -236,7 +236,7 @@ namespace E.Deezer.Api
             return Client.Post("user/me/playlists", parms, DeezerPermissions.ManageLibrary);
         }
 
-        public Task<bool> RemovePlaylistFromFavorite(ulong playlistId)
+        public Task<bool> RemovePlaylistFromFavourite(ulong playlistId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
@@ -246,7 +246,7 @@ namespace E.Deezer.Api
             return Client.Delete("user/me/playlists", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
 
-        public Task<bool> AddArtistToFavorite(ulong artistId)
+        public Task<bool> AddArtistToFavourite(ulong artistId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
@@ -256,7 +256,7 @@ namespace E.Deezer.Api
             return Client.Post("user/me/artists", parms, DeezerPermissions.ManageLibrary);
         }
 
-        public Task<bool> RemoveArtistFromFavorite(ulong artistId)
+        public Task<bool> RemoveArtistFromFavourite(ulong artistId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
@@ -266,7 +266,7 @@ namespace E.Deezer.Api
             return Client.Delete("user/me/artists", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
 
-        public Task<bool> AddAlbumToFavorite(ulong albumId)
+        public Task<bool> AddAlbumToFavourite(ulong albumId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
@@ -276,7 +276,7 @@ namespace E.Deezer.Api
             return Client.Post("user/me/albums", parms, DeezerPermissions.ManageLibrary);
         }
 
-        public Task<bool> RemoveAlbumFromFavorite(ulong albumId)
+        public Task<bool> RemoveAlbumFromFavourite(ulong albumId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {

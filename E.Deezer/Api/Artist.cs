@@ -90,8 +90,8 @@ namespace E.Deezer.Api
             }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
-        public Task<bool> AddArtistToFavorite() => Client.User.AddArtistToFavorite(Id);
-        public Task<bool> RemoveArtistFromFavorite() => Client.User.RemoveArtistFromFavorite(Id);       
+        public Task<bool> AddArtistToFavorite() => Client.User.AddArtistToFavourite(Id);
+        public Task<bool> RemoveArtistFromFavorite() => Client.User.RemoveArtistFromFavourite(Id);       
 
         public override string ToString()
         {

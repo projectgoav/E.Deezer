@@ -124,9 +124,9 @@ namespace E.Deezer.Api
             return string.Format("E.Deezer: Track({0} - ({1}))", Title, ArtistName);
         }
 
-        public Task<bool> AddTrackToFavorite() => Client.User.AddTrackToFavorite(Id);
+        public Task<bool> AddTrackToFavorite() => Client.User.AddTrackToFavourite(Id);
 
-        public Task<bool> RemoveTrackFromFavorite() => Client.User.RemoveTrackFromFavorite(Id);
+        public Task<bool> RemoveTrackFromFavorite() => Client.User.RemoveTrackFromFavourite(Id);
 
     }
 }

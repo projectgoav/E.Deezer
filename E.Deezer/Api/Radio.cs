@@ -32,8 +32,8 @@ namespace E.Deezer.Api
 
         public DeezerClient Client { get; set; }
 
-        public Task<bool> AddRadioToFavorite() => Client.User.AddRadioToFavorite(Id);
-        public Task<bool> RemoveRadioFromFavorite() => Client.User.RemoveRadioFromFavorite(Id);        
+        public Task<bool> AddRadioToFavorite() => Client.User.AddRadioToFavourite(Id);
+        public Task<bool> RemoveRadioFromFavorite() => Client.User.RemoveRadioFromFavourite(Id);        
 
         public void Deserialize(DeezerClient aClient) { Client = aClient; }
 

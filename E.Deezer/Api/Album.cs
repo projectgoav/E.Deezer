@@ -102,8 +102,8 @@ namespace E.Deezer.Api
             return Client.Post("album/{id}", parms, DeezerPermissions.BasicAccess);
         }
 
-        public Task<bool> AddAlbumToFavorite() => Client.User.AddAlbumToFavorite(Id);
-        public Task<bool> RemoveAlbumFromFavorite() => Client.User.RemoveAlbumFromFavorite(Id);        
+        public Task<bool> AddAlbumToFavorite() => Client.User.AddAlbumToFavourite(Id);
+        public Task<bool> RemoveAlbumFromFavorite() => Client.User.RemoveAlbumFromFavourite(Id);        
 
         public override string ToString()
         {

@@ -200,9 +200,9 @@ namespace E.Deezer.Api
             return Client.Delete("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
 
-        public Task<bool> AddPlaylistToFavorite() => Client.User.AddPlaylistToFavorite(Id);
+        public Task<bool> AddPlaylistToFavorite() => Client.User.AddPlaylistToFavourite(Id);
 
-        public Task<bool> RemovePlaylistFromFavorite() => Client.User.RemovePlaylistFromFavorite(Id);
+        public Task<bool> RemovePlaylistFromFavorite() => Client.User.RemovePlaylistFromFavourite(Id);
         
         public override string ToString()
 		{
