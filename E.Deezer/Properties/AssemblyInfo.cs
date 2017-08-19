@@ -9,9 +9,9 @@ using System.Resources;
 [assembly: AssemblyTitle("E.Deezer")]
 [assembly: AssemblyDescription(".NET Deezer API wrapper.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("BigE")]
+[assembly: AssemblyCompany("E")]
 [assembly: AssemblyProduct("E.Deezer")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,8 +33,8 @@ using System.Resources;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.3.0.337")]
-[assembly: AssemblyFileVersion("2.3.0.337")]
+[assembly: AssemblyVersion("2.5.0.338")]
+[assembly: AssemblyFileVersion("2.5.0.338")]
 [assembly: NeutralResourcesLanguageAttribute("en-GB")]
 
 // Make sure we can access some of the internals to the testing library.
