@@ -40,6 +40,9 @@ namespace E.Deezer.Api
         Task<bool> RemoveTracks(IEnumerable<ITrack> aTracks);
         Task<bool> RemoveTracks(IEnumerable<Int64> aTrackIds);
         Task<bool> RemoveTracks(string aTrackIds);
+
+        Task<bool> AddPlaylistToFavorite();
+        Task<bool> RemovePlaylistFromFavorite();
     }
 
 	internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<DeezerClient>
@@ -197,11 +200,13 @@ namespace E.Deezer.Api
             return Client.Delete("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
 
+        public Task<bool> AddPlaylistToFavorite() => Client.User.AddPlaylistToFavorite(Id);
 
-
+        public Task<bool> RemovePlaylistFromFavorite() => Client.User.RemovePlaylistFromFavorite(Id);
+        
         public override string ToString()
 		{
 			return string.Format("E.Deezer: Playlist({0} [{1}])", Title, CreatorName);
-		}
-	}
+		}        
+    }
 }

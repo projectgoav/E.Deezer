@@ -128,6 +128,8 @@ namespace E.Deezer
         internal Task Login()
         {
             var loginTask = GetLoginTask();
+            loginTask.ContinueWith((t) => iPermissions = t.Result);
+
             GetFetchUserTask().Wait();
             return loginTask;
         }

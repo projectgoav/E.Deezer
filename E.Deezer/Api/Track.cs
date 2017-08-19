@@ -28,6 +28,9 @@ namespace E.Deezer.Api
 
         string GetCover(PictureSize aSize);
         bool HasCover(PictureSize aSize);
+
+        Task<bool> AddTrackToFavorite();
+        Task<bool> RemoveTrackFromFavorite();
     }
 
 
@@ -120,5 +123,10 @@ namespace E.Deezer.Api
         {
             return string.Format("E.Deezer: Track({0} - ({1}))", Title, ArtistName);
         }
+
+        public Task<bool> AddTrackToFavorite() => Client.User.AddTrackToFavorite(Id);
+
+        public Task<bool> RemoveTrackFromFavorite() => Client.User.RemoveTrackFromFavorite(Id);
+
     }
 }

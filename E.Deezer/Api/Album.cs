@@ -26,6 +26,9 @@ namespace E.Deezer.Api
 
         string GetCover(PictureSize aSize);
         bool HasCover(PictureSize aSize);
+
+        Task<bool> AddAlbumToFavorite();
+        Task<bool> RemoveAlbumFromFavorite();
     }
 
     internal class Album : ObjectWithImage, IAlbum, IDeserializable<DeezerClient>
@@ -99,10 +102,12 @@ namespace E.Deezer.Api
             return Client.Post("album/{id}", parms, DeezerPermissions.BasicAccess);
         }
 
+        public Task<bool> AddAlbumToFavorite() => Client.User.AddAlbumToFavorite(Id);
+        public Task<bool> RemoveAlbumFromFavorite() => Client.User.RemoveAlbumFromFavorite(Id);        
 
         public override string ToString()
         {
             return string.Format("E.Deezer: Album({0})", Title);
-        }
+        }        
     }
 }

@@ -35,6 +35,9 @@ namespace E.Deezer.Api
         Task<IEnumerable<IPlaylist>> GetPlaylistsContaining();
         Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aCount);
         Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aStart, uint aCount);
+
+        Task<bool> AddArtistToFavorite();
+        Task<bool> RemoveArtistFromFavorite();
     }
 
     internal class Artist : ObjectWithImage, IArtist, IDeserializable<DeezerClient>
@@ -87,10 +90,12 @@ namespace E.Deezer.Api
             }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
+        public Task<bool> AddArtistToFavorite() => Client.User.AddArtistToFavorite(Id);
+        public Task<bool> RemoveArtistFromFavorite() => Client.User.RemoveArtistFromFavorite(Id);       
 
         public override string ToString()
         {
             return string.Format("E.Deezer: Artist({0})", Name);
-        }
+        }        
     }
 }
