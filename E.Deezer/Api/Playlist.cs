@@ -11,7 +11,7 @@ namespace E.Deezer.Api
 {
 	public interface IPlaylist : IObjectWithImage
     {
-		uint Id { get; set; }
+		int Id { get; set; }
 		string Title { get; set; }
 		bool Public { get; set; }
 		uint NumTracks { get; set; }
@@ -40,11 +40,14 @@ namespace E.Deezer.Api
         Task<bool> RemoveTracks(IEnumerable<ITrack> aTracks);
         Task<bool> RemoveTracks(IEnumerable<Int64> aTrackIds);
         Task<bool> RemoveTracks(string aTrackIds);
+
+        Task<bool> AddPlaylistToFavorite();
+        Task<bool> RemovePlaylistFromFavorite();
     }
 
 	internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<DeezerClient>
 	{
-		public uint Id { get; set; }
+		public int Id { get; set; }
 		public string Title { get; set; }
         public bool Public { get; set; }
 		public string Link { get; set; }
@@ -197,11 +200,13 @@ namespace E.Deezer.Api
             return Client.Delete("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
 
+        public Task<bool> AddPlaylistToFavorite() => Client.User.AddPlaylistToFavorite(Id);
 
-
+        public Task<bool> RemovePlaylistFromFavorite() => Client.User.RemovePlaylistFromFavorite(Id);
+        
         public override string ToString()
 		{
 			return string.Format("E.Deezer: Playlist({0} [{1}])", Title, CreatorName);
-		}
-	}
+		}        
+    }
 }

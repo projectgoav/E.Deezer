@@ -65,12 +65,19 @@ namespace E.Deezer.Api
         Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount);
 
         Task<uint> CreatePlaylist(string title);
-
         Task<bool> AddToPlaylist(uint playlistId, string songids);
 
         Task<bool> AddTrackToFavorite(int trackId);
-
         Task<bool> RemoveTrackFromFavorite(int trackId);
+
+        Task<bool> AddPlaylistToFavorite(int playlistId);
+        Task<bool> RemovePlaylistFromFavorite(int playlistId);
+
+        Task<bool> AddArtistToFavorite(int artistId);
+        Task<bool> RemoveArtistFromFavorite(int artistId);
+
+        Task<bool> AddAlbumToFavorite(int albumId);
+        Task<bool> RemoveAlbumFromFavorite(int albumId);
     }
 
 	internal class User : ObjectWithImage, IUser, IDeserializable<DeezerClient>
@@ -194,6 +201,66 @@ namespace E.Deezer.Api
             };
 
             return Client.Delete("user/me/tracks", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
+        }
+
+        public Task<bool> AddPlaylistToFavorite(int playlistId)
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewQueryStringParameter("playlist_id", playlistId),
+            };
+
+            return Client.Post("user/me/playlists", parms, DeezerPermissions.ManageLibrary);
+        }
+
+        public Task<bool> RemovePlaylistFromFavorite(int playlistId)
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewQueryStringParameter("playlist_id", playlistId),
+            };
+
+            return Client.Delete("user/me/playlists", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
+        }
+
+        public Task<bool> AddArtistToFavorite(int artistId)
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewQueryStringParameter("artist_id", artistId),
+            };
+
+            return Client.Post("user/me/artists", parms, DeezerPermissions.ManageLibrary);
+        }
+
+        public Task<bool> RemoveArtistFromFavorite(int artistId)
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewQueryStringParameter("artist_id", artistId),
+            };
+
+            return Client.Delete("user/me/artists", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
+        }
+
+        public Task<bool> AddAlbumToFavorite(int albumId)
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewQueryStringParameter("album_id", albumId),
+            };
+
+            return Client.Post("user/me/albums", parms, DeezerPermissions.ManageLibrary);
+        }
+
+        public Task<bool> RemoveAlbumFromFavorite(int albumId)
+        {
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewQueryStringParameter("album_id", albumId),
+            };
+
+            return Client.Delete("user/me/albums", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
     }
 }
