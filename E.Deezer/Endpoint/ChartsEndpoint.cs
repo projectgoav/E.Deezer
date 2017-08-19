@@ -81,59 +81,59 @@ namespace E.Deezer.Endpoint
         public Task<IChart> GetChart(IGenre aGenre) => Get(aGenre.Id);
 
         /* ALBUMS */
-        public Task<IEnumerable<IAlbum>> GetAlbumChart()                                        => GetAlbumChart(0);
-        public Task<IEnumerable<IAlbum>> GetAlbumChart(int aGenreId)                            => GetAlbumChart(aGenreId, 0, iClient.ResultSize);
-        public Task<IEnumerable<IAlbum>> GetAlbumChart(IGenre aGenre)                           => GetAlbumChart(aGenre.Id, 0, iClient.ResultSize);
+        public Task<IEnumerable<IAlbum>> GetAlbumChart()                       => GetAlbumChart(0);
+        public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(int aGenreId)   => GetAlbumChartForGenre(aGenreId, 0, iClient.ResultSize);
+        public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(IGenre aGenre)  => GetAlbumChartForGenre(aGenre.Id, 0, iClient.ResultSize);
 
-        public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aCount)                             => GetAlbumChart(0, 0, aCount);
-        public Task<IEnumerable<IAlbum>> GetAlbumChart(int aGenreId, uint aCount)               => GetAlbumChart(aGenreId, 0, aCount);
-        public Task<IEnumerable<IAlbum>> GetAlbumChart(IGenre aGenre, uint aCount)              => GetAlbumChart(aGenre.Id, 0, aCount);
+        public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aCount)                         => GetAlbumChartForGenre(0, 0, aCount);
+        public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(int aGenreId, uint aCount)   => GetAlbumChartForGenre(aGenreId, 0, aCount);
+        public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(IGenre aGenre, uint aCount)  => GetAlbumChartForGenre(aGenre.Id, 0, aCount);
 
-        public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart, uint aCount)                => GetAlbumChart(0, aStart, aCount);
-        public Task<IEnumerable<IAlbum>> GetAlbumChart(IGenre aGenre, uint aStart, uint aCount) => GetAlbumChart(aGenre.Id, aStart, aCount);
-        public Task<IEnumerable<IAlbum>> GetAlbumChart(int aGenreId, uint aStart, uint aCount)  => Get<Album, IAlbum>("chart/{id}/albums", aGenreId, aStart, aCount);
+        public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart, uint aCount)                        => GetAlbumChartForGenre(0, aStart, aCount);
+        public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(IGenre aGenre, uint aStart, uint aCount) => GetAlbumChartForGenre(aGenre.Id, aStart, aCount);
+        public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(int aGenreId, uint aStart, uint aCount)  => Get<Album, IAlbum>("chart/{id}/albums", aGenreId, aStart, aCount);
 
 
         /* ARTISTS */
-        public Task<IEnumerable<IArtist>> GetArtistChart() => GetArtistChart(0);
-        public Task<IEnumerable<IArtist>> GetArtistChart(int aGenreId) => GetArtistChart(aGenreId, 0, iClient.ResultSize);
-        public Task<IEnumerable<IArtist>> GetArtistChart(IGenre aGenre) => GetArtistChart(aGenre.Id, 0, iClient.ResultSize);
+        public Task<IEnumerable<IArtist>> GetArtistChart()                      => GetArtistChart(0);
+        public Task<IEnumerable<IArtist>> GetArtistChartForGenre(int aGenreId)  => GetArtistChartForGenre(aGenreId, 0, iClient.ResultSize);
+        public Task<IEnumerable<IArtist>> GetArtistChartForGenre(IGenre aGenre) => GetArtistChartForGenre(aGenre.Id, 0, iClient.ResultSize);
 
-        public Task<IEnumerable<IArtist>> GetArtistChart(uint aCount) => GetArtistChart(0, 0, aCount);
-        public Task<IEnumerable<IArtist>> GetArtistChart(int aGenreId, uint aCount) => GetArtistChart(aGenreId, 0, aCount);
-        public Task<IEnumerable<IArtist>> GetArtistChart(IGenre aGenre, uint aCount) => GetArtistChart(aGenre.Id, 0, aCount);
+        public Task<IEnumerable<IArtist>> GetArtistChart(uint aCount)                           => GetArtistChartForGenre(0, 0, aCount);
+        public Task<IEnumerable<IArtist>> GetArtistChartForGenre(int aGenreId, uint aCount)     => GetArtistChartForGenre(aGenreId, 0, aCount);
+        public Task<IEnumerable<IArtist>> GetArtistChartForGenre(IGenre aGenre, uint aCount)    => GetArtistChartForGenre(aGenre.Id, 0, aCount);
 
-        public Task<IEnumerable<IArtist>> GetArtistChart(uint aStart, uint aCount) => GetArtistChart(0, aStart, aCount);
-        public Task<IEnumerable<IArtist>> GetArtistChart(IGenre aGenre, uint aStart, uint aCount) => GetArtistChart(aGenre.Id, aStart, aCount);
-        public Task<IEnumerable<IArtist>> GetArtistChart(int aGenreId, uint aStart, uint aCount) => Get<Artist, IArtist>("chart/{id}/artists", aGenreId, aStart, aCount);
+        public Task<IEnumerable<IArtist>> GetArtistChart(uint aStart, uint aCount)                          => GetArtistChartForGenre(0, aStart, aCount);
+        public Task<IEnumerable<IArtist>> GetArtistChartForGenre(IGenre aGenre, uint aStart, uint aCount)   => GetArtistChartForGenre(aGenre.Id, aStart, aCount);
+        public Task<IEnumerable<IArtist>> GetArtistChartForGenre(int aGenreId, uint aStart, uint aCount)    => Get<Artist, IArtist>("chart/{id}/artists", aGenreId, aStart, aCount);
 
 
         /* PLAYLISTS */
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart() => GetPlaylistChart(0);
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(int aGenreId) => GetPlaylistChart(aGenreId, 0, iClient.ResultSize);
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(IGenre aGenre) => GetPlaylistChart(aGenre.Id, 0, iClient.ResultSize);
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChart()                      => GetPlaylistChart(0);
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(int aGenreId)  => GetPlaylistChartForGenre(aGenreId, 0, iClient.ResultSize);
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(IGenre aGenre) => GetPlaylistChartForGenre(aGenre.Id, 0, iClient.ResultSize);
 
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aCount) => GetPlaylistChart(0, 0, aCount);
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(int aGenreId, uint aCount) => GetPlaylistChart(aGenreId, 0, aCount);
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(IGenre aGenre, uint aCount) => GetPlaylistChart(aGenre.Id, 0, aCount);
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aCount)                           => GetPlaylistChartForGenre(0, 0, aCount);
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(int aGenreId, uint aCount)     => GetPlaylistChartForGenre(aGenreId, 0, aCount);
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(IGenre aGenre, uint aCount)    => GetPlaylistChartForGenre(aGenre.Id, 0, aCount);
 
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart, uint aCount) => GetPlaylistChart(0, aStart, aCount);
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(IGenre aGenre, uint aStart, uint aCount) => GetPlaylistChart(aGenre.Id, aStart, aCount);
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(int aGenreId, uint aStart, uint aCount) => Get<Playlist, IPlaylist>("chart/{id}/playlists", aGenreId, aStart, aCount);
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart, uint aCount)                          => GetPlaylistChartForGenre(0, aStart, aCount);
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(IGenre aGenre, uint aStart, uint aCount)   => GetPlaylistChartForGenre(aGenre.Id, aStart, aCount);
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(int aGenreId, uint aStart, uint aCount)    => Get<Playlist, IPlaylist>("chart/{id}/playlists", aGenreId, aStart, aCount);
 
 
         /* TRACKS */
-        public Task<IEnumerable<ITrack>> GetTrackChart() => GetTrackChart(0);
-        public Task<IEnumerable<ITrack>> GetTrackChart(int aGenreId) => GetTrackChart(aGenreId, 0, iClient.ResultSize);
-        public Task<IEnumerable<ITrack>> GetTrackChart(IGenre aGenre) => GetTrackChart(aGenre.Id, 0, iClient.ResultSize);
+        public Task<IEnumerable<ITrack>> GetTrackChart()                        => GetTrackChart(0);
+        public Task<IEnumerable<ITrack>> GetTrackChartForGenre(int aGenreId)    => GetTrackChartForGenre(aGenreId, 0, iClient.ResultSize);
+        public Task<IEnumerable<ITrack>> GetTrackChartForGenre(IGenre aGenre)   => GetTrackChartForGenre(aGenre.Id, 0, iClient.ResultSize);
 
-        public Task<IEnumerable<ITrack>> GetTrackChart(uint aCount) => GetTrackChart(0, 0, aCount);
-        public Task<IEnumerable<ITrack>> GetTrackChart(int aGenreId, uint aCount) => GetTrackChart(aGenreId, 0, aCount);
-        public Task<IEnumerable<ITrack>> GetTrackChart(IGenre aGenre, uint aCount) => GetTrackChart(aGenre.Id, 0, aCount);
+        public Task<IEnumerable<ITrack>> GetTrackChart(uint aCount)                         => GetTrackChartForGenre(0, 0, aCount);
+        public Task<IEnumerable<ITrack>> GetTrackChartForGenre(int aGenreId, uint aCount)   => GetTrackChartForGenre(aGenreId, 0, aCount);
+        public Task<IEnumerable<ITrack>> GetTrackChartForGenre(IGenre aGenre, uint aCount)  => GetTrackChartForGenre(aGenre.Id, 0, aCount);
 
-        public Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount) => GetTrackChart(0, aStart, aCount);
-        public Task<IEnumerable<ITrack>> GetTrackChart(IGenre aGenre, uint aStart, uint aCount) => GetTrackChart(aGenre.Id, aStart, aCount);
-        public Task<IEnumerable<ITrack>> GetTrackChart(int aGenreId, uint aStart, uint aCount) => Get<Track, ITrack>("chart/{id}/tracks", aGenreId, aStart, aCount);
+        public Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount)                            => GetTrackChartForGenre(0, aStart, aCount);
+        public Task<IEnumerable<ITrack>> GetTrackChartForGenre(IGenre aGenre, uint aStart, uint aCount)     => GetTrackChartForGenre(aGenre.Id, aStart, aCount);
+        public Task<IEnumerable<ITrack>> GetTrackChartForGenre(int aGenreId, uint aStart, uint aCount)      => Get<Track, ITrack>("chart/{id}/tracks", aGenreId, aStart, aCount);
 
 
         //Internal wrapper around get for all ChartEndpoint methods :)
@@ -167,12 +167,18 @@ namespace E.Deezer.Endpoint
 
             string method = (aId == -1) ? "chart" : "chart/{id}";
 
-            return iClient.GetPlain<Chart>(method, parms).ContinueWith((aTask) =>
+            return iClient.GetChart(method, parms).ContinueWith((aTask) =>
             {
-                aTask.Result.Deserialize(iClient);
-                return aTask.Result as IChart;
-            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                IChart chart = new Chart(aTask.Result.Albums.Items,
+                                        aTask.Result.Artists.Items,
+                                        aTask.Result.Tracks.Items,
+                                        aTask.Result.Playlists.Items);
 
+                //Make sure to deserialize the internal items :)
+                (chart as IDeserializable<DeezerClient>).Deserialize(iClient);
+
+                return chart;
+            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
     }
 }

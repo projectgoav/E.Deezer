@@ -55,15 +55,19 @@ namespace E.Deezer
             return DoGet<DeezerObject<T>>(aMethod, RequestParameter.EmptyList).ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
+
+        internal Task<DeezerChartFragment> GetChart(string aMethod, uint aStart, uint aCount) => GetChart(aMethod, RequestParameter.EmptyList, aStart, aCount);
+        internal Task<DeezerChartFragment> GetChart(string aMethod, IList<IRequestParameter> aParams) => GetChart(aMethod, aParams, uint.MinValue, uint.MaxValue);
+        internal Task<DeezerChartFragment> GetChart(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
+        {
+            AddToParamList(aParams, aStart, aCount);
+            return DoGet<DeezerChartFragment>(aMethod, aParams);
+        }
+
+
         internal Task<T> GetPlain<T>(string aMethod)
         {
             return iExecutor.ExecuteGet<T>(aMethod, RequestParameter.EmptyList)
-                    .ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-        }
-
-        internal Task<T> GetPlain<T>(string aMethod, IEnumerable<IRequestParameter> aParams)
-        {
-            return iExecutor.ExecuteGet<T>(aMethod, aParams)
                     .ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 

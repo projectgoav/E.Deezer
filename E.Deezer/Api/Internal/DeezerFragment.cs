@@ -13,22 +13,28 @@ namespace E.Deezer.Api
         [DeserializeAs(Name="data")]
         public List<T> Items { get; set; }
         public uint Total { get; set; }
-        public Error Error { get; set; }
 
-        public IError TheError { get { return Error; } }
+        //IHasErro
+        public Error Error { get; set; }
+        public IError TheError => Error;
     }
 
 
 
     //ChartFragment is used to get all 4 charts at once
-    internal class DeezerChartFragment
+    internal class DeezerChartFragment : IHasError
     {
-        DeezerFragment<ITrack> Tracks { get; }
+        public DeezerFragment<ITrack> Tracks { get; set; }
 
-        DeezerFragment<IAlbum> Albums { get; }
+        public DeezerFragment<IAlbum> Albums { get; set; }
 
-        DeezerFragment<IArtist> Artists {get; }
+        public DeezerFragment<IArtist> Artists { get; set; }
 
-        DeezerFragment<IPlaylist> Playlists {get; }
+        public DeezerFragment<IPlaylist> Playlists { get; set; }
+
+        //IHasError
+        public Error Error { get; set; }
+
+        public IError TheError => Error;
     }
 }
