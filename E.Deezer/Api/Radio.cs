@@ -11,23 +11,30 @@ namespace E.Deezer.Api
 {
     public interface IRadio : IObjectWithImage
     {
-        uint Id { get; set; }
+        int Id { get; set; }
         string Title { get; set; }
         string Description { get; set; }
         string ShareLink{ get; set; }
 
         //Methods
         Task<IEnumerable<ITrack>> GetFirst40Tracks();
+
+        Task<bool> AddRadioToFavorite();
+        Task<bool> RemoveRadioFromFavorite();        
     }
 
     internal class Radio : ObjectWithImage, IRadio, IDeserializable<DeezerClient>
     {
-        public uint Id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string ShareLink { get; set; }
 
         public DeezerClient Client { get; set; }
+
+        public Task<bool> AddRadioToFavorite() => Client.User.AddRadioToFavorite(Id);
+        public Task<bool> RemoveRadioFromFavorite() => Client.User.RemoveRadioFromFavorite(Id);        
+
         public void Deserialize(DeezerClient aClient) { Client = aClient; }
 
         public Task<IEnumerable<ITrack>> GetFirst40Tracks()
@@ -43,6 +50,11 @@ namespace E.Deezer.Api
             {
                 return Client.Transform<Track, ITrack>(aTask.Result);
             }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default); 
+        }
+
+        public override string ToString()
+        {
+            return string.Format("E.Deezer: Radio({0} - ({1}))", Title, Description);
         }
     }
 }
