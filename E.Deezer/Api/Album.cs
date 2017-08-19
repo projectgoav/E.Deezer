@@ -11,12 +11,12 @@ namespace E.Deezer.Api
 {
     public interface IAlbum : IObjectWithImage
     {
-        int Id { get; set; }
+        ulong Id { get; set; }
         uint Tracks {get; set; }
         string Title { get; set; }
         string Link { get; set; }
         string ArtistName { get; }
-        int Rating { get; }
+        long Rating { get; }
         DateTime ReleaseDate {get; set; }
         IArtist Artist { get; }
 
@@ -30,9 +30,9 @@ namespace E.Deezer.Api
 
     internal class Album : ObjectWithImage, IAlbum, IDeserializable<DeezerClient>
     {
-        public int Id { get; set; }
+        public ulong Id { get; set; }
         public string Title { get; set; }
-        public int Rating { get; set; }
+        public long Rating { get; set; }
         public DateTime ReleaseDate {get; set; }
         public IArtist Artist { get { return ArtistInternal; } }
 

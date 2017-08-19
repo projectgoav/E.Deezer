@@ -11,7 +11,7 @@ namespace E.Deezer.Api
 {
     public interface IArtist : IObjectWithImage
     {
-        int Id { get; set; }
+        ulong Id { get; set; }
         string Name { get; set; }
         string Link { get; set; }
 
@@ -39,7 +39,7 @@ namespace E.Deezer.Api
 
     internal class Artist : ObjectWithImage, IArtist, IDeserializable<DeezerClient>
     {
-        public int Id { get; set; }
+        public ulong Id { get; set; }
         public string Name { get; set; }
 
         [DeserializeAs(Name="url")]

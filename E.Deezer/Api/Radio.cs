@@ -11,7 +11,7 @@ namespace E.Deezer.Api
 {
     public interface IRadio : IObjectWithImage
     {
-        int Id { get; set; }
+        ulong Id { get; set; }
         string Title { get; set; }
         string Description { get; set; }
         string ShareLink{ get; set; }
@@ -22,7 +22,7 @@ namespace E.Deezer.Api
 
     internal class Radio : ObjectWithImage, IRadio, IDeserializable<DeezerClient>
     {
-        public int Id { get; set; }
+        public ulong Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string ShareLink { get; set; }

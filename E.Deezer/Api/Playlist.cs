@@ -11,7 +11,7 @@ namespace E.Deezer.Api
 {
 	public interface IPlaylist : IObjectWithImage
     {
-		int Id { get; set; }
+		ulong Id { get; set; }
 		string Title { get; set; }
 		bool Public { get; set; }
 		uint NumTracks { get; set; }
@@ -28,14 +28,14 @@ namespace E.Deezer.Api
 
         //Manage Tracks
         Task<bool> AddTrack(ITrack aTrack);
-        Task<bool> AddTrack(Int64 aTrackId);
+        Task<bool> AddTrack(ulong aTrackId);
 
         Task<bool> AddTracks(IEnumerable<ITrack> aTracks);
         Task<bool> AddTracks(IEnumerable<Int64> aTrackIds);
         Task<bool> AddTracks(string aTrackIds);
 
         Task<bool> RemoveTrack(ITrack aTrack);
-        Task<bool> RemoveTrack(Int64 aTrackId);
+        Task<bool> RemoveTrack(ulong aTrackId);
 
         Task<bool> RemoveTracks(IEnumerable<ITrack> aTracks);
         Task<bool> RemoveTracks(IEnumerable<Int64> aTrackIds);
@@ -44,7 +44,7 @@ namespace E.Deezer.Api
 
 	internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<DeezerClient>
 	{
-		public int Id { get; set; }
+		public ulong Id { get; set; }
 		public string Title { get; set; }
         public bool Public { get; set; }
 		public string Link { get; set; }
@@ -119,7 +119,7 @@ namespace E.Deezer.Api
 
 
         public Task<bool> AddTrack(ITrack aTrack) { return AddTrack(aTrack.Id); }
-        public Task<bool> AddTrack(Int64 aTrackId) { return AddTracks(aTrackId.ToString()); }
+        public Task<bool> AddTrack(ulong aTrackId) { return AddTracks(aTrackId.ToString()); }
 
         public Task<bool> AddTracks(IEnumerable<Int64> aTrackIds)
         {
@@ -159,7 +159,7 @@ namespace E.Deezer.Api
 
 
         public Task<bool> RemoveTrack(ITrack aTrack) { return RemoveTrack(aTrack.Id); }
-        public Task<bool> RemoveTrack(Int64 aTrackId) { return RemoveTracks(aTrackId.ToString()); }
+        public Task<bool> RemoveTrack(ulong aTrackId) { return RemoveTracks(aTrackId.ToString()); }
 
         public Task<bool> RemoveTracks(IEnumerable<Int64> aTrackIds)
         {

@@ -22,7 +22,7 @@ namespace E.Deezer.Endpoint
         public PlaylistEndpoint(DeezerClient aClient) {  iClient = aClient;  }
 
 
-        public Task<bool> Rate(uint aPlaylistId, int aRating)
+        public Task<bool> Rate(ulong aPlaylistId, int aRating)
         {
             return new Playlist()
             {

@@ -11,7 +11,7 @@ namespace E.Deezer.Api
 {
     public interface ITrack : IObjectWithImage
     {
-        Int64 Id { get; set;  }
+        ulong Id { get; set;  }
         string Title { get; set;  }
         string Link { get; set;  }
         uint Duration { get; set;  }
@@ -33,7 +33,7 @@ namespace E.Deezer.Api
 
     internal class Track : ObjectWithImage, ITrack, IDeserializable<DeezerClient>
     {
-        public Int64 Id { get; set; }
+        public ulong Id { get; set; }
         public string Title { get; set; }
         public string Link { get; set; }
         [DeserializeAs(Name = "time_add")]
