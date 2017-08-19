@@ -20,7 +20,7 @@ namespace E.Deezer.Endpoint
 
         public AlbumEndpoint(DeezerClient aClient) {  iClient = aClient;  }
 
-        public Task<IEnumerable<ITrack>> GetTracks(uint aAlbumId)
+        public Task<IEnumerable<ITrack>> GetTracks(int aAlbumId)
         {
             return new Album()
             {
@@ -29,7 +29,7 @@ namespace E.Deezer.Endpoint
             }.GetTracks();
         }
 
-        public Task<bool> Rate(uint aAlbumId, int aRating)
+        public Task<bool> Rate(int aAlbumId, int aRating)
         {
             return new Album()
             {

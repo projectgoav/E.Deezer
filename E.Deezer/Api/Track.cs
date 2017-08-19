@@ -30,7 +30,6 @@ namespace E.Deezer.Api
         bool HasCover(PictureSize aSize);
 
         Task<bool> AddTrackToFavorite();
-
         Task<bool> RemoveTrackFromFavorite();
     }
 

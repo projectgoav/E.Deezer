@@ -11,7 +11,7 @@ namespace E.Deezer.Api
 {
     public interface IArtist : IObjectWithImage
     {
-        uint Id { get; set; }
+        int Id { get; set; }
         string Name { get; set; }
         string Link { get; set; }
 
@@ -35,11 +35,14 @@ namespace E.Deezer.Api
         Task<IEnumerable<IPlaylist>> GetPlaylistsContaining();
         Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aCount);
         Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aStart, uint aCount);
+
+        Task<bool> AddArtistToFavorite();
+        Task<bool> RemoveArtistFromFavorite();
     }
 
     internal class Artist : ObjectWithImage, IArtist, IDeserializable<DeezerClient>
     {
-        public uint Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
 
         [DeserializeAs(Name="url")]
@@ -87,10 +90,12 @@ namespace E.Deezer.Api
             }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
+        public Task<bool> AddArtistToFavorite() => Client.User.AddArtistToFavorite(Id);
+        public Task<bool> RemoveArtistFromFavorite() => Client.User.RemoveArtistFromFavorite(Id);       
 
         public override string ToString()
         {
             return string.Format("E.Deezer: Artist({0})", Name);
-        }
+        }        
     }
 }
