@@ -61,6 +61,12 @@ namespace E.Deezer
                     .ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
+        internal Task<T> GetPlain<T>(string aMethod, IEnumerable<IRequestParameter> aParams)
+        {
+            return iExecutor.ExecuteGet<T>(aMethod, aParams)
+                    .ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+        }
+
         private Task<T> DoGet<T>(string aMethod, IEnumerable<IRequestParameter> aParams) where T : IHasError
         {
             return iExecutor.ExecuteGet<T>(aMethod, aParams).ContinueWith<T>((aTask) =>
@@ -144,7 +150,6 @@ namespace E.Deezer
             AddDefaultsToParamList(parms);
             return parms;
         }
-
 
 
         //Wrapper around permissions, matching to DeezerPermissions Enum

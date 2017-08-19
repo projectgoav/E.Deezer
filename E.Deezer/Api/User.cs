@@ -9,7 +9,7 @@ namespace E.Deezer.Api
 
 	public interface IUser : IObjectWithImage
 	{
-		uint Id { get; set; }
+		Int64 Id { get; set; }
 		string Name { get; set; }
 		string Link { get; set; }
 		string Country { get; set; }
@@ -71,7 +71,7 @@ namespace E.Deezer.Api
 
 	internal class User : ObjectWithImage, IUser, IDeserializable<DeezerClient>
 	{
-		public uint Id { get; set; }
+		public Int64 Id { get; set; }
 		public string Name { get; set; }
 		public string Link { get; set; }
 		public string Country { get; set; }
