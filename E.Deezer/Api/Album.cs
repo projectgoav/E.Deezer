@@ -48,6 +48,8 @@ namespace E.Deezer.Api
         [DeserializeAs(Name = "nb_tracks")]
         public uint Tracks {get; set; }
 
+        public DeezerFragment<Track> TracklistInternal { get; set; }
+
         public string ArtistName
         {
             get
@@ -78,6 +80,24 @@ namespace E.Deezer.Api
 
         public Task<IEnumerable<ITrack>> GetTracks()
         {
+            if(TracklistInternal != null)
+            {
+                return Task.Run(() =>
+                {
+                    List<ITrack> tracks = new List<ITrack>();
+
+                    foreach(Track t in TracklistInternal.Items)
+                    {
+                        t.Deserialize(Client);
+                        tracks.Add(t);
+                    }
+
+                    return tracks as IEnumerable<ITrack>;
+
+                }, Client.CancellationToken);
+            }
+
+
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
                 RequestParameter.GetNewUrlSegmentParamter("id", Id)
