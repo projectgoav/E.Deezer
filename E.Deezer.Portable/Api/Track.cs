@@ -5,7 +5,7 @@ using System.Text;
 
 using System.Threading.Tasks;
 
-using RestSharp.Deserializers;
+using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
@@ -26,9 +26,6 @@ namespace E.Deezer.Api
         uint Number { get; }
         uint Disc { get; }
 
-        string GetCover(PictureSize aSize);
-        bool HasCover(PictureSize aSize);
-
         Task<bool> AddTrackToFavorite();
         Task<bool> RemoveTrackFromFavorite();
     }
@@ -36,24 +33,77 @@ namespace E.Deezer.Api
 
     internal class Track : ObjectWithImage, ITrack, IDeserializable<DeezerClient>
     {
-        public ulong Id { get; set; }
-        public string Title { get; set; }
-        public string Link { get; set; }
-        [DeserializeAs(Name = "time_add")]
-        public DateTime TimeAdd { get; set; }
-        public uint Duration { get; set; }
-        public DateTime ReleaseDate { get; set; }
-        public string Artwork { get; set; }
-        public bool Explicit { get; set; }
-        public string Preview { get; set; }
-        public IArtist Artist { get { return ArtistInternal; } }
-        public IAlbum Album { get { return AlbumInternal; } }
+        public ulong Id
+        {
+            get;
+            set;
+        }
 
-        [DeserializeAs(Name = "track_position")]
-        public uint Number { get; set; }
+        public string Title
+        {
+            get;
+            set;
+        }
 
-        [DeserializeAs(Name = "disc_number")]
-        public uint Disc { get; set; }
+        public string Link
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "time_add")]
+        public DateTime TimeAdd
+        {
+            get;
+            set;
+        }
+
+        public uint Duration
+        {
+            get;
+            set;
+        }
+        public DateTime ReleaseDate
+        {
+            get;
+            set;
+        }
+
+        public string Artwork
+        {
+            get;
+            set;
+        }
+
+        public bool Explicit
+        {
+            get;
+            set;
+        }
+
+        public string Preview
+        {
+            get;
+            set;
+        }
+
+        public IArtist Artist => ArtistInternal;
+
+        public IAlbum Album => AlbumInternal;
+
+        [JsonProperty(PropertyName = "track_position")]
+        public uint Number
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "disc_number")]
+        public uint Disc
+        {
+            get;
+            set;
+        }
 
         public string ArtistName
         {
@@ -74,13 +124,28 @@ namespace E.Deezer.Api
         }
 
 
-        [DeserializeAs(Name = "artist")]
-        public Artist ArtistInternal { get; set; }
+        [JsonProperty(PropertyName = "artist")]
+        public Artist ArtistInternal
+        {
+            get;
+            set;
+        }
 
-        [DeserializeAs(Name = "album")]
-        public Album AlbumInternal { get; set; }
+        [JsonProperty(PropertyName = "album")]
+        public Album AlbumInternal
+        {
+            get;
+            set;
+        }
 
-        public DeezerClient Client { get; set; }
+
+        //IDeserializable
+        public DeezerClient Client
+        {
+            get;
+            set;
+        }
+
         public void Deserialize(DeezerClient aClient) 
         { 
             Client = aClient;
@@ -111,18 +176,11 @@ namespace E.Deezer.Api
         }
 
 
-
-
-        [Obsolete("Please use GetPicture instead.", true)]
-        public string GetCover(PictureSize aSize) {  return GetPicture(aSize); }
-
-        [Obsolete("Please use HasPicture instead.", true)]
-        public bool HasCover(PictureSize aSize) {  return HasPicture(aSize); }
-
         public override string ToString()
         {
             return string.Format("E.Deezer: Track({0} - ({1}))", Title, ArtistName);
         }
+
 
         public Task<bool> AddTrackToFavorite() => Client.User.AddTrackToFavourite(Id);
 

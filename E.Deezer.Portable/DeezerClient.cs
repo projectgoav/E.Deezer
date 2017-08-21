@@ -20,7 +20,6 @@ namespace E.Deezer
     {
         private readonly DeezerSession iSession;
         private readonly ExecutorService iExecutor;
-        private readonly JsonSerializer iSerializer;
 
         private IUser iUser;
         private IPermissions iPermissions;
@@ -28,7 +27,6 @@ namespace E.Deezer
         internal DeezerClient(DeezerSession aSession, bool isUnderTest = false) 
         { 
             iSession = aSession;
-            iSerializer = new JsonSerializer();
 
             if (isUnderTest)
             {
@@ -147,7 +145,7 @@ namespace E.Deezer
             IList<IRequestParameter> parms = RequestParameter.EmptyList;
             AddDefaultsToParamList(parms);
 
-            return DoGet<User>("user/me", RequestParameter.EmptyList)
+            return GetPlain<User>("user/me")
                     .ContinueWith((aTask) =>
                     {
                         iUser = aTask.Result;
@@ -216,6 +214,16 @@ namespace E.Deezer
             }
         }
 
+        internal bool HasPermission(DeezerPermissions aRequiredPermissions)
+        {
+            if(IsAuthenticated && iPermissions != null)
+            {
+                return iPermissions.HasPermission(aRequiredPermissions);
+            }
+
+            return false;
+        }
+
 
         private void CheckPermissions(DeezerPermissions aRequiredPermissions)
         {
@@ -224,7 +232,7 @@ namespace E.Deezer
                 throw new NotLoggedInException();
             }
 
-            if(!iPermissions.HasPermission(aRequiredPermissions))
+            if(!HasPermission(aRequiredPermissions))
             {
                 throw new DeezerPermissionsException(aRequiredPermissions);
             }

@@ -5,7 +5,7 @@ using System.Text;
 
 using System.Threading.Tasks;
 
-using RestSharp.Deserializers;
+using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
@@ -13,12 +13,16 @@ namespace E.Deezer.Api
     {
 		ulong Id { get; set; }
 		string Title { get; set; }
-		bool Public { get; set; }
+        bool IsPublic { get; set; }
 		uint NumTracks { get; set; }
 		string Link { get; set; }
 		string CreatorName { get; }
         int Rating { get; }
 		bool IsLovedTrack { get; set; }
+
+
+        [Obsolete("Use of IsPublic is enouraged")]
+        bool Public { get; set; }
 
         Task<IEnumerable<ITrack>> GetTracks();
         Task<IEnumerable<ITrack>> GetTracks(uint aCount);
@@ -31,14 +35,14 @@ namespace E.Deezer.Api
         Task<bool> AddTrack(ulong aTrackId);
 
         Task<bool> AddTracks(IEnumerable<ITrack> aTracks);
-        Task<bool> AddTracks(IEnumerable<Int64> aTrackIds);
+        Task<bool> AddTracks(IEnumerable<ulong> aTrackIds);
         Task<bool> AddTracks(string aTrackIds);
 
         Task<bool> RemoveTrack(ITrack aTrack);
         Task<bool> RemoveTrack(ulong aTrackId);
 
         Task<bool> RemoveTracks(IEnumerable<ITrack> aTracks);
-        Task<bool> RemoveTracks(IEnumerable<Int64> aTrackIds);
+        Task<bool> RemoveTracks(IEnumerable<ulong> aTrackIds);
         Task<bool> RemoveTracks(string aTrackIds);
 
         Task<bool> AddPlaylistToFavorite();
@@ -47,11 +51,39 @@ namespace E.Deezer.Api
 
 	internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<DeezerClient>
 	{
-		public ulong Id { get; set; }
-		public string Title { get; set; }
-        public bool Public { get; set; }
-		public string Link { get; set; }
-        public int Rating { get; set; }
+		public ulong Id
+        {
+            get;
+            set;
+        }
+
+		public string Title
+        {
+            get;
+            set;
+        }
+
+        [Obsolete("Use of IsPublic is encouraged")]
+        public bool Public => IsPublic;
+
+        public bool IsPublic
+        {
+            get;
+            set;
+        }
+
+		public string Link
+        {
+            get;
+            set;
+        }
+
+        public int Rating
+        {
+            get;
+            set;
+        }
+
 		public string CreatorName
 		{
 			//Required as sometime playlist creator is references as Creator and sometimes references as User
@@ -62,20 +94,42 @@ namespace E.Deezer.Api
 			}
 		}
 
-        [DeserializeAs(Name = "nb_tracks")]
-        public uint NumTracks { get; set; }
+        [JsonProperty(PropertyName = "nb_tracks")]
+        public uint NumTracks
+        {
+            get;
+            set;
+        }
 
-        [DeserializeAs(Name = "is_loved_track")]
-        public bool IsLovedTrack { get; set; }
+        [JsonProperty(PropertyName = "is_loved_track")]
+        public bool IsLovedTrack
+        {
+            get;
+            set;
+        }
 
-		[DeserializeAs(Name = "user")]
-		public User UserInternal { get; set; }
+		[JsonProperty(PropertyName = "user")]
+		public User UserInternal
+        {
+            get;
+            set;
+        }
 
-		[DeserializeAs(Name = "creator")]
-		public User CreatorInternal { get; set; }
+		[JsonProperty(PropertyName = "creator")]
+		public User CreatorInternal
+        {
+            get; 
+            set;
+        }
 
+        
+        //IDeserializable
+    	public DeezerClient Client
+        {
+            get;
+            set;
+        }
 
-    	public DeezerClient Client { get; set; }
 		public void Deserialize(DeezerClient aClient)
         {
             Client = aClient;
@@ -92,8 +146,8 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<IEnumerable<ITrack>> GetTracks() { return GetTracks(0, Client.ResultSize); }
-        public Task<IEnumerable<ITrack>> GetTracks(uint aCount) {  return GetTracks(0, aCount); }
+        public Task<IEnumerable<ITrack>> GetTracks() => GetTracks(0, Client.ResultSize);
+        public Task<IEnumerable<ITrack>> GetTracks(uint aCount) => GetTracks(0, aCount);
 		public Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount)
 		{
             List<IRequestParameter> parms = new List<IRequestParameter>()
@@ -121,10 +175,10 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<bool> AddTrack(ITrack aTrack) { return AddTrack(aTrack.Id); }
-        public Task<bool> AddTrack(ulong aTrackId) { return AddTracks(aTrackId.ToString()); }
+        public Task<bool> AddTrack(ITrack aTrack) => AddTrack(aTrack.Id);
+        public Task<bool> AddTrack(ulong aTrackId) => AddTracks(aTrackId.ToString());
 
-        public Task<bool> AddTracks(IEnumerable<Int64> aTrackIds)
+        public Task<bool> AddTracks(IEnumerable<ulong> aTrackIds)
         {
             if (aTrackIds.Count() > 0)
             {
@@ -161,10 +215,10 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<bool> RemoveTrack(ITrack aTrack) { return RemoveTrack(aTrack.Id); }
-        public Task<bool> RemoveTrack(ulong aTrackId) { return RemoveTracks(aTrackId.ToString()); }
+        public Task<bool> RemoveTrack(ITrack aTrack) => RemoveTrack(aTrack.Id);
+        public Task<bool> RemoveTrack(ulong aTrackId) => RemoveTracks(aTrackId.ToString());
 
-        public Task<bool> RemoveTracks(IEnumerable<Int64> aTrackIds)
+        public Task<bool> RemoveTracks(IEnumerable<ulong> aTrackIds)
         {
             if (aTrackIds.Count() > 0)
             {
@@ -204,6 +258,7 @@ namespace E.Deezer.Api
 
         public Task<bool> RemovePlaylistFromFavorite() => Client.User.RemovePlaylistFromFavourite(Id);
         
+
         public override string ToString()
 		{
 			return string.Format("E.Deezer: Playlist({0} [{1}])", Title, CreatorName);

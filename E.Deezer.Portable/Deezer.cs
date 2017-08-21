@@ -45,9 +45,9 @@ namespace E.Deezer
         public IRadioEndpoint  Radio  { get { return iRadio; } }
 
 
-        public Task<IInfos> GetServiceInformation()
+        public Task<IServceInfo> GetServiceInformation()
         {
-           return iClient.GetPlain<Infos>("infos").ContinueWith<IInfos>((aTask) => { return aTask.Result; }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+           return iClient.GetPlain<Infos>("infos").ContinueWith<IServceInfo>((aTask) => { return aTask.Result; }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
         
         //'OAuth'
