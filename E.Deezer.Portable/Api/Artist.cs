@@ -11,9 +11,9 @@ namespace E.Deezer.Api
 {
     public interface IArtist : IObjectWithImage
     {
-        ulong Id { get; set; }
-        string Name { get; set; }
-        string Link { get; set; }
+        ulong Id { get;  }
+        string Name { get;  }
+        string Link { get;  }
 
         //Methods
         Task<IEnumerable<ITrack>> GetTracklist();

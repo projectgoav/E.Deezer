@@ -47,13 +47,46 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\Album.cs" />
+    <Compile Include="Api\Artist.cs" />
+    <Compile Include="Api\Chart.cs" />
+    <Compile Include="Api\Error.cs" />
+    <Compile Include="Api\Genre.cs" />
+    <Compile Include="Api\Infos.cs" />
+    <Compile Include="Api\Internal\DeezerCreateResponse.cs" />
+    <Compile Include="Api\Internal\DeezerFragment.cs" />
+    <Compile Include="Api\Internal\DeezerObject.cs" />
+    <Compile Include="Api\Internal\DeezerPermissionRequest.cs" />
+    <Compile Include="Api\Internal\IDeserializable.cs" />
+    <Compile Include="Api\Internal\ObjectWithImage.cs" />
+    <Compile Include="Api\Internal\Permissions.cs" />
+    <Compile Include="Api\Playlist.cs" />
+    <Compile Include="Api\Radio.cs" />
+    <Compile Include="Api\Track.cs" />
+    <Compile Include="Api\User.cs" />
+    <Compile Include="Deezer.cs" />
+    <Compile Include="DeezerClient.cs" />
+    <Compile Include="DeezerPermissions.cs" />
     <Compile Include="DeezerSession.cs" />
+    <Compile Include="Endpoint\BrowseEndpoint.cs" />
+    <Compile Include="Endpoint\ChartsEndpoint.cs" />
+    <Compile Include="Endpoint\GenreEndpoint.cs" />
+    <Compile Include="Endpoint\RadioEndpoint.cs" />
+    <Compile Include="Endpoint\SearchEndpoint.cs" />
+    <Compile Include="Endpoint\UserEndpoint.cs" />
+    <Compile Include="Exception\DeezerException.cs" />
+    <Compile Include="Exception\DeezerPermissionException.cs" />
+    <Compile Include="Exception\NotLoggedInException.cs" />
     <Compile Include="ExecutorService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestParameter.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Api\" />
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

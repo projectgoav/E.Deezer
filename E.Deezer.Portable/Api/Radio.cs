@@ -11,13 +11,13 @@ namespace E.Deezer.Api
 {
     public interface IRadio : IObjectWithImage
     {
-        ulong Id { get; set; }
-        string Title { get; set; }
-        string Description { get; set; }
-        string ShareLink{ get; set; }
+        ulong Id { get;  }
+        string Title { get;  }
+        string Description { get;  }
+        string ShareLink{ get;  }
 
         //Legacy
-        Task<IEnumerable<ITack>> GetFirst40Tracks();
+        Task<IEnumerable<ITrack>> GetFirst40Tracks();
 
         //Methods
         Task<IEnumerable<ITrack>> GetTracks();

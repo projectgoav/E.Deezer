@@ -9,10 +9,10 @@ namespace E.Deezer.Api
 
 	public interface IUser : IObjectWithImage
 	{
-		ulong Id { get; set; }
-		string Name { get; set; }
-		string Link { get; set; }
-		string Country { get; set; }
+		ulong Id { get;  }
+		string Name { get;  }
+		string Link { get;  }
+		string Country { get;  }
 
 
 		// ** Methods **

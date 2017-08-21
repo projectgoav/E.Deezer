@@ -9,23 +9,9 @@ namespace E.Deezer.Api
 {
     public interface IServceInfo
     {
-        string Country
-        {
-            get;
-            set;
-        }
-
-        string Iso
-        {
-            get;
-            set;
-        }
-
-        bool IsAvailable
-        {
-            get;
-            set;
-        }
+        string Country { get; }
+        string Iso { get; }
+        bool IsAvailable { get; }
     }
 
     internal class Infos : IServceInfo

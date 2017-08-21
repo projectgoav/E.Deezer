@@ -11,8 +11,8 @@ namespace E.Deezer.Api
 {
     public interface IGenre : IObjectWithImage
     {
-        ulong Id { get; set; }
-        string Name { get; set; }
+        ulong Id { get;  }
+        string Name { get;  }
 
         //METHODS
         Task<IEnumerable<IArtist>> GetArtists();

@@ -11,18 +11,18 @@ namespace E.Deezer.Api
 {
 	public interface IPlaylist : IObjectWithImage
     {
-		ulong Id { get; set; }
-		string Title { get; set; }
-        bool IsPublic { get; set; }
-		uint NumTracks { get; set; }
-		string Link { get; set; }
+		ulong Id { get;  }
+		string Title { get;  }
+        bool IsPublic { get;  }
+		uint NumTracks { get;  }
+		string Link { get;  }
 		string CreatorName { get; }
         int Rating { get; }
-		bool IsLovedTrack { get; set; }
+		bool IsLovedTrack { get;  }
 
 
         [Obsolete("Use of IsPublic is enouraged")]
-        bool Public { get; set; }
+        bool Public { get; }
 
         Task<IEnumerable<ITrack>> GetTracks();
         Task<IEnumerable<ITrack>> GetTracks(uint aCount);

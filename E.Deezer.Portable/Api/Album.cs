@@ -11,13 +11,13 @@ namespace E.Deezer.Api
 {
     public interface IAlbum : IObjectWithImage
     {
-        ulong Id { get; set; }
-        uint Tracks {get; set; }
-        string Title { get; set; }
-        string Link { get; set; }
+        ulong Id { get;  }
+        uint Tracks {get;  }
+        string Title { get;  }
+        string Link { get;  }
         string ArtistName { get; }
         long Rating { get; }
-        DateTime ReleaseDate {get; set; }
+        DateTime ReleaseDate {get;  }
         IArtist Artist { get; }
 
         //Methods
