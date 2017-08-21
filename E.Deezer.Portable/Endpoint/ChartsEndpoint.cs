@@ -72,8 +72,12 @@ namespace E.Deezer.Endpoint
 
     internal class ChartsEndpoint : IChartsEndpoint
     {
-        private DeezerClient iClient;
-        public ChartsEndpoint(DeezerClient aClient) { iClient = aClient; }
+        private readonly DeezerClient iClient;
+
+        public ChartsEndpoint(DeezerClient aClient)
+        {
+            iClient = aClient;
+        }
 
         //-1 here means not to add any ID param, which will return the complete Deezer Chart
         public Task<IChart> GetChart()              => Get(0);
@@ -144,41 +148,43 @@ namespace E.Deezer.Endpoint
                 RequestParameter.GetNewUrlSegmentParamter("id", aId)
             };
 
-            return iClient.Get<TSource>(aMethod, parms, aStart, aCount).ContinueWith<IEnumerable<TDest>>((aTask) =>
-            {
-                List<TDest> items = new List<TDest>();
+            return iClient.Get<TSource>(aMethod, parms, aStart, aCount)
+                          .ContinueWith<IEnumerable<TDest>>((aTask) =>
+                                {
+                                    List<TDest> items = new List<TDest>();
 
-                foreach (var item in aTask.Result.Items)
-                {
-                    item.Deserialize(iClient);
-                    items.Add(item);
-                }
-                return items;
-            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                                    foreach (var item in aTask.Result.Items)
+                                    {
+                                        item.Deserialize(iClient);
+                                        items.Add(item);
+                                    }
+                                    return items;
+                                }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
         private Task<IChart> Get(ulong aId)
         {
             IList<IRequestParameter> parms = (aId == 0) ? RequestParameter.EmptyList
                                                         : new List<IRequestParameter>()
-                                                            {
-                                                                RequestParameter.GetNewUrlSegmentParamter("id", aId),
-                                                            };
+                                                                    {
+                                                                        RequestParameter.GetNewUrlSegmentParamter("id", aId),
+                                                                    };
         
             string method = (aId == 0) ? "chart" : "chart/{id}";
 
-            return iClient.GetChart(method, parms).ContinueWith((aTask) =>
-            {
-                IChart chart = new Chart(aTask.Result.Albums.Items,
-                                        aTask.Result.Artists.Items,
-                                        aTask.Result.Tracks.Items,
-                                        aTask.Result.Playlists.Items);
+            return iClient.GetChart(method, parms)
+                          .ContinueWith((aTask) =>
+                                {
+                                    IChart chart = new Chart(aTask.Result.Albums.Items,
+                                                            aTask.Result.Artists.Items,
+                                                            aTask.Result.Tracks.Items,
+                                                            aTask.Result.Playlists.Items);
 
-                //Make sure to deserialize the internal items :)
-                (chart as IDeserializable<DeezerClient>).Deserialize(iClient);
+                                    //Make sure to deserialize the internal items :)
+                                    (chart as IDeserializable<DeezerClient>).Deserialize(iClient);
 
-                return chart;
-            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                                    return chart;
+                                }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
     }
 }

@@ -20,24 +20,30 @@ namespace E.Deezer.Endpoint
         Task<IEnumerable<IRadio>> GetByGenres();
     }
 
+    //TODO needs refactor for the Get<T> with permissions param
     internal class RadioEndpoint : IRadioEndpoint
     {
-        private DeezerClient iClient;
-        public RadioEndpoint(DeezerClient aClient) { iClient = aClient; }
+        private readonly DeezerClient iClient;
+
+        public RadioEndpoint(DeezerClient aClient)
+        {
+            iClient = aClient;
+        }
 
         public Task<IEnumerable<IRadio>> GetTop5()
         {
             ThrowIfClientUnauthenticated();
             ThrowIfNoPermission(DeezerPermissions.BasicAccess);
             
-            return iClient.Get<Radio>("radio/top", RequestParameter.EmptyList).ContinueWith<IEnumerable<IRadio>>((aTask) =>
-            {
-                return iClient.Transform<Radio, IRadio>(aTask.Result);
-            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            return iClient.Get<Radio>("radio/top", RequestParameter.EmptyList)
+                            .ContinueWith<IEnumerable<IRadio>>((aTask) =>
+                                {
+                                    return iClient.Transform<Radio, IRadio>(aTask.Result);
+                                }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
-        public Task<IEnumerable<IRadio>> GetDeezerSelection() { return GetDeezerSelection(0, iClient.ResultSize); }
-        public Task<IEnumerable<IRadio>> GetDeezerSelection(uint aCount) { return GetDeezerSelection(0, aCount); }
+        public Task<IEnumerable<IRadio>> GetDeezerSelection() => GetDeezerSelection(0, iClient.ResultSize);
+        public Task<IEnumerable<IRadio>> GetDeezerSelection(uint aCount) => GetDeezerSelection(0, aCount); 
         public Task<IEnumerable<IRadio>> GetDeezerSelection(uint aStart, uint aCount)
         {
             ThrowIfClientUnauthenticated();

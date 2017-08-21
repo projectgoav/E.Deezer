@@ -16,25 +16,31 @@ namespace E.Deezer.Endpoint
 
     internal class GenreEndpoint : IGenreEndpoint
     {
-        private DeezerClient iClient;
+        private readonly DeezerClient iClient;
 
-        public Task<IEnumerable<IGenre>> GetCommonGenre()
+
+        public GenreEndpoint(DeezerClient aClient)
         {
-            return iClient.Get<Genre>("genre", RequestParameter.EmptyList).ContinueWith<IEnumerable<IGenre>>((aTask) =>
-            {
-                List<IGenre> items = new List<IGenre>();
-
-                foreach(var g in aTask.Result.Items)
-                {
-                    g.Deserialize(iClient);
-                    items.Add(g);
-                }
-
-                return items;
-            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            iClient = aClient;
         }
 
 
-        public GenreEndpoint(DeezerClient aClient) {  iClient = aClient;  }
+        public Task<IEnumerable<IGenre>> GetCommonGenre()
+        {
+            return iClient.Get<Genre>("genre", RequestParameter.EmptyList)
+                          .ContinueWith<IEnumerable<IGenre>>((aTask) =>
+                            {
+                                List<IGenre> items = new List<IGenre>();
+
+                                foreach(var g in aTask.Result.Items)
+                                {
+                                    g.Deserialize(iClient);
+                                    items.Add(g);
+                                }
+
+                                return items;
+                            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+        }
+
     }
 }

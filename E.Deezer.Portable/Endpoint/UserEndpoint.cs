@@ -91,8 +91,13 @@ namespace E.Deezer.Endpoint
 
     internal class UserEndpoint : IUserEndpoint
     {
-        private DeezerClient iClient;
-        public UserEndpoint(DeezerClient aClient) { iClient = aClient; }
+        private readonly DeezerClient iClient;
+
+        public UserEndpoint(DeezerClient aClient)
+        {
+            iClient = aClient;
+        }
+
 
         public IUser Current 
         { 
@@ -103,51 +108,40 @@ namespace E.Deezer.Endpoint
             }
         }
 
-        public Task<IEnumerable<ITrack>> GetHistory() { return GetHistory(0, iClient.ResultSize); }
-        public Task<IEnumerable<ITrack>> GetHistory(uint aCount) { return GetHistory(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetHistory(uint aStart, uint aCount)
-        {
-            if (!iClient.IsAuthenticated) { throw new NotLoggedInException(); }
-            return Current.GetHistory(aStart, aCount);
-        }
 
-        public Task<IEnumerable<ITrack>> GetFlow() { return GetFlow(0, iClient.ResultSize); }
-        public Task<IEnumerable<ITrack>> GetFlow(uint aCount) { return GetFlow(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetFlow(uint aStart, uint aCount)
-        {
-            if (!iClient.IsAuthenticated) { throw new NotLoggedInException(); }
-            return Current.GetFlow(aStart, aCount);
-        }
+        public Task<IEnumerable<ITrack>> GetHistory() => GetHistory(0, iClient.ResultSize); 
+        public Task<IEnumerable<ITrack>> GetHistory(uint aCount) => GetHistory(0, aCount); 
+        public Task<IEnumerable<ITrack>> GetHistory(uint aStart, uint aCount) => Current.GetHistory(aStart, aCount);
+        
 
-        public Task<IEnumerable<ITrack>> GetPersonalTracks() { return GetPersonalTracks(0, iClient.ResultSize); }
-        public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aCount) { return GetPersonalTracks(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart, uint aCount)
-        {
-            if (!iClient.IsAuthenticated) { throw new NotLoggedInException(); }
-            return Current.GetPersonalTracks(aStart, aCount);
-        }
+        public Task<IEnumerable<ITrack>> GetFlow() => GetFlow(0, iClient.ResultSize); 
+        public Task<IEnumerable<ITrack>> GetFlow(uint aCount) => GetFlow(0, aCount); 
+        public Task<IEnumerable<ITrack>> GetFlow(uint aStart, uint aCount) => Current.GetFlow(aStart, aCount);
+        
 
-        public Task<IEnumerable<IPlaylist>> GetPlaylists() { return GetPlaylists(0, iClient.ResultSize); }
-        public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aCount) { return GetPlaylists(0, aCount); }
-        public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart, uint aCount)
-        {
-            if (!iClient.IsAuthenticated) { throw new NotLoggedInException(); }
-            return Current.GetPlaylists(aStart, aCount);
-        }
+        public Task<IEnumerable<ITrack>> GetPersonalTracks() => GetPersonalTracks(0, iClient.ResultSize); 
+        public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aCount) => GetPersonalTracks(0, aCount); 
+        public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart, uint aCount) => Current.GetPersonalTracks(aStart, aCount);
+        
+
+        public Task<IEnumerable<IPlaylist>> GetPlaylists() => GetPlaylists(0, iClient.ResultSize); 
+        public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aCount) => GetPlaylists(0, aCount); 
+        public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart, uint aCount) => Current.GetPlaylists(aStart, aCount);
+        
 
 
         //Favourites
-        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums() { return GetFavouriteAlbums(0, iClient.ResultSize); }
-        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aCount) { return GetFavouriteAlbums(0, aCount); }
-        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart, uint aCount) { return Current.GetFavouriteAlbums(aStart, aCount); }
+        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums() => GetFavouriteAlbums(0, iClient.ResultSize); 
+        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aCount) => GetFavouriteAlbums(0, aCount); 
+        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart, uint aCount) => Current.GetFavouriteAlbums(aStart, aCount); 
 
-        public Task<IEnumerable<IArtist>> GetFavouriteArtists() { return GetFavouriteArtists(0, iClient.ResultSize); }
-        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aCount) { return GetFavouriteArtists(0, aCount); }
-        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart, uint aCount) { return Current.GetFavouriteArtists(aStart, aCount); }
+        public Task<IEnumerable<IArtist>> GetFavouriteArtists() => GetFavouriteArtists(0, iClient.ResultSize); 
+        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aCount) => GetFavouriteArtists(0, aCount); 
+        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart, uint aCount) => Current.GetFavouriteArtists(aStart, aCount); 
 
-        public Task<IEnumerable<ITrack>> GetFavouriteTracks() { return GetFavouriteTracks(0, iClient.ResultSize); }
-        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aCount) { return GetFavouriteTracks(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart, uint aCount) { return Current.GetFavouriteTracks(aStart, aCount); }
+        public Task<IEnumerable<ITrack>> GetFavouriteTracks() => GetFavouriteTracks(0, iClient.ResultSize); 
+        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aCount) => GetFavouriteTracks(0, aCount); 
+        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart, uint aCount) => Current.GetFavouriteTracks(aStart, aCount); 
 
         //Favourites Managers
         public Task<bool> AddAlbumToFavourite(IAlbum aAlbum) => AddAlbumToFavourite(aAlbum.Id);
@@ -186,22 +180,21 @@ namespace E.Deezer.Endpoint
 
 
         //Recomends
-        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums() { return GetRecommendedAlbums(0, iClient.ResultSize); }
-        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aCount) { return GetRecommendedAlbums(0, aCount); }
-        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart, uint aCount) { return Current.GetRecommendedAlbums(aStart, aCount); }
+        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums() => GetRecommendedAlbums(0, iClient.ResultSize); 
+        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aCount) => GetRecommendedAlbums(0, aCount); 
+        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart, uint aCount) => Current.GetRecommendedAlbums(aStart, aCount); 
 
-        public Task<IEnumerable<IArtist>> GetRecommendedArtists() { return GetRecommendedArtists(0, iClient.ResultSize); }
-        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aCount) { return GetRecommendedArtists(0, aCount); }
-        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart, uint aCount) { return Current.GetRecommendedArtists(aStart, aCount); }
+        public Task<IEnumerable<IArtist>> GetRecommendedArtists() => GetRecommendedArtists(0, iClient.ResultSize); 
+        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aCount) => GetRecommendedArtists(0, aCount); 
+        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart, uint aCount) => Current.GetRecommendedArtists(aStart, aCount); 
 
-        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists() { return GetRecommendedPlaylists(0, iClient.ResultSize); }
-        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aCount) { return GetRecommendedPlaylists(0, aCount); }
-        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount) { return Current.GetRecommendedPlaylists(aStart, aCount); }
+        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists() => GetRecommendedPlaylists(0, iClient.ResultSize); 
+        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aCount) => GetRecommendedPlaylists(0, aCount); 
+        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount) => Current.GetRecommendedPlaylists(aStart, aCount); 
 
-        public Task<IEnumerable<ITrack>> GetRecommendedTracks() { return GetRecommendedTracks(0, iClient.ResultSize); }
-        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aCount) { return GetRecommendedTracks(0, aCount); }
-        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount) { return Current.GetRecommendedTracks(aStart, aCount); }
-
-                
+        public Task<IEnumerable<ITrack>> GetRecommendedTracks() => GetRecommendedTracks(0, iClient.ResultSize); 
+        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aCount) => GetRecommendedTracks(0, aCount); 
+        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount) => Current.GetRecommendedTracks(aStart, aCount); 
+        
     }
 }
