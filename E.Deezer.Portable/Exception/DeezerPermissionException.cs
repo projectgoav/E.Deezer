@@ -33,6 +33,6 @@ namespace E.Deezer
         }
 
 
-        public override string Message { get { return string.Format("{0}. {1}", iMessage, MSG_END); } }
+        public override string Message => string.Format("{0}. {1}", iMessage, MSG_END);
     }
 }
