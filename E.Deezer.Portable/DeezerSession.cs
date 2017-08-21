@@ -9,27 +9,37 @@ namespace E.Deezer
 {
     public class DeezerSession
     {
-        //Base Deezer API endpoint
         public const string ENDPOINT = "https://api.deezer.com/";
-
-        //Private default response size.
         public const uint DEFAULT_SIZE = 25;
 
-        //Internal access to this size.
-        private uint iSize = 0;
-        internal uint ResultSize { get { return iSize; } }
+        private readonly uint iSize = 0;
+   
+        public DeezerSession(uint aDefaultResultSize)
+        {
+            iSize = aDefaultResultSize;
+            AccessToken = string.Empty;
+        }
 
-        public DeezerSession(uint aResultSize) { iSize = aResultSize; AccessToken = string.Empty; }
+        internal uint ResultSize => iSize;
 
-        internal void Login(string aAccessToken) { AccessToken = aAccessToken; }
-        internal void Logout() {  AccessToken = string.Empty; }
 
-        internal string AccessToken { get; private set; }
-        internal bool Authenticated { get { return AccessToken != string.Empty; } }
+        internal string AccessToken
+        {
+            get;
+            private set;
+        }
+
+        internal bool Authenticated => AccessToken != string.Empty; 
+
+
+        internal void Login(string aAccessToken) => AccessToken = aAccessToken;
+
+        internal void Logout() => AccessToken = string.Empty;
+
 
         //Generates a permission string which can be used to grant people
         //Access to features of the app
-        /*private void GeneratePermissionString(DeezerPermissions iPermissions)
+        private void GeneratePermissionString(DeezerPermissions iPermissions)
         {
             string perms = null;
 
@@ -67,13 +77,19 @@ namespace E.Deezer
             {
                 AddToString(perms, DeezerPermissions.OfflineAccess.PermissionToString());
             }
-        }*/
+        }
 
         //Adds the permissions in a comma seperated list
         private void AddToString(string aString, string aAdd)
         {
-            if(string.IsNullOrEmpty(aString)) {  aString = aAdd; }
-            else {  aString += string.Format(",{0}", aAdd); }
+            if(string.IsNullOrEmpty(aString))
+            {
+                aString = aAdd;
+            }
+            else
+            {
+                aString += string.Format(",{0}", aAdd);
+            }
         }
 
 
@@ -81,13 +97,9 @@ namespace E.Deezer
         /// Starts a new session on the Deezer API.
         /// Setup internal workings of E.Deezer
         /// </summary>
-        /*
-        public static Deezer CreateNew() { return CreateNew(DEFAULT_SIZE); }
+        public static Deezer CreateNew() => CreateNew(DEFAULT_SIZE);
 
-        public static Deezer CreateNew(uint aDefaultResponseSize)
-        {
-            return new Deezer(new DeezerSession(aDefaultResponseSize)); 
-        }
+        public static Deezer CreateNew(uint aDefaultResponseSize) => new Deezer(new DeezerSession(aDefaultResponseSize)); 
 
         internal static Deezer CreateNew(bool underTest)
         {
@@ -97,7 +109,6 @@ namespace E.Deezer
             }
             else { return CreateNew(); }
         }
-        */
 
     }
 }
