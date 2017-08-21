@@ -44,7 +44,7 @@ namespace E.Deezer
             return iClient.PostAsync(BuildUrl(aMethod, aParams), null, CancellationToken);
         }
 
-        public Task<HttpResponseMessage> ExecuteDelete<T>(string aMethod, IEnumerable<IRequestParameter> aParams)
+        public Task<HttpResponseMessage> ExecuteDelete(string aMethod, IEnumerable<IRequestParameter> aParams)
         {
             return iClient.DeleteAsync(BuildUrl(aMethod, aParams), CancellationToken);
         }
