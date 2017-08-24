@@ -10,17 +10,11 @@ namespace E.Deezer
     public class DeezerSession
     {
         public const string ENDPOINT = "https://api.deezer.com/";
-        public const uint DEFAULT_SIZE = 25;
 
-        private readonly uint iSize = 0;
-   
-        public DeezerSession(uint aDefaultResultSize)
+        public DeezerSession()
         {
-            iSize = aDefaultResultSize;
             AccessToken = string.Empty;
         }
-
-        internal uint ResultSize => iSize;
 
 
         internal string AccessToken
@@ -97,17 +91,18 @@ namespace E.Deezer
         /// Starts a new session on the Deezer API.
         /// Setup internal workings of E.Deezer
         /// </summary>
-        public static Deezer CreateNew() => CreateNew(DEFAULT_SIZE);
-
-        public static Deezer CreateNew(uint aDefaultResponseSize) => new Deezer(new DeezerSession(aDefaultResponseSize)); 
+        public static Deezer CreateNew() => CreateNew();
 
         internal static Deezer CreateNew(bool underTest)
         {
             if (underTest)
             {
-                return new Deezer(new DeezerSession(DEFAULT_SIZE), true);
+                return new Deezer(new DeezerSession(), true);
             }
-            else { return CreateNew(); }
+            else
+            {
+                return CreateNew();
+            }
         }
 
     }

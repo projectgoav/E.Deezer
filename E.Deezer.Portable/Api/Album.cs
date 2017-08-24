@@ -21,7 +21,7 @@ namespace E.Deezer.Api
         IArtist Artist { get; }
 
         //Methods
-        Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = uint.MaxValue);
+        Task<IEnumerable<ITrack>> GetTracks();
         Task<bool> Rate(int aRating);
 
         Task<bool> AddAlbumToFavorite();

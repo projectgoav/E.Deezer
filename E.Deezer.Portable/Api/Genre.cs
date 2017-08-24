@@ -63,7 +63,8 @@ namespace E.Deezer.Api
             set;
         }
 
-        public void Deserialize(DeezerClient aClient) => Client = aClient;
+        public void Deserialize(DeezerClient aClient)
+            => Client = aClient;
 
         //Methods
         public Task<IEnumerable<IArtist>> GetArtists(uint aStart = 0, uint aCount = 100)
@@ -76,9 +77,8 @@ namespace E.Deezer.Api
             => Get<Album, IAlbum>("editorial/{id}/releases", aStart, aCount);
 
         //Charting
-        public Task<IChart> GetChart(uint aStart = 0, uint aCount = 100)
+        public Task<IChart> GetCharts(uint aStart = 0, uint aCount = 100)
             => Client.GetChart(Id, aStart, aCount);
-
 
         public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart = 0, uint aCount = 100) 
             => Get<Album, IAlbum>("chart/{id}/albums", aStart, aCount); 
