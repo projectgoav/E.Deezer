@@ -10,8 +10,7 @@ namespace E.Deezer.Endpoint
         IGenreEndpoint Genre { get; }
         IChartsEndpoint Charts { get; }
 
-        //TODO
-        //IUserEndpoint User { get; }
+        IUserEndpoint CurrentUser { get; }
 
 
     }
@@ -20,6 +19,7 @@ namespace E.Deezer.Endpoint
     {
         private readonly IGenreEndpoint iGenre;
         private readonly IChartsEndpoint iCharts;
+        private readonly IUserEndpoint iUserEndpoint;
 
         private readonly DeezerClient iClient;
 
@@ -29,11 +29,25 @@ namespace E.Deezer.Endpoint
 
             iGenre = new GenreEndpoint(iClient);
             iCharts = new ChartsEndpoint(iClient);
+            iUserEndpoint = new UserEndpoint(aClient);
         }
 
 
         public IGenreEndpoint Genre => iGenre;
 
         public IChartsEndpoint Charts => iCharts;
+
+        public IUserEndpoint CurrentUser
+        {
+            get
+            {
+                if(!iClient.IsAuthenticated)
+                {
+                    throw new NotLoggedInException();
+                }
+
+                return iUserEndpoint;
+            }
+        }
     }
 }

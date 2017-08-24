@@ -16,25 +16,15 @@ namespace E.Deezer.Api
         string Link { get;  }
 
         //Methods
-        Task<IEnumerable<ITrack>> GetTracklist();
-        Task<IEnumerable<ITrack>> GetTracklist(uint aCount);
-        Task<IEnumerable<ITrack>> GetTracklist(uint aStart, uint aCount);
+        Task<IEnumerable<ITrack>> GetTracklist(uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<ITrack>> GetTopTracks();
-        Task<IEnumerable<ITrack>> GetTopTracks(uint aCount);
-        Task<IEnumerable<ITrack>> GetTopTracks(uint aStart, uint aCount);
+        Task<IEnumerable<ITrack>> GetTopTracks(uint aStart = 0 , uint aCount = 100);
 
-        Task<IEnumerable<IAlbum>> GetAlbums();
-        Task<IEnumerable<IAlbum>> GetAlbums(uint aCount);
-        Task<IEnumerable<IAlbum>> GetAlbums(uint aStart, uint aCount);
+        Task<IEnumerable<IAlbum>> GetAlbums(uint aStart = 0 , uint aCount = 100);
 
-        Task<IEnumerable<IArtist>> GetRelated();
-        Task<IEnumerable<IArtist>> GetRelated(uint aCount);
-        Task<IEnumerable<IArtist>> GetRelated(uint aStart, uint aCount);
+        Task<IEnumerable<IArtist>> GetRelated(uint aStart =0 , uint aCount = 100);
 
-        Task<IEnumerable<IPlaylist>> GetPlaylistsContaining();
-        Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aCount);
-        Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aStart, uint aCount);
+        Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aStart = 0, uint aCount = 100);
 
         Task<bool> AddArtistToFavorite();
         Task<bool> RemoveArtistFromFavorite();
@@ -72,28 +62,22 @@ namespace E.Deezer.Api
         public void Deserialize(DeezerClient aClient) => Client = aClient;
 
 
-        public Task<IEnumerable<ITrack>> GetTracklist() => GetTracklist(0, Client.ResultSize); 
-        public Task<IEnumerable<ITrack>> GetTracklist(uint aCount)  => GetTracklist(0, aCount); 
-        public Task<IEnumerable<ITrack>> GetTracklist(uint aStart, uint aCount) => Get<Track, ITrack>("artist/{id}/radio", aStart, aCount);
+        public Task<IEnumerable<ITrack>> GetTracklist(uint aStart = 0, uint aCount = 100) 
+            => Get<Track, ITrack>("artist/{id}/radio", aStart, aCount);
 
 
-        public Task<IEnumerable<ITrack>> GetTopTracks() => GetTopTracks(0, Client.ResultSize);
-        public Task<IEnumerable<ITrack>> GetTopTracks(uint aCount) => GetTopTracks(0, aCount); 
-        public Task<IEnumerable<ITrack>> GetTopTracks(uint aStart, uint aCount) => Get<Track, ITrack>("artist/{id}/top", aStart, aCount);
+        public Task<IEnumerable<ITrack>> GetTopTracks(uint aStart = 0, uint aCount = 100) 
+            => Get<Track, ITrack>("artist/{id}/top", aStart, aCount);
+
+        public Task<IEnumerable<IAlbum>> GetAlbums(uint aStart = 0, uint aCount = 100)
+            => Get<Album, IAlbum>("/artist/{id}/albums", aStart, aCount);
 
 
-        public Task<IEnumerable<IAlbum>> GetAlbums() => GetAlbums(0, Client.ResultSize);
-        public Task<IEnumerable<IAlbum>> GetAlbums(uint aCount)  => GetAlbums(0, aCount);
-        public Task<IEnumerable<IAlbum>> GetAlbums(uint aStart, uint aCount) => Get<Album, IAlbum>("/artist/{id}/albums", aStart, aCount);
+        public Task<IEnumerable<IArtist>> GetRelated(uint aStart = 0, uint aCount = 100)
+            => Get<Artist, IArtist>("artist/{id}/related", aStart, aCount);
 
-
-        public Task<IEnumerable<IArtist>> GetRelated() => GetRelated(0, Client.ResultSize);
-        public Task<IEnumerable<IArtist>> GetRelated(uint aCount) => GetRelated(0, aCount);
-        public Task<IEnumerable<IArtist>> GetRelated(uint aStart, uint aCount) => Get<Artist, IArtist>("artist/{id}/related", aStart, aCount);
-
-        public Task<IEnumerable<IPlaylist>> GetPlaylistsContaining() => GetPlaylistsContaining(0, DeezerSession.DEFAULT_SIZE);
-        public Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aCount) => GetPlaylistsContaining(0, aCount);
-        public Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aStart, uint aCount) => Get<Playlist, IPlaylist>("artist/{id}/playlists", aStart, aCount);
+        public Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aStart = 0, uint aCount = 100) 
+            => Get<Playlist, IPlaylist>("artist/{id}/playlists", aStart, aCount);
 
 
         //Internal wrapper around get for all artist methods :)
@@ -111,9 +95,11 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<bool> AddArtistToFavorite() => Client.User.AddArtistToFavourite(Id);
+        public Task<bool> AddArtistToFavorite() 
+            => Client.User.AddArtistToFavourite(Id);
 
-        public Task<bool> RemoveArtistFromFavorite() => Client.User.RemoveArtistFromFavourite(Id);       
+        public Task<bool> RemoveArtistFromFavorite() 
+            => Client.User.RemoveArtistFromFavourite(Id);       
 
 
         public override string ToString()

@@ -24,9 +24,7 @@ namespace E.Deezer.Api
         [Obsolete("Use of IsPublic is enouraged")]
         bool Public { get; }
 
-        Task<IEnumerable<ITrack>> GetTracks();
-        Task<IEnumerable<ITrack>> GetTracks(uint aCount);
-		Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount);
+		Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = uint.MaxValue);
 
         Task<bool> Rate(int aRating);
 
@@ -146,8 +144,6 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<IEnumerable<ITrack>> GetTracks() => GetTracks(0, Client.ResultSize);
-        public Task<IEnumerable<ITrack>> GetTracks(uint aCount) => GetTracks(0, aCount);
 		public Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount)
 		{
             List<IRequestParameter> parms = new List<IRequestParameter>()
@@ -175,8 +171,12 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<bool> AddTrack(ITrack aTrack) => AddTrack(aTrack.Id);
-        public Task<bool> AddTrack(ulong aTrackId) => AddTracks(aTrackId.ToString());
+        public Task<bool> AddTrack(ITrack aTrack)
+            => AddTrack(aTrack.Id);
+
+        public Task<bool> AddTrack(ulong aTrackId)
+            => AddTracks(aTrackId.ToString());
+
 
         public Task<bool> AddTracks(IEnumerable<ulong> aTrackIds)
         {
@@ -215,8 +215,12 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<bool> RemoveTrack(ITrack aTrack) => RemoveTrack(aTrack.Id);
-        public Task<bool> RemoveTrack(ulong aTrackId) => RemoveTracks(aTrackId.ToString());
+        public Task<bool> RemoveTrack(ITrack aTrack) 
+            => RemoveTrack(aTrack.Id);
+
+        public Task<bool> RemoveTrack(ulong aTrackId)
+            => RemoveTracks(aTrackId.ToString());
+
 
         public Task<bool> RemoveTracks(IEnumerable<ulong> aTrackIds)
         {
@@ -254,9 +258,11 @@ namespace E.Deezer.Api
             return Client.Delete("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
 
-        public Task<bool> AddPlaylistToFavorite() => Client.User.AddPlaylistToFavourite(Id);
+        public Task<bool> AddPlaylistToFavorite() 
+            => Client.User.AddPlaylistToFavourite(Id);
 
-        public Task<bool> RemovePlaylistFromFavorite() => Client.User.RemovePlaylistFromFavourite(Id);
+        public Task<bool> RemovePlaylistFromFavorite()
+            => Client.User.RemovePlaylistFromFavourite(Id);
         
 
         public override string ToString()

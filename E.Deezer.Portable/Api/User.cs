@@ -17,69 +17,61 @@ namespace E.Deezer.Api
 
 		// ** Methods **
         //Favourites
-		Task<IEnumerable<IAlbum>> GetFavouriteAlbums();
-        Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aCount);
-        Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart, uint aCount);
+        Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart = 0, uint aCount = 100);
 
-		Task<IEnumerable<IArtist>> GetFavouriteArtists();
-        Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aCount);
-        Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart, uint aCount);
+        Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart = 0, uint aCount = 100);
 
-		Task<IEnumerable<ITrack>> GetFavouriteTracks();
-        Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aCount);
-        Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart, uint aCount);
+        Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart = 0, uint aCount = 100);
 
+        Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart = 0 , uint aCount = 100);
 
-        Task<IEnumerable<ITrack>> GetPersonalTracks();
-        Task<IEnumerable<ITrack>> GetPersonalTracks(uint aCount);
-        Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart, uint aCount);
+        Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<IPlaylist>> GetPlaylists();
-        Task<IEnumerable<IPlaylist>> GetPlaylists(uint aCount);
-        Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart, uint aCount);
+        Task<IEnumerable<ITrack>> GetFlow(uint aStart = 0 , uint aCount = 100);
 
-
-		Task<IEnumerable<ITrack>> GetFlow();
-        Task<IEnumerable<ITrack>> GetFlow(uint aCount);
-        Task<IEnumerable<ITrack>> GetFlow(uint aStart, uint aCount);
-
-		Task<IEnumerable<ITrack>> GetHistory();
-        Task<IEnumerable<ITrack>> GetHistory(uint aCount);
-        Task<IEnumerable<ITrack>> GetHistory(uint aStart, uint aCount);
+        Task<IEnumerable<ITrack>> GetHistory(uint aStart = 0, uint aCount = 100);
 
         //Recommendations
-		Task<IEnumerable<IAlbum>> GetRecommendedAlbums();
-        Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aCount);
-        Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart, uint aCount);
+        Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart = 0, uint aCount = 100);
 
-		Task<IEnumerable<IArtist>> GetRecommendedArtists();
-        Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aCount);
-        Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart, uint aCount);
+        Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart = 0, uint aCount = 100);
 
-		Task<IEnumerable<ITrack>> GetRecommendedTracks();
-        Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aCount);
-        Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount);
+        Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart = 0, uint aCount = 100);
 
-		Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists();
-        Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aCount);
-        Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount);
+        Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart = 0, uint aCount = 100);
+
+        Task<IEnumerable<IRadio>> GetRecommendedRadio(uint aStart = 0, uint aCount = 100);
 
         Task<uint> CreatePlaylist(string title);
-        Task<bool> AddToPlaylist(ulong playlistId, string songids);
 
+        Task<bool> AddRadioToFavourite(IRadio aRadio);
         Task<bool> AddRadioToFavourite(ulong radioId);
+
+        Task<bool> RemoveRadioFromFavourite(IRadio aRadio);
         Task<bool> RemoveRadioFromFavourite(ulong radioId);
 
+        Task<bool> AddTrackToFavourite(ITrack aTrack);
         Task<bool> AddTrackToFavourite(ulong trackId);
+
+        Task<bool> RemoveTrackFromFavourite(ITrack aTrack);
         Task<bool> RemoveTrackFromFavourite(ulong trackId);
 
+        Task<bool> AddPlaylistToFavourite(IPlaylist aPlaylist);
         Task<bool> AddPlaylistToFavourite(ulong playlistId);
+
+        Task<bool> RemovePlaylistFromFavourite(IPlaylist aPlaylist);
         Task<bool> RemovePlaylistFromFavourite(ulong playlistId);
 
+        Task<bool> AddArtistToFavourite(IArtist aArtist);
         Task<bool> AddArtistToFavourite(ulong artistId);
+
+        Task<bool> RemoveArtistFromFavourite(IArtist aArtist);
         Task<bool> RemoveArtistFromFavourite(ulong artistId);
 
+        Task<bool> AddAlbumToFavourite(IAlbum aAlbum);
         Task<bool> AddAlbumToFavourite(ulong albumId);
+
+        Task<bool> RemoveAlbumFromFavourite(IAlbum aAlbum);
         Task<bool> RemoveAlbumFromFavourite(ulong albumId);
     }
 
@@ -124,54 +116,41 @@ namespace E.Deezer.Api
 
 
         /* METHODS */
-        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums()                           => GetFavouriteAlbums(0, Client.ResultSize);
-        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aCount)                => GetFavouriteAlbums(0, aCount);
-        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart, uint aCount)   => Get<Album, IAlbum>("albums", DeezerPermissions.BasicAccess, aStart, aCount);
+        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart = 0, uint aCount = 100)   
+            => Get<Album, IAlbum>("albums", DeezerPermissions.BasicAccess, aStart, aCount);
 
-        public Task<IEnumerable<IArtist>> GetFavouriteArtists()                         => GetFavouriteArtists(0, Client.ResultSize);
-        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aCount)              => GetFavouriteArtists(0, aCount);
-        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart, uint aCount) => Get<Artist, IArtist>("artists", DeezerPermissions.BasicAccess, aStart, aCount); 
+        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart = 0, uint aCount = 100) 
+            => Get<Artist, IArtist>("artists", DeezerPermissions.BasicAccess, aStart, aCount); 
 
-        public Task<IEnumerable<ITrack>> GetFavouriteTracks()                           => GetFavouriteTracks(0, Client.ResultSize); 
-        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aCount)                => GetFavouriteTracks(0, aCount);
-        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart, uint aCount)   => Get<Track, ITrack>("tracks", DeezerPermissions.BasicAccess, aStart, aCount);
+        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart = 0, uint aCount = 100)   
+            => Get<Track, ITrack>("tracks", DeezerPermissions.BasicAccess, aStart, aCount);
 
+        public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart = 0, uint aCount = 100)   
+            => Get<Track, ITrack>("personal_songs", DeezerPermissions.BasicAccess, aStart, aCount); 
 
-        public Task<IEnumerable<ITrack>> GetPersonalTracks()                            => GetPersonalTracks(0, Client.ResultSize); 
-        public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aCount)                 => GetPersonalTracks(0, aCount); 
-        public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart, uint aCount)    => Get<Track, ITrack>("personal_songs", DeezerPermissions.BasicAccess, aStart, aCount); 
+        public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart = 0, uint aCount = 100)      
+            => Get<Playlist, IPlaylist>("playlists", DeezerPermissions.BasicAccess, aStart, aCount); 
 
+        public Task<IEnumerable<ITrack>> GetFlow(uint aStart = 0, uint aCount = 100)  
+            => Get<Track, ITrack>("flow", DeezerPermissions.BasicAccess, aStart, aCount);
 
-        public Task<IEnumerable<IPlaylist>> GetPlaylists()                              => GetPlaylists(0, Client.ResultSize); 
-        public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aCount)                   => GetPlaylists(0, aCount); 
-        public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart, uint aCount)      => Get<Playlist, IPlaylist>("playlists", DeezerPermissions.BasicAccess, aStart, aCount); 
+        public Task<IEnumerable<ITrack>> GetHistory(uint aStart = 0, uint aCount = 100)   
+            => Get<Track, ITrack>("history", DeezerPermissions.ListeningHistory, aStart, aCount); 
 
+        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart = 0, uint aCount = 100) 
+            => Get<Album, IAlbum>("recommendations/albums", DeezerPermissions.BasicAccess, aStart, aCount); 
 
-        public Task<IEnumerable<ITrack>> GetFlow()                          => GetFlow(0, Client.ResultSize); 
-        public Task<IEnumerable<ITrack>> GetFlow(uint aCount)               => GetFlow(0, aCount);
-        public Task<IEnumerable<ITrack>> GetFlow(uint aStart, uint aCount)  => Get<Track, ITrack>("flow", DeezerPermissions.BasicAccess, aStart, aCount);
-
-
-        public Task<IEnumerable<ITrack>> GetHistory()                           => GetHistory(0, Client.ResultSize); 
-        public Task<IEnumerable<ITrack>> GetHistory(uint aCount)                => GetHistory(0, aCount); 
-        public Task<IEnumerable<ITrack>> GetHistory(uint aStart, uint aCount)   => Get<Track, ITrack>("history", DeezerPermissions.ListeningHistory, aStart, aCount); 
-
-
-        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums()                         => GetRecommendedAlbums(0, Client.ResultSize); 
-        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aCount)              => GetRecommendedAlbums(0, aCount); 
-        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart, uint aCount) => Get<Album, IAlbum>("recommendations/albums", DeezerPermissions.BasicAccess, aStart, aCount); 
-
-        public Task<IEnumerable<IArtist>> GetRecommendedArtists()                           => GetRecommendedArtists(0, Client.ResultSize); 
-        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aCount)                => GetRecommendedArtists(0, aCount); 
-        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart, uint aCount)   => Get<Artist, IArtist>("recommendations/artists", DeezerPermissions.BasicAccess, aStart, aCount); 
+        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart = 0, uint aCount = 100)   
+            => Get<Artist, IArtist>("recommendations/artists", DeezerPermissions.BasicAccess, aStart, aCount); 
     
-        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists()                           => GetRecommendedPlaylists(0, Client.ResultSize); 
-        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aCount)                => GetRecommendedPlaylists(0, aCount); 
-        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart, uint aCount)   => Get<Playlist, IPlaylist>("recommendations/playlists",DeezerPermissions.BasicAccess, aStart, aCount);
+        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart = 0, uint aCount = 100)   
+            => Get<Playlist, IPlaylist>("recommendations/playlists",DeezerPermissions.BasicAccess, aStart, aCount);
 
-        public Task<IEnumerable<ITrack>> GetRecommendedTracks()                         => GetRecommendedTracks(0, Client.ResultSize); 
-        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aCount)              => GetRecommendedTracks(0, aCount); 
-        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart, uint aCount) => Get<Track, ITrack>("recommendations/tracks", DeezerPermissions.BasicAccess, aStart, aCount); 
+        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart = 0, uint aCount = 100) 
+            => Get<Track, ITrack>("recommendations/tracks", DeezerPermissions.BasicAccess, aStart, aCount);
+
+        public Task<IEnumerable<IRadio>> GetRecommendedRadio(uint aStart = 0, uint aCount = 100)
+            => Get<Radio, IRadio>("recommendations/radios", DeezerPermissions.BasicAccess, aStart, aCount);
 
 
         public Task<uint> CreatePlaylist(string title)
@@ -186,17 +165,9 @@ namespace E.Deezer.Api
                             .ContinueWith(t => t.Result.Id);                        
         }
 
-        [Obsolete("Preferable to use IPlaylist.AddTrack(s) methods instead")]
-        public Task<bool> AddToPlaylist(ulong playlistId, string songids)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewUrlSegmentParamter("playlist_id", playlistId),
-                RequestParameter.GetNewQueryStringParameter("songs", songids)
-            };
 
-            return Client.Post("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary);
-        }
+        public Task<bool> AddRadioToFavourite(IRadio aRadio)
+            => AddRadioToFavourite(aRadio.Id);
 
         public Task<bool> AddRadioToFavourite(ulong radioId)
         {
@@ -208,6 +179,9 @@ namespace E.Deezer.Api
             return Client.Post("user/me/radios", parms, DeezerPermissions.ManageLibrary);
         }
 
+        public Task<bool> RemoveRadioFromFavourite(IRadio aRadio)
+            => RemoveRadioFromFavourite(aRadio.Id);
+
         public Task<bool> RemoveRadioFromFavourite(ulong radioId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
@@ -216,7 +190,10 @@ namespace E.Deezer.Api
             };
 
             return Client.Delete("user/me/radios", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
-        }        
+        }
+
+        public Task<bool> AddTrackToFavourite(ITrack aTrack)
+            => AddTrackToFavourite(aTrack.Id);
 
         public Task<bool> AddTrackToFavourite(ulong trackId)
         {
@@ -228,6 +205,9 @@ namespace E.Deezer.Api
             return Client.Post("user/me/tracks", parms, DeezerPermissions.ManageLibrary);
         }
 
+        public Task<bool> RemoveTrackFromFavourite(ITrack aTrack)
+            => RemoveTrackFromFavourite(aTrack.Id);
+
         public Task<bool> RemoveTrackFromFavourite(ulong trackId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
@@ -237,6 +217,9 @@ namespace E.Deezer.Api
 
             return Client.Delete("user/me/tracks", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
+
+        public Task<bool> AddPlaylistToFavourite(IPlaylist aPlaylist)
+            => AddPlaylistToFavourite(aPlaylist.Id);
 
         public Task<bool> AddPlaylistToFavourite(ulong playlistId)
         {
@@ -248,6 +231,9 @@ namespace E.Deezer.Api
             return Client.Post("user/me/playlists", parms, DeezerPermissions.ManageLibrary);
         }
 
+        public Task<bool> RemovePlaylistFromFavourite(IPlaylist aPlaylist)
+            => RemovePlaylistFromFavourite(aPlaylist.Id);
+
         public Task<bool> RemovePlaylistFromFavourite(ulong playlistId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
@@ -258,6 +244,9 @@ namespace E.Deezer.Api
             return Client.Delete("user/me/playlists", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
 
+        public Task<bool> AddArtistToFavourite(IArtist aArtist)
+            => AddAlbumToFavourite(aArtist.Id);
+        
         public Task<bool> AddArtistToFavourite(ulong artistId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
@@ -267,6 +256,9 @@ namespace E.Deezer.Api
 
             return Client.Post("user/me/artists", parms, DeezerPermissions.ManageLibrary);
         }
+
+        public Task<bool> RemoveArtistFromFavourite(IArtist aArtist)
+            => RemoveArtistFromFavourite(aArtist.Id);
 
         public Task<bool> RemoveArtistFromFavourite(ulong artistId)
         {
@@ -278,6 +270,9 @@ namespace E.Deezer.Api
             return Client.Delete("user/me/artists", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
 
+        public Task<bool> AddAlbumToFavourite(IAlbum aAlbum)
+            => AddAlbumToFavourite(aAlbum.Id);
+
         public Task<bool> AddAlbumToFavourite(ulong albumId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
@@ -288,6 +283,9 @@ namespace E.Deezer.Api
             return Client.Post("user/me/albums", parms, DeezerPermissions.ManageLibrary);
         }
 
+        public Task<bool> RemoveAlbumFromFavourite(IAlbum aAlbum)
+            => RemoveArtistFromFavourite(aAlbum.Id);
+
         public Task<bool> RemoveAlbumFromFavourite(ulong albumId)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
@@ -297,7 +295,6 @@ namespace E.Deezer.Api
 
             return Client.Delete("user/me/albums", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
-
 
 
 

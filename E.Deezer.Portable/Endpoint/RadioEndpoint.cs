@@ -13,9 +13,7 @@ namespace E.Deezer.Endpoint
     {
         Task<IEnumerable<IRadio>> GetTop5();
 
-        Task<IEnumerable<IRadio>> GetDeezerSelection();
-        Task<IEnumerable<IRadio>> GetDeezerSelection(uint aCount);
-        Task<IEnumerable<IRadio>> GetDeezerSelection(uint aStart, uint aCount);
+        Task<IEnumerable<IRadio>> GetDeezerSelection(uint aStart = 0, uint aCount = 100);
 
         Task<IEnumerable<IRadio>> GetByGenres();
     }
@@ -42,9 +40,7 @@ namespace E.Deezer.Endpoint
                                 }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
-        public Task<IEnumerable<IRadio>> GetDeezerSelection() => GetDeezerSelection(0, iClient.ResultSize);
-        public Task<IEnumerable<IRadio>> GetDeezerSelection(uint aCount) => GetDeezerSelection(0, aCount); 
-        public Task<IEnumerable<IRadio>> GetDeezerSelection(uint aStart, uint aCount)
+        public Task<IEnumerable<IRadio>> GetDeezerSelection(uint aStart = 0, uint aCount = 100)
         {
             ThrowIfClientUnauthenticated();
             ThrowIfNoPermission(DeezerPermissions.BasicAccess);

@@ -15,36 +15,23 @@ namespace E.Deezer.Api
         string Name { get;  }
 
         //METHODS
-        Task<IEnumerable<IArtist>> GetArtists();
-        Task<IEnumerable<IArtist>> GetArtists(uint aCount);
-        Task<IEnumerable<IArtist>> GetArtists(uint aStart, uint aCount);
+        Task<IEnumerable<IArtist>> GetArtists(uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<IAlbum>> GetSelection();
-        Task<IEnumerable<IAlbum>> GetSelection(uint aCount);
-        Task<IEnumerable<IAlbum>> GetSelection(uint aStart, uint aCount);
+        Task<IEnumerable<IAlbum>> GetSelection(uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<IAlbum>> GetReleases();
-        Task<IEnumerable<IAlbum>> GetReleases(uint aCount);
-        Task<IEnumerable<IAlbum>> GetReleases(uint aStart, uint aCount);
+        Task<IEnumerable<IAlbum>> GetReleases(uint aStart = 0 , uint aCount = 100);
 
 
         //Charts!
+        Task<IChart> GetCharts(uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<IAlbum>> GetAlbumChart();
-        Task<IEnumerable<IAlbum>> GetAlbumChart(uint aCount);
-        Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart, uint aCount);
+        Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<IArtist>> GetArtistChart();
-        Task<IEnumerable<IArtist>> GetArtistChart(uint aCount);
-        Task<IEnumerable<IArtist>> GetArtistChart(uint aStart, uint aCount);
+        Task<IEnumerable<IArtist>> GetArtistChart(uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<IPlaylist>> GetPlaylistChart();
-        Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aCount);
-        Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart, uint aCount);
+        Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<ITrack>> GetTrackChart();
-        Task<IEnumerable<ITrack>> GetTrackChart(uint aCount);
-        Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount);
+        Task<IEnumerable<ITrack>> GetTrackChart(uint aStart = 0, uint aCount = 0);
 
 
         //TODO
@@ -79,36 +66,31 @@ namespace E.Deezer.Api
         public void Deserialize(DeezerClient aClient) => Client = aClient;
 
         //Methods
+        public Task<IEnumerable<IArtist>> GetArtists(uint aStart = 0, uint aCount = 100)
+            => Get<Artist, IArtist>("genre/{id}/artists", aStart, aCount); 
 
-        public Task<IEnumerable<IArtist>> GetArtists() => GetArtists(0, Client.ResultSize); 
-        public Task<IEnumerable<IArtist>> GetArtists(uint aCount) => GetArtists(0, aCount); 
-        public Task<IEnumerable<IArtist>> GetArtists(uint aStart, uint aCount) => Get<Artist, IArtist>("genre/{id}/artists", aStart, aCount); 
+        public Task<IEnumerable<IAlbum>> GetSelection(uint aStart = 0, uint aCount = 100) 
+            => Get<Album, IAlbum>("editorial/{id}/selection", aStart, aCount); 
 
-        public Task<IEnumerable<IAlbum>> GetSelection() => GetSelection(0, Client.ResultSize); 
-        public Task<IEnumerable<IAlbum>> GetSelection(uint aCount) => GetSelection(0, aCount); 
-        public Task<IEnumerable<IAlbum>> GetSelection(uint aStart, uint aCount) => Get<Album, IAlbum>("editorial/{id}/selection", aStart, aCount); 
-
-        public Task<IEnumerable<IAlbum>> GetReleases() => GetReleases(0, Client.ResultSize); 
-        public Task<IEnumerable<IAlbum>> GetReleases(uint aCount) => GetReleases(0, aCount); 
-        public Task<IEnumerable<IAlbum>> GetReleases(uint aStart, uint aCount) => Get<Album, IAlbum>("editorial/{id}/releases", aStart, aCount); 
+        public Task<IEnumerable<IAlbum>> GetReleases(uint aStart = 0, uint aCount = 100) 
+            => Get<Album, IAlbum>("editorial/{id}/releases", aStart, aCount);
 
         //Charting
+        public Task<IChart> GetChart(uint aStart = 0, uint aCount = 100)
+            => Client.GetChart(Id, aStart, aCount);
 
-        public Task<IEnumerable<IAlbum>> GetAlbumChart() => GetAlbumChart(0, Client.ResultSize); 
-        public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aCount) => GetAlbumChart(0, aCount); 
-        public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart, uint aCount) => Get<Album, IAlbum>("chart/{id}/albums", aStart, aCount); 
 
-        public Task<IEnumerable<IArtist>> GetArtistChart() => GetArtistChart(0, Client.ResultSize); 
-        public Task<IEnumerable<IArtist>> GetArtistChart(uint aCount) => GetArtistChart(0, aCount); 
-        public Task<IEnumerable<IArtist>> GetArtistChart(uint aStart, uint aCount) => Get<Artist, IArtist>("chart/{id}/artists", aStart, aCount); 
+        public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart = 0, uint aCount = 100) 
+            => Get<Album, IAlbum>("chart/{id}/albums", aStart, aCount); 
 
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart() => GetPlaylistChart(0, Client.ResultSize); 
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aCount) => GetPlaylistChart(0, aCount); 
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart, uint aCount) => Get<Playlist, IPlaylist>("chart/{id}/playlists", aStart, aCount); 
+        public Task<IEnumerable<IArtist>> GetArtistChart(uint aStart = 0, uint aCount = 100) 
+            => Get<Artist, IArtist>("chart/{id}/artists", aStart, aCount); 
 
-        public Task<IEnumerable<ITrack>> GetTrackChart() => GetTrackChart(0, Client.ResultSize); 
-        public Task<IEnumerable<ITrack>> GetTrackChart(uint aCount) => GetTrackChart(0, aCount); 
-        public Task<IEnumerable<ITrack>> GetTrackChart(uint aStart, uint aCount) => Get<Track, ITrack>("chart/{id}/tracks", aStart, aCount); 
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart = 0, uint aCount = 100) 
+            => Get<Playlist, IPlaylist>("chart/{id}/playlists", aStart, aCount); 
+
+        public Task<IEnumerable<ITrack>> GetTrackChart(uint aStart = 0, uint aCount = 100) 
+            => Get<Track, ITrack>("chart/{id}/tracks", aStart, aCount); 
 
 
         //Internal wrapper around get for all genre methods :)

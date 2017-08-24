@@ -20,9 +20,7 @@ namespace E.Deezer.Api
         Task<IEnumerable<ITrack>> GetFirst40Tracks();
 
         //Methods
-        Task<IEnumerable<ITrack>> GetTracks();
-        Task<IEnumerable<ITrack>> GetTracks(uint aCount);
-        Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount);
+        Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = 100);
 
         Task<bool> AddRadioToFavorite();
         Task<bool> RemoveRadioFromFavorite();        
@@ -62,15 +60,13 @@ namespace E.Deezer.Api
             set;
         }
 
-        public void Deserialize(DeezerClient aClient) => Client = aClient;
+        public void Deserialize(DeezerClient aClient) 
+            => Client = aClient;
 
-        public Task<IEnumerable<ITrack>> GetFirst40Tracks() => GetTracks(0, 40);
+        public Task<IEnumerable<ITrack>> GetFirst40Tracks() 
+            => GetTracks(0, 40);
 
-        public Task<IEnumerable<ITrack>> GetTracks() => GetTracks(0, Client.ResultSize);
-
-        public Task<IEnumerable<ITrack>> GetTracks(uint aCount) => GetTracks(0, aCount);
-
-        public Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount)
+        public Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = 100)
         {
             if (!Client.HasPermission(DeezerPermissions.BasicAccess))
             {
@@ -89,16 +85,17 @@ namespace E.Deezer.Api
                             }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default); 
         }
 
+        public Task<bool> AddRadioToFavorite()
+            => Client.User.AddRadioToFavourite(Id);
+
+        public Task<bool> RemoveRadioFromFavorite()
+            => Client.User.RemoveRadioFromFavourite(Id);
+
 
         public override string ToString()
         {
             return string.Format("E.Deezer: Radio({0} - ({1}))", Title, Description);
         }
-
-
-        public Task<bool> AddRadioToFavorite() => Client.User.AddRadioToFavourite(Id);
-
-        public Task<bool> RemoveRadioFromFavorite() => Client.User.RemoveRadioFromFavourite(Id);
 
     }
 }

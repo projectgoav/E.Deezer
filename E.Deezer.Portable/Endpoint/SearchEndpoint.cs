@@ -11,26 +11,15 @@ namespace E.Deezer.Endpoint
 {
     public interface  ISearchEndpoint
     {
-        Task<IEnumerable<IAlbum>> Albums(string aQuery);
-        Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aCount);
-        Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aStart, uint aCount);
+        Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<IArtist>> Artists(string aQuery);
-        Task<IEnumerable<IArtist>> Artists(string aQuery, uint aCount);
-        Task<IEnumerable<IArtist>> Artists(string aQuery, uint aStart, uint aCount);
+        Task<IEnumerable<IArtist>> Artists(string aQuery, uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<IPlaylist>> Playlists(string aQuery);
-        Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aCount);
-        Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aStart, uint aCount);
+        Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aStart = 0 , uint aCount = 100);
 
-        Task<IEnumerable<ITrack>> Tracks(string aQuery);
-        Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aCount);
-        Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aStart, uint aCount);
+        Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<IRadio>> Radio(string aQuery);
-        Task<IEnumerable<IRadio>> Radio(string aQuery, uint aCount);
-        Task<IEnumerable<IRadio>> Radio(string aQuery, uint aStart, uint aCount);
-
+        Task<IEnumerable<IRadio>> Radio(string aQuery, uint aStart  = 0, uint aCount = 100);
     }
 
     internal class SearchEndpoint : ISearchEndpoint
@@ -45,26 +34,20 @@ namespace E.Deezer.Endpoint
         }
 
 
-        public Task<IEnumerable<IAlbum>> Albums(string aQuery) => Albums(aQuery, 0, iClient.ResultSize); 
-        public Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aCount) => Albums(aQuery, 0, aCount); 
-        public Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aStart, uint aCount) => Get<Album, IAlbum>("album", aQuery, aStart, aCount); 
+        public Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aStart = 0, uint aCount = 100) 
+            => Get<Album, IAlbum>("album", aQuery, aStart, aCount); 
 
-        public Task<IEnumerable<IArtist>> Artists(string aQuery) => Artists(aQuery, 0, iClient.ResultSize); 
-        public Task<IEnumerable<IArtist>> Artists(string aQuery, uint aCount) => Artists(aQuery, 0, aCount); 
-        public Task<IEnumerable<IArtist>> Artists(string aQuery, uint aStart, uint aCount) => Get<Artist, IArtist>("artist", aQuery, aStart, aCount); 
+        public Task<IEnumerable<IArtist>> Artists(string aQuery, uint aStart = 0, uint aCount = 100) 
+            => Get<Artist, IArtist>("artist", aQuery, aStart, aCount); 
 
+        public Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aStart = 0, uint aCount = 100) 
+            => Get<Playlist, IPlaylist>("playlist", aQuery, aStart, aCount); 
 
-        public Task<IEnumerable<IPlaylist>> Playlists(string aQuery) => Playlists(aQuery, 0, iClient.ResultSize); 
-        public Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aCount) => Playlists(aQuery, 0, aCount); 
-        public Task<IEnumerable<IPlaylist>> Playlists(string aQuery, uint aStart, uint aCount) => Get<Playlist, IPlaylist>("playlist", aQuery, aStart, aCount); 
+        public Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aStart = 0, uint aCount = 100) 
+            => Get<Track, ITrack>("track", aQuery, aStart, aCount);   
 
-        public Task<IEnumerable<ITrack>> Tracks(string aQuery) => Tracks(aQuery, 0, iClient.ResultSize); 
-        public Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aCount) => Tracks(aQuery, 0, aCount); 
-        public Task<IEnumerable<ITrack>> Tracks(string aQuery, uint aStart, uint aCount) => Get<Track, ITrack>("track", aQuery, aStart, aCount);   
-
-        public Task<IEnumerable<IRadio>> Radio(string aQuery) => Radio(aQuery, 0, iClient.ResultSize); 
-        public Task<IEnumerable<IRadio>> Radio(string aQuery, uint aCount) => Radio(aQuery, 0, aCount); 
-        public Task<IEnumerable<IRadio>> Radio(string aQuery, uint aStart, uint aCount) => Get<Radio, IRadio>("radio", aQuery, aStart, aCount); 
+        public Task<IEnumerable<IRadio>> Radio(string aQuery, uint aStart = 0, uint aCount = 100) 
+            => Get<Radio, IRadio>("radio", aQuery, aStart, aCount); 
 
 
         private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aSearchEndpoint, string aQuery, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>

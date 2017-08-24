@@ -36,7 +36,6 @@ namespace E.Deezer
         }
 
         internal IUser User                          => iUser;
-        internal uint ResultSize                     => iSession.ResultSize;
         internal string AccessToken                  => iSession.AccessToken;
         internal bool IsAuthenticated                => iSession.Authenticated;
         internal CancellationToken CancellationToken => iExecutor.CancellationToken;
@@ -61,14 +60,32 @@ namespace E.Deezer
         }
 
 
-        internal Task<DeezerChartFragment> GetChart(string aMethod, uint aStart, uint aCount)           => GetChart(aMethod, RequestParameter.EmptyList, aStart, aCount);
+        internal Task<IChart> GetChart(ulong aId, uint aStart, uint aCount)
+        {
+            string method = "chart/{id}";
+            List<IRequestParameter> parms = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", aId),
+            };
 
-        internal Task<DeezerChartFragment> GetChart(string aMethod, IList<IRequestParameter> aParams)   => GetChart(aMethod, aParams, uint.MinValue, uint.MaxValue);
+            return GetChart(method, parms, aStart, aCount);
 
-        internal Task<DeezerChartFragment> GetChart(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
+        }
+
+        private Task<IChart> GetChart(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
         {
             AddToParamList(aParams, aStart, aCount);
-            return DoGet<DeezerChartFragment>(aMethod, aParams);
+            return DoGet<DeezerChartFragment>(aMethod, aParams)
+                    .ContinueWith((aTask) =>
+                    {
+                        Chart chart = new Chart(aTask.Result.Albums.Items,
+                                aTask.Result.Artists.Items,
+                                aTask.Result.Tracks.Items,
+                                aTask.Result.Playlists.Items);
+
+                        chart.Deserialize(this);
+                        return chart as IChart;
+                    }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
         }
 
 

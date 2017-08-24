@@ -176,15 +176,17 @@ namespace E.Deezer.Api
         }
 
 
+        public Task<bool> AddTrackToFavorite() 
+            => Client.User.AddTrackToFavourite(Id);
+
+        public Task<bool> RemoveTrackFromFavorite()
+            => Client.User.RemoveTrackFromFavourite(Id);
+
+
         public override string ToString()
         {
             return string.Format("E.Deezer: Track({0} - ({1}))", Title, ArtistName);
         }
-
-
-        public Task<bool> AddTrackToFavorite() => Client.User.AddTrackToFavourite(Id);
-
-        public Task<bool> RemoveTrackFromFavorite() => Client.User.RemoveTrackFromFavourite(Id);
 
     }
 }
