@@ -91,7 +91,7 @@ namespace E.Deezer
         /// Starts a new session on the Deezer API.
         /// Setup internal workings of E.Deezer
         /// </summary>
-        public static Deezer CreateNew() => CreateNew();
+        public static Deezer CreateNew() => new Deezer(new DeezerSession());
 
         internal static Deezer CreateNew(bool underTest)
         {
