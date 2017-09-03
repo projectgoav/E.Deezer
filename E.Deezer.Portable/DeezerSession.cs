@@ -33,7 +33,7 @@ namespace E.Deezer
 
         //Generates a permission string which can be used to grant people
         //Access to features of the app
-        private void GeneratePermissionString(DeezerPermissions iPermissions)
+        public static string GeneratePermissionString(DeezerPermissions iPermissions)
         {
             string perms = null;
 
@@ -71,10 +71,12 @@ namespace E.Deezer
             {
                 AddToString(perms, DeezerPermissions.OfflineAccess.PermissionToString());
             }
+
+            return perms;
         }
 
         //Adds the permissions in a comma seperated list
-        private void AddToString(string aString, string aAdd)
+        private static void AddToString(string aString, string aAdd)
         {
             if(string.IsNullOrEmpty(aString))
             {
