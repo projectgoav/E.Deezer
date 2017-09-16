@@ -51,13 +51,6 @@ namespace E.Deezer.Api
             set;
         }
 
-        [JsonProperty(PropertyName = "time_add")]
-        public DateTime TimeAdd
-        {
-            get;
-            set;
-        }
-
         public uint Duration
         {
             get;
@@ -82,6 +75,13 @@ namespace E.Deezer.Api
         }
 
         public string Preview
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "time_add")]
+        public long TimeAddInternal
         {
             get;
             set;
@@ -137,6 +137,8 @@ namespace E.Deezer.Api
             get;
             set;
         }
+
+        public DateTime TimeAdd => new DateTime(TimeAddInternal);
 
 
         //IDeserializable

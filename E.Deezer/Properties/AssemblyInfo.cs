@@ -33,8 +33,8 @@ using System.Resources;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.5.0.341")]
-[assembly: AssemblyFileVersion("2.5.0.341")]
+[assembly: AssemblyVersion("2.5.0.342")]
+[assembly: AssemblyFileVersion("2.5.0.342")]
 [assembly: NeutralResourcesLanguageAttribute("en-GB")]
 
 // Make sure we can access some of the internals to the testing library.
