@@ -3,7 +3,11 @@ Unoffical asynchronous Deezer .NET API.
 
 ## Usage
 
-Latest Nuget: [v2.3.1](http://nuget.org/packages/e.deezer)
+Beta Nuget [v3.0.0](http://nuget.org/packages/e.deezer)
+ - Now supports PCL Profile111!
+
+Latest Stable Nuget: [v2.5.0](http://nuget.org/packages/e.deezer)
+ - .NET 4+ only
 
 Via Nuget:
 ```
@@ -46,9 +50,17 @@ An example UI demo can be found [here](http://github.com/projectgoav/E.ExploreDe
 
 
 ## Requirements
-- Visual Studio 2013 (or later)
-- .NET 4.0 (or later)
-- [RestSharp](http://restsharp.org/)
+#### V3+
+- Visual Studio 2015+
+- .NET 4.5+
+- [System.Net.Http](http://nuget.org/packages/system.net.http)
+- [Json.NET](http://nuget.org/packages/newtonsoft.json)
+
+#### (V2 or earlier):
+- Visual Studio 2013+
+- .NET 4 +
+- [RestSharp](http://nuget.org/packages/restsharp)
+
 
 
 ##License
