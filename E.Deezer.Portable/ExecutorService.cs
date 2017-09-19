@@ -12,7 +12,7 @@ namespace E.Deezer
 {
     internal class ExecutorService : IDisposable
     {
-        private const int DEFAULT_TIMEOUT = 10000;
+        private const int DEFAULT_TIMEOUT = 30000; //30secs
 
         private readonly HttpClient iClient;
         private readonly CancellationTokenSource iCancellationTokenSource;
