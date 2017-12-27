@@ -19,30 +19,31 @@ git clone https://github.com/projectgoav/e.deezer
 Open solution in VS and build it.
 
 
-Once E.Deezer has been referenced in your new project:
- ```C#
- //Create a new DeezerSession for your application
- //You'll retrieve a 'Deezer' object which you can browse the API from.
- var Deezer = DeezerSession.CreateNew();
- 
- //This performs an async search on Deezer for albums matching "Abba"
- //Mapping to API: search/album?q=Abba&index=0&limit=25
- var search = await Deezer.Search.Albums("Abba");
- 
- //You can vary the size and starting position of querys...
 
- //Will only return UP-TO a maximum of 10 artists matching "Queen"
- //Mapping to API: search/artist?q=Queen&index=0&limit=10
- //V3+
- var small_search = await Deezer.Search.Artists("Queen", aCount: 10);
- //V2
- var small_search = await Deezer.Search.Artists("Queen", 10);
- 
- //This will return for UP-TO a maximum of 15 tracks by Elvis. 
- //These will be offset by 20 places in the results. This is useful for pagination.
- //Mapping to API: search/track/?q=Elivs&index=20&limt=15
- var offset_search = await Deezer.Search.Tracks("Elivs", 20, 15);
- ```
+## Getting Started
+
+```C#
+//Quickstart
+using E.Deezer;
+using E.Deezer.Api;
+
+var deezer = DeezerSession.CreateNew();
+
+//List genre
+var genreList = await deezer.Browse.Genre.GetCommonGenre();
+
+//Get latest chart
+var chart = await deezer.Browse.Chart.GetChart();
+
+//Pagination support
+var top10 = await deezer.Browse.Chart.GetTrackChart(aCount: 10);
+var next10 = await deezer.Browse.Chart.GetTrackChart(aStart: 10, aCount: 10);
+var another10 = await deezer.Browse.Chart.GetTrackChart(aStart: 20, aCount: 10);
+
+//Search
+var loveAlbums = await deezer.Search.Albums("love");
+
+```
 
 See more in the [Wiki](http://github.com/projectgoav/E.Deezer/wiki)
 
