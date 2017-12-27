@@ -21,7 +21,7 @@ namespace E.Deezer.Tests.Api.Entities
                 Link = "www.deezer.com",
                 Rating = 0,
                 NumTracks = 5,
-                Public = true,
+                //Public = true,
                 IsLovedTrack = true,
 
                 CreatorInternal = new User() { Name = "Test User" },
@@ -56,7 +56,7 @@ namespace E.Deezer.Tests.Api.Entities
             Assert.AreEqual(5, playlist.NumTracks);
 
             Assert.True(playlist.IsLovedTrack);
-            Assert.True(playlist.Public);
+            //Assert.True(playlist.Public);
         }
     }
 }

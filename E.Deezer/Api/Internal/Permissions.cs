@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using RestSharp.Deserializers;
+using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
     internal interface IPermissions
     {
-        bool HasBasicAccess {get; set; }
-        bool HasEmail {get; set; }
-        bool HasOfflineAccess {get; set; }
-        bool HasManageLibrary {get; set; }
-        bool HasManageCommunity {get; set; }
-        bool HasDeleteLibrary {get; set; }
-        bool HasListeningHistory {get; set; }
+        bool HasBasicAccess { get; set; }
+        bool HasEmail { get; set; }
+        bool HasOfflineAccess { get; set; }
+        bool HasManageLibrary { get; set; }
+        bool HasManageCommunity { get; set; }
+        bool HasDeleteLibrary { get; set; }
+        bool HasListeningHistory { get; set; }
 
         bool HasPermission(DeezerPermissions aPermission);
     }
@@ -24,22 +24,22 @@ namespace E.Deezer.Api
     {
         public bool HasEmail {get; set; }
 
-        [DeserializeAs(Name="basic_access")]
+        [JsonProperty(PropertyName="basic_access")]
         public bool HasBasicAccess {get; set; }
 
-        [DeserializeAs(Name="offline_access")]
+        [JsonProperty(PropertyName="offline_access")]
         public bool HasOfflineAccess {get; set; }
 
-        [DeserializeAs(Name="manage_library")]
+        [JsonProperty(PropertyName="manage_library")]
         public bool HasManageLibrary {get; set; }
 
-        [DeserializeAs(Name="manage_community")]
+        [JsonProperty(PropertyName="manage_community")]
         public bool HasManageCommunity {get; set; }
 
-        [DeserializeAs(Name="delete_library")]
+        [JsonProperty(PropertyName="delete_library")]
         public bool HasDeleteLibrary {get; set; }
 
-        [DeserializeAs(Name="listening_history")]
+        [JsonProperty(PropertyName="listening_history")]
         public bool HasListeningHistory {get; set; }
 
         //TODO - Check a method that has multiple permissions...

@@ -51,9 +51,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\E.Deezer.Portable\E.Deezer.Portable.csproj">
+    <ProjectReference Include="..\E.Deezer\E.Deezer.csproj">
       <Project>{7dc0fd2e-3a4f-49a2-94f1-e54d51835948}</Project>
-      <Name>E.Deezer.Portable</Name>
+      <Name>E.Deezer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -12,16 +12,30 @@ namespace E.Deezer.Api
 
     internal interface IError
     {
-        string Message { get; set; }
-        uint Code { get; set; }
-        string Type { get; set; }
+        string Message { get;  }
+        uint Code { get;  }
+        string Type { get;  }
     }
 
     //Grabs an error, if there was one, from the reply
     internal class Error : IError
     {
-        public string Message { get; set; }
-        public uint Code { get; set; }
-        public string Type { get; set; }
+        public string Message
+        {
+            get;
+            set;
+        }
+
+        public uint Code
+        {
+            get;
+            set;
+        }
+
+        public string Type
+        {
+            get;
+            set;
+        }
     }
 }

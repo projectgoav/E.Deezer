@@ -15,19 +15,15 @@ namespace E.Deezer
     /// </summary>
     public class Deezer : IDisposable
     {
-        private string iVersion;
-
-        private DeezerSession iSession;
         private readonly IBrowseEndpoint iBrowse;
         private readonly ISearchEndpoint iSearch;
         private readonly IUserEndpoint iUser;
         private readonly IRadioEndpoint iRadio;
+        private readonly DeezerSession iSession;
         private readonly DeezerClient iClient;
 
         internal Deezer(DeezerSession aSession, bool underTest = false)
         {
-            //iVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
             iSession = aSession;
             if (underTest) { iClient = new DeezerClient(iSession, true); }
             else           { iClient = new DeezerClient(iSession); }
@@ -39,34 +35,35 @@ namespace E.Deezer
             iRadio = new RadioEndpoint(iClient);
         }
 
-        public IBrowseEndpoint Browse => iBrowse;
-
-        public ISearchEndpoint Search => iSearch; 
-
-        public IUserEndpoint   User => iUser; 
-
-        public IRadioEndpoint  Radio => iRadio;
+        public IBrowseEndpoint Browse =>iBrowse; 
+        public ISearchEndpoint Search => iSearch;
+        public IUserEndpoint   User   => iUser;
+        public IRadioEndpoint  Radio  => iRadio; 
 
 
-        public Task<IInfos> GetServiceInformation()
+        public Task<IServceInfo> GetServiceInformation()
         {
            return iClient.GetPlain<Infos>("infos")
-                         .ContinueWith<IInfos>(task => task.Result, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                         .ContinueWith<IServceInfo>((aTask) => { return aTask.Result; }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
-        
+
         //'OAuth'
+        public bool IsAuthenticated => iSession.Authenticated;
+
         public Task Login(string aAccessToken) 
         {
             iSession.Login(aAccessToken);
             return iClient.Login(); //Obtaining the permissions this token grants E.Deezer
         }
-        public void Logout()
-            => iSession.Logout();
 
-        public bool IsAuthenticated => iSession.Authenticated;
+        public void Logout() => iSession.Logout();
 
-        public void Dispose() 
-            => iClient.Dispose();
+
+
+        public void Dispose()
+        {
+            iClient.Dispose();
+        }
     }
 
 
