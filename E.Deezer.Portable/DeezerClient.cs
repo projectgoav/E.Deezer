@@ -215,12 +215,6 @@ namespace E.Deezer
                     iSession.Logout();
                     iPermissions = null;
                     iUser = null;
-
-                    if (iSession.OAuthCallback != null)
-                    {
-
-                    }
-
                 }
 
                 throw new DeezerException(aObject.TheError);
