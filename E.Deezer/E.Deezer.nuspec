@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>E</authors>
+    <owners>E</owners>
+    <projectUrl>https://github.com/projectgoav/E.Deezer</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>.NET Deezer API wrapper</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>.NET Rest Deezer API</tags>
+    <dependencies>
+      <dependency id="System.Net.Http" version="4.3.2" />
+      <dependency id="Newtonsoft.Json" version="10.0.3" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="E.Deezer.dll" target="lib/portable-net45+win8+wpa81" />
+  <files>
+</package>

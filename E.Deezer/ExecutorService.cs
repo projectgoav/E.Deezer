@@ -6,72 +6,84 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using RestSharp;
+using System.Net.Http;
 
 namespace E.Deezer
 {
     internal class ExecutorService : IDisposable
     {
-        private const int DEFAULT_TIMEOUT = 2500;
+        private const int DEFAULT_TIMEOUT = 30000; //30secs
 
-        private readonly RestClient iClient;
+        private readonly HttpClient iClient;
         private readonly CancellationTokenSource iCancellationTokenSource;
 
         internal ExecutorService()
-        {
-            iCancellationTokenSource = new CancellationTokenSource();
-
-            iClient = new RestClient(DeezerSession.ENDPOINT);
-            iClient.Timeout = DEFAULT_TIMEOUT;
-        }
+            : this(DeezerSession.ENDPOINT)
+        { }
 
         internal ExecutorService(string testUrl)
         {
             iCancellationTokenSource = new CancellationTokenSource();
 
-            iClient = new RestClient(testUrl);
-            iClient.Timeout = DEFAULT_TIMEOUT;
+            iClient = new HttpClient();
+            iClient.BaseAddress = new Uri(DeezerSession.ENDPOINT);
+            iClient.Timeout = TimeSpan.FromMilliseconds(DEFAULT_TIMEOUT);
         }
 
         internal CancellationToken CancellationToken { get { return iCancellationTokenSource.Token; } }
 
 
-        public Task<IRestResponse<T>> ExecuteGet<T>(string aMethod, IEnumerable<IRequestParameter> aParams)
+        public Task<HttpResponseMessage> ExecuteGet(string aMethod, IEnumerable<IRequestParameter> aParams)
         {
-            return Execute<T>(aMethod, Method.GET, aParams);
+            return iClient.GetAsync(BuildUrl(aMethod, aParams), CancellationToken);
         }
 
-        public Task<IRestResponse<T>> ExecutePost<T>(string aMethod, IEnumerable<IRequestParameter> aParams)
+    
+        public Task<HttpResponseMessage> ExecutePost(string aMethod, IEnumerable<IRequestParameter> aParams)
         {
-            return Execute<T>(aMethod, Method.POST, aParams);
+            return iClient.PostAsync(BuildUrl(aMethod, aParams), null, CancellationToken);
         }
 
-        public Task<IRestResponse<T>> ExecuteDelete<T>(string aMethod, IEnumerable<IRequestParameter> aParams)
+        public Task<HttpResponseMessage> ExecuteDelete(string aMethod, IEnumerable<IRequestParameter> aParams)
         {
-            return Execute<T>(aMethod, Method.DELETE, aParams);
+            return iClient.DeleteAsync(BuildUrl(aMethod, aParams), CancellationToken);
         }
 
 
-
-        private Task<IRestResponse<T>> Execute<T>(string aMethodUrl, Method aMethodType, IEnumerable<IRequestParameter> aParams)
+        internal string BuildUrl(string aUrl, IEnumerable<IRequestParameter> aParams)
         {
-            IRestRequest request = new RestRequest(aMethodUrl, aMethodType);
-            AddParamsToRequest(request, aParams);
+            IEnumerable<IRequestParameter> urlSegements = aParams.Where((v) => v.Type == ParameterType.UrlSegment);
+            IEnumerable<IRequestParameter> queryStrings = aParams.Where((v) => v.Type == ParameterType.QueryString);
 
-            var task = iClient.ExecuteTaskAsync<T>(request, CancellationToken);
-            task.SuppressExceptions();
-            return task;
-        }
+            string trueUrl = aUrl;
 
-        private void AddParamsToRequest(IRestRequest aRequest, IEnumerable<IRequestParameter> aParams)
-        {
-            foreach(IRequestParameter param in aParams)
+            //Fill out the params 
+            foreach(IRequestParameter param in urlSegements)
             {
-                aRequest.AddParameter(param.Id, param.Value, param.Type);
+                string endpointId = $"{{{param.Id}}}";
+                trueUrl = trueUrl.Replace(endpointId, param.Value.ToString());
             }
 
-            //Always add the correct output format
-            aRequest.AddParameter("output", "json", ParameterType.QueryString);
+            //Make sure we've filled them all...
+            if(trueUrl.Contains("{") || trueUrl.Contains("}"))
+            {
+                throw new InvalidOperationException("Failed to fill out all url segment parameters. Perhaps they weren't all provided?");
+            }
+
+
+            //BUild up querystrings and append to the url
+            List<string> queryStringParams = new List<string>();
+
+            foreach(IRequestParameter param in queryStrings)
+            {
+                queryStringParams.Add($"{param.Id}={param.Value}");
+            }
+
+            queryStringParams.Add("output=json");
+
+            trueUrl = string.Format("{0}?{1}", trueUrl, string.Join("&", queryStringParams));
+
+            return trueUrl;
         }
 
 

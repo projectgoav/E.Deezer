@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using RestSharp.Deserializers;
+using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
     public enum PictureSize
     {
-        SMALL,
-        MEDIUM,
-        LARGE,
+        Small,
+        Medium,
+        Large,
+        ExtraLarge,
     };
 
     public interface IObjectWithImage
@@ -22,23 +23,29 @@ namespace E.Deezer.Api
 
     internal class ObjectWithImage : IObjectWithImage
     {
-        [DeserializeAs(Name = "picture_small")]
+        [JsonProperty(PropertyName = "picture_small")]
         public string SmallPicture { get; set; }
 
-        [DeserializeAs(Name = "picture_medium")]
+        [JsonProperty(PropertyName = "picture_medium")]
         public string MediumPicture { get; set; }
 
-        [DeserializeAs(Name = "picture_big")]
+        [JsonProperty(PropertyName = "picture_big")]
         public string LargePicture { get; set; }
 
-        [DeserializeAs(Name = "cover_small")]
+        [JsonProperty(PropertyName = "picture_xl")]
+        public string ExtraLargePicture { get; set; }
+
+        [JsonProperty(PropertyName = "cover_small")]
         public string SmallCover { get; set; }
 
-        [DeserializeAs(Name = "cover_medium")]
+        [JsonProperty(PropertyName = "cover_medium")]
         public string MediumCover { get; set; }
 
-        [DeserializeAs(Name = "cover_big")]
+        [JsonProperty(PropertyName = "cover_big")]
         public string LargeCover { get; set; }
+
+        [JsonProperty(PropertyName = "cover_xl")]
+        public string ExtraLargeCover { get; set; }
 
 
 
@@ -46,23 +53,31 @@ namespace E.Deezer.Api
         {
             switch (aSize)
             {
-                case PictureSize.SMALL:     { return GetImage(SmallPicture, SmallCover); }
-                case PictureSize.MEDIUM:    { return GetImage(MediumPicture, MediumCover); }
-                case PictureSize.LARGE:     { return GetImage(LargePicture, LargeCover); }
-                default:                    { return string.Empty; }
+                case PictureSize.Small:
+                    {
+                        return GetImage(SmallPicture, SmallCover);
+                    }
+                case PictureSize.Medium:
+                    {
+                        return GetImage(MediumPicture, MediumCover);
+                    }
+                case PictureSize.Large:
+                    {
+                        return GetImage(LargePicture, LargeCover);
+                    }
+                case PictureSize.ExtraLarge:
+                    {
+                        return GetImage(ExtraLargePicture, ExtraLargeCover);
+                    }
+                default:
+                    {
+                        return string.Empty;
+                    }
             }
         }
 
         public virtual bool HasPicture(PictureSize aSize)
-        {
-            switch (aSize)
-            {
-                case PictureSize.SMALL:     { return !string.IsNullOrEmpty(GetImage(SmallPicture, SmallCover)); }
-                case PictureSize.MEDIUM:    { return !string.IsNullOrEmpty(GetImage(MediumPicture, MediumCover)); }
-                case PictureSize.LARGE:     { return !string.IsNullOrEmpty(GetImage(LargePicture, LargeCover)); }
-                default:                    { return false; }
-            }
-        }
+            => !string.IsNullOrEmpty(GetPicture(aSize));
 
 
         private string GetImage(string aPicture, string aCover)

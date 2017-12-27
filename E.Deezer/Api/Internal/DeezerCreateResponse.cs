@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using RestSharp.Deserializers;
+using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
-    //Retrun value of all Deezer API calls
+    //Return value of many of the POST API Calls
     internal class DeezerCreateResponse
     {
-        [DeserializeAs(Name = "id")]
+        [JsonProperty(PropertyName = "id")]
         public uint Id { get; set; }
     }
 }

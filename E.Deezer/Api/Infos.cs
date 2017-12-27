@@ -3,31 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using RestSharp.Deserializers;
+using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
-    public interface IInfos
+    public interface IServceInfo
     {
-        string Country { get; set; }
-        string Iso { get; set; }
-        bool IsAvailable { get; set; }
+        string Country { get; }
+        string Iso { get; }
+        bool IsAvailable { get; }
     }
 
-    internal class Infos : IInfos
+    internal class Infos : IServceInfo
     {
-        public string Country { get; set; }
+        public string Country
+        {
+            get;
+            set;
+        }
 
-        [DeserializeAs(Name ="country_iso")]
-        public string Iso { get; set; }
+        [JsonProperty(PropertyName ="country_iso")]
+        public string Iso
+        {
+            get;
+            set;
+        }
 
-        [DeserializeAs(Name = "open")]
-        public bool IsAvailable { get; set; }
+        [JsonProperty(PropertyName = "open")]
+        public bool IsAvailable
+        {
+            get;
+            set;
+        }
 
 
         public override string ToString()
         {
-            return string.Format("E.Deezer: Info");
+            return string.Format("E.Deezer: ServiceInfo");
         }
     }
 }

@@ -5,27 +5,24 @@ using System.Text;
 
 using System.Threading.Tasks;
 
-using RestSharp.Deserializers;
+using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
     public interface IAlbum : IObjectWithImage
     {
-        ulong Id { get; set; }
-        uint Tracks {get; set; }
-        string Title { get; set; }
-        string Link { get; set; }
+        ulong Id { get;  }
+        uint Tracks {get;  }
+        string Title { get;  }
+        string Link { get;  }
         string ArtistName { get; }
         long Rating { get; }
-        DateTime ReleaseDate {get; set; }
+        DateTime ReleaseDate {get;  }
         IArtist Artist { get; }
 
         //Methods
         Task<IEnumerable<ITrack>> GetTracks();
         Task<bool> Rate(int aRating);
-
-        string GetCover(PictureSize aSize);
-        bool HasCover(PictureSize aSize);
 
         Task<bool> AddAlbumToFavorite();
         Task<bool> RemoveAlbumFromFavorite();
@@ -33,20 +30,58 @@ namespace E.Deezer.Api
 
     internal class Album : ObjectWithImage, IAlbum, IDeserializable<DeezerClient>
     {
-        public ulong Id { get; set; }
-        public string Title { get; set; }
-        public long Rating { get; set; }
-        public DateTime ReleaseDate {get; set; }
-        public IArtist Artist { get { return ArtistInternal; } }
+        public ulong Id
+        {
+            get;
+            set;
+        }
 
-        [DeserializeAs(Name = "artist")]
-        public Artist ArtistInternal { get; set; }
+        public string Title
+        {
+            get;
+            set;
+        }
 
-        [DeserializeAs(Name = "Url")]
-        public string Link { get; set; }
+        public long Rating
+        {
+            get;
+            set;
+        }
 
-        [DeserializeAs(Name = "nb_tracks")]
-        public uint Tracks {get; set; }
+        public DateTime ReleaseDate
+        {
+            get;
+            set;
+        }
+
+        public IArtist Artist => ArtistInternal;
+
+        [JsonProperty(PropertyName = "artist")]
+        public Artist ArtistInternal
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "Url")]
+        public string Link
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "nb_tracks")]
+        public uint Tracks
+        {
+            get;
+            set;
+        }
+
+        public DeezerFragment<Track> TracklistInternal
+        {
+            get;
+            set;
+        }
 
         public DeezerFragment<Track> TracklistInternal { get; set; }
 
@@ -59,7 +94,8 @@ namespace E.Deezer.Api
             }
         }
 
-        //Local Serailization info
+
+        //IDeserializable
         public DeezerClient Client { get; set; }
         public void Deserialize(DeezerClient aClient)
         {
@@ -70,12 +106,6 @@ namespace E.Deezer.Api
                 ArtistInternal.Deserialize(aClient);
             }
         }
-
-        [Obsolete("Please use GetPicture instead.", true)]
-        public string GetCover(PictureSize aSize) { return GetPicture(aSize); }
-
-        [Obsolete("Please use HasPicture instead.", true)]
-        public bool HasCover(PictureSize aSize) { return HasPicture(aSize); }
 
 
         public Task<IEnumerable<ITrack>> GetTracks()
@@ -103,11 +133,10 @@ namespace E.Deezer.Api
                 RequestParameter.GetNewUrlSegmentParamter("id", Id)
             };
 
-            return Client.Get<Track>("album/{id}/tracks", parms).ContinueWith<IEnumerable<ITrack>>((aTask) =>
-            {
-                return Client.Transform<Track, ITrack>(aTask.Result);
-            }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);  
+            return Client.Get<Track>("album/{id}/tracks", parms)
+                         .ContinueWith<IEnumerable<ITrack>>((aTask) => Client.Transform<Track, ITrack>(aTask.Result), Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);  
         }
+
 
         public Task<bool> Rate(int aRating)
         {
@@ -122,8 +151,11 @@ namespace E.Deezer.Api
             return Client.Post("album/{id}", parms, DeezerPermissions.BasicAccess);
         }
 
+
         public Task<bool> AddAlbumToFavorite() => Client.User.AddAlbumToFavourite(Id);
-        public Task<bool> RemoveAlbumFromFavorite() => Client.User.RemoveAlbumFromFavourite(Id);        
+
+        public Task<bool> RemoveAlbumFromFavorite() => Client.User.RemoveAlbumFromFavourite(Id);  
+              
 
         public override string ToString()
         {

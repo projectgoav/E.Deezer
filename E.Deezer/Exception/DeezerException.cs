@@ -46,9 +46,9 @@ namespace E.Deezer
         /// <summary>
         /// Gets the message returned from the Deezer API
         /// </summary>
-        public override string Message  { get {  return iMessage;  } }
+        public override string Message =>  iMessage;
 
-        internal IError DeezerError { get { return iError; } }
+        internal IError DeezerError => iError;
     }
 
 
