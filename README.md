@@ -7,12 +7,12 @@ Latest Stable Nuget: [v3.0.0](http://nuget.org/packages/e.deezer)
  - PCL Profile 111 (.NET Standard 1.1)
 
 Via Nuget:
-```
+```Shell
 Package Manager> Install-Package E.Deezer
 ```
 
 Via Source: 
-```
+```Shell
 git clone https://github.com/projectgoav/e.deezer
 ```
 
@@ -20,7 +20,7 @@ Open solution in VS and build it.
 
 
 Once E.Deezer has been referenced in your new project:
- ```
+ ```C#
  //Create a new DeezerSession for your application
  //You'll retrieve a 'Deezer' object which you can browse the API from.
  var Deezer = DeezerSession.CreateNew();
