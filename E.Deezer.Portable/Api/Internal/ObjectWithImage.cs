@@ -77,7 +77,7 @@ namespace E.Deezer.Api
         }
 
         public virtual bool HasPicture(PictureSize aSize)
-            => !string.IsNullOrEmpty(GetPicture(aSize);
+            => !string.IsNullOrEmpty(GetPicture(aSize));
 
 
         private string GetImage(string aPicture, string aCover)
