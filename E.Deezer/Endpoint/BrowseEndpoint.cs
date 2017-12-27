@@ -32,12 +32,18 @@ namespace E.Deezer.Endpoint
 
         private DeezerClient iClient;
 
-        public IAlbumEndpoint Albums { get { return iAlbums; } }
-        public IArtistEndpoint Artists { get { return iArtists; } }
-        public IPlaylistEndpoint Playlists { get { return iPlaylists; } }
-        public ITrackEndpoint Tracks { get { return iTracks; } }
-        public IGenreEndpoint Genre { get { return iGenre; } }
-        public IChartsEndpoint Charts { get { return iCharts; } }
+        public IAlbumEndpoint Albums => iAlbums;
+
+        public IArtistEndpoint Artists => iArtists;
+
+        public IPlaylistEndpoint Playlists => iPlaylists;
+
+        public ITrackEndpoint Tracks =>  iTracks;
+
+        public IGenreEndpoint Genre => iGenre;
+
+        public IChartsEndpoint Charts => iCharts;
+
 
         public BrowseEndpoint(DeezerClient aClient)
         {

@@ -64,12 +64,18 @@ namespace E.Deezer.Endpoint
 
         private void ThrowIfClientUnauthenticated()
         {
-            if(!iClient.IsAuthenticated) { throw new NotLoggedInException(); }
+            if(!iClient.IsAuthenticated)
+            {
+                throw new NotLoggedInException();
+            }
         }
 
         private void ThrowIfNoPermission(DeezerPermissions aPermission)
         {
-            if (!iClient.HasPermission(aPermission)) { throw new DeezerPermissionsException(aPermission); }
+            if (!iClient.HasPermission(aPermission))
+            {
+                throw new DeezerPermissionsException(aPermission);
+            }
         }
     }
 }

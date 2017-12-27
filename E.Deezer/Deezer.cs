@@ -39,15 +39,19 @@ namespace E.Deezer
             iRadio = new RadioEndpoint(iClient);
         }
 
-        public IBrowseEndpoint Browse { get { return iBrowse; } }
-        public ISearchEndpoint Search { get { return iSearch; } }
-        public IUserEndpoint   User   { get { return iUser; } }
-        public IRadioEndpoint  Radio  { get { return iRadio; } }
+        public IBrowseEndpoint Browse => iBrowse;
+
+        public ISearchEndpoint Search => iSearch; 
+
+        public IUserEndpoint   User => iUser; 
+
+        public IRadioEndpoint  Radio => iRadio;
 
 
         public Task<IInfos> GetServiceInformation()
         {
-           return iClient.GetPlain<Infos>("infos").ContinueWith<IInfos>((aTask) => { return aTask.Result; }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+           return iClient.GetPlain<Infos>("infos")
+                         .ContinueWith<IInfos>(task => task.Result, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
         
         //'OAuth'
@@ -56,10 +60,13 @@ namespace E.Deezer
             iSession.Login(aAccessToken);
             return iClient.Login(); //Obtaining the permissions this token grants E.Deezer
         }
-        public void Logout() { iSession.Logout(); }
-        public bool IsAuthenticated { get { return iSession.Authenticated; } }
+        public void Logout()
+            => iSession.Logout();
 
-        public void Dispose() {  iClient.Dispose(); }
+        public bool IsAuthenticated => iSession.Authenticated;
+
+        public void Dispose() 
+            => iClient.Dispose();
     }
 
 
