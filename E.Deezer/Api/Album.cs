@@ -77,13 +77,12 @@ namespace E.Deezer.Api
             set;
         }
 
+        [JsonProperty(PropertyName ="tracks")]
         public DeezerFragment<Track> TracklistInternal
         {
             get;
             set;
         }
-
-        public DeezerFragment<Track> TracklistInternal { get; set; }
 
         public string ArtistName
         {
