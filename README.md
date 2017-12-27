@@ -2,12 +2,9 @@
 Unoffical asynchronous Deezer .NET API.
 
 ## Usage
-
-Beta Nuget [v3.0.0](http://nuget.org/packages/e.deezer)
- - Now supports PCL Profile111!
-
-Latest Stable Nuget: [v2.5.0](http://nuget.org/packages/e.deezer)
- - .NET 4+ only
+Latest Stable Nuget: [v3.0.0](http://nuget.org/packages/e.deezer)
+ - .NET 4.5+
+ - PCL Profile 111 (.NET Standard 1.1)
 
 Via Nuget:
 ```
@@ -36,8 +33,11 @@ Once E.Deezer has been referenced in your new project:
 
  //Will only return UP-TO a maximum of 10 artists matching "Queen"
  //Mapping to API: search/artist?q=Queen&index=0&limit=10
+ //V3+
+ var small_search = await Deezer.Search.Artists("Queen", aCount: 10);
+ //V2
  var small_search = await Deezer.Search.Artists("Queen", 10);
-
+ 
  //This will return for UP-TO a maximum of 15 tracks by Elvis. 
  //These will be offset by 20 places in the results. This is useful for pagination.
  //Mapping to API: search/track/?q=Elivs&index=20&limt=15
