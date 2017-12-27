@@ -10,7 +10,7 @@ namespace E.Deezer.Api
         public T Data { get; set; }
         private Error Error { get; set; }
 
-        public IError TheError { get { return Error; } }
+        public IError TheError => Error;
     }
 
 }
