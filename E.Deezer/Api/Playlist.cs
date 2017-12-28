@@ -72,10 +72,7 @@ namespace E.Deezer.Api
             set;
         }
 
-        [Obsolete("Use of IsPublic is encouraged")]
-        public bool Public => IsPublic;
-
-        public bool IsPublic
+        public string Description
         {
             get;
             set;
@@ -87,24 +84,67 @@ namespace E.Deezer.Api
             set;
         }
 
+        public uint Duration
+        {
+            get;
+            set;
+        }
+
         public int Rating
         {
             get;
             set;
         }
 
-		public string CreatorName
-		{
-			//Required as sometime playlist creator is references as Creator and sometimes references as User
-			get
-			{
-				if (UserInternal == null && CreatorInternal == null) { return string.Empty; }
-				return (UserInternal == null) ? CreatorInternal.Name : UserInternal.Name;
-			}
-		}
+        public uint Fans
+        {
+            get;
+            set;
+        }
+
+
+        public IUserProfile Creator => CreatorInternal;
+
+        public string CreatorName => CreatorInternal?.Username;
+
+
+        [Obsolete("Use of IsPublic is encouraged")]
+        public bool Public => IsPublic;
+
+        [Obsolete("User of TrackCount is encouraged")]
+        public uint NumTracks => TrackCount;
+
+
+        [JsonProperty(PropertyName = "public")]
+        public bool IsPublic
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "collaborative")]
+        public bool IsCollaborative
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "unseen_track_count")]
+        public uint UnseenTrackCount
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "share")]
+        public string ShareLink
+        {
+            get;
+            set;
+        }
 
         [JsonProperty(PropertyName = "nb_tracks")]
-        public uint NumTracks
+        public uint TrackCount
         {
             get;
             set;
@@ -117,15 +157,8 @@ namespace E.Deezer.Api
             set;
         }
 
-		[JsonProperty(PropertyName = "user")]
-		public User UserInternal
-        {
-            get;
-            set;
-        }
-
 		[JsonProperty(PropertyName = "creator")]
-		public User CreatorInternal
+		public UserProfile CreatorInternal
         {
             get; 
             set;
@@ -142,16 +175,7 @@ namespace E.Deezer.Api
 		public void Deserialize(IDeezerClient aClient)
         {
             Client = aClient;
-
-            if (UserInternal != null)
-            {
-                UserInternal.Deserialize(aClient);
-            }
-
-            if (CreatorInternal != null)
-            {
-                CreatorInternal.Deserialize(aClient);
-            }
+            CreatorInternal?.Deserialize(aClient);
         }
 
 
