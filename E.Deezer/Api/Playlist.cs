@@ -11,22 +11,39 @@ namespace E.Deezer.Api
 {
 	public interface IPlaylist : IObjectWithImage
     {
-		ulong Id { get;  }
-		string Title { get;  }
-        bool IsPublic { get;  }
-		uint NumTracks { get;  }
-		string Link { get;  }
-		string CreatorName { get; }
+		ulong Id { get; }
+        uint Fans { get; }
         int Rating { get; }
-		bool IsLovedTrack { get;  }
+        string Link { get; }
+        string Title { get; }
+        bool IsPublic { get; }
+        uint Duration { get; }
+        uint TrackCount { get; }
+        string ShareLink { get; }
+        bool IsLovedTrack { get; }
+        string CreatorName { get; }
+        string Description { get; }
+        IUserProfile Creator { get; }
+        bool IsCollaborative { get; }
+        uint UnseenTrackCount { get; }
 
 
         [Obsolete("Use of IsPublic is encouraged")]
         bool Public { get; }
 
-		Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = uint.MaxValue);
+        [Obsolete("Use of TrackCount is encouraged")]
+        uint NumTracks { get; }
+
+
+        Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = uint.MaxValue);
 
         Task<bool> Rate(int aRating);
+
+        Task<bool> SetSeen();
+
+        Task<IEnumerable<IUserProfile>> GetFans(uint aStart = 0, uint aCount = 25);
+
+        Task<IEnumerable<IComment>> GetComments(uint aStart = 0, uint aCount = 10);
 
         //Manage Tracks
         Task<bool> AddTrack(ITrack aTrack);
@@ -63,10 +80,7 @@ namespace E.Deezer.Api
             set;
         }
 
-        [Obsolete("Use of IsPublic is encouraged")]
-        public bool Public => IsPublic;
-
-        public bool IsPublic
+        public string Description
         {
             get;
             set;
@@ -78,24 +92,67 @@ namespace E.Deezer.Api
             set;
         }
 
+        public uint Duration
+        {
+            get;
+            set;
+        }
+
         public int Rating
         {
             get;
             set;
         }
 
-		public string CreatorName
-		{
-			//Required as sometime playlist creator is references as Creator and sometimes references as User
-			get
-			{
-				if (UserInternal == null && CreatorInternal == null) { return string.Empty; }
-				return (UserInternal == null) ? CreatorInternal.Name : UserInternal.Name;
-			}
-		}
+        public uint Fans
+        {
+            get;
+            set;
+        }
+
+
+        public IUserProfile Creator => CreatorInternal;
+
+        public string CreatorName => CreatorInternal?.Username;
+
+
+        [Obsolete("Use of IsPublic is encouraged")]
+        public bool Public => IsPublic;
+
+        [Obsolete("User of TrackCount is encouraged")]
+        public uint NumTracks => TrackCount;
+
+
+        [JsonProperty(PropertyName = "public")]
+        public bool IsPublic
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "collaborative")]
+        public bool IsCollaborative
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "unseen_track_count")]
+        public uint UnseenTrackCount
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "share")]
+        public string ShareLink
+        {
+            get;
+            set;
+        }
 
         [JsonProperty(PropertyName = "nb_tracks")]
-        public uint NumTracks
+        public uint TrackCount
         {
             get;
             set;
@@ -108,15 +165,8 @@ namespace E.Deezer.Api
             set;
         }
 
-		[JsonProperty(PropertyName = "user")]
-		public User UserInternal
-        {
-            get;
-            set;
-        }
-
 		[JsonProperty(PropertyName = "creator")]
-		public User CreatorInternal
+		public UserProfile CreatorInternal
         {
             get; 
             set;
@@ -133,16 +183,7 @@ namespace E.Deezer.Api
 		public void Deserialize(IDeezerClient aClient)
         {
             Client = aClient;
-
-            if (UserInternal != null)
-            {
-                UserInternal.Deserialize(aClient);
-            }
-
-            if (CreatorInternal != null)
-            {
-                CreatorInternal.Deserialize(aClient);
-            }
+            CreatorInternal?.Deserialize(aClient);
         }
 
 
@@ -284,9 +325,49 @@ namespace E.Deezer.Api
         }
 
 
+
+        public Task<bool> SetSeen()
+        {
+            List<IRequestParameter> p = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", this.Id),
+            };
+
+            return Client.Post("playlist/{id}/seen", p, DeezerPermissions.BasicAccess);
+        }
+
+
+        public Task<IEnumerable<IUserProfile>> GetFans(uint aStart = 0, uint aCount = 25)
+        {
+            List<IRequestParameter> p = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", this.Id)
+            };
+
+            return Client.Get<UserProfile>("playlist/{id}/fans", p, aStart, aCount)
+                         .ContinueWith<IEnumerable<IUserProfile>>(task => Client.Transform<UserProfile, IUserProfile>(task.Result),
+                                                                  Client.CancellationToken,
+                                                                  TaskContinuationOptions.NotOnCanceled,
+                                                                  TaskScheduler.Default);
+        }
+
+        public Task<IEnumerable<IComment>> GetComments(uint aStart = 0, uint aCount = 10)
+        {
+            List<IRequestParameter> p = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", this.Id)
+            };
+
+            return Client.Get<Comment>("playlist/{id}/comments", p, aStart, aCount)
+                         .ContinueWith<IEnumerable<IComment>>(task => Client.Transform<Comment, IComment>(task.Result),
+                                                                  Client.CancellationToken,
+                                                                  TaskContinuationOptions.NotOnCanceled,
+                                                                  TaskScheduler.Default);
+        }
+
+
+
         public override string ToString()
-		{
-			return string.Format("E.Deezer: Playlist({0} [{1}])", Title, CreatorName);
-		}        
+            => string.Format("E.Deezer: Playlist({0} [{1}])", Title, CreatorName);     
     }
 }

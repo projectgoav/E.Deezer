@@ -20,12 +20,12 @@ namespace E.Deezer.Tests.Api.Entities
                 Title = "Test Playlist",
                 Link = "www.deezer.com",
                 Rating = 0,
-                NumTracks = 5,
+                //NumTracks = 5,
                 //Public = true,
                 IsLovedTrack = true,
 
-                CreatorInternal = new User() { Name = "Test User" },
-                UserInternal = new User() { Name = "Test User" },
+                CreatorInternal = new UserProfile() { Username = "Test User" },
+                //UserInternal = new User() { Name = "Test User" },
 
                 SmallPicture = Str.SMALL_PICTURE,
                 MediumPicture = Str.MEDIUM_PICTURE,
