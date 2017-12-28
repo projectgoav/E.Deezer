@@ -26,7 +26,7 @@ namespace E.Deezer.Tests.Api
 
 
         [Test]
-        public void TestTracklist()
+        public void TestSmartRadio()
         {
             string method = null;
             uint start = uint.MaxValue;
@@ -50,7 +50,7 @@ namespace E.Deezer.Tests.Api
             };
 
             artist.Deserialize(client.Object);
-            artist.GetTracklist();
+            artist.GetSmartRadio();
 
             Assert.That(start != uint.MaxValue);
             Assert.That(count != uint.MaxValue);

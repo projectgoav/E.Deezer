@@ -11,20 +11,32 @@ namespace E.Deezer.Api
 {
     public interface ITrack : IObjectWithImage
     {
-        ulong Id { get;   }
-        string Title { get;   }
-        string Link { get;   }
-        uint Duration { get;   }
-        DateTime ReleaseDate { get;  }
-        DateTime TimeAdd { get;  }
-        bool Explicit { get;  }
-        string Preview { get;  }
-        string ArtistName { get; }
-        string AlbumName { get; }
-        IArtist Artist { get; }
-        IAlbum Album { get; }
-        uint Number { get; }
+        ulong Id { get; }
         uint Disc { get; }
+        uint Rank { get; }
+        float BPM { get; }
+        float Gain { get; }
+        string Link { get; }
+        uint Number { get; }
+        string ISRC { get; }
+        string Title { get; }
+        IAlbum Album { get; }
+        uint Duration { get; }
+        string Preview { get; }
+        IArtist Artist { get; }
+        bool IsExplicit { get; }
+        string AlbumName { get; }
+        DateTime TimeAdd { get; }
+        string ShareLink { get; }
+        string ShortTitle { get; }
+        string ArtistName { get; }
+        DateTime ReleaseDate { get; }
+        ITrack AlternativeTrack { get; }
+        IEnumerable<string> AvailableIn { get; }
+        IEnumerable<IArtist> Contributors { get; }
+
+        [Obsolete("Use of IsExplicit is encouraged")]
+        bool Explicit { get; }
 
         Task<bool> AddTrackToFavorite();
         Task<bool> RemoveTrackFromFavorite();
@@ -68,13 +80,74 @@ namespace E.Deezer.Api
             set;
         }
 
-        public bool Explicit
+        public string Preview
         {
             get;
             set;
         }
 
-        public string Preview
+        public float BPM
+        {
+            get;
+            set;
+        }
+
+        public float Gain
+        {
+            get;
+            set;
+        }
+
+        public uint Rank
+        {
+            get;
+            set;
+        }
+
+        public string ISRC
+        {
+            get;
+            set;
+        }
+
+       
+        public IAlbum Album => AlbumInternal;
+
+        public IArtist Artist => ArtistInternal;
+
+        public DateTime TimeAdd => new DateTime(TimeAddInternal);
+
+        public ITrack AlternativeTrack => AlternativeTrackInternal;
+
+        public IEnumerable<string> AvailableIn => AvailableInInternal;
+
+        public IEnumerable<IArtist> Contributors => ContributorInternal;
+
+        public string ArtistName => ArtistInternal?.Name ?? string.Empty;
+
+        public string AlbumName => AlbumInternal?.Title ?? string.Empty;
+
+
+        [Obsolete("Use of IsExplicit is encouraged")]
+        public bool Explicit => IsExplicit;
+
+
+        [JsonProperty(PropertyName = "share")]
+        public string ShareLink
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "explicit_lyrics")]
+        public bool IsExplicit
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "title_short")]
+        public string ShortTitle
         {
             get;
             set;
@@ -86,10 +159,6 @@ namespace E.Deezer.Api
             get;
             set;
         }
-
-        public IArtist Artist => ArtistInternal;
-
-        public IAlbum Album => AlbumInternal;
 
         [JsonProperty(PropertyName = "track_position")]
         public uint Number
@@ -105,25 +174,6 @@ namespace E.Deezer.Api
             set;
         }
 
-        public string ArtistName
-        {
-            get
-            {
-                if (ArtistInternal == null) { return string.Empty; }
-                else { return ArtistInternal.Name; }
-            }
-        }
-
-        public string AlbumName
-        {
-            get
-            {
-                if (AlbumInternal == null) { return string.Empty; }
-                else { return AlbumInternal.Title; }
-            }
-        }
-
-
         [JsonProperty(PropertyName = "artist")]
         public Artist ArtistInternal
         {
@@ -138,7 +188,26 @@ namespace E.Deezer.Api
             set;
         }
 
-        public DateTime TimeAdd => new DateTime(TimeAddInternal);
+        [JsonProperty(PropertyName = "available_countries")]
+        public List<String> AvailableInInternal
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "alternative")]
+        public Track AlternativeTrackInternal
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "contributors")]
+        public List<Artist> ContributorInternal
+        {
+            get;
+            set;
+        }
 
 
         //IDeserializable
@@ -186,9 +255,6 @@ namespace E.Deezer.Api
 
 
         public override string ToString()
-        {
-            return string.Format("E.Deezer: Track({0} - ({1}))", Title, ArtistName);
-        }
-
+            => string.Format("E.Deezer: Track({0} - ({1}))", Title, ArtistName);
     }
 }

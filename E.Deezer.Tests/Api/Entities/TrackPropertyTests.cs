@@ -21,7 +21,7 @@ namespace E.Deezer.Tests.Api.Entities
                 Link = "www.deezer.com",
 
                 Duration = 0,
-                Explicit = true,
+                IsExplicit = true,
                 ReleaseDate = DateTime.Now,
                 Preview = "www.deezer.com",
                  
@@ -56,7 +56,7 @@ namespace E.Deezer.Tests.Api.Entities
             Assert.AreEqual(0, track.Id);
             Assert.AreEqual(0, track.Duration);
 
-            Assert.True(track.Explicit);
+            Assert.True(track.IsExplicit);
         }
     }
 }
