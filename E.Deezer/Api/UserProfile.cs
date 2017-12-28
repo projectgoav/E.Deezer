@@ -66,5 +66,8 @@ namespace E.Deezer.Api
                                                             TaskScheduler.Default);
         }
 
+
+        public override string ToString()
+            => string.Format("E.Deezer.UserProfile: {0} :: ({1})", this.Username, this.Id);
     }
 }
