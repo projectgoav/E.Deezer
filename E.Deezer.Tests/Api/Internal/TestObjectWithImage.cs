@@ -28,7 +28,7 @@ namespace E.Deezer.Tests.Api.Internal
         [OneTimeSetUp]
         public void Init()
         {
-            string baseDir = TestContext.CurrentContext.WorkDirectory;
+            string baseDir = TestContext.CurrentContext.TestDirectory;
             string fullDir = Path.Combine(baseDir, "Resources", "Api", "Internal");
 
 
