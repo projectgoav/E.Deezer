@@ -10,8 +10,12 @@ using E.Deezer.Api;
 
 namespace E.Deezer.Tests.Api.Entities
 {
+    [TestFixture]
     public abstract class ObjectWithImageTestBase
     {
+
+
+
         protected IObjectWithImage objectWithImage;
 
 
