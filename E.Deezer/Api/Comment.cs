@@ -14,6 +14,10 @@ namespace E.Deezer.Api
         string Text { get; }
         DateTime Posted { get; }
         IUserProfile Author { get; }
+
+        bool IsUserComment { get; }
+
+        Task<bool> DeleteComment();
     }
 
     internal class Comment : IComment, IDeserializable<IDeezerClient>
@@ -49,6 +53,10 @@ namespace E.Deezer.Api
             set;
         }
 
+        public bool IsUserComment => this.Author != null                            //We've got an author object...
+                                        && this.Client.User != null                 //And we're logged in...
+                                        && this.Author.Id == this.Client.User.Id;   //And the ids match
+
 
         //IDeserializable
         public IDeezerClient Client
@@ -61,6 +69,22 @@ namespace E.Deezer.Api
         {
             this.Client = client;
             this.AuthorInternal?.Deserialize(client);
+        }
+
+
+        public Task<bool> DeleteComment()
+        {
+            if(!this.IsUserComment)
+            {
+                throw new InvalidOperationException("Attempting to delete a comment which the user did not create. Please check 'IsUserComment' property before calling this method.");
+            }
+
+            List<IRequestParameter> p = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", this.Id)
+            };
+
+            return Client.Delete("comment/{id}", p, DeezerPermissions.BasicAccess);
         }
     }
 }

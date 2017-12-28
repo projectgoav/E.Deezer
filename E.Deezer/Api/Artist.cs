@@ -28,6 +28,8 @@ namespace E.Deezer.Api
 
         Task<bool> AddArtistToFavorite();
         Task<bool> RemoveArtistFromFavorite();
+
+        Task<bool> AddComment(string commentText);
     }
 
     internal class Artist : ObjectWithImage, IArtist, IDeserializable<IDeezerClient>
@@ -101,6 +103,23 @@ namespace E.Deezer.Api
 
         public Task<bool> RemoveArtistFromFavorite() 
             => Client.User.RemoveArtistFromFavourite(Id);       
+
+
+        public Task<bool> AddComment(string commentText)
+        {
+            if(string.IsNullOrEmpty(commentText))
+            {
+                throw new ArgumentException("A comment is required.");
+            }
+
+            List<IRequestParameter> p = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", this.Id),
+                RequestParameter.GetNewQueryStringParameter("comment", commentText),
+            };
+
+            return Client.Post("artist/{id}/comments", p, DeezerPermissions.BasicAccess);
+        }
 
 
         public override string ToString()
