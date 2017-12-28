@@ -16,16 +16,22 @@ namespace E.Deezer.Tests.Api
     {
         private const ulong kAlbumId = 13034431;
 
+        private Mock<IDeezerClient> client;
+
+        [SetUp]
+        public void SetUp()
+        {
+            client = new Mock<IDeezerClient>();
+        }
+
+
         [Test]
         public void TestFavouriteCalls()
         {
-            var client = new Mock<IDeezerClient>();
-
             Album albumImpl = new Album()
             {
                 Id = kAlbumId,
             };
-
             albumImpl.Deserialize(client.Object);
 
             IAlbum album = albumImpl;
@@ -41,5 +47,27 @@ namespace E.Deezer.Tests.Api
             client.Verify(c => c.User, Times.Exactly(2));
         }
 
+
+        [Test]
+        public void TestRate()
+        {
+            Album albumImpl = new Album()
+            {
+                Id = kAlbumId,
+            };
+            albumImpl.Deserialize(client.Object);
+
+            IAlbum album = albumImpl;
+
+            client.Setup(c => c.Post(It.IsAny<string>(), It.IsAny<IList<IRequestParameter>>(), It.IsAny<DeezerPermissions>()));
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => album.Rate(-100));
+            Assert.Throws<ArgumentOutOfRangeException>(() => album.Rate(0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => album.Rate(10240));
+
+            album.Rate(3);
+
+            client.Verify(c => c.Post(It.IsAny<string>(), It.IsAny<IList<IRequestParameter>>(), It.IsAny<DeezerPermissions>()), Times.Once());
+        }
     }
 }
