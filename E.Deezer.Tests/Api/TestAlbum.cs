@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.IO;
+
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 using E.Deezer.Api;
@@ -114,6 +117,32 @@ namespace E.Deezer.Tests.Api
             albumImpl.Deserialize(client.Object);
 
             Assert.That(albumImpl.ArtistInternal.Client != null);
+        }
+
+
+        [Test]
+        public void TestDeserialisation()
+        {
+            string path = Path.Combine(TestContext.CurrentContext.TestDirectory, "Resources", "Api", "Album.json");
+            string json = string.Join("\n", File.ReadAllLines(path));
+
+            Assert.NotNull(json);
+
+            List<Album> albums = JsonConvert.DeserializeObject<List<Album>>(json);
+
+            Assert.NotNull(albums);
+            Assert.That(albums.Count == 2);
+
+            Assert.That(albums[0] != null);
+            Assert.That(albums[1] != null);
+
+            Assert.That(albums[0].Id == albums[1].Id);
+            Assert.That(albums[0].Title == albums[1].Title);
+
+            Assert.That(albums[0].TracklistInternal != null);
+            Assert.That(albums[0].TracklistInternal.Items.Count > 0);
+
+            Assert.That(albums[1].TracklistInternal == null);
         }
     }
 }
