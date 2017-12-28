@@ -36,6 +36,11 @@ namespace E.Deezer.Api
 
         //Methods
         Task<IEnumerable<ITrack>> GetTracks();
+
+        Task<IEnumerable<IUserProfile>> GetFans(uint aStart = 0, uint aCount = 25);
+
+        Task<IEnumerable<IComment>> GetComments(uint aStart = 0, uint aCount = 10);
+
         Task<bool> Rate(int aRating);
 
         Task<bool> AddAlbumToFavorite();
@@ -127,7 +132,6 @@ namespace E.Deezer.Api
         public IEnumerable<IArtist> Contributors => ContributorsInternal;
 
         public string ArtistName => ArtistInternal?.Name ?? string.Empty;
-
 
 
         [JsonProperty(PropertyName = "share")]
@@ -239,7 +243,39 @@ namespace E.Deezer.Api
             };
 
             return Client.Get<Track>("album/{id}/tracks", parms)
-                         .ContinueWith<IEnumerable<ITrack>>((aTask) => Client.Transform<Track, ITrack>(aTask.Result), Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);  
+                         .ContinueWith<IEnumerable<ITrack>>(task => Client.Transform<Track, ITrack>(task.Result),
+                                                            Client.CancellationToken,
+                                                            TaskContinuationOptions.NotOnCanceled,
+                                                            TaskScheduler.Default);  
+        }
+
+
+        public Task<IEnumerable<IUserProfile>> GetFans(uint aStart = 0, uint aCount = 25)
+        {
+            List<IRequestParameter> p = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", this.Id),
+            };
+
+            return Client.Get<UserProfile>("album/{id}/fans", p, aStart, aCount)
+                         .ContinueWith<IEnumerable<IUserProfile>>(task => Client.Transform<UserProfile, IUserProfile>(task.Result),
+                                                                  Client.CancellationToken,
+                                                                  TaskContinuationOptions.NotOnCanceled,
+                                                                  TaskScheduler.Default);
+        }
+
+        public Task<IEnumerable<IComment>> GetComments(uint aStart = 0, uint aCount = 10)
+        {
+            List<IRequestParameter> p = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", this.Id),
+            };
+
+            return Client.Get<Comment>("album/{id}/comments", p, aStart, aCount)
+                         .ContinueWith<IEnumerable<IComment>>(task => Client.Transform<Comment, IComment>(task.Result),
+                                                              Client.CancellationToken,
+                                                              TaskContinuationOptions.NotOnCanceled,
+                                                              TaskScheduler.Default);
         }
 
 
@@ -265,8 +301,6 @@ namespace E.Deezer.Api
               
 
         public override string ToString()
-        {
-            return string.Format("E.Deezer: Album({0})", Title);
-        }        
+            => string.Format("E.Deezer: Album({0})", Title);   
     }
 }

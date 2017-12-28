@@ -52,6 +52,7 @@
     <Compile Include="Api\Album.cs" />
     <Compile Include="Api\Artist.cs" />
     <Compile Include="Api\Chart.cs" />
+    <Compile Include="Api\Comment.cs" />
     <Compile Include="Api\Error.cs" />
     <Compile Include="Api\Genre.cs" />
     <Compile Include="Api\Infos.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Api\Radio.cs" />
     <Compile Include="Api\Track.cs" />
     <Compile Include="Api\User.cs" />
+    <Compile Include="Api\UserProfile.cs" />
     <Compile Include="Deezer.cs" />
     <Compile Include="DeezerClient.cs" />
     <Compile Include="DeezerPermissions.cs" />
