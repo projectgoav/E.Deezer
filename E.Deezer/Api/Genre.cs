@@ -41,7 +41,7 @@ namespace E.Deezer.Api
 
     }
 
-    internal class Genre : ObjectWithImage, IGenre, IDeserializable<DeezerClient>
+    internal class Genre : ObjectWithImage, IGenre, IDeserializable<IDeezerClient>
     {
         public ulong Id
         {
@@ -57,13 +57,13 @@ namespace E.Deezer.Api
 
 
         //IDeserializable
-        public DeezerClient Client
+        public IDeezerClient Client
         {
             get;
             set;
         }
 
-        public void Deserialize(DeezerClient aClient)
+        public void Deserialize(IDeezerClient aClient)
             => Client = aClient;
 
         //Methods
@@ -94,7 +94,7 @@ namespace E.Deezer.Api
 
 
         //Internal wrapper around get for all genre methods :)
-        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
+        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aStart, uint aCount) where TSource : TDest, IDeserializable<IDeezerClient>
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {

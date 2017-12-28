@@ -47,7 +47,7 @@ namespace E.Deezer.Api
         Task<bool> RemovePlaylistFromFavorite();
     }
 
-	internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<DeezerClient>
+	internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<IDeezerClient>
 	{
 		public ulong Id
         {
@@ -122,13 +122,13 @@ namespace E.Deezer.Api
 
         
         //IDeserializable
-    	public DeezerClient Client
+    	public IDeezerClient Client
         {
             get;
             set;
         }
 
-		public void Deserialize(DeezerClient aClient)
+		public void Deserialize(IDeezerClient aClient)
         {
             Client = aClient;
 

@@ -13,10 +13,47 @@ using E.Deezer.Api;
 
 namespace E.Deezer
 {
-    /// <summary>
-    /// Performs requests on the GitHub API.
-    /// </summary>
-    public class DeezerClient : IDisposable
+    internal interface IDeezerClient
+    {
+        IUser User { get; }
+
+        bool IsAuthenticated { get; }
+
+        CancellationToken CancellationToken { get; }
+        
+
+        //GET
+        Task<DeezerFragment<T>> Get<T>(string aMethod, uint aStart, uint aCount);
+
+        Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams);
+
+        Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount);
+
+        Task<T> Get<T>(string aMethod);
+
+        Task<IChart> GetChart(ulong aId, uint aStart, uint aCount);
+
+        Task<T> GetPlain<T>(string aMethod);
+
+
+        //POST
+        Task<bool> Post(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission);
+
+        Task<T> Post<T>(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission);
+
+
+        //DELETE
+        Task<bool> Delete(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission);
+
+
+        //Helpers
+        IEnumerable<TDest> Transform<TSource, TDest>(DeezerFragment<TSource> aFragment) where TSource : TDest, IDeserializable<IDeezerClient>;
+
+        bool HasPermission(DeezerPermissions aRequiredPermissions);
+    }
+    
+    
+    internal class DeezerClient : IDeezerClient, IDisposable
     {
         private readonly DeezerSession iSession;
         private readonly ExecutorService iExecutor;
@@ -35,32 +72,38 @@ namespace E.Deezer
             else { iExecutor = new ExecutorService(); }
         }
 
-        internal IUser User                          => iUser;
-        internal string AccessToken                  => iSession.AccessToken;
-        internal bool IsAuthenticated                => iSession.Authenticated;
-        internal CancellationToken CancellationToken => iExecutor.CancellationToken;
+
+        public IUser User => iUser;
+
+        public bool IsAuthenticated => iSession.Authenticated;
+
+        public CancellationToken CancellationToken => iExecutor.CancellationToken;
+
+
+        internal string AccessToken => iSession.AccessToken;
 
 
         //Another copy for those without params!
-        internal Task<DeezerFragment<T>> Get<T>(string aMethod, uint aStart, uint aCount)           => Get<T>(aMethod, RequestParameter.EmptyList, aStart, aCount);
+        public Task<DeezerFragment<T>> Get<T>(string aMethod, uint aStart, uint aCount)           
+            => Get<T>(aMethod, RequestParameter.EmptyList, aStart, aCount);
 
-        internal Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams)   => Get<T>(aMethod, aParams, uint.MinValue, uint.MaxValue);
+        public Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams)   
+            => Get<T>(aMethod, aParams, uint.MinValue, uint.MaxValue);
 
-        internal Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
+        public Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
         {
             AddToParamList(aParams, aStart, aCount);
             return DoGet<DeezerFragment<T>>(aMethod, aParams);
         }
 
-
-        internal Task<T> Get<T>(string aMethod)
+        public Task<T> Get<T>(string aMethod)
         {
             return DoGet<DeezerObject<T>>(aMethod, RequestParameter.EmptyList)
                         .ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
 
-        internal Task<IChart> GetChart(ulong aId, uint aStart, uint aCount)
+        public Task<IChart> GetChart(ulong aId, uint aStart, uint aCount)
         {
             string method = "chart/{id}";
             List<IRequestParameter> parms = new List<IRequestParameter>()
@@ -72,24 +115,7 @@ namespace E.Deezer
 
         }
 
-        private Task<IChart> GetChart(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
-        {
-            AddToParamList(aParams, aStart, aCount);
-            return DoGet<DeezerChartFragment>(aMethod, aParams)
-                    .ContinueWith((aTask) =>
-                    {
-                        Chart chart = new Chart(aTask.Result.Albums.Items,
-                                aTask.Result.Artists.Items,
-                                aTask.Result.Tracks.Items,
-                                aTask.Result.Playlists.Items);
-
-                        chart.Deserialize(this);
-                        return chart as IChart;
-                    }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
-        }
-
-
-        internal Task<T> GetPlain<T>(string aMethod)
+        public Task<T> GetPlain<T>(string aMethod)
         {
             return iExecutor.ExecuteGet(aMethod, RequestParameter.EmptyList)
                             .ContinueWith((aTask) =>
@@ -100,21 +126,8 @@ namespace E.Deezer
                             }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
         }
 
-
-        private Task<T> DoGet<T>(string aMethod, IEnumerable<IRequestParameter> aParams) where T : IHasError
-        {
-            return iExecutor.ExecuteGet(aMethod, aParams)
-                            .ContinueWith((aTask) =>
-                           {
-                               CheckHttpResponse(aTask);
-                               T deserialized = DeserializeResponse<T>(aTask.Result.Content).Result;
-                               CheckForDeezerError(deserialized);
-                               return deserialized;
-                           }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
-        }
-
         //Performs a POST request
-        internal Task<bool> Post(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission)
+        public Task<bool> Post(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission)
         {
             CheckAuthentication();
             CheckPermissions(aRequiredPermission);
@@ -125,7 +138,7 @@ namespace E.Deezer
                             .ContinueWith<bool>((aTask) => aTask.Result.IsSuccessStatusCode, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
-        internal Task<T> Post<T>(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission)
+        public Task<T> Post<T>(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission)
         {
             CheckAuthentication();
             CheckPermissions(aRequiredPermission);
@@ -142,7 +155,7 @@ namespace E.Deezer
         }
 
         //Performs a DELETE request
-        internal Task<bool> Delete(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission)
+        public Task<bool> Delete(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission)
         {
             CheckAuthentication();
             CheckPermissions(aRequiredPermission);
@@ -152,6 +165,33 @@ namespace E.Deezer
             return iExecutor.ExecuteDelete(aMethod, aParams)
                             .ContinueWith((aTask) => aTask.Result.IsSuccessStatusCode, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
+
+
+        //Performs a transform from Deezer Fragment to IEnumerable.
+        public IEnumerable<TDest> Transform<TSource, TDest>(DeezerFragment<TSource> aFragment) where TSource : TDest, IDeserializable<IDeezerClient>
+        {
+            List<TDest> items = new List<TDest>();
+
+            foreach (var item in aFragment.Items)
+            {
+                item.Deserialize(this);
+                items.Add(item);
+            }
+
+            return items;
+        }
+
+
+        public bool HasPermission(DeezerPermissions aRequiredPermissions)
+        {
+            if (IsAuthenticated && iPermissions != null)
+            {
+                return iPermissions.HasPermission(aRequiredPermissions);
+            }
+
+            return false;
+        }
+
 
 
         //'OAuth' Stuff
@@ -174,6 +214,36 @@ namespace E.Deezer
                                 .ContinueWith((aPermissionTask) => iPermissions = aPermissionTask.Result.Permissions, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default)
                                 .Wait();
 
+                    }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
+        }
+
+
+        private Task<T> DoGet<T>(string aMethod, IEnumerable<IRequestParameter> aParams) where T : IHasError
+        {
+            return iExecutor.ExecuteGet(aMethod, aParams)
+                            .ContinueWith((aTask) =>
+                            {
+                                CheckHttpResponse(aTask);
+                                T deserialized = DeserializeResponse<T>(aTask.Result.Content).Result;
+                                CheckForDeezerError(deserialized);
+                                return deserialized;
+                            }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
+        }
+
+
+        private Task<IChart> GetChart(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
+        {
+            AddToParamList(aParams, aStart, aCount);
+            return DoGet<DeezerChartFragment>(aMethod, aParams)
+                    .ContinueWith((aTask) =>
+                    {
+                        Chart chart = new Chart(aTask.Result.Albums.Items,
+                                aTask.Result.Artists.Items,
+                                aTask.Result.Tracks.Items,
+                                aTask.Result.Playlists.Items);
+
+                        chart.Deserialize(this);
+                        return chart as IChart;
                     }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
         }
 
@@ -231,17 +301,6 @@ namespace E.Deezer
             }
         }
 
-        internal bool HasPermission(DeezerPermissions aRequiredPermissions)
-        {
-            if(IsAuthenticated && iPermissions != null)
-            {
-                return iPermissions.HasPermission(aRequiredPermissions);
-            }
-
-            return false;
-        }
-
-
         private void CheckPermissions(DeezerPermissions aRequiredPermissions)
         {
             if(iPermissions == null)
@@ -253,22 +312,6 @@ namespace E.Deezer
             {
                 throw new DeezerPermissionsException(aRequiredPermissions);
             }
-        }
-
-
-
-        //Performs a transform from Deezer Fragment to IEnumerable.
-        internal IEnumerable<TDest> Transform<TSource, TDest>(DeezerFragment<TSource> aFragment) where TSource : TDest, IDeserializable<DeezerClient>
-        {
-            List<TDest> items = new List<TDest>();
-
-            foreach(var item in aFragment.Items)
-            {
-                item.Deserialize(this);
-                items.Add(item);
-            }
-
-            return items;
         }
 
 

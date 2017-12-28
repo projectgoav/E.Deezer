@@ -31,7 +31,7 @@ namespace E.Deezer.Api
     }
 
 
-    internal class Track : ObjectWithImage, ITrack, IDeserializable<DeezerClient>
+    internal class Track : ObjectWithImage, ITrack, IDeserializable<IDeezerClient>
     {
         public ulong Id
         {
@@ -142,13 +142,13 @@ namespace E.Deezer.Api
 
 
         //IDeserializable
-        public DeezerClient Client
+        public IDeezerClient Client
         {
             get;
             set;
         }
 
-        public void Deserialize(DeezerClient aClient) 
+        public void Deserialize(IDeezerClient aClient) 
         { 
             Client = aClient;
 

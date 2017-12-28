@@ -103,7 +103,7 @@ namespace E.Deezer.Endpoint
 
 
         //Internal wrapper around get for all ChartEndpoint methods :)
-        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, ulong aId, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
+        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, ulong aId, uint aStart, uint aCount) where TSource : TDest, IDeserializable<IDeezerClient>
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {

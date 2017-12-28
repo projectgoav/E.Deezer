@@ -30,7 +30,7 @@ namespace E.Deezer.Api
         Task<bool> RemoveArtistFromFavorite();
     }
 
-    internal class Artist : ObjectWithImage, IArtist, IDeserializable<DeezerClient>
+    internal class Artist : ObjectWithImage, IArtist, IDeserializable<IDeezerClient>
     {
         public ulong Id
         {
@@ -53,13 +53,14 @@ namespace E.Deezer.Api
 
 
         //IDeserializable
-        public DeezerClient Client
+        public IDeezerClient Client
         {
             get;
             set;
         }
 
-        public void Deserialize(DeezerClient aClient) => Client = aClient;
+        public void Deserialize(IDeezerClient aClient) 
+            => Client = aClient;
 
 
         public Task<IEnumerable<ITrack>> GetTracklist(uint aStart = 0, uint aCount = 100) 
@@ -81,7 +82,7 @@ namespace E.Deezer.Api
 
 
         //Internal wrapper around get for all artist methods :)
-        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
+        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aStart, uint aCount) where TSource : TDest, IDeserializable<IDeezerClient>
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {

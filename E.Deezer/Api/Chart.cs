@@ -14,7 +14,7 @@ namespace E.Deezer.Api
     }
 
 
-    internal class Chart : IChart, IDeserializable<DeezerClient>
+    internal class Chart : IChart, IDeserializable<IDeezerClient>
     {
         private readonly IEnumerable<IAlbum> iAlbums;
         private readonly IEnumerable<IArtist> iArtists;
@@ -40,23 +40,23 @@ namespace E.Deezer.Api
 
 
         //IDeserializable
-        public DeezerClient Client
+        public IDeezerClient Client
         {
             get;
             set;
         }
 
-        public void Deserialize(DeezerClient aClient)
+        public void Deserialize(IDeezerClient aClient)
         {
             Client = aClient;
 
-            DeserializeEnumerable(aClient, iAlbums.Select((v) => v as IDeserializable<DeezerClient>));
-            DeserializeEnumerable(aClient, iArtists.Select((v) => v as IDeserializable<DeezerClient>));
-            DeserializeEnumerable(aClient, iTracks.Select((v) => v as IDeserializable<DeezerClient>));
-            DeserializeEnumerable(aClient, iPlaylists.Select((v) => v as IDeserializable<DeezerClient>));
+            DeserializeEnumerable(aClient, iAlbums.Select((v) => v as IDeserializable<IDeezerClient>));
+            DeserializeEnumerable(aClient, iArtists.Select((v) => v as IDeserializable<IDeezerClient>));
+            DeserializeEnumerable(aClient, iTracks.Select((v) => v as IDeserializable<IDeezerClient>));
+            DeserializeEnumerable(aClient, iPlaylists.Select((v) => v as IDeserializable<IDeezerClient>));
         }
 
-        private void DeserializeEnumerable(DeezerClient aClient, IEnumerable<IDeserializable<DeezerClient>> aEnumerable)
+        private void DeserializeEnumerable(IDeezerClient aClient, IEnumerable<IDeserializable<IDeezerClient>> aEnumerable)
         {
             foreach(var entry in aEnumerable)
             {

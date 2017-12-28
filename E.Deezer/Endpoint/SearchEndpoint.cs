@@ -50,7 +50,7 @@ namespace E.Deezer.Endpoint
             => Get<Radio, IRadio>("radio", aQuery, aStart, aCount); 
 
 
-        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aSearchEndpoint, string aQuery, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
+        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aSearchEndpoint, string aQuery, uint aStart, uint aCount) where TSource : TDest, IDeserializable<IDeezerClient>
         {
             string method = string.Format("{0}{1}", SEARCH_BASE, aSearchEndpoint);
 

@@ -75,7 +75,7 @@ namespace E.Deezer.Api
         Task<bool> RemoveAlbumFromFavourite(ulong albumId);
     }
 
-	internal class User : ObjectWithImage, IUser, IDeserializable<DeezerClient>
+	internal class User : ObjectWithImage, IUser, IDeserializable<IDeezerClient>
 	{
 		public ulong Id
         {
@@ -103,13 +103,14 @@ namespace E.Deezer.Api
 
 
 		//IDeserializable
-		public DeezerClient Client
+		public IDeezerClient Client
         {
             get;
             private set;
         }
 
-        public void Deserialize(DeezerClient aClient) => Client = aClient;
+        public void Deserialize(IDeezerClient aClient) 
+            => Client = aClient;
 
 
         public override string ToString() => Name;
@@ -298,7 +299,7 @@ namespace E.Deezer.Api
 
 
 
-        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, DeezerPermissions aPermisisons, uint aStart, uint aCount) where TSource : TDest, IDeserializable<DeezerClient>
+        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, DeezerPermissions aPermisisons, uint aStart, uint aCount) where TSource : TDest, IDeserializable<IDeezerClient>
         {
 
             //TODO -> We should really have a Client.GET<T> that accepts a permissions check....

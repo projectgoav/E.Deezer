@@ -15,7 +15,7 @@ namespace E.Deezer.Api
     internal static class DeserializeableExtensions
     {
         // Extension to aid deserialization of lists :)
-        public static void Deserialize<T>(this IEnumerable<T> aItems, DeezerClient aClient) where T : IDeserializable<DeezerClient>
+        public static void Deserialize<T>(this IEnumerable<T> aItems, IDeezerClient aClient) where T : IDeserializable<IDeezerClient>
         {
             foreach (T item in aItems)
             {

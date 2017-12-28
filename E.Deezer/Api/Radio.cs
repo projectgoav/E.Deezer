@@ -26,7 +26,7 @@ namespace E.Deezer.Api
         Task<bool> RemoveRadioFromFavorite();        
     }
 
-    internal class Radio : ObjectWithImage, IRadio, IDeserializable<DeezerClient>
+    internal class Radio : ObjectWithImage, IRadio, IDeserializable<IDeezerClient>
     {
         public ulong Id
         {
@@ -54,13 +54,13 @@ namespace E.Deezer.Api
 
 
         //IDeserializable
-        public DeezerClient Client
+        public IDeezerClient Client
         {
             get;
             set;
         }
 
-        public void Deserialize(DeezerClient aClient) 
+        public void Deserialize(IDeezerClient aClient) 
             => Client = aClient;
 
         public Task<IEnumerable<ITrack>> GetFirst40Tracks() 
