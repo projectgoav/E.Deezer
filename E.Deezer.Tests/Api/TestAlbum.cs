@@ -99,5 +99,21 @@ namespace E.Deezer.Tests.Api
 
             client.Verify(c => c.Get<Track>(It.IsAny<string>(), It.IsAny<IList<IRequestParameter>>()), Times.Never());
         }
+
+        [Test]
+        public void TestArtistInternalDeserialised()
+        {
+            Artist artistImpl = new Artist();
+
+            Album albumImpl = new Album()
+            {
+                Id = kAlbumId,
+                ArtistInternal = artistImpl,
+            };
+
+            albumImpl.Deserialize(client.Object);
+
+            Assert.That(albumImpl.ArtistInternal.Client != null);
+        }
     }
 }
