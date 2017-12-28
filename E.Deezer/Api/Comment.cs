@@ -86,5 +86,9 @@ namespace E.Deezer.Api
 
             return Client.Delete("comment/{id}", p, DeezerPermissions.BasicAccess);
         }
+
+
+        public override string ToString()
+            => string.Format("E.Deezer.Comment:{0}", this.Id);
     }
 }
