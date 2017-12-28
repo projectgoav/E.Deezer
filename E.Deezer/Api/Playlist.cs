@@ -11,20 +11,31 @@ namespace E.Deezer.Api
 {
 	public interface IPlaylist : IObjectWithImage
     {
-		ulong Id { get;  }
-		string Title { get;  }
-        bool IsPublic { get;  }
-		uint NumTracks { get;  }
-		string Link { get;  }
-		string CreatorName { get; }
+		ulong Id { get; }
+        uint Fans { get; }
         int Rating { get; }
-		bool IsLovedTrack { get;  }
+        string Link { get; }
+        string Title { get; }
+        bool IsPublic { get; }
+        uint Duration { get; }
+        uint TrackCount { get; }
+        string ShareLink { get; }
+        bool IsLovedTrack { get; }
+        string CreatorName { get; }
+        string Description { get; }
+        IUserProfile Creator { get; }
+        bool IsCollaborative { get; }
+        uint UnseenTrackCount { get; }
 
 
         [Obsolete("Use of IsPublic is encouraged")]
         bool Public { get; }
 
-		Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = uint.MaxValue);
+        [Obsolete("Use of TrackCount is encouraged")]
+        uint NumTracks { get; }
+
+
+        Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = uint.MaxValue);
 
         Task<bool> Rate(int aRating);
 
