@@ -39,6 +39,12 @@ namespace E.Deezer.Api
 
         Task<bool> Rate(int aRating);
 
+        Task<bool> SetSeen();
+
+        Task<IEnumerable<IUserProfile>> GetFans(uint aStart = 0, uint aCount = 25);
+
+        Task<IEnumerable<IComment>> GetComments(uint aStart = 0, uint aCount = 10);
+
         //Manage Tracks
         Task<bool> AddTrack(ITrack aTrack);
         Task<bool> AddTrack(ulong aTrackId);
@@ -300,9 +306,49 @@ namespace E.Deezer.Api
             => Client.User.RemovePlaylistFromFavourite(Id);
         
 
+
+        public Task<bool> SetSeen()
+        {
+            List<IRequestParameter> p = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", this.Id),
+            };
+
+            return Client.Post("playlist/{id}/seen", p, DeezerPermissions.BasicAccess);
+        }
+
+
+        public Task<IEnumerable<IUserProfile>> GetFans(uint aStart = 0, uint aCount = 25)
+        {
+            List<IRequestParameter> p = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", this.Id)
+            };
+
+            return Client.Get<UserProfile>("playlist/{id}/fans", p, aStart, aCount)
+                         .ContinueWith<IEnumerable<IUserProfile>>(task => Client.Transform<UserProfile, IUserProfile>(task.Result),
+                                                                  Client.CancellationToken,
+                                                                  TaskContinuationOptions.NotOnCanceled,
+                                                                  TaskScheduler.Default);
+        }
+
+        public Task<IEnumerable<IComment>> GetComments(uint aStart = 0, uint aCount = 10)
+        {
+            List<IRequestParameter> p = new List<IRequestParameter>()
+            {
+                RequestParameter.GetNewUrlSegmentParamter("id", this.Id)
+            };
+
+            return Client.Get<Comment>("playlist/{id}/comments", p, aStart, aCount)
+                         .ContinueWith<IEnumerable<IComment>>(task => Client.Transform<Comment, IComment>(task.Result),
+                                                                  Client.CancellationToken,
+                                                                  TaskContinuationOptions.NotOnCanceled,
+                                                                  TaskScheduler.Default);
+        }
+
+
+
         public override string ToString()
-		{
-			return string.Format("E.Deezer: Playlist({0} [{1}])", Title, CreatorName);
-		}        
+            => string.Format("E.Deezer: Playlist({0} [{1}])", Title, CreatorName);     
     }
 }
