@@ -75,6 +75,7 @@
     <Compile Include="Api\Internal\TestObjectWithImage.cs" />
     <Compile Include="Api\TestAlbum.cs" />
     <Compile Include="Api\TestArtist.cs" />
+    <Compile Include="Api\TestChart.cs" />
     <Compile Include="ExecutorServiceTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
