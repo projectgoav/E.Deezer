@@ -66,7 +66,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\Entities\ArtistPropertyTests.cs" />
     <Compile Include="Api\Entities\GenrePropertyTests.cs" />
     <Compile Include="Api\Entities\ObjectWithImageTestBase.cs" />
     <Compile Include="Api\Entities\PlaylistPropertyTests.cs" />
@@ -75,6 +74,7 @@
     <Compile Include="Api\Entities\UserPropertyTests.cs" />
     <Compile Include="Api\Internal\TestObjectWithImage.cs" />
     <Compile Include="Api\TestAlbum.cs" />
+    <Compile Include="Api\TestArtist.cs" />
     <Compile Include="ExecutorServiceTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

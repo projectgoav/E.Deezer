@@ -71,7 +71,7 @@ namespace E.Deezer.Api
             => Get<Track, ITrack>("artist/{id}/top", aStart, aCount);
 
         public Task<IEnumerable<IAlbum>> GetAlbums(uint aStart = 0, uint aCount = 100)
-            => Get<Album, IAlbum>("/artist/{id}/albums", aStart, aCount);
+            => Get<Album, IAlbum>("artist/{id}/albums", aStart, aCount);
 
 
         public Task<IEnumerable<IArtist>> GetRelated(uint aStart = 0, uint aCount = 100)
