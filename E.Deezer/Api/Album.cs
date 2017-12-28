@@ -152,9 +152,11 @@ namespace E.Deezer.Api
         }
 
 
-        public Task<bool> AddAlbumToFavorite() => Client.User.AddAlbumToFavourite(Id);
+        public Task<bool> AddAlbumToFavorite() 
+            => Client.User.AddAlbumToFavourite(Id);
 
-        public Task<bool> RemoveAlbumFromFavorite() => Client.User.RemoveAlbumFromFavourite(Id);  
+        public Task<bool> RemoveAlbumFromFavorite() 
+            => Client.User.RemoveAlbumFromFavourite(Id);  
               
 
         public override string ToString()
