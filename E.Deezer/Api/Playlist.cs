@@ -21,7 +21,7 @@ namespace E.Deezer.Api
 		bool IsLovedTrack { get;  }
 
 
-        [Obsolete("Use of IsPublic is enouraged")]
+        [Obsolete("Use of IsPublic is encouraged")]
         bool Public { get; }
 
 		Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = uint.MaxValue);

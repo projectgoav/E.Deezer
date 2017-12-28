@@ -59,14 +59,5 @@ namespace E.Deezer.Tests.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {&quot;data&quot;:[{&quot;id&quot;:0,&quot;name&quot;:&quot;All&quot;,&quot;picture&quot;:&quot;http://api.deezer.com/genre/0/image&quot;,&quot;picture_small&quot;:&quot;http://cdn-images.deezer.com/images/misc//56x56-000000-80-0-0.jpg&quot;,&quot;picture_medium&quot;:&quot;http://cdn-images.deezer.com/images/misc//250x250-000000-80-0-0.jpg&quot;,&quot;picture_big&quot;:&quot;http://cdn-images.deezer.com/images/misc//500x500-000000-80-0-0.jpg&quot;,&quot;type&quot;:&quot;genre&quot;},{&quot;id&quot;:132,&quot;name&quot;:&quot;Pop&quot;,&quot;picture&quot;:&quot;http://api.deezer.com/genre/132/image&quot;,&quot;picture_small&quot;:&quot;http://cdn-images.deezer.com/images/misc/db7a604d9e7634a67d45cfc86b48370a [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string GenreAll {
-            get {
-                return ResourceManager.GetString("GenreAll", resourceCulture);
-            }
-        }
     }
 }
