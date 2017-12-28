@@ -11,14 +11,28 @@ namespace E.Deezer.Api
 {
     public interface IAlbum : IObjectWithImage
     {
-        ulong Id { get;  }
-        uint Tracks {get;  }
-        string Title { get;  }
-        string Link { get;  }
-        string ArtistName { get; }
+        ulong Id { get; }
+        uint Fans { get; }
+        string UPC { get; }
+        uint Tracks { get; }
         long Rating { get; }
-        DateTime ReleaseDate {get;  }
+        string Link { get; }
+        string Title { get; }
+        string Label { get; }
+        uint GenreId { get; }
+        uint Duration { get; }
+        bool HasRating { get; }
         IArtist Artist { get; }
+        bool Available { get; }
+        string ShareLink { get; }
+        string ArtistName { get; }
+        string RecordType { get; }
+        DateTime ReleaseDate { get; }
+        bool HasExplicitLyrics { get; }
+        IAlbum AlternativeAlbum { get; }
+        IEnumerable<IGenre> Genre { get; }
+        IEnumerable<IArtist> Contributors { get; }
+
 
         //Methods
         Task<IEnumerable<ITrack>> GetTracks();
@@ -42,7 +56,55 @@ namespace E.Deezer.Api
             set;
         }
 
+        public string UPC
+        {
+            get;
+            set;
+        }
+
+        public string Link
+        {
+            get;
+            set;
+        }
+
         public long Rating
+        {
+            get;
+            set;
+        }
+
+        public string Label
+        {
+            get;
+            set;
+        }
+
+        public uint Duration
+        {
+            get;
+            set;
+        }
+
+        public uint GenreId
+        {
+            get;
+            set;
+        }
+
+        public uint Fans
+        {
+            get;
+            set;    
+        }
+
+        public string RecordType
+        {
+            get;
+            set;
+        }
+
+        public bool Available
         {
             get;
             set;
@@ -54,7 +116,33 @@ namespace E.Deezer.Api
             set;
         }
 
+        public bool HasRating => Rating > 0;
+
         public IArtist Artist => ArtistInternal;
+
+        public IAlbum AlternativeAlbum => AlternativeInternal;
+
+        public IEnumerable<IGenre> Genre => GenreInternal?.Items;
+
+        public IEnumerable<IArtist> Contributors => ContributorsInternal;
+
+        public string ArtistName => ArtistInternal?.Name ?? string.Empty;
+
+
+
+        [JsonProperty(PropertyName = "share")]
+        public string ShareLink
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "explicit_lyrics")]
+        public bool HasExplicitLyrics
+        {
+            get;
+            set;
+        }
 
         [JsonProperty(PropertyName = "artist")]
         public Artist ArtistInternal
@@ -63,8 +151,8 @@ namespace E.Deezer.Api
             set;
         }
 
-        [JsonProperty(PropertyName = "Url")]
-        public string Link
+        [JsonProperty(PropertyName = "genre")]
+        public DeezerFragment<Genre> GenreInternal
         {
             get;
             set;
@@ -84,15 +172,19 @@ namespace E.Deezer.Api
             set;
         }
 
-        public string ArtistName
+        [JsonProperty(PropertyName = "contributors")]
+        public List<Artist> ContributorsInternal
         {
-            get
-            {
-                if (ArtistInternal == null) { return string.Empty; }
-                else { return ArtistInternal.Name; }
-            }
+            get;
+            set;
         }
 
+        [JsonProperty(PropertyName = "alternative")]
+        public Album AlternativeInternal
+        {
+            get;
+            set;
+        }
 
         //IDeserializable
         public IDeezerClient Client { get; set; }
@@ -101,9 +193,22 @@ namespace E.Deezer.Api
         {
             Client = aClient;
 
-            if (ArtistInternal != null)
+            ArtistInternal?.Deserialize(aClient);
+
+            if (GenreInternal != null)
             {
-                ArtistInternal.Deserialize(aClient);
+                foreach (var genre in GenreInternal.Items)
+                {
+                    genre.Deserialize(aClient);
+                }
+            }
+
+            if(this.ContributorsInternal != null)
+            {
+                foreach(var artist in ContributorsInternal)
+                {
+                    artist.Deserialize(aClient);
+                }
             }
         }
 
