@@ -62,5 +62,9 @@ namespace E.Deezer.Api
             this.Client = client;
             this.AuthorInternal?.Deserialize(client);
         }
+
+
+        public override string ToString()
+            => string.Format("E.Deezer.Comment:{0}", this.Id);
     }
 }
