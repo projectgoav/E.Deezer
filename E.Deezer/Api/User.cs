@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace E.Deezer.Api
 {
-
 	public interface IUser : IObjectWithImage
 	{
 		ulong Id { get;  }
