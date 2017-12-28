@@ -69,5 +69,35 @@ namespace E.Deezer.Tests.Api
 
             client.Verify(c => c.Post(It.IsAny<string>(), It.IsAny<IList<IRequestParameter>>(), It.IsAny<DeezerPermissions>()), Times.Once());
         }
+
+        [Test]
+        public void TestTracklistWillUseInternal()
+        {
+            Album albumImpl = new Album()
+            {
+                Id = kAlbumId,
+                TracklistInternal = new DeezerFragment<Track>()
+                {
+                    Items = new List<Track>()
+                    {
+                        new Track(),
+                        new Track(),
+                        new Track(),
+                    },
+                },
+            };
+            albumImpl.Deserialize(client.Object);
+
+            IAlbum album = albumImpl;
+
+            client.Setup(c => c.Get<Track>(It.IsAny<string>(), It.IsAny<IList<IRequestParameter>>()));
+
+            var tracklist = album.GetTracks()
+                                 .Result;
+
+            Assert.NotNull(tracklist);
+
+            client.Verify(c => c.Get<Track>(It.IsAny<string>(), It.IsAny<IList<IRequestParameter>>()), Times.Never());
+        }
     }
 }
