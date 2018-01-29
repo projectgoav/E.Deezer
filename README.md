@@ -2,7 +2,7 @@
 Unoffical asynchronous Deezer .NET API.
 
 ## Usage
-Latest Stable Nuget: [v3.0.0](http://nuget.org/packages/e.deezer)
+Latest Stable Nuget: [v3.1.0](http://nuget.org/packages/e.deezer)
  - .NET 4.5+
  - PCL Profile 111 (.NET Standard 1.1)
 
@@ -66,7 +66,7 @@ An example UI demo can be found [here](http://github.com/projectgoav/E.ExploreDe
 
 ##License
 (MIT)
-Copyright (c) 2017
+Copyright (c) 2018
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
