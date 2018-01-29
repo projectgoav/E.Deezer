@@ -25,7 +25,15 @@ namespace E.Deezer
         {
             iCancellationTokenSource = new CancellationTokenSource();
 
-            iClient = new HttpClient(httpMessageHandler);
+            if(httpMessageHandler != null)
+            {
+                iClient = new HttpClient(httpMessageHandler);
+            }
+            else
+            {
+                iClient = new HttpClient();
+            }
+
             iClient.BaseAddress = new Uri(DeezerSession.ENDPOINT);
             iClient.Timeout = TimeSpan.FromMilliseconds(DEFAULT_TIMEOUT);
         }

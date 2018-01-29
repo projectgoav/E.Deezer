@@ -47,6 +47,7 @@ namespace E.Deezer.Tests.Api
             Artist artist = new Artist()
             {
                 Id = kArtistId,
+                HasSmartRadio = true,
             };
 
             artist.Deserialize(client.Object);

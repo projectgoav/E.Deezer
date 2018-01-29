@@ -20,7 +20,7 @@ namespace E.Deezer.Tests.Api.Entities
                 Title = "Test Playlist",
                 Link = "www.deezer.com",
                 Rating = 0,
-                //NumTracks = 5,
+                TrackCount = 5,
                 //Public = true,
                 IsLovedTrack = true,
 
@@ -53,7 +53,7 @@ namespace E.Deezer.Tests.Api.Entities
 
             Assert.AreEqual(0, playlist.Id);
             Assert.AreEqual(0, playlist.Rating);
-            Assert.AreEqual(5, playlist.NumTracks);
+            Assert.AreEqual(5, playlist.TrackCount);
 
             Assert.True(playlist.IsLovedTrack);
             //Assert.True(playlist.Public);
