@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using System.Net.Http;
+
 //using E.Deezer.Endpoint;
 
 namespace E.Deezer
@@ -93,13 +95,13 @@ namespace E.Deezer
         /// Starts a new session on the Deezer API.
         /// Setup internal workings of E.Deezer
         /// </summary>
-        public static Deezer CreateNew() => new Deezer(new DeezerSession());
+        public static Deezer CreateNew(HttpMessageHandler httpMessageHandler = null) => new Deezer(new DeezerSession(), httpMessageHandler);
 
-        internal static Deezer CreateNew(bool underTest)
+        internal static Deezer CreateNew(bool underTest, HttpMessageHandler httpMessageHandler = null)
         {
             if (underTest)
             {
-                return new Deezer(new DeezerSession(), true);
+                return new Deezer(new DeezerSession(), httpMessageHandler, true);
             }
             else
             {

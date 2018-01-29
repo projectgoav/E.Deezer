@@ -17,15 +17,15 @@ namespace E.Deezer
         private readonly HttpClient iClient;
         private readonly CancellationTokenSource iCancellationTokenSource;
 
-        internal ExecutorService()
-            : this(DeezerSession.ENDPOINT)
+        internal ExecutorService(HttpMessageHandler httpMessageHandler = null)
+            : this(DeezerSession.ENDPOINT, httpMessageHandler)
         { }
 
-        internal ExecutorService(string testUrl)
+        internal ExecutorService(string testUrl, HttpMessageHandler httpMessageHandler = null)
         {
             iCancellationTokenSource = new CancellationTokenSource();
 
-            iClient = new HttpClient();
+            iClient = new HttpClient(httpMessageHandler);
             iClient.BaseAddress = new Uri(DeezerSession.ENDPOINT);
             iClient.Timeout = TimeSpan.FromMilliseconds(DEFAULT_TIMEOUT);
         }

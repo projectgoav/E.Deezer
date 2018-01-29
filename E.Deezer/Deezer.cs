@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using System.Threading.Tasks;
+
+using System.Net.Http;
 
 using E.Deezer.Api;
 using E.Deezer.Endpoint;
@@ -22,11 +23,11 @@ namespace E.Deezer
         private readonly DeezerSession iSession;
         private readonly DeezerClient iClient;
 
-        internal Deezer(DeezerSession aSession, bool underTest = false)
+        internal Deezer(DeezerSession aSession, HttpMessageHandler httpMessageHandler = null, bool underTest = false)
         {
             iSession = aSession;
-            if (underTest) { iClient = new DeezerClient(iSession, true); }
-            else           { iClient = new DeezerClient(iSession); }
+            if (underTest) { iClient = new DeezerClient(iSession, httpMessageHandler, true); }
+            else           { iClient = new DeezerClient(iSession, httpMessageHandler); }
             
 
             iBrowse = new BrowseEndpoint(iClient);
