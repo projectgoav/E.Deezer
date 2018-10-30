@@ -47,7 +47,7 @@ namespace E.Deezer.Api
         [JsonProperty(PropertyName = "cover_xl")]
         public string ExtraLargeCover { get; set; }
 
-
+        public Error Error { get; set; }
 
         public virtual string GetPicture(PictureSize aSize)
         {

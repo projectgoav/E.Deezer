@@ -74,7 +74,7 @@ namespace E.Deezer.Api
         Task<bool> RemoveAlbumFromFavourite(ulong albumId);
     }
 
-	internal class User : ObjectWithImage, IUser, IDeserializable<IDeezerClient>
+	internal class User : ObjectWithImage, IUser, IHasError, IDeserializable<IDeezerClient>
 	{
 		public ulong Id
         {
@@ -113,6 +113,8 @@ namespace E.Deezer.Api
 
 
         public override string ToString() => Name;
+
+        public IError TheError => Error;
 
 
         /* METHODS */

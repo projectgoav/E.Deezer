@@ -115,6 +115,20 @@ namespace E.Deezer
 
         }
 
+        public Task<T> GetPlainWithError<T>(string aMethod) where T : IHasError
+        {
+            return iExecutor.ExecuteGet(aMethod, RequestParameter.EmptyList)
+                            .ContinueWith(t =>
+                            {
+                                CheckHttpResponse(t);
+                                T deserialized = DeserializeResponse<T>(t.Result.Content).Result;
+
+                                CheckForDeezerError<T>(deserialized);
+
+                                return deserialized;
+                            }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
+        }
+
         public Task<T> GetPlain<T>(string aMethod)
         {
             return iExecutor.ExecuteGet(aMethod, RequestParameter.EmptyList)
@@ -122,6 +136,9 @@ namespace E.Deezer
                             {
                                 CheckHttpResponse(aTask);
                                 T deserialized = DeserializeResponse<T>(aTask.Result.Content).Result;
+
+
+
                                 return deserialized;
                             }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
         }
@@ -202,7 +219,7 @@ namespace E.Deezer
             IList<IRequestParameter> parms = RequestParameter.EmptyList;
             AddDefaultsToParamList(parms);
 
-            return GetPlain<User>("user/me")
+            return GetPlainWithError<User>("user/me")
                     .ContinueWith((aTask) =>
                     {
                         iUser = aTask.Result;
@@ -279,7 +296,8 @@ namespace E.Deezer
             //Make sure our API call didn't fail...
             if(aObject.TheError != null)
             {
-                if(aObject.TheError.Code == 300)
+                if(aObject.TheError.Code == 200          //200 == Logout fail
+                    || aObject.TheError.Code == 300)     //300 == Authentication error
                 {
                     //We've got an invalid/expired auth code -> auto logout + clear internals
                     iSession.Logout();
