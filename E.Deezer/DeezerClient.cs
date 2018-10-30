@@ -222,7 +222,10 @@ namespace E.Deezer
             return GetPlainWithError<User>("user/me")
                     .ContinueWith((aTask) =>
                     {
-                        iUser = aTask.Result;
+                        var userInstance = aTask.Result;
+                        userInstance.Deserialize(this);
+
+                        iUser = userInstance;
 
                         IList<IRequestParameter> permissionParams = RequestParameter.EmptyList;
                         AddDefaultsToParamList(permissionParams);
