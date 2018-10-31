@@ -55,7 +55,7 @@ namespace E.Deezer.Api
 
         public bool IsUserComment => this.Author != null                            //We've got an author object...
                                         && this.Client.User != null                 //And we're logged in...
-                                        && this.Author.Id == this.Client.User.Id;   //And the ids match
+                                        && this.Author.Id == this.Client.User.id;   //And the ids match
 
 
         //IDeserializable

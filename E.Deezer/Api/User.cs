@@ -8,13 +8,29 @@ namespace E.Deezer.Api
 {
 	public interface IUser : IObjectWithImage
 	{
-		ulong Id { get;  }
-		string Name { get;  }
-		string Link { get;  }
-		string Country { get;  }
+        ulong id { get; set; }
+        string name { get; set; }
+        string lastname { get; set; }
+        string firstname { get; set; }
+        string email { get; set; }
+        int status { get; set; }
+        string birthday { get; set; }
+        string inscription_date { get; set; }
+        string gender { get; set; }
+        string link { get; set; }
+        string picture { get; set; }
+        string picture_small { get; set; }
+        string picture_medium { get; set; }
+        string picture_big { get; set; }
+        string picture_xl { get; set; }
+        string country { get; set; }
+        string lang { get; set; }
+        bool is_kid { get; set; }
+        string tracklist { get; set; }
+        string type { get; set; }
 
 
-		// ** Methods **
+        // ** Methods **
         //Favourites
         Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart = 0, uint aCount = 100);
 
@@ -76,30 +92,27 @@ namespace E.Deezer.Api
 
 	internal class User : ObjectWithImage, IUser, IHasError, IDeserializable<IDeezerClient>
 	{
-		public ulong Id
-        {
-            get;
-            set;
-        }
 
-		public string Name
-        {
-            get;
-            set;
-        }
-
-		public string Link
-        {
-            get;
-            set;
-        }
-
-		public string Country
-        {
-            get;
-            set;
-        }
-
+        public ulong id { get; set; }
+        public string name { get; set; }
+        public string lastname { get; set; }
+        public string firstname { get; set; }
+        public string email { get; set; }
+        public int status { get; set; }
+        public string birthday { get; set; }
+        public string inscription_date { get; set; }
+        public string gender { get; set; }
+        public string link { get; set; }
+        public string picture { get; set; }
+        public string picture_small { get; set; }
+        public string picture_medium { get; set; }
+        public string picture_big { get; set; }
+        public string picture_xl { get; set; }
+        public string country { get; set; }
+        public string lang { get; set; }
+        public bool is_kid { get; set; }
+        public string tracklist { get; set; }
+        public string type { get; set; }
 
 		//IDeserializable
 		public IDeezerClient Client
@@ -107,12 +120,10 @@ namespace E.Deezer.Api
             get;
             private set;
         }
-
         public void Deserialize(IDeezerClient aClient) 
             => Client = aClient;
-
-
-        public override string ToString() => Name;
+        
+        public override string ToString() => name;
 
         public IError TheError => Error;
 
@@ -159,14 +170,13 @@ namespace E.Deezer.Api
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
-                RequestParameter.GetNewUrlSegmentParamter("id", Id),
+                RequestParameter.GetNewUrlSegmentParamter("id", id),
                 RequestParameter.GetNewQueryStringParameter("title", title)
             };
 
             return Client.Post<DeezerCreateResponse>("user/{id}/playlists", parms, DeezerPermissions.ManageLibrary)
                             .ContinueWith(t => t.Result.Id);                        
         }
-
 
         public Task<bool> AddRadioToFavourite(IRadio aRadio)
             => AddRadioToFavourite(aRadio.Id);
