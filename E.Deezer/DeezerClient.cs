@@ -33,7 +33,8 @@ namespace E.Deezer
 
         Task<IChart> GetChart(ulong aId, uint aStart, uint aCount);
 
-        Task<T> GetPlain<T>(string aMethod);
+        Task<T> GetPlain<T>(string aMethod, IList<IRequestParameter> aParams);
+        Task<T> GetPlainWithError<T>(string aMethod, IList<IRequestParameter> aParams) where T : IHasError;
 
 
         //POST
@@ -114,31 +115,31 @@ namespace E.Deezer
             return GetChart(method, parms, aStart, aCount);
 
         }
-
-        public Task<T> GetPlainWithError<T>(string aMethod) where T : IHasError
+       
+        public Task<T> GetPlainWithError<T>(string aMethod, IList<IRequestParameter> aParams = null) where T : IHasError
         {
-            return iExecutor.ExecuteGet(aMethod, RequestParameter.EmptyList)
+            if (aParams == null) aParams = RequestParameter.EmptyList;
+            return iExecutor.ExecuteGet(aMethod, aParams)
                             .ContinueWith(t =>
                             {
                                 CheckHttpResponse(t);
                                 T deserialized = DeserializeResponse<T>(t.Result.Content).Result;
-
+                                var msg = t.Result.Content.ReadAsStringAsync().Result;
                                 CheckForDeezerError<T>(deserialized);
-
                                 return deserialized;
                             }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
         }
 
-        public Task<T> GetPlain<T>(string aMethod)
+        public Task<T> GetPlain<T>(string aMethod, IList<IRequestParameter> aParams = null)
         {
-            return iExecutor.ExecuteGet(aMethod, RequestParameter.EmptyList)
+            if (aParams == null) aParams = RequestParameter.EmptyList;
+            return iExecutor.ExecuteGet(aMethod, aParams)
+
                             .ContinueWith((aTask) =>
                             {
                                 CheckHttpResponse(aTask);
+                                var msg = aTask.Result.Content.ReadAsStringAsync().Result;
                                 T deserialized = DeserializeResponse<T>(aTask.Result.Content).Result;
-
-
-
                                 return deserialized;
                             }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
         }
@@ -208,9 +209,7 @@ namespace E.Deezer
 
             return false;
         }
-
-
-
+               
         //'OAuth' Stuff
 
         //Grabs the user's permissions when the user Logs into the library.
@@ -219,7 +218,7 @@ namespace E.Deezer
             IList<IRequestParameter> parms = RequestParameter.EmptyList;
             AddDefaultsToParamList(parms);
 
-            return GetPlainWithError<User>("user/me")
+            return GetPlainWithError<User>("user/me", parms)
                     .ContinueWith((aTask) =>
                     {
                         var userInstance = aTask.Result;
@@ -244,6 +243,7 @@ namespace E.Deezer
                             .ContinueWith((aTask) =>
                             {
                                 CheckHttpResponse(aTask);
+                                var msg = aTask.Result.Content.ReadAsStringAsync().Result;
                                 T deserialized = DeserializeResponse<T>(aTask.Result.Content).Result;
                                 CheckForDeezerError(deserialized);
                                 return deserialized;
