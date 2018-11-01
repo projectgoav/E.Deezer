@@ -8,13 +8,28 @@ namespace E.Deezer.Api
 {
 	public interface IUser : IObjectWithImage
 	{
-		ulong Id { get;  }
-		string Name { get;  }
-		string Link { get;  }
-		string Country { get;  }
+        ulong Id { get; set; }
+        string Name { get; set; }
+        string Lastname { get; set; }
+        string Firstname { get; set; }
+        string Email { get; set; }
+        int Status { get; set; }
+        string Birthday { get; set; }
+        string Inscription_Date { get; set; }
+        string Gender { get; set; }
+        string Link { get; set; }
+        string Picture { get; set; }
+        string Picture_Small { get; set; }
+        string Picture_Medium { get; set; }
+        string Picture_Big { get; set; }
+        string Picture_XL { get; set; }
+        string Country { get; set; }
+        string Lang { get; set; }
+        bool Is_Kid { get; set; }
+        string Tracklist { get; set; }
+        string Type { get; set; }
 
-
-		// ** Methods **
+        // ** Methods **
         //Favourites
         Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart = 0, uint aCount = 100);
 
@@ -76,30 +91,27 @@ namespace E.Deezer.Api
 
 	internal class User : ObjectWithImage, IUser, IHasError, IDeserializable<IDeezerClient>
 	{
-		public ulong Id
-        {
-            get;
-            set;
-        }
 
-		public string Name
-        {
-            get;
-            set;
-        }
-
-		public string Link
-        {
-            get;
-            set;
-        }
-
-		public string Country
-        {
-            get;
-            set;
-        }
-
+        public ulong Id { get; set; }
+        public string Name { get; set; }
+        public string Lastname { get; set; }
+        public string Firstname { get; set; }
+        public string Email { get; set; }
+        public int Status { get; set; }
+        public string Birthday { get; set; }
+        public string Inscription_Date { get; set; }
+        public string Gender { get; set; }
+        public string Link { get; set; }
+        public string Picture { get; set; }
+        public string Picture_Small { get; set; }
+        public string Picture_Medium { get; set; }
+        public string Picture_Big { get; set; }
+        public string Picture_XL { get; set; }
+        public string Country { get; set; }
+        public string Lang { get; set; }
+        public bool Is_Kid { get; set; }
+        public string Tracklist { get; set; }
+        public string Type { get; set; }
 
 		//IDeserializable
 		public IDeezerClient Client
