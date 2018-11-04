@@ -2,7 +2,7 @@
 Unoffical asynchronous Deezer .NET API.
 
 ## Usage
-Latest Stable Nuget: [v3.1.1](http://nuget.org/packages/e.deezer)
+Latest Stable Nuget: [v3.2.0](http://nuget.org/packages/e.deezer)
  - .NET 4.5+
  - PCL Profile 111 (.NET Standard 1.1)
 
