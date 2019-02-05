@@ -10,7 +10,9 @@ using Newtonsoft.Json;
 using System.Net.Http;
 
 using E.Deezer.Api;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("E.Deezer.Tests")]
 namespace E.Deezer
 {
     internal interface IDeezerClient
