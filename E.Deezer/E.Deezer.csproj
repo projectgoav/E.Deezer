@@ -1,17 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard1.1</TargetFramework>
-    <PackageId>E.Deezer</PackageId>
-    <Version>3.0.0</Version>
-    <Authors>E</Authors>
-    <Product />
-    <PackageProjectUrl>https://github.com/projectgoav/E.Deezer</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/projectgoav/E.Deezer</RepositoryUrl>
-    <PackageTags>.NET Rest Deezer API</PackageTags>
-    <Copyright>Copyright 2017</Copyright>
-    <PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
-    <Description>.NET Deezer API wrapper</Description>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TargetFrameworks>netstandard1.1;netstandard2.0</TargetFrameworks>
+    <Copyright>Copyright 2019</Copyright>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
