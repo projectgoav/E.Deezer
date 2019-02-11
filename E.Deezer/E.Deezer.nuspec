@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>E.Deezer</id>
+    <version>$version$</version>
+    <authors>E</authors>
+    <owners>E</owners>
+    <licenseUrl>https://github.com/projectgoav/E.Deezer</licenseUrl>
+    <projectUrl>https://github.com/projectgoav/E.Deezer</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>.NET Deezer API wrapper</description>
+    <copyright>Copyright 2019</copyright>
+    <tags>.NET Rest Deezer API</tags>
+
+    <dependencies>
+
+        <group targetFramework="net45">
+            <dependency id="Newtonsoft.Json" version="10.0.3" />
+        </group>
+
+        <group targetFramework="netstandard1.1">
+            <dependency id="Newtonsoft.Json" version="10.0.3" />
+        </group>
+
+        <!-- Need one higher here as it's the fist Json.NET to fully support the NetStandard2.0 target -->
+        <group targetFramwork="netstandard2.0">
+            <dependency id="Newtonsoft.Json" version="11.0.1" />
+        </group>
+
+    </dependencies>
+
+    
+
+
+
+
+  </metadata>
+</package>
