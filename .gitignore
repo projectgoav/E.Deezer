@@ -234,4 +234,4 @@ $RECYCLE.BIN/
 E.Deezer/nuget.exe
 E.Deezer.TestConsole/
 res/*
-.vs/config/applicationhost.config
+.vs/*
