@@ -2,9 +2,7 @@
 Unoffical asynchronous Deezer .NET API.
 
 ## Usage
-Latest Stable Nuget: [v3.2.0](http://nuget.org/packages/e.deezer)
- - .NET 4.5+
- - PCL Profile 111 (.NET Standard 1.1)
+Latest Stable Nuget: [v4.0.0](http://nuget.org/packages/e.deezer)
 
 Via Nuget:
 ```Shell
@@ -47,10 +45,11 @@ var loveAlbums = await deezer.Search.Albums("love");
 
 See more in the [Wiki](http://github.com/projectgoav/E.Deezer/wiki)
 
-An example UI demo can be found [here](http://github.com/projectgoav/E.ExploreDeezer)
-
 
 ## Requirements
+#### V4+
+Targets Net45, NetStandard1.1 and NetStandard2.0
+
 #### V3+
 - Visual Studio 2015+
 - .NET 4.5+
@@ -66,7 +65,7 @@ An example UI demo can be found [here](http://github.com/projectgoav/E.ExploreDe
 
 ##License
 (MIT)
-Copyright (c) 2018
+Copyright (c) 2019
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
