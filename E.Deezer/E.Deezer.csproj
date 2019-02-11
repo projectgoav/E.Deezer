@@ -9,14 +9,14 @@
 
   <PropertyGroup>
     <PackageId>E.Deezer</PackageId>
-    <PackageAuthors>E</PackageAuthors>
-    <PackageOwners>E</PackageOwners>
-    <PackageLicense>https://github.com/projectgoav/E.Deezer</PackageLicense>
+    <Authors>E</Authors>
+    <PackageLicenseUrl>https://github.com/projectgoav/E.Deezer</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/projectgoav/E.Deezer</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageDescription>.NET Deezer API wrapper</PackageDescription>
     <PackageCopyright>Copyright 2019</PackageCopyright>
     <PackageTags>.NET Rest Deezer API</PackageTags>
+    <RepositoryUrl>https://github.com/projectgoav/E.Deezer</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'netstandard1.1'">
