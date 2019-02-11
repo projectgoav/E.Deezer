@@ -1,103 +1,34 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>E.Deezer</RootNamespace>
-    <AssemblyName>E.Deezer</AssemblyName>
-    <DefaultLanguage>en-GB</DefaultLanguage>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ShouldCreateLogs>True</ShouldCreateLogs>
-    <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>
-    <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
-    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
-    <UpdateAssemblyInfoVersion>True</UpdateAssemblyInfoVersion>
-    <AssemblyVersionSettings>None.None.None.Increment</AssemblyVersionSettings>
-    <AssemblyFileVersionSettings>None.None.None.Increment</AssemblyFileVersionSettings>
-    <AssemblyInfoVersionSettings>DayStamp.MonthStamp.YearStamp.TimeStamp</AssemblyInfoVersionSettings>
-    <AssemblyInfoFilePath>Properties\AssemblyInfo.cs</AssemblyInfoFilePath>
+    <TargetFrameworks>netstandard1.1;netstandard2.0;net45</TargetFrameworks>
+    <Copyright>Copyright 2019</Copyright>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild> 
+    <Deterministic>False</Deterministic>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+
+  <PropertyGroup>
+    <PackageId>E.Deezer</PackageId>
+    <PackageAuthors>E</PackageAuthors>
+    <PackageOwners>E</PackageOwners>
+    <PackageLicense>https://github.com/projectgoav/E.Deezer</PackageLicense>
+    <PackageProjectUrl>https://github.com/projectgoav/E.Deezer</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageDescription>.NET Deezer API wrapper</PackageDescription>
+    <PackageCopyright>Copyright 2019</PackageCopyright>
+    <PackageTags>.NET Rest Deezer API</PackageTags>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <ItemGroup>
-    <!-- A reference to the entire .NET Framework is automatically included -->
-    <None Include="packages.config" />
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'netstandard1.1'">
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Api\Album.cs" />
-    <Compile Include="Api\Artist.cs" />
-    <Compile Include="Api\Chart.cs" />
-    <Compile Include="Api\Comment.cs" />
-    <Compile Include="Api\Error.cs" />
-    <Compile Include="Api\Genre.cs" />
-    <Compile Include="Api\Infos.cs" />
-    <Compile Include="Api\Internal\DeezerCreateResponse.cs" />
-    <Compile Include="Api\Internal\DeezerFragment.cs" />
-    <Compile Include="Api\Internal\DeezerObject.cs" />
-    <Compile Include="Api\Internal\DeezerPermissionRequest.cs" />
-    <Compile Include="Api\Internal\IDeserializable.cs" />
-    <Compile Include="Api\Internal\ObjectWithImage.cs" />
-    <Compile Include="Api\Internal\Permissions.cs" />
-    <Compile Include="Api\Playlist.cs" />
-    <Compile Include="Api\Radio.cs" />
-    <Compile Include="Api\Track.cs" />
-    <Compile Include="Api\User.cs" />
-    <Compile Include="Api\UserProfile.cs" />
-    <Compile Include="Deezer.cs" />
-    <Compile Include="DeezerClient.cs" />
-    <Compile Include="DeezerPermissions.cs" />
-    <Compile Include="DeezerSession.cs" />
-    <Compile Include="Endpoint\BrowseEndpoint.cs" />
-    <Compile Include="Endpoint\ChartsEndpoint.cs" />
-    <Compile Include="Endpoint\GenreEndpoint.cs" />
-    <Compile Include="Endpoint\RadioEndpoint.cs" />
-    <Compile Include="Endpoint\SearchEndpoint.cs" />
-    <Compile Include="Endpoint\UserEndpoint.cs" />
-    <Compile Include="Exception\DeezerException.cs" />
-    <Compile Include="Exception\DeezerPermissionException.cs" />
-    <Compile Include="Exception\NotLoggedInException.cs" />
-    <Compile Include="ExecutorService.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RequestParameter.cs" />
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45'">
+    <PackageReference Include="System.Net.Http" Version="4.3.2" />
   </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
