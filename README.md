@@ -2,7 +2,7 @@
 Unoffical asynchronous Deezer .NET API.
 
 ## Usage
-Latest Stable Nuget: [v3.1.1](http://nuget.org/packages/e.deezer)
+Latest Stable Nuget: [v3.2.0](http://nuget.org/packages/e.deezer)
  - .NET 4.5+
  - PCL Profile 111 (.NET Standard 1.1)
 
@@ -33,12 +33,12 @@ var deezer = DeezerSession.CreateNew();
 var genreList = await deezer.Browse.Genre.GetCommonGenre();
 
 //Get latest chart
-var chart = await deezer.Browse.Chart.GetChart();
+var chart = await deezer.Browse.Charts.GetChart();
 
 //Pagination support
-var top10 = await deezer.Browse.Chart.GetTrackChart(aCount: 10);
-var next10 = await deezer.Browse.Chart.GetTrackChart(aStart: 10, aCount: 10);
-var another10 = await deezer.Browse.Chart.GetTrackChart(aStart: 20, aCount: 10);
+var top10 = await deezer.Browse.Charts.GetTrackChart(aCount: 10);
+var next10 = await deezer.Browse.Charts.GetTrackChart(aStart: 10, aCount: 10);
+var another10 = await deezer.Browse.Charts.GetTrackChart(aStart: 20, aCount: 10);
 
 //Search
 var loveAlbums = await deezer.Search.Albums("love");
