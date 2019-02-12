@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>E.Deezer.Tests</RootNamespace>
     <AssemblyName>E.Deezer.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AssemblyInfoFilePath>Properties\AssemblyInfo.cs</AssemblyInfoFilePath>
     <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
@@ -21,6 +21,7 @@
     <AssemblyFileVersionSettings>None.None.None.Increment</AssemblyFileVersionSettings>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -100,11 +101,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\E.Deezer\E.Deezer.csproj">
-      <Project>{221a1a79-d36f-4400-a73c-8932cfaaac78}</Project>
+      <Project>{7dc0fd2e-3a4f-49a2-94f1-e54d51835948}</Project>
       <Name>E.Deezer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\Api\Album.json">
