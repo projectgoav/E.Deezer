@@ -84,6 +84,30 @@ namespace E.Deezer
                          }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
 
+        public Task<T> ExecutePost<T>(string method, IEnumerable<IRequestParameter> parms)
+        {
+            string url = BuildUrl(method, parms);
+            return client.PostAsync(url, null, this.CancellationToken)
+                         .ContinueWith(async t =>
+                         {
+                             if (t.IsFaulted)
+                             {
+                                 throw t.Exception.GetBaseException();
+                             }
+
+                             using (t.Result)
+                             {
+                                 CheckHttpResponse(t.Result);
+
+                                 // TODO -> This isn't entirely correct, as there can often be a Deezer error hidden in here...
+                                 return await GetJsonObjectFromResponse<T>(t.Result)
+                                                .ConfigureAwait(false);
+                             }
+
+                         }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default)
+                        .Unwrap();
+        }
+
         public Task<bool> ExecuteDelete(string method, IEnumerable<IRequestParameter> parms)
         {
             string url = BuildUrl(method, parms);
