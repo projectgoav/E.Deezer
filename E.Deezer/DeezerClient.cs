@@ -29,7 +29,7 @@ namespace E.Deezer
 
         Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount);
 
-        Task<T> Get<T>(string aMethod);
+        Task<T> GetDeezerObject<T>(string aMethod);
 
         Task<IChart> GetChart(ulong aId, uint aStart, uint aCount);
 
@@ -97,7 +97,7 @@ namespace E.Deezer
             return DoGet<DeezerFragment<T>>(aMethod, aParams);
         }
 
-        public Task<T> Get<T>(string aMethod)
+        public Task<T> GetDeezerObject<T>(string aMethod)
         {
             return DoGet<DeezerObject<T>>(aMethod, RequestParameter.EmptyList)
                         .ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
