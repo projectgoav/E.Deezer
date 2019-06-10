@@ -115,16 +115,6 @@ namespace E.Deezer.Api
         }
     }
 
-    // DEBUG 
-    internal class DeezerObject<T> : IHasError
-    {
-        public T Data { get; set; }
-        private Error Error { get; set; }
-
-        public IError TheError => Error;
-    }
-    //~~~
-
 
     internal class DeezerObjectResponseJsonDeserializer : JsonConverter
     {
