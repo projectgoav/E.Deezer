@@ -29,7 +29,7 @@ namespace E.Deezer
 
         Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount);
 
-        Task<T> Get<T>(string aMethod);
+        Task<T> GetDeezerObject<T>(string aMethod, IList<IRequestParameter> aParams) where T : IDeezerObjectResponse;
 
         Task<IChart> GetChart(ulong aId, uint aStart, uint aCount);
 
@@ -97,10 +97,25 @@ namespace E.Deezer
             return DoGet<DeezerFragment<T>>(aMethod, aParams);
         }
 
-        public Task<T> Get<T>(string aMethod)
+        public Task<T> GetDeezerObject<T>(string aMethod, IList<IRequestParameter> aParams) where T : IDeezerObjectResponse
         {
-            return DoGet<DeezerObject<T>>(aMethod, RequestParameter.EmptyList)
-                        .ContinueWith<T>((aTask) => aTask.Result.Data, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+            return GetPlain<T>(aMethod, aParams)
+                       .ContinueWith(t =>
+                       {
+                           if (t.IsFaulted)
+                           {
+                               throw t.Exception.GetBaseException();
+                           }
+
+                           var response = t.Result;
+
+                           if (response.Error != null)
+                           {
+                               ThrowDeezerError(response.Error);
+                           }
+
+                           return response;
+                       }, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
 
@@ -274,20 +289,24 @@ namespace E.Deezer
             //Make sure our API call didn't fail...
             if(deezerObject.TheError != null)
             {
-                if(deezerObject.TheError.Code == 200          //200 == Logout fail
-                    || deezerObject.TheError.Code == 300)     //300 == Authentication error
-                {
-                    //We've got an invalid/expired auth code -> auto logout + clear internals
-                    iSession.Logout();
-                    iPermissions = null;
-                    iUser = null;
-                }
-
-                throw new DeezerException(deezerObject.TheError);
-
+                ThrowDeezerError(deezerObject.TheError);
             }
         }
 
+
+        private void ThrowDeezerError(IError error)
+        {
+            if (error.Code == 200          //200 == Logout fail
+                    || error.Code == 300)     //300 == Authentication error
+            {
+                //We've got an invalid/expired auth code -> auto logout + clear internals
+                iSession.Logout();
+                iPermissions = null;
+                iUser = null;
+            }
+
+            throw new DeezerException(error);
+        }
 
         private void CheckAuthentication()
         {
