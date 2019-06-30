@@ -79,7 +79,7 @@
     <Compile Include="Api\Entities\RadioPropertyTests.cs" />
     <Compile Include="Api\Entities\TrackPropertyTests.cs" />
     <Compile Include="Api\Entities\UserPropertyTests.cs" />
-    <Compile Include="Api\Internal\TestDeezerAlbumJsonConverter.cs" />
+    <Compile Include="Api\Internal\TestDeezerObjectDeserializer.cs" />
     <Compile Include="Api\Internal\TestObjectWithImage.cs" />
     <Compile Include="Api\TestAlbum.cs" />
     <Compile Include="Api\TestArtist.cs" />
