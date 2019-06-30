@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+#if NETSTANDARD11
+using System.Reflection;
+#endif
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -118,13 +122,21 @@ namespace E.Deezer.Api
 
     internal class DeezerObjectResponseJsonDeserializer : JsonConverter
     {
+        private static readonly Type typeToConvert = typeof(IDeezerObjectResponse);
+
         public override bool CanRead => true;
 
         public override bool CanWrite => false;
 
         public override bool CanConvert(Type objectType)
         {
-            return typeof(IDeezerObjectResponse).IsAssignableFrom(objectType);
+#if NETSTANDARD11
+            return objectType.GetTypeInfo()
+                             .ImplementedInterfaces
+                             .Contains(typeToConvert);
+#else
+            return typeToConvert.IsAssignableFrom(objectType);
+#endif
         }
 
 
