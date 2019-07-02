@@ -10,6 +10,11 @@ namespace E.Deezer.Tests.Regression.Endpoint
     [TestFixture]
     class UserEndpointTests
     {
+        private static IAlbum _album;
+        private static IArtist _artist;
+        private static ITrack _track;
+        private static IPlaylist _playlist;
+        private static IRadio _radio;
         private static IUserEndpoint _user;
 
         [OneTimeSetUp]
@@ -25,6 +30,21 @@ namespace E.Deezer.Tests.Regression.Endpoint
                 .GetAwaiter().GetResult();
 
             _user = deezer.User;
+
+            _album = deezer.Browse.GetAlbumById(302127)
+                .GetAwaiter().GetResult();
+
+            _artist = deezer.Browse.GetArtistById(27)
+                .GetAwaiter().GetResult();
+
+            _track = deezer.Browse.GetTrackById(3135556)
+                .GetAwaiter().GetResult();
+
+            _playlist = deezer.Browse.GetPlaylistById(908622995)
+                .GetAwaiter().GetResult();
+
+            _radio = deezer.Browse.GetRadioById(6)
+                .GetAwaiter().GetResult();
         }
 
         [Test]
@@ -207,6 +227,173 @@ namespace E.Deezer.Tests.Regression.Endpoint
             Assert.IsNotNull(firstRadio, nameof(firstRadio));
             Assert.That(firstRadio.Id, Is.GreaterThan(0), nameof(firstRadio.Id));
             Assert.IsNotNull(firstRadio.Title, nameof(firstRadio.Title));
+        }
+        
+
+        [Test, Order(1)]
+        public async Task AddAlbumToFavourite()
+        {
+            bool response = await _user.AddAlbumToFavourite(_album);
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(2)]
+        public async Task AddAlreadyAddedAlbumToFavourites()
+        {
+            bool response = await _album.AddAlbumToFavorite();
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(3)]
+        public async Task RemoveAlbumFromFavourite()
+        {
+            bool response = await _user.RemoveAlbumFromFavourite(_album);
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(4)]
+        public async Task RemoveAlreadyRemovedAlbumFromFavourites()
+        {
+            bool response = await _album.RemoveAlbumFromFavorite();
+
+            Assert.IsTrue(response);
+        }
+
+
+        [Test, Order(5)]
+        public async Task AddArtistToFavourite()
+        {
+            bool response = await _user.AddArtistToFavourite(_artist);
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(6)]
+        public async Task AddAlreadyAddedArtistToFavourites()
+        {
+            bool response = await _artist.AddArtistToFavorite();
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(7)]
+        public async Task RemoveArtistFromFavourite()
+        {
+            bool response = await _user.RemoveArtistFromFavourite(_artist);
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(8)]
+        public async Task RemoveAlreadyRemovedArtistFromFavourites()
+        {
+            bool response = await _artist.RemoveArtistFromFavorite();
+
+            Assert.IsTrue(response);
+        }
+
+
+        [Test, Order(9)]
+        public async Task AddTrackToFavourite()
+        {
+            bool response = await _user.AddTrackToFavourite(_track.Id);
+
+            Assert.IsTrue(response);
+            Assert.Warn($"Task<bool> AddTrackToFavourite(ITrack aTrack); method is missing from the interface IUserEndpoint!");
+        }
+
+        [Test, Order(10)]
+        public async Task AddAlreadyAddedTrackToFavourites()
+        {
+            bool response = await _track.AddTrackToFavorite();
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(11)]
+        public async Task RemoveTrackFromFavourite()
+        {
+            bool response = await _user.RemoveTrackFromFavourite(_track.Id);
+
+            Assert.IsTrue(response);
+            Assert.Warn($"Task<bool> RemoveTrackFromFavourite(ITrack aTrack); method is missing from the interface IUserEndpoint!");
+        }
+
+        [Test, Order(12)]
+        public async Task RemoveAlreadyRemovedTrackFromFavourites()
+        {
+            bool response = await _track.RemoveTrackFromFavorite();
+
+            Assert.IsTrue(response);
+        }
+
+
+        [Test, Order(13)]
+        public async Task AddPlaylistToFavourite()
+        {
+            bool response = await _user.AddPlaylistToFavourite(_playlist);
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(14)]
+        public async Task AddAlreadyAddedPlaylistToFavourites()
+        {
+            bool response = await _playlist.AddPlaylistToFavorite();
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(15)]
+        public async Task RemovePlaylistFromFavourite()
+        {
+            bool response = await _user.RemovePlaylistFromFavourite(_playlist);
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(16)]
+        public async Task RemoveAlreadyRemovedPlaylistFromFavourites()
+        {
+            bool response = await _playlist.RemovePlaylistFromFavorite();
+
+            Assert.IsTrue(response);
+        }
+
+
+        [Test, Order(17)]
+        public async Task AddRadioToFavourite()
+        {
+            bool response = await _user.AddRadioToFavourite(_radio);
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(18)]
+        public async Task AddAlreadyAddedRadioToFavourites()
+        {
+            bool response = await _radio.AddRadioToFavorite();
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(19)]
+        public async Task RemoveRadioFromFavourite()
+        {
+            bool response = await _user.RemoveRadioFromFavourite(_radio);
+
+            Assert.IsTrue(response);
+        }
+
+        [Test, Order(20)]
+        public async Task RemoveAlreadyRemovedRadioFromFavourites()
+        {
+            bool response = await _radio.RemoveRadioFromFavorite();
+
+            Assert.IsTrue(response);
         }
     }
 }
