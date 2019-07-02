@@ -79,17 +79,23 @@
     <Compile Include="Api\Entities\RadioPropertyTests.cs" />
     <Compile Include="Api\Entities\TrackPropertyTests.cs" />
     <Compile Include="Api\Entities\UserPropertyTests.cs" />
+    <Compile Include="Api\Internal\PermissionsTests.cs" />
     <Compile Include="Api\Internal\TestDeezerObjectDeserializer.cs" />
     <Compile Include="Api\Internal\TestObjectWithImage.cs" />
     <Compile Include="Api\TestAlbum.cs" />
     <Compile Include="Api\TestArtist.cs" />
     <Compile Include="Api\TestChart.cs" />
+    <Compile Include="DeezerSessionTests.cs" />
+    <Compile Include="Exception\DeezerExceptionTests.cs" />
+    <Compile Include="Exception\DeezerPermissionsExceptionTests.cs" />
     <Compile Include="ExecutorServiceTests.cs" />
+    <Compile Include="PermissionsTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RequestParameterTests.cs" />
     <Compile Include="Str.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

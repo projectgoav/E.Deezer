@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{84ABD11F-B656-4FA9-9B52-8CC887F293A6}"
 	ProjectSection(SolutionItems) = preProject
@@ -10,7 +10,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{84ABD1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E.Deezer.Tests", "E.Deezer.Tests\E.Deezer.Tests.csproj", "{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E.Deezer", "E.Deezer\E.Deezer.csproj", "{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E.Deezer", "E.Deezer\E.Deezer.csproj", "{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{697A9BE3-3B02-4CA7-B0B0-A6747550A8ED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Integration", "tests\Integration\Integration.csproj", "{DAB15430-0472-40D5-9FDB-66BE8FAA3596}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regression", "tests\Regression\Regression.csproj", "{7F3A3B85-D101-48A8-B5FD-273B487C32F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,8 +32,23 @@ Global
 		{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAB15430-0472-40D5-9FDB-66BE8FAA3596}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAB15430-0472-40D5-9FDB-66BE8FAA3596}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAB15430-0472-40D5-9FDB-66BE8FAA3596}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAB15430-0472-40D5-9FDB-66BE8FAA3596}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F3A3B85-D101-48A8-B5FD-273B487C32F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F3A3B85-D101-48A8-B5FD-273B487C32F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F3A3B85-D101-48A8-B5FD-273B487C32F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F3A3B85-D101-48A8-B5FD-273B487C32F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DAB15430-0472-40D5-9FDB-66BE8FAA3596} = {697A9BE3-3B02-4CA7-B0B0-A6747550A8ED}
+		{7F3A3B85-D101-48A8-B5FD-273B487C32F2} = {697A9BE3-3B02-4CA7-B0B0-A6747550A8ED}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1DF008A1-6BD1-4F2C-B8F5-C519227C3725}
 	EndGlobalSection
 EndGlobal
