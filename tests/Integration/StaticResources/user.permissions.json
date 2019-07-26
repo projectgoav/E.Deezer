@@ -1,0 +1,11 @@
+﻿{
+  "permissions": {
+    "basic_access": true,
+    "email": true,
+    "offline_access": true,
+    "manage_library": true,
+    "manage_community": true,
+    "delete_library": true,
+    "listening_history": true
+  }
+}

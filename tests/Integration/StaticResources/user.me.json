@@ -1,0 +1,28 @@
+﻿{
+  "id": "1518367622",
+  "name": "PoLáKoSz",
+  "lastname": "",
+  "firstname": "",
+  "email": "polakosz@freemail.hu",
+  "status": 0,
+  "birthday": "0000-00-00",
+  "inscription_date": "2017-05-05",
+  "gender": "",
+  "link": "https://www.deezer.com/profile/1518367622",
+  "picture": "https://api.deezer.com/user/1518367622/image",
+  "picture_small": "https://e-cdns-images.dzcdn.net/images/user//56x56-000000-80-0-0.jpg",
+  "picture_medium": "https://e-cdns-images.dzcdn.net/images/user//250x250-000000-80-0-0.jpg",
+  "picture_big": "https://e-cdns-images.dzcdn.net/images/user//500x500-000000-80-0-0.jpg",
+  "picture_xl": "https://e-cdns-images.dzcdn.net/images/user//1000x1000-000000-80-0-0.jpg",
+  "country": "DE",
+  "lang": "en",
+  "is_kid": false,
+  "explicit_content_level": "explicit_display",
+  "explicit_content_levels_available": [
+    "explicit_display",
+    "explicit_no_recommendation",
+    "explicit_hide"
+  ],
+  "tracklist": "https://api.deezer.com/user/1518367622/flow",
+  "type": "user"
+}
