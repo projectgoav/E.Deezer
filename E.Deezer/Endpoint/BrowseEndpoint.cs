@@ -111,7 +111,7 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetDeezerObject<TrackObjectResponse>("Track/{id}", p)
+            var response = await iClient.GetDeezerObject<TrackObjectResponse>("track/{id}", p)
                                         .ConfigureAwait(false);
 
             return response.Object;
@@ -125,7 +125,7 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetDeezerObject<RadioObjectResponse>("Radio/{id}", p)
+            var response = await iClient.GetDeezerObject<RadioObjectResponse>("radio/{id}", p)
                                         .ConfigureAwait(false);
 
             return response.Object;
@@ -139,7 +139,7 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetDeezerObject<UserObjectResponse>("User/{id}", p)
+            var response = await iClient.GetDeezerObject<UserObjectResponse>("user/{id}", p)
                                         .ConfigureAwait(false);
 
             return response.Object;

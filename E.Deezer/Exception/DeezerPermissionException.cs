@@ -14,7 +14,7 @@ namespace E.Deezer
         private const string BASIC = "The provided access token doesn't provide 'basic_access' rights for this user and so this operation can't be performed.";
         private const string HISTORY = "The provided access token doesn't provide 'listening_history' rights for this user and so this operation can't be performed";
         private const string EMAIL = "The provided access token doesn't provide 'email' access rights for this user and so this operation can't be performed.";
-        private const string OFFLINE = "The provided access token doesn't provide 'offline_access' rights for this user and so this operaiton can't be performed.";
+        private const string OFFLINE = "The provided access token doesn't provide 'offline_access' rights for this user and so this operatuon can't be performed.";
         private const string COMMUNITY = "The provided access token doesn't provide 'manage_community' rights for this user and so this operation can't be performed.";
         private const string DELETE = "The provided access token doesn't provide 'delete' rights for this user and so this operation can't be performem.";
 
