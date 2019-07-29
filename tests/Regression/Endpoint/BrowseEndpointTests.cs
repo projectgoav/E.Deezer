@@ -52,7 +52,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             Assert.AreEqual(1, artist.Id, nameof(artist.Id));
             Assert.AreEqual("The Beatles", artist.Name, nameof(artist.Name));
             Assert.AreEqual("https://www.deezer.com/artist/1", artist.Link, nameof(artist.Link));
-            Assert.AreEqual(45, artist.AlbumCount, nameof(artist.AlbumCount));
+            Assert.AreEqual(31, artist.AlbumCount, nameof(artist.AlbumCount));
             Assert.That(artist.Fans, Is.GreaterThan(1000000), nameof(artist.Fans));
             Assert.IsTrue(artist.HasSmartRadio, nameof(artist.HasSmartRadio));
         }
@@ -132,8 +132,8 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
             Assert.IsNotNull(radio, nameof(radio));
             Assert.AreEqual(6, radio.Id, nameof(radio.Id));
-            Assert.AreEqual("Elektronikus zene", radio.Title, nameof(radio.Title));
-            Assert.AreEqual("Elektronikus zene", radio.Description, nameof(radio.Description));
+            Assert.AreEqual("Electro", radio.Title, nameof(radio.Title));
+            Assert.AreEqual("Electro", radio.Description, nameof(radio.Description));
         }
 
         [Test]

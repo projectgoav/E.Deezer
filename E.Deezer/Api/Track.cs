@@ -68,11 +68,6 @@ namespace E.Deezer.Api
             get;
             set;
         }
-        public DateTime ReleaseDate
-        {
-            get;
-            set;
-        }
 
         public string Artwork
         {
@@ -167,8 +162,15 @@ namespace E.Deezer.Api
             set;
         }
 
-        [JsonProperty(PropertyName = "disc_number")]
+        [JsonProperty(PropertyName = "disk_number")]
         public uint Disc
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(PropertyName = "release_date")]
+        public DateTime ReleaseDate
         {
             get;
             set;
