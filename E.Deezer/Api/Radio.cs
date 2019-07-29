@@ -46,6 +46,7 @@ namespace E.Deezer.Api
             set;
         }
 
+        [JsonProperty (PropertyName = "share")]
         public string ShareLink
         {
             get;
