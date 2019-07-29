@@ -7,11 +7,26 @@ using E.Deezer.Api;
 
 namespace E.Deezer
 {
+    public enum EDeezerApiError
+    {
+        Quota               = 4,
+        ItemLimit           = 100,
+        InvalidPermissions  = 200,
+        InvalidToken        = 300,
+        InvaludParameter    = 500,
+        MissingParameter    = 501,
+        InvalidQuery        = 600,
+        ServiceBusy         = 700,
+        NotFound            = 800
+    }
+
+
     /// <summary>
     /// Defines an exception that may be returned from the Deezer API
     /// More information: http://developers.deezer.com/api/errors
     /// </summary>
-    public  class DeezerException : Exception
+    /// 
+    public class DeezerException : Exception
     {
         private IError iError;
         private string iMessage;
