@@ -30,9 +30,6 @@ namespace E.Deezer.Endpoint
 
         public Task<IEnumerable<IRadio>> GetTop5()
         {
-            ThrowIfClientUnauthenticated();
-            ThrowIfNoPermission(DeezerPermissions.BasicAccess);
-            
             return iClient.Get<Radio>("radio/top", RequestParameter.EmptyList)
                             .ContinueWith<IEnumerable<IRadio>>((aTask) =>
                                 {
@@ -42,9 +39,6 @@ namespace E.Deezer.Endpoint
 
         public Task<IEnumerable<IRadio>> GetDeezerSelection(uint aStart = 0, uint aCount = 100)
         {
-            ThrowIfClientUnauthenticated();
-            ThrowIfNoPermission(DeezerPermissions.BasicAccess);
-
             return iClient.Get<Radio>("radio/lists", aStart, aCount).ContinueWith<IEnumerable<IRadio>>((aTask) =>
             {
                 return iClient.Transform<Radio, IRadio>(aTask.Result);
@@ -53,9 +47,6 @@ namespace E.Deezer.Endpoint
 
         public Task<IEnumerable<IRadio>> GetByGenres()
         {
-            ThrowIfClientUnauthenticated();
-            ThrowIfNoPermission(DeezerPermissions.BasicAccess);
-
             return iClient.Get<Radio>("radio/genres", RequestParameter.EmptyList).ContinueWith<IEnumerable<IRadio>>((aTask) =>
             {
                 return iClient.Transform<Radio, IRadio>(aTask.Result);
