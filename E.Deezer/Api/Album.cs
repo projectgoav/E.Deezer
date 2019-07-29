@@ -93,12 +93,6 @@ namespace E.Deezer.Api
             set;
         }
 
-        public uint GenreId
-        {
-            get;
-            set;
-        }
-
         public uint Fans
         {
             get;
@@ -157,7 +151,14 @@ namespace E.Deezer.Api
             set;
         }
 
-        [JsonProperty(PropertyName = "genre")]
+        [JsonProperty(PropertyName = "genre_id")]
+        public uint GenreId
+        {
+            get;
+            set;
+        }
+        
+        [JsonProperty(PropertyName = "genres")]
         public DeezerFragment<Genre> GenreInternal
         {
             get;
