@@ -12,6 +12,9 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
+using E.Deezer.Api;
+
+
 namespace E.Deezer
 {
     internal class ExecutorService : IDisposable
@@ -183,6 +186,7 @@ namespace E.Deezer
             var customConverters = new List<JsonConverter>()
             {
                 // TODO add any customer converters we might end up with..
+                new DeezerObjectResponseJsonDeserializer(),
             };
 
             var jsonSerailizerSettings = new JsonSerializerSettings()
