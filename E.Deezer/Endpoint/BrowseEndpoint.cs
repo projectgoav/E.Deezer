@@ -22,7 +22,7 @@ namespace E.Deezer.Endpoint
         Task<IPlaylist> GetPlaylistById(uint playlistId);
         Task<IRadio> GetRadioById(uint radioId);
         Task<ITrack> GetTrackById(uint trackId);
-        Task<IUser> GetUserById(uint userId);
+        Task<IUserProfile> GetUserById(uint userId);
     }
 
     internal class BrowseEndpoint : IBrowseEndpoint
@@ -131,7 +131,7 @@ namespace E.Deezer.Endpoint
             return response;
         }
 
-        public async Task<IUser> GetUserById(uint UserId)
+        public async Task<IUserProfile> GetUserById(uint UserId)
         {
             var p = new List<IRequestParameter>()
             {
@@ -139,7 +139,7 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetPlain<User>("user/{id}", p)
+            var response = await iClient.GetPlain<UserProfile>("user/{id}", p)
                                         .ConfigureAwait(false);
 
             return response;

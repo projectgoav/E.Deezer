@@ -139,13 +139,13 @@ namespace E.Deezer.Tests.Regression.Endpoint
         [Test]
         public async Task GetUserById()
         {
-            IUser user = await _browse.GetUserById(5);
+            IUserProfile user = await _browse.GetUserById(5);
 
 
             Assert.IsNotNull(user, nameof(user));
             Assert.AreEqual(5, user.Id, nameof(user.Id));
-            Assert.AreEqual("Daniel Marhely", user.Name, nameof(user.Name));
-            Assert.AreEqual("https://www.deezer.com/profile/5", user.Link, nameof(user.Link));
+            Assert.AreEqual("Daniel Marhely", user.Username, nameof(user.Username));
+            Assert.AreEqual("https://www.deezer.com/profile/5", user.ShareLink, nameof(user.ShareLink));
             Assert.AreEqual("JP", user.Country, nameof(user.Country));
         }
     }
