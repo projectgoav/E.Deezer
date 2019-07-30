@@ -60,7 +60,7 @@ namespace E.Deezer
                 EDeezerApiError errorCode = (EDeezerApiError)this.Error.Code;
 
                 return ERROR_MSG_LOOKUP.ContainsKey(errorCode) ? ERROR_MSG_LOOKUP[errorCode]
-                                                               : DEFAULT_EXCEPTION_MESSAGE
+                                                               : DEFAULT_EXCEPTION_MESSAGE;
             }
         }
 

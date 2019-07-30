@@ -1,9 +1,11 @@
 ﻿using E.Deezer.Api;
+
 using NUnit.Framework;
 
 namespace E.Deezer.Tests.Exception
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.All)]
     public class DeezerExceptionTests
     {
         [TestCase("QuotaException", 4u)]
@@ -15,7 +17,7 @@ namespace E.Deezer.Tests.Exception
         [TestCase("InvalidQueryException", 600u)]
         [TestCase("ServiceBusyException", 700u)]
         [TestCase("DataNotFoundException", 800u)]
-        public void TestExceptionMessageFor(string justToMakeItMoreReadable, uint errorCode)
+        public void TestExceptionMessageFor(string _, uint errorCode)
         {
             var error = new Error()
             {
