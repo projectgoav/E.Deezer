@@ -7,32 +7,19 @@ namespace E.Deezer
 {
     public class DeezerPermissionsException : Exception
     {
-        private string iMessage;
+        internal const string EXCEPTION_MESSAGE_FORMAT = "The provided access token doesn't provide '{0}' permission and so this operation can't be performed. Please ensure token hasn't expired.";
+        internal const string UNKNOWN_EXCEPTION_MESSAGE = "The provided access token doesn't provide the correct permissions and so this operation can't be performed. Please ensure token hasn't expired.";
 
-        private const string UNKNOWN = "The provided access token doesn't provide the required access rights to perform this operation.";
-        private const string MSG_END = "Please ensure the token hasn't expired.";
-        private const string BASIC = "The provided access token doesn't provide 'basic_access' rights for this user and so this operation can't be performed.";
-        private const string HISTORY = "The provided access token doesn't provide 'listening_history' rights for this user and so this operation can't be performed";
-        private const string EMAIL = "The provided access token doesn't provide 'email' access rights for this user and so this operation can't be performed.";
-        private const string OFFLINE = "The provided access token doesn't provide 'offline_access' rights for this user and so this operatuon can't be performed.";
-        private const string COMMUNITY = "The provided access token doesn't provide 'manage_community' rights for this user and so this operation can't be performed.";
-        private const string DELETE = "The provided access token doesn't provide 'delete' rights for this user and so this operation can't be performem.";
 
-        public DeezerPermissionsException(DeezerPermissions aPermission)
+        public DeezerPermissionsException(DeezerPermissions permission)
         {
-            switch (aPermission)
-            {
-                case DeezerPermissions.BasicAccess: { iMessage = BASIC; break; }
-                case DeezerPermissions.ListeningHistory: { iMessage = HISTORY; break; }
-                case DeezerPermissions.Email: { iMessage = EMAIL; break; }
-                case DeezerPermissions.OfflineAccess: { iMessage = OFFLINE; break; }
-                case DeezerPermissions.ManageCommunity: { iMessage = COMMUNITY; break; }
-                case DeezerPermissions.DeleteLibrary: { iMessage = DELETE; break; }
-                default: { iMessage = UNKNOWN; break; }
-            }
+            bool hasFormattedText = Permissions.PERMISSION_NAME_LOOKUP.ContainsKey(permission);
+
+            this.Message = hasFormattedText ? string.Format(EXCEPTION_MESSAGE_FORMAT, Permissions.PERMISSION_NAME_LOOKUP[permission])
+                                            : UNKNOWN_EXCEPTION_MESSAGE;
         }
 
 
-        public override string Message => string.Format("{0}. {1}", iMessage, MSG_END);
+        public override string Message { get; }
     }
 }
