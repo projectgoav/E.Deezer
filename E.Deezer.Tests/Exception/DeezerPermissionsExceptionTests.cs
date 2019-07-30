@@ -3,7 +3,8 @@
 namespace E.Deezer.Tests.Exception
 {
     [TestFixture]
-    class DeezerPermissionsExceptionTests
+    [Parallelizable(ParallelScope.All)]
+    public class DeezerPermissionsExceptionTests
     {
         [TestCase(DeezerPermissions.BasicAccess, "basic_access")]
         [TestCase(DeezerPermissions.Email, "email")]
