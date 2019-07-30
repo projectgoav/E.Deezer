@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace E.Deezer.Tests.Exception
 {
     [TestFixture]
-    class DeezerExceptionTests
+    public class DeezerExceptionTests
     {
         [TestCase("QuotaException", 4u)]
         [TestCase("ItemsLimitExceededException", 100u)]
@@ -17,11 +17,14 @@ namespace E.Deezer.Tests.Exception
         [TestCase("DataNotFoundException", 800u)]
         public void TestExceptionMessageFor(string justToMakeItMoreReadable, uint errorCode)
         {
-            var error = new Error() { Code = errorCode };
+            var error = new Error()
+            {
+                Code = errorCode
+            };
 
             var ex = new DeezerException(error);
 
-            Assert.AreNotEqual("An unknown exception has occured...", ex.Message, "This exception is not yet exists in the switch-case!");
+            Assert.AreNotEqual(DeezerException.DEFAULT_EXCEPTION_MESSAGE, ex.Message);
         }
     }
 }
