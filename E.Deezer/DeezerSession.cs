@@ -95,19 +95,7 @@ namespace E.Deezer
         /// Starts a new session on the Deezer API.
         /// Setup internal workings of E.Deezer
         /// </summary>
-        public static Deezer CreateNew(HttpMessageHandler httpMessageHandler = null) => new Deezer(new DeezerSession(), httpMessageHandler);
-
-        internal static Deezer CreateNew(bool underTest, HttpMessageHandler httpMessageHandler = null)
-        {
-            if (underTest)
-            {
-                return new Deezer(new DeezerSession(), httpMessageHandler, true);
-            }
-            else
-            {
-                return CreateNew();
-            }
-        }
-
+        public static Deezer CreateNew(HttpMessageHandler httpMessageHandler = null)
+            => new Deezer(new DeezerSession(), httpMessageHandler);
     }
 }

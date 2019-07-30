@@ -18,6 +18,7 @@ namespace E.Deezer.Tests
         public void EndPointConstantVariableDidnotChanged()
         {
             Assert.AreEqual("https://api.deezer.com/", DeezerSession.ENDPOINT);
+            Assert.Warn("This field no longer in use.");
         }
     }
 }
