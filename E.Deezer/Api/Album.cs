@@ -19,7 +19,7 @@ namespace E.Deezer.Api
         string Link { get; }
         string Title { get; }
         string Label { get; }
-        uint GenreId { get; }
+        int GenreId { get; }
         uint Duration { get; }
         bool HasRating { get; }
         IArtist Artist { get; }
@@ -152,7 +152,7 @@ namespace E.Deezer.Api
         }
 
         [JsonProperty(PropertyName = "genre_id")]
-        public uint GenreId
+        public int GenreId
         {
             get;
             set;
