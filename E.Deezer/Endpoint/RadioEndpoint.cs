@@ -51,22 +51,6 @@ namespace E.Deezer.Endpoint
             {
                 return iClient.Transform<Radio, IRadio>(aTask.Result);
             }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-        }        
-
-        private void ThrowIfClientUnauthenticated()
-        {
-            if(!iClient.IsAuthenticated)
-            {
-                throw new NotLoggedInException();
-            }
-        }
-
-        private void ThrowIfNoPermission(DeezerPermissions aPermission)
-        {
-            if (!iClient.HasPermission(aPermission))
-            {
-                throw new DeezerPermissionsException(aPermission);
-            }
         }
     }
 }
