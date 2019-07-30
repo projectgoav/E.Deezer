@@ -15,6 +15,19 @@ namespace E.Deezer
         internal const string DELETE_LIBRARY    = "delete_library";
         internal const string LISTENING_HISTORY = "listening_history";
 
+
+        internal static readonly IReadOnlyDictionary<DeezerPermissions, string> PERMISSION_NAME_LOOKUP = new Dictionary<DeezerPermissions, string>()
+        {
+            { DeezerPermissions.BasicAccess, BASIC_ACCESS },
+            { DeezerPermissions.Email, EMAIL },
+            { DeezerPermissions.OfflineAccess, OFFLINE_ACCESS },
+            { DeezerPermissions.ManageLibrary, MANAGE_LIBRARY },
+            { DeezerPermissions.ManageCommunity, MANAGE_COMMUNITY },
+            { DeezerPermissions.DeleteLibrary, DELETE_LIBRARY },
+            { DeezerPermissions.ListeningHistory, LISTENING_HISTORY },
+        };
+
+
         public static string PermissionToString(this DeezerPermissions permissions)
         {
             List<string> perms = new List<string>(8);

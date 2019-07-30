@@ -6,21 +6,20 @@ namespace E.Deezer.Tests.Exception
     [Parallelizable(ParallelScope.All)]
     public class DeezerPermissionsExceptionTests
     {
-        [TestCase(DeezerPermissions.BasicAccess, "basic_access")]
-        [TestCase(DeezerPermissions.Email, "email")]
-        [TestCase(DeezerPermissions.OfflineAccess, "offline_access")]
-        [TestCase(DeezerPermissions.ManageLibrary, "manage_library")]
-        [TestCase(DeezerPermissions.ManageCommunity, "manage_community")]
-        [TestCase(DeezerPermissions.DeleteLibrary, "delete_library")]
-        [TestCase(DeezerPermissions.ListeningHistory, "listening_history")]
+        [TestCase(DeezerPermissions.BasicAccess,        Permissions.BASIC_ACCESS)]
+        [TestCase(DeezerPermissions.Email,              Permissions.EMAIL)]
+        [TestCase(DeezerPermissions.OfflineAccess,      Permissions.OFFLINE_ACCESS)]
+        [TestCase(DeezerPermissions.ManageLibrary,      Permissions.MANAGE_LIBRARY)]
+        [TestCase(DeezerPermissions.ManageCommunity,    Permissions.MANAGE_COMMUNITY)]
+        [TestCase(DeezerPermissions.DeleteLibrary,      Permissions.DELETE_LIBRARY)]
+        [TestCase(DeezerPermissions.ListeningHistory,   Permissions.LISTENING_HISTORY)]
         public void ExceptionMessageForKnownPermission(DeezerPermissions permission, string permissionAsString)
         {
+            var expectedMessage = string.Format(DeezerPermissionsException.EXCEPTION_MESSAGE_FORMAT, permissionAsString);
+
             var actual = new DeezerPermissionsException(permission);
 
-            Assert.AreEqual(
-                $"The provided access token doesn't provide '{permissionAsString}' rights for this user and so this operation can't be performed. Please ensure the token hasn't expired.",
-                actual.Message,
-                "This permission is not yet exists in the switch-case!");
+            Assert.AreEqual(expectedMessage, actual.Message);
         }
     }
 }
