@@ -20,22 +20,10 @@ namespace E.Deezer.Api
     //Grabs an error, if there was one, from the reply
     internal class Error : IError
     {
-        public string Message
-        {
-            get;
-            set;
-        }
+        public string Message { get; set; }
 
-        public uint Code
-        {
-            get;
-            set;
-        }
+        public uint Code { get; set; }
 
-        public string Type
-        {
-            get;
-            set;
-        }
+        public string Type { get; set; }
     }
 }

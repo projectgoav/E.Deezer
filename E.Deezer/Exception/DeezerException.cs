@@ -7,50 +7,63 @@ using E.Deezer.Api;
 
 namespace E.Deezer
 {
+    public enum EDeezerApiError
+    {
+        Quota               = 4,
+        ItemLimit           = 100,
+        InvalidPermissions  = 200,
+        InvalidToken        = 300,
+        InvalidParameter    = 500,
+        MissingParameter    = 501,
+        InvalidQuery        = 600,
+        ServiceBusy         = 700,
+        NotFound            = 800
+    }
+
+
     /// <summary>
     /// Defines an exception that may be returned from the Deezer API
     /// More information: http://developers.deezer.com/api/errors
     /// </summary>
-    public  class DeezerException : Exception
+    /// 
+    public class DeezerException : Exception
     {
-        private IError iError;
-        private string iMessage;
+        private static readonly IReadOnlyDictionary<EDeezerApiError, string> ERROR_MSG_LOOKUP = new Dictionary<EDeezerApiError, string>()
+        {
+            { EDeezerApiError.Quota,                "You have made too many calls to the Deezer API. Deezer responded with result 4 - QuotaException" },
+            { EDeezerApiError.ItemLimit,            "You have requested too many items from Deezer. Responded with resullt 100 - ItemLimitException" },
+            { EDeezerApiError.InvalidPermissions,   "You don't have the correct permission to access this information. Deezer responded with result 200 - OAuthException" },
+            { EDeezerApiError.InvalidToken,         "Your access token has expired or is invalid. Deezer responded with result 300 - OAuthException" },
+            { EDeezerApiError.InvalidParameter,     "Deezer didn't understand the given parameters on your request. Responded with result 500 - ParameterException" },
+            { EDeezerApiError.MissingParameter,     "Request was missing a parameter. Responded with result 501 - MissingParameterException" },
+            { EDeezerApiError.InvalidQuery,         "Deezer didn't understand query. Responded with result 600 - InvalidQueryException" },
+            { EDeezerApiError.ServiceBusy,          "Deezer API is busy or unavailabe. Responded with result 700 - Exception" },
+            { EDeezerApiError.NotFound,             "Unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException" },
+        };
 
-        private const string QUOTA_EXCEPTION = "You have made too many calls to the Deezer API. Deezer responded with result 4 - QuotaException";
-        private const string OAUTH_EXCEPTION_P = "You don't not have permission to access this information on Deezer. Deezer responded with result 200 - OAuthException";
-        private const string OAUTH_EXCEPTION_T = "Your access token has expired or in invalid. Deezer responded with result 300 - OAuthException";
-        private const string PARAM_EXCEPTION = "Deezer didn't understand the given parameters. Deezer responded with result 500 - ParamterException";
-        private const string MISSING_EXCEPTION = "Deezer was expecting another parameter on that request. Deezer responded with result 501 - MissingParameterException";
-        private const string INVALID_EXCEPTION = "Deezer didn't understand your query. Deezer responded with result 600 - InvalidQueryException";
-        private const string SERVICE_EXCEPTION = "Deezer reported that it's service was busy. Deezer responded with result 700 - Exception";
-        private const string DATA_EXCEPTION = "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException";
+        internal const string DEFAULT_EXCEPTION_MESSAGE = "An unknown exception has occured...";
 
-        internal DeezerException(IError aError)
+
+        internal DeezerException(IError deezerError)
         { 
-            iError = aError;
-            switch (aError.Code)
-            {
-                case 4:   { iMessage = QUOTA_EXCEPTION;   break; }
-                case 200: { iMessage = OAUTH_EXCEPTION_P; break; }
-                case 300: { iMessage = OAUTH_EXCEPTION_T; break; }
-                case 500: { iMessage = PARAM_EXCEPTION;   break; }
-                case 501: { iMessage = MISSING_EXCEPTION; break; }
-                case 600: { iMessage = INVALID_EXCEPTION; break; }
-                case 700: { iMessage = SERVICE_EXCEPTION; break; }
-                case 800: { iMessage = DATA_EXCEPTION;    break; }
-                default:  { iMessage = "An unknown exception has occured..."; break; }
-            }
+            this.Error = deezerError;
         }
 
 
         /// <summary>
         /// Gets the message returned from the Deezer API
         /// </summary>
-        public override string Message =>  iMessage;
+        public override string Message
+        {
+            get
+            {
+                EDeezerApiError errorCode = (EDeezerApiError)this.Error.Code;
 
-        internal IError DeezerError => iError;
+                return ERROR_MSG_LOOKUP.ContainsKey(errorCode) ? ERROR_MSG_LOOKUP[errorCode]
+                                                               : DEFAULT_EXCEPTION_MESSAGE;
+            }
+        }
+
+        internal IError Error { get; }
     }
-
-
-
 }
