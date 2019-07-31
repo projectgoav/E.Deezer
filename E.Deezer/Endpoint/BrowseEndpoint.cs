@@ -72,6 +72,8 @@ namespace E.Deezer.Endpoint
             var response = await iClient.GetPlain<Album>("album/{id}", p)
                                         .ConfigureAwait(false);
 
+            response.Deserialize(iClient);
+
             return response;
         }
 
@@ -85,6 +87,8 @@ namespace E.Deezer.Endpoint
             // Will throw if Deezer error
             var response = await iClient.GetPlain<Artist>("artist/{id}", p)
                                         .ConfigureAwait(false);
+
+            response.Deserialize(iClient);
 
             return response;
         }
@@ -100,6 +104,8 @@ namespace E.Deezer.Endpoint
             var response = await iClient.GetPlain<Playlist>("playlist/{id}", p)
                                         .ConfigureAwait(false);
 
+            response.Deserialize(iClient);
+
             return response;
         }
 
@@ -113,6 +119,8 @@ namespace E.Deezer.Endpoint
             // Will throw if Deezer error
             var response = await iClient.GetPlain<Track>("track/{id}", p)
                                         .ConfigureAwait(false);
+
+            response.Deserialize(iClient);
 
             return response;
         }
@@ -128,6 +136,8 @@ namespace E.Deezer.Endpoint
             var response = await iClient.GetPlain<Radio>("radio/{id}", p)
                                         .ConfigureAwait(false);
 
+            response.Deserialize(iClient);
+
             return response;
         }
 
@@ -141,6 +151,8 @@ namespace E.Deezer.Endpoint
             // Will throw if Deezer error
             var response = await iClient.GetPlain<UserProfile>("user/{id}", p)
                                         .ConfigureAwait(false);
+
+            response.Deserialize(iClient);
 
             return response;
         }
