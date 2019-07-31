@@ -15,7 +15,7 @@ namespace E.Deezer.Endpoint
 
         Task<IEnumerable<IRadio>> GetDeezerSelection(uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<IRadio>> GetByGenres();
+        Task<IEnumerable<IGenreWithRadios>> GetByGenres();
     }
 
     //TODO needs refactor for the Get<T> with permissions param
@@ -45,12 +45,20 @@ namespace E.Deezer.Endpoint
             }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
-        public Task<IEnumerable<IRadio>> GetByGenres()
+        public async Task<IEnumerable<IGenreWithRadios>> GetByGenres()
         {
-            return iClient.Get<Radio>("radio/genres", RequestParameter.EmptyList).ContinueWith<IEnumerable<IRadio>>((aTask) =>
+            var response = await iClient.Get<GenreWithRadios>("radio/genres", RequestParameter.EmptyList)
+                .ConfigureAwait(false);
+
+            foreach (var genre in response.Items)
             {
-                return iClient.Transform<Radio, IRadio>(aTask.Result);
-            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                foreach (var radio in genre.InternalRadios)
+                {
+                    radio.Deserialize(iClient);
+                }
+            }
+
+            return response.Items;
         }
     }
 }

@@ -51,10 +51,16 @@ namespace E.Deezer.Tests.Regression.Endpoint
         [Test]
         public async Task GetByGenres()
         {
-            var actual = await _radio.GetByGenres();
+            IEnumerable<IGenreWithRadios> genres = await _radio.GetByGenres();
 
 
-            Assert.IsNotNull(actual);
+            Assert.IsNotNull(genres, nameof(genres));
+
+            IRadio oneRadio = genres.First().Radios.First();
+            IEnumerable<ITrack> tracks = oneRadio.GetFirst40Tracks()
+                .GetAwaiter().GetResult();
+
+            Assert.AreEqual(40, tracks.Count(), "Count");
         }
     }
 }
