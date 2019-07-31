@@ -132,8 +132,8 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
             Assert.IsNotNull(radio, nameof(radio));
             Assert.AreEqual(6, radio.Id, nameof(radio.Id));
-            Assert.AreEqual("Electro", radio.Title, nameof(radio.Title));
-            Assert.AreEqual("Electro", radio.Description, nameof(radio.Description));
+            Assert.AreEqual("Elektronikus zene", radio.Title, nameof(radio.Title));
+            Assert.AreEqual("Elektronikus zene", radio.Description, nameof(radio.Description));
         }
 
         [Test]
