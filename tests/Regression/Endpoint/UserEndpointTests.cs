@@ -303,10 +303,9 @@ namespace E.Deezer.Tests.Regression.Endpoint
         [Test, Order(9)]
         public async Task AddTrackToFavourite()
         {
-            bool response = await _user.AddTrackToFavourite(_track.Id);
+            bool response = await _user.AddTrackToFavourite(_track);
 
             Assert.IsTrue(response);
-            Assert.Warn($"Task<bool> AddTrackToFavourite(ITrack aTrack); method is missing from the interface IUserEndpoint!");
         }
 
         [Test, Order(10)]
@@ -320,10 +319,9 @@ namespace E.Deezer.Tests.Regression.Endpoint
         [Test, Order(11)]
         public async Task RemoveTrackFromFavourite()
         {
-            bool response = await _user.RemoveTrackFromFavourite(_track.Id);
+            bool response = await _user.RemoveTrackFromFavourite(_track);
 
             Assert.IsTrue(response);
-            Assert.Warn($"Task<bool> RemoveTrackFromFavourite(ITrack aTrack); method is missing from the interface IUserEndpoint!");
         }
 
         [Test, Order(12)]

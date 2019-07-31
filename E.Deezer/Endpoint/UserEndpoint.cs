@@ -1,11 +1,6 @@
-﻿using System;
+﻿using E.Deezer.Api;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using System.Threading.Tasks;
-
-using E.Deezer.Api;
 
 namespace E.Deezer.Endpoint
 {
@@ -43,7 +38,10 @@ namespace E.Deezer.Endpoint
         Task<bool> RemoveArtistFromFavourite(IArtist artistId);
 
         Task<bool> AddTrackToFavourite(ulong trackId);
+        Task<bool> AddTrackToFavourite(ITrack aTrack);
+
         Task<bool> RemoveTrackFromFavourite(ulong trackId);
+        Task<bool> RemoveTrackFromFavourite(ITrack aTrack);
 
         Task<bool> AddPlaylistToFavourite(ulong playlistd);
         Task<bool> AddPlaylistToFavourite(IPlaylist playlistd);
