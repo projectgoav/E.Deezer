@@ -23,12 +23,12 @@ namespace E.Deezer.Api
     }
 
 
-    internal class AlbumObjectResponse : IDeezerObjectResponse<IAlbum>
+    internal class AlbumObjectResponse : IDeezerObjectResponse<Album>
     {
-        public IAlbum Object { get; private set; }
+        public Album Object{ get; private set; }
         public IError Error { get; private set; }
 
-        public static AlbumObjectResponse CreateFrom(IAlbum album, IError error)
+        public static AlbumObjectResponse CreateFrom(Album album, IError error)
         {
             var resp = new AlbumObjectResponse();
 
@@ -39,12 +39,12 @@ namespace E.Deezer.Api
         }
     }
 
-    internal class PlaylistObjectResponse : IDeezerObjectResponse<IPlaylist>
+    internal class PlaylistObjectResponse : IDeezerObjectResponse<Playlist>
     {
-        public IPlaylist Object { get; private set; }
+        public Playlist Object{ get; private set; }
         public IError Error { get; private set; }
 
-        public static PlaylistObjectResponse CreateFrom(IPlaylist playlist, IError error)
+        public static PlaylistObjectResponse CreateFrom(Playlist playlist, IError error)
         {
             var resp = new PlaylistObjectResponse();
 
@@ -55,12 +55,12 @@ namespace E.Deezer.Api
         }
     }
 
-    internal class ArtistObjectResponse : IDeezerObjectResponse<IArtist>
+    internal class ArtistObjectResponse : IDeezerObjectResponse<Artist>
     {
-        public IArtist Object { get; private set; }
+        public Artist Object{ get; private set; }
         public IError Error { get; private set; }
 
-        public static ArtistObjectResponse CreateFrom(IArtist artist, IError error)
+        public static ArtistObjectResponse CreateFrom(Artist artist, IError error)
         {
             var resp = new ArtistObjectResponse();
 
@@ -71,12 +71,12 @@ namespace E.Deezer.Api
         }
     }
 
-    internal class TrackObjectResponse : IDeezerObjectResponse<ITrack>
+    internal class TrackObjectResponse : IDeezerObjectResponse<Track>
     {
-        public ITrack Object { get; private set; }
+        public Track Object{ get; private set; }
         public IError Error { get; private set; }
 
-        public static TrackObjectResponse CreateFrom(ITrack track, IError error)
+        public static TrackObjectResponse CreateFrom(Track track, IError error)
         {
             var resp = new TrackObjectResponse();
 
@@ -87,12 +87,12 @@ namespace E.Deezer.Api
         }
     }
 
-    internal class UserObjectResponse : IDeezerObjectResponse<IUser>
+    internal class UserObjectResponse : IDeezerObjectResponse<User>
     {
-        public IUser Object { get; private set; }
+        public User Object{ get; private set; }
         public IError Error { get; private set; }
 
-        public static UserObjectResponse CreateFrom(IUser user, IError error)
+        public static UserObjectResponse CreateFrom(User user, IError error)
         {
             var resp = new UserObjectResponse();
 
@@ -103,12 +103,29 @@ namespace E.Deezer.Api
         }
     }
 
-    internal class RadioObjectResponse : IDeezerObjectResponse<IRadio>
+    internal class UserProfileObjectResponse : IDeezerObjectResponse<UserProfile>
     {
-        public IRadio Object { get; private set; }
+        public UserProfile Object{ get; private set; }
         public IError Error { get; private set; }
 
-        public static RadioObjectResponse CreateFrom(IRadio radio, IError error)
+        public static UserProfileObjectResponse CreateFrom(UserProfile user, IError error)
+        {
+            var resp = new UserProfileObjectResponse
+            {
+                Object = user,
+                Error = error
+            };
+
+            return resp;
+        }
+    }
+
+    internal class RadioObjectResponse : IDeezerObjectResponse<Radio>
+    {
+        public Radio Object{ get; private set; }
+        public IError Error { get; private set; }
+
+        public static RadioObjectResponse CreateFrom(Radio radio, IError error)
         {
             var resp = new RadioObjectResponse();
 
@@ -191,7 +208,10 @@ namespace E.Deezer.Api
             {
                 return UserObjectResponse.CreateFrom(null, error);
             }
-
+            else if (objectType == typeof(UserProfileObjectResponse))
+            {
+                return UserProfileObjectResponse.CreateFrom(null, error);
+            }
 
             throw new Exception("Attempting to deserialize a response type unknown to E.Deezer.");
         }
@@ -227,6 +247,11 @@ namespace E.Deezer.Api
             {
                 var user = valueObject.ToObject<User>();
                 return UserObjectResponse.CreateFrom(user, null);
+            }
+            else if (objectType == typeof(UserProfileObjectResponse))
+            {
+                var userProfile = valueObject.ToObject<UserProfile>();
+                return UserProfileObjectResponse.CreateFrom(userProfile, null);
             }
 
             throw new Exception("Attempting to deserialize a response type unknown to E.Deezer.");

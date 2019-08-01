@@ -69,12 +69,12 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetPlain<Album>("album/{id}", p)
+            var response = await iClient.GetDeezerObject<AlbumObjectResponse>("album/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Deserialize(iClient);
+            response.Object.Deserialize(iClient);
 
-            return response;
+            return response.Object;
         }
 
         public async Task<IArtist> GetArtistById(uint artistId)
@@ -85,12 +85,12 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetPlain<Artist>("artist/{id}", p)
+            var response = await iClient.GetDeezerObject<ArtistObjectResponse>("artist/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Deserialize(iClient);
+            response.Object.Deserialize(iClient);
 
-            return response;
+            return response.Object;
         }
 
         public async Task<IPlaylist> GetPlaylistById(uint playlistId)
@@ -101,12 +101,12 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetPlain<Playlist>("playlist/{id}", p)
+            var response = await iClient.GetDeezerObject<PlaylistObjectResponse>("playlist/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Deserialize(iClient);
+            response.Object.Deserialize(iClient);
 
-            return response;
+            return response.Object;
         }
 
         public async Task<ITrack> GetTrackById(uint TrackId)
@@ -117,12 +117,12 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetPlain<Track>("track/{id}", p)
+            var response = await iClient.GetDeezerObject<TrackObjectResponse>("track/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Deserialize(iClient);
+            response.Object.Deserialize(iClient);
 
-            return response;
+            return response.Object;
         }
 
         public async Task<IRadio> GetRadioById(uint RadioId)
@@ -133,12 +133,12 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetPlain<Radio>("radio/{id}", p)
+            var response = await iClient.GetDeezerObject<RadioObjectResponse>("radio/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Deserialize(iClient);
+            response.Object.Deserialize(iClient);
 
-            return response;
+            return response.Object;
         }
 
         public async Task<IUserProfile> GetUserById(uint UserId)
@@ -149,12 +149,12 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetPlain<UserProfile>("user/{id}", p)
+            var response = await iClient.GetDeezerObject<UserProfileObjectResponse>("user/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Deserialize(iClient);
+            response.Object.Deserialize(iClient);
 
-            return response;
+            return response.Object;
         }
     }
 }

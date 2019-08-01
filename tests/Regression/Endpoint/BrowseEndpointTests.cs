@@ -43,6 +43,17 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
+        public void GetAlbumByIdWithNonExistingIdShouldThrowException()
+        {
+            var ex = Assert.ThrowsAsync<DeezerException>(
+                async () => await _browse.GetAlbumById(1u));
+
+            Assert.AreEqual(
+                "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException",
+                ex.Message);
+        }
+
+        [Test]
         public async Task GetArtistById()
         {
             IArtist artist = await _browse.GetArtistById(1);
@@ -55,6 +66,17 @@ namespace E.Deezer.Tests.Regression.Endpoint
             Assert.AreEqual(31, artist.AlbumCount, nameof(artist.AlbumCount));
             Assert.That(artist.Fans, Is.GreaterThan(1000000), nameof(artist.Fans));
             Assert.IsTrue(artist.HasSmartRadio, nameof(artist.HasSmartRadio));
+        }
+
+        [Test]
+        public void GetArtistByIdWithNonExistingIdShouldThrowException()
+        {
+            var ex = Assert.ThrowsAsync<DeezerException>(
+                async () => await _browse.GetArtistById(9999999u));
+
+            Assert.AreEqual(
+                "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException",
+                ex.Message);
         }
 
         [Test]
@@ -80,6 +102,17 @@ namespace E.Deezer.Tests.Regression.Endpoint
             Assert.AreEqual(203, playlist.Creator.Id, "Creator.Id");
             Assert.AreEqual("anonymous", playlist.Creator.Username, "Creator.Username");
             Assert.IsNull(playlist.Creator.ShareLink, "Creator.ShareLink");
+        }
+
+        [Test]
+        public void GetPlaylistByIdWithNonExistingIdShouldThrowException()
+        {
+            var ex = Assert.ThrowsAsync<DeezerException>(
+                async () => await _browse.GetPlaylistById(1u));
+
+            Assert.AreEqual(
+                "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException",
+                ex.Message);
         }
 
         [Test]
@@ -125,6 +158,17 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
+        public void GetTrackByIdWithNonExistingIdShouldThrowException()
+        {
+            var ex = Assert.ThrowsAsync<DeezerException>(
+                async () => await _browse.GetTrackById(1u));
+
+            Assert.AreEqual(
+                "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException",
+                ex.Message);
+        }
+
+        [Test]
         public async Task GetRadioById()
         {
             IRadio radio = await _browse.GetRadioById(6);
@@ -134,6 +178,17 @@ namespace E.Deezer.Tests.Regression.Endpoint
             Assert.AreEqual(6, radio.Id, nameof(radio.Id));
             Assert.AreEqual("Elektronikus zene", radio.Title, nameof(radio.Title));
             Assert.AreEqual("Elektronikus zene", radio.Description, nameof(radio.Description));
+        }
+
+        [Test]
+        public void GetRadioByIdWithNonExistingIdShouldThrowException()
+        {
+            var ex = Assert.ThrowsAsync<DeezerException>(
+                async () => await _browse.GetRadioById(1u));
+
+            Assert.AreEqual(
+                "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException",
+                ex.Message);
         }
 
         [Test]
@@ -147,6 +202,17 @@ namespace E.Deezer.Tests.Regression.Endpoint
             Assert.AreEqual("Daniel Marhely", user.Username, nameof(user.Username));
             Assert.AreEqual("https://www.deezer.com/profile/5", user.ShareLink, nameof(user.ShareLink));
             Assert.AreEqual("JP", user.Country, nameof(user.Country));
+        }
+
+        [Test]
+        public void GetUserByIdWithNonExistingIdShouldThrowException()
+        {
+            var ex = Assert.ThrowsAsync<DeezerException>(
+                async () => await _browse.GetUserById(1u));
+
+            Assert.AreEqual(
+                "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException",
+                ex.Message);
         }
     }
 }
