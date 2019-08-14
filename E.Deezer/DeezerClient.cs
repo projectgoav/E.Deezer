@@ -62,15 +62,10 @@ namespace E.Deezer
         private IUser iUser;
         private IPermissions iPermissions;
 
-        internal DeezerClient(DeezerSession aSession, HttpMessageHandler httpMessageHandler = null, bool isUnderTest = false) 
-        { 
+        internal DeezerClient(DeezerSession aSession, HttpMessageHandler httpMessageHandler = null)
+        {
             iSession = aSession;
-
-            if (isUnderTest)
-            {
-                executor = new ExecutorService("http://localhost:10024", httpMessageHandler);
-            }
-            else { executor = new ExecutorService(httpMessageHandler); }
+            executor = new ExecutorService(httpMessageHandler);
         }
 
 

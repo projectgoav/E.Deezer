@@ -15,7 +15,7 @@ namespace E.Deezer.Endpoint
 
         Task<IEnumerable<IRadio>> GetDeezerSelection(uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<IRadio>> GetByGenres();
+        Task<IEnumerable<IGenreWithRadios>> GetByGenres();
     }
 
     //TODO needs refactor for the Get<T> with permissions param
@@ -45,28 +45,20 @@ namespace E.Deezer.Endpoint
             }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
-        public Task<IEnumerable<IRadio>> GetByGenres()
+        public async Task<IEnumerable<IGenreWithRadios>> GetByGenres()
         {
-            return iClient.Get<Radio>("radio/genres", RequestParameter.EmptyList).ContinueWith<IEnumerable<IRadio>>((aTask) =>
-            {
-                return iClient.Transform<Radio, IRadio>(aTask.Result);
-            }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-        }        
+            var response = await iClient.Get<GenreWithRadios>("radio/genres", RequestParameter.EmptyList)
+                .ConfigureAwait(false);
 
-        private void ThrowIfClientUnauthenticated()
-        {
-            if(!iClient.IsAuthenticated)
+            foreach (var genre in response.Items)
             {
-                throw new NotLoggedInException();
+                foreach (var radio in genre.InternalRadios)
+                {
+                    radio.Deserialize(iClient);
+                }
             }
-        }
 
-        private void ThrowIfNoPermission(DeezerPermissions aPermission)
-        {
-            if (!iClient.HasPermission(aPermission))
-            {
-                throw new DeezerPermissionsException(aPermission);
-            }
+            return response.Items;
         }
     }
 }

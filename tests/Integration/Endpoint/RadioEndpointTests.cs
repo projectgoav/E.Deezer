@@ -67,11 +67,21 @@ namespace E.Deezer.Tests.Integration.Endpoint
             _server.Content = base.GetServerResponse("genres");
 
 
-            IEnumerable<IRadio> radios = await _radio.GetByGenres();
+            IEnumerable<IGenreWithRadios> radios = await _radio.GetByGenres();
 
 
             Assert.IsNotNull(radios, nameof(radios));
-            Assert.Fail("GetByGenres has a wrong return type! Radios nested inside a List of Genre class!");
+            Assert.AreEqual(20, radios.Count(), "radios.Count");
+
+            IGenreWithRadios firstGenre = radios.First();
+            Assert.AreEqual(132, firstGenre.ID, nameof(firstGenre.ID));
+            Assert.AreEqual("Pop", firstGenre.Title, nameof(firstGenre.Title));
+
+            Assert.AreEqual(25, firstGenre.Radios.Count(), "firstGenre.Radios.Count");
+
+            IRadio lastRadio = firstGenre.Radios.Last();
+            Assert.AreEqual(32101, lastRadio.Id, $"{nameof(lastRadio)}.{nameof(lastRadio.Id)}");
+            Assert.AreEqual("Phenom'enon", lastRadio.Title, $"{nameof(lastRadio)}.{nameof(lastRadio.Title)}");
         }
 
         [Test]

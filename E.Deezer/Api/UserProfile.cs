@@ -13,6 +13,7 @@ namespace E.Deezer.Api
         ulong Id { get; }
         string ShareLink { get; }
         string Username { get; }
+        string Country { get; }
 
         Task<IEnumerable<ITrack>> GetFlow(uint aStart = 0, uint aCount = 100);
     }
@@ -38,6 +39,8 @@ namespace E.Deezer.Api
             get;
             set;
         }
+
+        public string Country { get; set; }
 
 
         //IDeserializable

@@ -23,12 +23,10 @@ namespace E.Deezer
         private readonly DeezerSession iSession;
         private readonly DeezerClient iClient;
 
-        internal Deezer(DeezerSession aSession, HttpMessageHandler httpMessageHandler = null, bool underTest = false)
+        internal Deezer(DeezerSession aSession, HttpMessageHandler httpMessageHandler = null)
         {
             iSession = aSession;
-            if (underTest) { iClient = new DeezerClient(iSession, httpMessageHandler, true); }
-            else           { iClient = new DeezerClient(iSession, httpMessageHandler); }
-            
+            iClient = new DeezerClient(iSession, httpMessageHandler);
 
             iBrowse = new BrowseEndpoint(iClient);
             iSearch = new SearchEndpoint(iClient);

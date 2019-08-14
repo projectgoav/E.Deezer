@@ -69,11 +69,6 @@ namespace E.Deezer.Api
 
         public Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = 100)
         {
-            if (!Client.HasPermission(DeezerPermissions.BasicAccess))
-            {
-                throw new DeezerPermissionsException(DeezerPermissions.BasicAccess);
-            }
-
             IList<IRequestParameter> parms = new List<IRequestParameter>()
             {
                 RequestParameter.GetNewUrlSegmentParamter("id", Id)

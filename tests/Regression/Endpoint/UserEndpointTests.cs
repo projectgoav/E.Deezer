@@ -21,7 +21,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
         public void OneTimeSetUp()
         {
             var deezer = DeezerSession.CreateNew();
-            string token = "";
+            string token = "frmFoXgyyO1ATzluA6gZIFIoWAf8b8G4tGWHaoxtDN9oCKMghM";
 
             if (string.IsNullOrEmpty(token))
                 throw new NotLoggedInException();
@@ -54,12 +54,12 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
 
             Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.That(tracks.Count(), Is.GreaterThan(0), "Count");
+            Assert.AreEqual(13, tracks.Count(), "Count");
 
             var firstTrack = tracks.First();
             Assert.IsNotNull(firstTrack, nameof(firstTrack));
-            Assert.That(firstTrack.Id, Is.GreaterThan(0), nameof(firstTrack.Id));
-            Assert.IsNotNull(firstTrack.Title, nameof(firstTrack.Title));
+            Assert.AreEqual(85963055, firstTrack.Id, nameof(firstTrack.Id));
+            Assert.AreEqual("Waves (Tomorrowland 2014 Anthem) (Radio Edit)", firstTrack.Title, nameof(firstTrack.Title));
         }
 
         [Test]
@@ -85,12 +85,16 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
 
             Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.That(tracks.Count(), Is.GreaterThan(0), "Count");
+            
 
-            var firstTrack = tracks.First();
-            Assert.IsNotNull(firstTrack, nameof(firstTrack));
-            Assert.That(firstTrack.Id, Is.GreaterThan(0), nameof(firstTrack.Id));
-            Assert.IsNotNull(firstTrack.Title, nameof(firstTrack.Title));
+            if (tracks.Count() == 0)
+            {
+                Assert.Warn("User doesn't have any personal track.");
+            }
+            else
+            {
+                Assert.Fail($"User has {tracks.Count()} personal tracks.");
+            }
         }
 
         [Test]
@@ -115,12 +119,12 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
 
             Assert.IsNotNull(albums, nameof(albums));
-            Assert.That(albums.Count(), Is.GreaterThan(0), "Count");
+            Assert.AreEqual(11, albums.Count(), "Count");
 
             var firstAlbum = albums.First();
             Assert.IsNotNull(firstAlbum, nameof(firstAlbum));
-            Assert.That(firstAlbum.Id, Is.GreaterThan(0), nameof(firstAlbum.Id));
-            Assert.IsNotNull(firstAlbum.Title, nameof(firstAlbum.Title));
+            Assert.AreEqual(6063443, firstAlbum.Id, nameof(firstAlbum.Id));
+            Assert.AreEqual("Mainstage, Vol. 1", firstAlbum.Title, nameof(firstAlbum.Title));
         }
 
         [Test]
@@ -146,12 +150,12 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
 
             Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.That(tracks.Count(), Is.GreaterThan(0), "Count");
+            Assert.AreEqual(7, tracks.Count(), "Count");
 
             var firstTrack = tracks.First();
             Assert.IsNotNull(firstTrack, nameof(firstTrack));
-            Assert.That(firstTrack.Id, Is.GreaterThan(0), nameof(firstTrack.Id));
-            Assert.IsNotNull(firstTrack.Title, nameof(firstTrack.Title));
+            Assert.AreEqual(137745477, firstTrack.Id, nameof(firstTrack.Id));
+            Assert.AreEqual("Arcade", firstTrack.Title, nameof(firstTrack.Title));
         }
 
         [Test]
@@ -161,12 +165,12 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
 
             Assert.IsNotNull(albums, nameof(albums));
-            Assert.That(albums.Count(), Is.GreaterThan(0), "Count");
+            Assert.AreEqual(9, albums.Count(), "Count");
 
             var firstAlbum = albums.First();
             Assert.IsNotNull(firstAlbum, nameof(firstAlbum));
-            Assert.That(firstAlbum.Id, Is.GreaterThan(0), nameof(firstAlbum.Id));
-            Assert.IsNotNull(firstAlbum.Title, nameof(firstAlbum.Title));
+            Assert.AreEqual(75783062, firstAlbum.Id, nameof(firstAlbum.Id));
+            Assert.AreEqual("BYLAW EP", firstAlbum.Title, nameof(firstAlbum.Title));
         }
 
         [Test]
@@ -299,10 +303,9 @@ namespace E.Deezer.Tests.Regression.Endpoint
         [Test, Order(9)]
         public async Task AddTrackToFavourite()
         {
-            bool response = await _user.AddTrackToFavourite(_track.Id);
+            bool response = await _user.AddTrackToFavourite(_track);
 
             Assert.IsTrue(response);
-            Assert.Warn($"Task<bool> AddTrackToFavourite(ITrack aTrack); method is missing from the interface IUserEndpoint!");
         }
 
         [Test, Order(10)]
@@ -316,10 +319,9 @@ namespace E.Deezer.Tests.Regression.Endpoint
         [Test, Order(11)]
         public async Task RemoveTrackFromFavourite()
         {
-            bool response = await _user.RemoveTrackFromFavourite(_track.Id);
+            bool response = await _user.RemoveTrackFromFavourite(_track);
 
             Assert.IsTrue(response);
-            Assert.Warn($"Task<bool> RemoveTrackFromFavourite(ITrack aTrack); method is missing from the interface IUserEndpoint!");
         }
 
         [Test, Order(12)]

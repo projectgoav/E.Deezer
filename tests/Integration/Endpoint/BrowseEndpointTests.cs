@@ -177,15 +177,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             _server.Content = base.GetServerResponse("user");
 
 
-            IUser user = await _browse.GetUserById(_dummyID);
-
-            Assert.Warn($"{nameof(_browse.GetUserById)} should return a {typeof(IUserProfile)}");
+            IUserProfile user = await _browse.GetUserById(_dummyID);
 
 
             Assert.IsNotNull(user, nameof(user));
             Assert.AreEqual(5, user.Id, nameof(user.Id));
-            Assert.AreEqual("Daniel Marhely", user.Name, nameof(user.Name));
-            Assert.AreEqual("https://www.deezer.com/profile/5", user.Link, nameof(user.Link));
+            Assert.AreEqual("Daniel Marhely", user.Username, nameof(user.Username));
+            Assert.AreEqual("https://www.deezer.com/profile/5", user.ShareLink, nameof(user.ShareLink));
             Assert.AreEqual("JP", user.Country, nameof(user.Country));
         }
     }

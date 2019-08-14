@@ -26,10 +26,6 @@ namespace E.Deezer
         private readonly CancellationTokenSource cancellationTokenSource;
 
         internal ExecutorService(HttpMessageHandler httpMessageHandler = null)
-            : this(DeezerSession.ENDPOINT, httpMessageHandler)
-        { }
-
-        internal ExecutorService(string testUrl, HttpMessageHandler httpMessageHandler = null)
         {
             this.jsonSerializer = CreateJsonSerializer();
             this.cancellationTokenSource = new CancellationTokenSource();
@@ -172,7 +168,7 @@ namespace E.Deezer
 
         private void ConfigureHttpClient(HttpClient httpClient)
         {
-            httpClient.BaseAddress = new Uri(DeezerSession.ENDPOINT);
+            httpClient.BaseAddress = new Uri("https://api.deezer.com/");
             httpClient.Timeout = TimeSpan.FromMilliseconds(DEFAULT_TIMEOUT);
 
             // Allow us to deal with compressed content, should Deezer support it.
