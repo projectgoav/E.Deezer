@@ -13,28 +13,28 @@ namespace E.Deezer.Endpoint
     {
         //Complete charts
         Task<IChart> GetChart(uint aStart = 0, uint aCount = 100);
-        Task<IChart> GetChart(ulong aGenreId, uint aStart = 0, uint aCount = 100);
+        Task<IChart> GetChart(long aGenreId, uint aStart = 0, uint aCount = 100);
         Task<IChart> GetChart(IGenre aGenre, uint aStart = 0, uint aCount = 100);
 
         //Album Charts
         Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart = 0, uint aCount = 100);
-        Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(ulong aGenreId, uint aStart = 0, uint aCount = 100);
+        Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(long aGenreId, uint aStart = 0, uint aCount = 100);
         Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(IGenre aGenre, uint aStart = 0, uint aCount = 100);
 
 
         //Artists
         Task<IEnumerable<IArtist>> GetArtistChart(uint aStart = 0, uint aCount = 100);
-        Task<IEnumerable<IArtist>> GetArtistChartForGenre(ulong aGenreId, uint aStart = 0, uint aCount = 100);
+        Task<IEnumerable<IArtist>> GetArtistChartForGenre(long aGenreId, uint aStart = 0, uint aCount = 100);
         Task<IEnumerable<IArtist>> GetArtistChartForGenre(IGenre aGenre, uint aStart = 0, uint aCount = 100);
 
         //Playlists
         Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart = 0, uint aCount = 100);
-        Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(ulong aGenreId, uint aStart = 0, uint aCount = 100);
+        Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(long aGenreId, uint aStart = 0, uint aCount = 100);
         Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(IGenre aGenre, uint aStart = 0, uint aCount = 100);
 
         //Tracks
         Task<IEnumerable<ITrack>> GetTrackChart(uint aStart = 0, uint aCount = 100);
-        Task<IEnumerable<ITrack>> GetTrackChartForGenre(ulong aGenreId, uint aStart = 0, uint aCount = 100);
+        Task<IEnumerable<ITrack>> GetTrackChartForGenre(long aGenreId, uint aStart = 0, uint aCount = 100);
         Task<IEnumerable<ITrack>> GetTrackChartForGenre(IGenre aGenre, uint aStart = 0, uint aCount = 100);
     }
 
@@ -51,7 +51,7 @@ namespace E.Deezer.Endpoint
         public Task<IChart> GetChart(uint aStart = 0, uint aCount = 100)
             => iClient.GetChart(0, aStart, aCount);
 
-        public Task<IChart> GetChart(ulong aGenreId, uint aStart = 0, uint aCount = 100) 
+        public Task<IChart> GetChart(long aGenreId, uint aStart = 0, uint aCount = 100) 
             => iClient.GetChart(aGenreId, aStart, aCount);
 
         public Task<IChart> GetChart(IGenre aGenre, uint aStart = 0, uint aCount = 100)
@@ -64,7 +64,7 @@ namespace E.Deezer.Endpoint
         public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(IGenre aGenre, uint aStart = 0, uint aCount = 100)
             => GetAlbumChartForGenre(aGenre.Id, aStart, aCount);
 
-        public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(ulong aGenreId, uint aStart = 0, uint aCount = 100)
+        public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(long aGenreId, uint aStart = 0, uint aCount = 100)
             => Get<Album, IAlbum>("chart/{id}/albums", aGenreId, aStart, aCount);
 
 
@@ -75,7 +75,7 @@ namespace E.Deezer.Endpoint
         public Task<IEnumerable<IArtist>> GetArtistChartForGenre(IGenre aGenre, uint aStart = 0, uint aCount = 100)   
             => GetArtistChartForGenre(aGenre.Id, aStart, aCount);
 
-        public Task<IEnumerable<IArtist>> GetArtistChartForGenre(ulong aGenreId, uint aStart = 0, uint aCount = 100)   
+        public Task<IEnumerable<IArtist>> GetArtistChartForGenre(long aGenreId, uint aStart = 0, uint aCount = 100)   
             => Get<Artist, IArtist>("chart/{id}/artists", aGenreId, aStart, aCount);
 
 
@@ -87,7 +87,7 @@ namespace E.Deezer.Endpoint
         public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(IGenre aGenre, uint aStart = 0, uint aCount = 100)  
             => GetPlaylistChartForGenre(aGenre.Id, aStart, aCount);
 
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(ulong aGenreId, uint aStart = 0, uint aCount = 100)   
+        public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(long aGenreId, uint aStart = 0, uint aCount = 100)   
             => Get<Playlist, IPlaylist>("chart/{id}/playlists", aGenreId, aStart, aCount);
 
 
@@ -98,12 +98,12 @@ namespace E.Deezer.Endpoint
         public Task<IEnumerable<ITrack>> GetTrackChartForGenre(IGenre aGenre, uint aStart = 0, uint aCount = 100)     
             => GetTrackChartForGenre(aGenre.Id, aStart, aCount);
 
-        public Task<IEnumerable<ITrack>> GetTrackChartForGenre(ulong aGenreId, uint aStart = 0, uint aCount = 100)      
+        public Task<IEnumerable<ITrack>> GetTrackChartForGenre(long aGenreId, uint aStart = 0, uint aCount = 100)      
             => Get<Track, ITrack>("chart/{id}/tracks", aGenreId, aStart, aCount);
 
 
         //Internal wrapper around get for all ChartEndpoint methods :)
-        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, ulong aId, uint aStart, uint aCount) where TSource : TDest, IDeserializable<IDeezerClient>
+        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, long aId, uint aStart, uint aCount) where TSource : TDest, IDeserializable<IDeezerClient>
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
