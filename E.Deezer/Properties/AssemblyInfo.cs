@@ -17,6 +17,9 @@ using System.Runtime.InteropServices;
 [assembly: NeutralResourcesLanguage("en")]
 
 [assembly: InternalsVisibleTo("E.Deezer.Tests")]
+[assembly: InternalsVisibleTo("E.Deezer.Tests.Regression")]
+[assembly: InternalsVisibleTo("E.Deezer.Tests.Integration")]
+
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 // Version information for an assembly consists of the following four values:

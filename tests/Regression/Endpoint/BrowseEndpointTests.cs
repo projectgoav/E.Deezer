@@ -48,9 +48,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             var ex = Assert.ThrowsAsync<DeezerException>(
                 async () => await _browse.GetAlbumById(1u));
 
-            Assert.AreEqual(
-                "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException",
-                ex.Message);
+            Assert.AreEqual(DeezerException.NOT_FOUND_MESSAGE, ex.Message);
         }
 
         [Test]
@@ -74,9 +72,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             var ex = Assert.ThrowsAsync<DeezerException>(
                 async () => await _browse.GetArtistById(9999999u));
 
-            Assert.AreEqual(
-                "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException",
-                ex.Message);
+            Assert.AreEqual(DeezerException.NOT_FOUND_MESSAGE, ex.Message);
         }
 
         [Test]
@@ -110,9 +106,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             var ex = Assert.ThrowsAsync<DeezerException>(
                 async () => await _browse.GetPlaylistById(1u));
 
-            Assert.AreEqual(
-                "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException",
-                ex.Message);
+            Assert.AreEqual(DeezerException.NOT_FOUND_MESSAGE, ex.Message);
         }
 
         [Test]
@@ -163,9 +157,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             var ex = Assert.ThrowsAsync<DeezerException>(
                 async () => await _browse.GetTrackById(1u));
 
-            Assert.AreEqual(
-                "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException",
-                ex.Message);
+            Assert.AreEqual(DeezerException.NOT_FOUND_MESSAGE, ex.Message);
         }
 
         [Test]
@@ -186,9 +178,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             var ex = Assert.ThrowsAsync<DeezerException>(
                 async () => await _browse.GetRadioById(1u));
 
-            Assert.AreEqual(
-                "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException",
-                ex.Message);
+            Assert.AreEqual(DeezerException.NOT_FOUND_MESSAGE, ex.Message);
         }
 
         [Test]
@@ -210,9 +200,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             var ex = Assert.ThrowsAsync<DeezerException>(
                 async () => await _browse.GetUserById(1u));
 
-            Assert.AreEqual(
-                "Deezer was unable to find the requested resource. Deezer responded with result 800 - DataNotFoundException",
-                ex.Message);
+            Assert.AreEqual(DeezerException.NOT_FOUND_MESSAGE, ex.Message);
         }
     }
 }
