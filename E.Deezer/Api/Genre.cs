@@ -11,7 +11,7 @@ namespace E.Deezer.Api
 {
     public interface IGenre : IObjectWithImage
     {
-        ulong Id { get;  }
+        long Id { get;  }
         string Name { get;  }
 
         //METHODS
@@ -43,7 +43,7 @@ namespace E.Deezer.Api
 
     internal class Genre : ObjectWithImage, IGenre, IDeserializable<IDeezerClient>
     {
-        public ulong Id
+        public long Id
         {
             get;
             set;

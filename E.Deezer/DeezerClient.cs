@@ -31,7 +31,7 @@ namespace E.Deezer
 
         Task<T> GetDeezerObject<T>(string aMethod, IList<IRequestParameter> aParams) where T : IDeezerObjectResponse;
 
-        Task<IChart> GetChart(ulong aId, uint aStart, uint aCount);
+        Task<IChart> GetChart(long aId, uint aStart, uint aCount);
 
         Task<T> GetPlain<T>(string aMethod, IList<IRequestParameter> aParams);
         Task<T> GetPlainWithError<T>(string aMethod, IList<IRequestParameter> aParams) where T : IHasError;
@@ -114,7 +114,7 @@ namespace E.Deezer
         }
 
 
-        public Task<IChart> GetChart(ulong aId, uint aStart, uint aCount)
+        public Task<IChart> GetChart(long aId, uint aStart, uint aCount)
         {
             string method = "chart/{id}";
             List<IRequestParameter> parms = new List<IRequestParameter>()
