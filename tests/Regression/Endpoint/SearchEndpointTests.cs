@@ -123,5 +123,12 @@ namespace E.Deezer.Tests.Regression.Endpoint
             Assert.That(firstTrack.Id, Is.GreaterThan(0), nameof(firstTrack.Id));
             Assert.IsNotNull(firstTrack.Title, nameof(firstTrack.Title));
         }
+
+        [Test]
+        public void TestGithubIssue79()
+        {
+            /* If there is a regression, then this should fail. See github comments. */
+            var result = _search.Albums("Impronta", 200).Result;
+        }
     }
 }
