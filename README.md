@@ -2,7 +2,7 @@
 Unoffical asynchronous Deezer .NET API.
 
 ## Usage
-Latest Stable Nuget: [v4.2.1](http://nuget.org/packages/e.deezer)
+Latest Stable Nuget: [v4.2.2](http://nuget.org/packages/e.deezer)
 
 Via Nuget:
 ```Shell
