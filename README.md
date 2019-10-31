@@ -63,7 +63,7 @@ Targets Net45, NetStandard1.1 and NetStandard2.0
 
 
 
-##License
+## License
 (MIT)
 Copyright (c) 2019
 
