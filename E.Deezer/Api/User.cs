@@ -56,7 +56,7 @@ namespace E.Deezer.Api
 
         Task<IEnumerable<IRadio>> GetRecommendedRadio(uint aStart = 0, uint aCount = 100);
 
-        Task<uint> CreatePlaylist(string title);
+        Task<ulong> CreatePlaylist(string title);
 
         Task<bool> AddRadioToFavourite(IRadio aRadio);
         Task<bool> AddRadioToFavourite(ulong radioId);
@@ -167,7 +167,7 @@ namespace E.Deezer.Api
             => Get<Radio, IRadio>("recommendations/radios", DeezerPermissions.BasicAccess, aStart, aCount);
 
 
-        public Task<uint> CreatePlaylist(string title)
+        public Task<ulong> CreatePlaylist(string title)
         {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {

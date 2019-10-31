@@ -11,6 +11,6 @@ namespace E.Deezer.Api
     internal class DeezerCreateResponse
     {
         [JsonProperty(PropertyName = "id")]
-        public uint Id { get; set; }
+        public ulong Id { get; set; }
     }
 }
