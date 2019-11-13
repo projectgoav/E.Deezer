@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
@@ -24,30 +19,30 @@ namespace E.Deezer.Api
     internal class ObjectWithImage : IObjectWithImage
     {
         [JsonProperty(PropertyName = "picture_small")]
-        public string SmallPicture { get; set; }
+        internal string SmallPicture { get; set; }
 
         [JsonProperty(PropertyName = "picture_medium")]
-        public string MediumPicture { get; set; }
+        internal string MediumPicture { get; set; }
 
         [JsonProperty(PropertyName = "picture_big")]
-        public string LargePicture { get; set; }
+        internal string LargePicture { get; set; }
 
         [JsonProperty(PropertyName = "picture_xl")]
-        public string ExtraLargePicture { get; set; }
+        internal string ExtraLargePicture { get; set; }
 
         [JsonProperty(PropertyName = "cover_small")]
-        public string SmallCover { get; set; }
+        internal string SmallCover { get; set; }
 
         [JsonProperty(PropertyName = "cover_medium")]
-        public string MediumCover { get; set; }
+        internal string MediumCover { get; set; }
 
         [JsonProperty(PropertyName = "cover_big")]
-        public string LargeCover { get; set; }
+        internal string LargeCover { get; set; }
 
         [JsonProperty(PropertyName = "cover_xl")]
-        public string ExtraLargeCover { get; set; }
+        internal string ExtraLargeCover { get; set; }
 
-        public Error Error { get; set; }
+        internal Error Error { get; set; }
 
         public virtual string GetPicture(PictureSize aSize)
         {
@@ -79,14 +74,13 @@ namespace E.Deezer.Api
         public virtual bool HasPicture(PictureSize aSize)
             => !string.IsNullOrEmpty(GetPicture(aSize));
 
-
-        private string GetImage(string aPicture, string aCover)
+        private string GetImage(string picture, string cover)
         {
-            bool isPictureEmpty = string.IsNullOrEmpty(aPicture);
-            bool isCoverEmpty = string.IsNullOrEmpty(aCover);
+            bool isPictureEmpty = string.IsNullOrEmpty(picture);
+            bool isCoverEmpty = string.IsNullOrEmpty(cover);
 
-            if (!isPictureEmpty && isCoverEmpty)        { return aPicture; }        //We have a picture but no cover
-            else if (isPictureEmpty && !isCoverEmpty)   { return aCover; }          //We have a cover but no picture
+            if (!isPictureEmpty && isCoverEmpty)        { return picture; }        //We have a picture but no cover
+            else if (isPictureEmpty && !isCoverEmpty)   { return cover; }          //We have a cover but no picture
             else                                        { return string.Empty; }    //We have neither...
         }
     }

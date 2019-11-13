@@ -1,8 +1,5 @@
-﻿using System;
-
+﻿using E.Deezer.Api;
 using NUnit.Framework;
-
-using E.Deezer.Api;
 
 namespace E.Deezer.Tests.Api.Entities
 {
@@ -16,9 +13,9 @@ namespace E.Deezer.Tests.Api.Entities
         {
             radio = new Radio()
             {
-                Id = 0, 
+                Id = 0,
                 Title = "Test Radio",
-                Description = "Description",       
+                Description = "Description",
                 ShareLink = "www.deezer.com",
 
                 SmallPicture = Str.SMALL_PICTURE,

@@ -1,9 +1,6 @@
-﻿using System;
+﻿using E.Deezer.Api;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using E.Deezer.Api;
 
 namespace E.Deezer
 {
@@ -20,12 +17,10 @@ namespace E.Deezer
         NotFound            = 800
     }
 
-
     /// <summary>
-    /// Defines an exception that may be returned from the Deezer API
-    /// More information: http://developers.deezer.com/api/errors
+    /// Defines an exception that may be returned from the Deezer API.
+    /// More information: http://developers.deezer.com/api/errors.
     /// </summary>
-    /// 
     public class DeezerException : Exception
     {
         internal const string QUOTA_MESSAGE = "You have made too many calls to the Deezer API.Deezer responded with result 4 - QuotaException";
@@ -37,7 +32,6 @@ namespace E.Deezer
         internal const string INVALID_QUERY_MESSAGE = "Deezer didn't understand query. Responded with result 600 - InvalidQueryException";
         internal const string SERVICE_BUSY_MESSAGE = "Deezer API is busy or unavailabe. Responded with result 700 - Exception";
         internal const string NOT_FOUND_MESSAGE = "Unable to find the requested resource.Deezer responded with result 800 - DataNotFoundException";
-
 
         private static readonly IReadOnlyDictionary<EDeezerApiError, string> ERROR_MSG_LOOKUP = new Dictionary<EDeezerApiError, string>()
         {
@@ -60,9 +54,8 @@ namespace E.Deezer
             this.Error = deezerError;
         }
 
-
         /// <summary>
-        /// Gets the message returned from the Deezer API
+        /// Gets the message returned from the Deezer API.
         /// </summary>
         public override string Message
         {

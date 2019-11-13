@@ -1,8 +1,5 @@
-﻿using System;
-
+﻿using E.Deezer.Api;
 using NUnit.Framework;
-
-using E.Deezer.Api;
 
 namespace E.Deezer.Tests.Api.Entities
 {
@@ -16,7 +13,7 @@ namespace E.Deezer.Tests.Api.Entities
         {
             genre = new Genre()
             {
-                Id = 0,   
+                Id = 0,
                 Name = "Test Genre",
 
                 SmallPicture = Str.SMALL_PICTURE,

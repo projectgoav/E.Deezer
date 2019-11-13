@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using E.Deezer.Api;
 using Newtonsoft.Json;
 using NUnit.Framework;
-
-using E.Deezer.Api;
 
 namespace E.Deezer.Tests.Api.Internal
 {
@@ -32,7 +25,6 @@ namespace E.Deezer.Tests.Api.Internal
             GetWithErrorFromJson<AlbumObjectResponse>(json, "NotFound", 404);
         }
 
-
         [Test]
         public void TestTrack()
         {
@@ -51,7 +43,6 @@ namespace E.Deezer.Tests.Api.Internal
             GetWithErrorFromJson<TrackObjectResponse>(json, "QuotaExceeded", 9000);
         }
 
-
         [Test]
         public void TestPlaylist()
         {
@@ -69,7 +60,6 @@ namespace E.Deezer.Tests.Api.Internal
 
             GetWithErrorFromJson<PlaylistObjectResponse>(json, "BadQuery", 300);
         }
-
 
         [Test]
         public void TestRadio()
@@ -101,8 +91,6 @@ namespace E.Deezer.Tests.Api.Internal
 
             return response;
         }
-
-
 
         private TResponse GetWithErrorFromJson<TResponse>(string json, string expectedError, int expectedErrorCode) where TResponse : IDeezerObjectResponse
         {

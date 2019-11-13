@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 using NUnit.Framework;
-
-using E.Deezer;
 
 namespace E.Deezer.Tests
 {
@@ -28,7 +22,6 @@ namespace E.Deezer.Tests
             executor.Dispose();
             executor = null;
         }
-
 
         [Test]
         public void TestParamsAddJsonOutput()
@@ -69,7 +62,6 @@ namespace E.Deezer.Tests
             Assert.NotNull(trueurl);
             Assert.AreEqual("test.com/charts?id=something&output=json", trueurl);
         }
-
 
     }
 }

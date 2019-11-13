@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
@@ -22,48 +19,26 @@ namespace E.Deezer.Api
 
     internal class Comment : IComment, IDeserializable<IDeezerClient>
     {
-        public ulong Id
-        {
-            get;
-            set;
-        }
+        public ulong Id { get; set; }
 
-        public string Text
-        {
-            get;
-            set;
-        }
+        public string Text { get; set; }
 
         public DateTime Posted => new DateTime(PostedInternal);
 
         public IUserProfile Author => AuthorInternal;
 
-
         [JsonProperty(PropertyName = "date")]
-        public long PostedInternal
-        {
-            get;
-            set;
-        }
+        public long PostedInternal { get; set; }
 
         [JsonProperty(PropertyName = "author")]
-        public UserProfile AuthorInternal
-        {
-            get;
-            set;
-        }
+        public UserProfile AuthorInternal { get; set; }
 
         public bool IsUserComment => this.Author != null                            //We've got an author object...
                                         && this.Client.User != null                 //And we're logged in...
                                         && this.Author.Id == this.Client.User.Id;   //And the ids match
 
-
         //IDeserializable
-        public IDeezerClient Client
-        {
-            get;
-            set;
-        }
+        public IDeezerClient Client { get; set; }
 
         public void Deserialize(IDeezerClient client)
         {
@@ -71,10 +46,9 @@ namespace E.Deezer.Api
             this.AuthorInternal?.Deserialize(client);
         }
 
-
         public Task<bool> DeleteComment()
         {
-            if(!this.IsUserComment)
+            if (!this.IsUserComment)
             {
                 throw new InvalidOperationException("Attempting to delete a comment which the user did not create. Please check 'IsUserComment' property before calling this method.");
             }
@@ -86,7 +60,6 @@ namespace E.Deezer.Api
 
             return Client.Delete("comment/{id}", p, DeezerPermissions.BasicAccess);
         }
-
 
         public override string ToString()
             => string.Format("E.Deezer.Comment:{0}", this.Id);

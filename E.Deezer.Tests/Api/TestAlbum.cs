@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System.IO;
-
+﻿using E.Deezer.Api;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
-
-using E.Deezer.Api;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace E.Deezer.Tests.Api
 {
@@ -27,7 +21,6 @@ namespace E.Deezer.Tests.Api
             client = new Mock<IDeezerClient>();
         }
 
-
         [Test]
         public void TestFavouriteCalls()
         {
@@ -42,14 +35,11 @@ namespace E.Deezer.Tests.Api
             client.Setup(c => c.User)
                   .Returns(() => new Mock<IUser>().Object);
 
-
             album.AddAlbumToFavorite();
             album.RemoveAlbumFromFavorite();
 
-
             client.Verify(c => c.User, Times.Exactly(2));
         }
-
 
         [Test]
         public void TestRate()
@@ -118,7 +108,6 @@ namespace E.Deezer.Tests.Api
 
             Assert.That(albumImpl.ArtistInternal.Client != null);
         }
-
 
         [Test]
         public void TestDeserialisation()

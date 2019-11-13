@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System.Net.Http;
-
-using E.Deezer.Api;
+﻿using E.Deezer.Api;
 using E.Deezer.Endpoint;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace E.Deezer
 {
@@ -16,54 +11,45 @@ namespace E.Deezer
     /// </summary>
     public class Deezer : IDisposable
     {
-        private readonly IBrowseEndpoint iBrowse;
-        private readonly ISearchEndpoint iSearch;
-        private readonly IUserEndpoint iUser;
-        private readonly IRadioEndpoint iRadio;
-        private readonly DeezerSession iSession;
-        private readonly DeezerClient iClient;
+        private readonly DeezerSession _session;
+        private readonly DeezerClient _client;
 
-        internal Deezer(DeezerSession aSession, HttpMessageHandler httpMessageHandler = null)
+        internal Deezer(DeezerSession session, HttpMessageHandler httpMessageHandler = null)
         {
-            iSession = aSession;
-            iClient = new DeezerClient(iSession, httpMessageHandler);
+            _session = session;
+            _client = new DeezerClient(_session, httpMessageHandler);
 
-            iBrowse = new BrowseEndpoint(iClient);
-            iSearch = new SearchEndpoint(iClient);
-            iUser =   new UserEndpoint(iClient);
-            iRadio = new RadioEndpoint(iClient);
+            Browse = new BrowseEndpoint(_client);
+            Search = new SearchEndpoint(_client);
+            User   = new   UserEndpoint(_client);
+            Radio  = new  RadioEndpoint(_client);
         }
 
-        public IBrowseEndpoint Browse =>iBrowse; 
-        public ISearchEndpoint Search => iSearch;
-        public IUserEndpoint   User   => iUser;
-        public IRadioEndpoint  Radio  => iRadio; 
-
+        public IBrowseEndpoint Browse { get; }
+        public ISearchEndpoint Search { get; }
+        public IUserEndpoint User { get; }
+        public IRadioEndpoint Radio { get; }
 
         public Task<IServceInfo> GetServiceInformation()
         {
-           return iClient.GetPlain<Infos>("infos")
-                         .ContinueWith<IServceInfo>((aTask) => { return aTask.Result; }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+           return _client.GetPlain<Infos>("infos")
+                         .ContinueWith<IServceInfo>((aTask) => { return aTask.Result; }, _client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
         //'OAuth'
-        public bool IsAuthenticated => iSession.Authenticated;
+        public bool IsAuthenticated => _session.Authenticated;
 
-        public Task Login(string aAccessToken) 
+        public Task Login(string aAccessToken)
         {
-            iSession.Login(aAccessToken);
-            return iClient.Login(); //Obtaining the permissions this token grants E.Deezer
+            _session.Login(aAccessToken);
+            return _client.Login(); //Obtaining the permissions this token grants E.Deezer
         }
 
-        public void Logout() => iSession.Logout();
-
-
+        public void Logout() => _session.Logout();
 
         public void Dispose()
         {
-            iClient.Dispose();
+            _client.Dispose();
         }
     }
-
-
 }

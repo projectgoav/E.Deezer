@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using E.Deezer.Api;
 using NUnit.Framework;
-
-using E.Deezer.Api;
 
 namespace E.Deezer.Tests.Api.Entities
 {
     [TestFixture]
     public abstract class ObjectWithImageTestBase
     {
-
-
-
         protected IObjectWithImage objectWithImage;
-
 
         [SetUp]
         public void Setup() { OnSetUp(); }
@@ -61,6 +50,5 @@ namespace E.Deezer.Tests.Api.Entities
             Assert.True(objectWithImage.HasPicture(PictureSize.Medium));
             Assert.True(objectWithImage.HasPicture(PictureSize.Large));
         }
-
     }
 }

@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System.IO;
-
-using NUnit.Framework;
+﻿using E.Deezer.Api;
 using Newtonsoft.Json;
-
-using E.Deezer.Api;
+using NUnit.Framework;
+using System.IO;
 
 namespace E.Deezer.Tests.Api.Internal
 {
@@ -19,18 +11,16 @@ namespace E.Deezer.Tests.Api.Internal
         private const string kDefaultJsonFilename = "ObjectWithImageDefault.json";
         private const string kCoverOnlyFilename = "ObjectWithImageOnlyCovers.json";
         private const string kMissingPictureFilename = "ObjectWithImageMissingPicture.json";
-        
+
         private string defaultJson;
         private string missingPictureJson;
         private string coverOnlyJson;
-
 
         [OneTimeSetUp]
         public void Init()
         {
             string baseDir = TestContext.CurrentContext.TestDirectory;
             string fullDir = Path.Combine(baseDir, "Resources", "Api", "Internal");
-
 
             var defaultPath = Path.Combine(fullDir, kDefaultJsonFilename);
             defaultJson = string.Join("\n", File.ReadAllLines(defaultPath));
@@ -45,7 +35,6 @@ namespace E.Deezer.Tests.Api.Internal
             Assert.That(string.IsNullOrEmpty(coverOnlyJson) == false);
             Assert.That(string.IsNullOrEmpty(missingPictureJson) == false);
         }
-
 
         [Test]
         public void TestHasImageAll()
@@ -99,6 +88,5 @@ namespace E.Deezer.Tests.Api.Internal
             Assert.That(string.IsNullOrEmpty(imgObj.GetPicture(PictureSize.Large)) == false);
             Assert.That(string.IsNullOrEmpty(imgObj.GetPicture(PictureSize.ExtraLarge)) == false);
         }
-        
     }
 }

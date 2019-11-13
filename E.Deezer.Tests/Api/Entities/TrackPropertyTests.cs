@@ -1,8 +1,6 @@
-﻿using System;
-
+﻿using E.Deezer.Api;
 using NUnit.Framework;
-
-using E.Deezer.Api;
+using System;
 
 namespace E.Deezer.Tests.Api.Entities
 {
@@ -16,7 +14,7 @@ namespace E.Deezer.Tests.Api.Entities
         {
             track = new Track()
             {
-                Id = 0,     
+                Id = 0,
                 Title = "Test Track",
                 Link = "www.deezer.com",
 
@@ -24,7 +22,7 @@ namespace E.Deezer.Tests.Api.Entities
                 IsExplicit = true,
                 ReleaseDate = DateTime.Now,
                 Preview = "www.deezer.com",
-                 
+
                 AlbumInternal = new Album(),
                 ArtistInternal = new Artist(),
 
@@ -52,7 +50,7 @@ namespace E.Deezer.Tests.Api.Entities
             Assert.NotNull(track.ReleaseDate);
             Assert.NotNull(track.Album);
             Assert.NotNull(track.Artist);
-            
+
             Assert.AreEqual(0, track.Id);
             Assert.AreEqual(0, track.Duration);
 

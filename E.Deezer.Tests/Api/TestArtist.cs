@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using E.Deezer.Api;
 using Moq;
 using NUnit.Framework;
-
-using E.Deezer.Api;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace E.Deezer.Tests.Api
 {
@@ -23,7 +19,6 @@ namespace E.Deezer.Tests.Api
         {
             client = new Mock<IDeezerClient>();
         }
-
 
         [Test]
         public void TestSmartRadio()
@@ -42,7 +37,6 @@ namespace E.Deezer.Tests.Api
                       count = c;
                   })
                   .Returns(new TaskCompletionSource<DeezerFragment<Track>>().Task);
-
 
             Artist artist = new Artist()
             {
@@ -81,7 +75,6 @@ namespace E.Deezer.Tests.Api
                   })
                   .Returns(new TaskCompletionSource<DeezerFragment<Track>>().Task);
 
-
             Artist artist = new Artist()
             {
                 Id = kArtistId,
@@ -117,7 +110,6 @@ namespace E.Deezer.Tests.Api
                       count = c;
                   })
                   .Returns(new TaskCompletionSource<DeezerFragment<Album>>().Task);
-
 
             Artist artist = new Artist()
             {
@@ -155,7 +147,6 @@ namespace E.Deezer.Tests.Api
                   })
                   .Returns(new TaskCompletionSource<DeezerFragment<Artist>>().Task);
 
-
             Artist artist = new Artist()
             {
                 Id = kArtistId,
@@ -192,7 +183,6 @@ namespace E.Deezer.Tests.Api
                   })
                   .Returns(new TaskCompletionSource<DeezerFragment<Playlist>>().Task);
 
-
             Artist artist = new Artist()
             {
                 Id = kArtistId,
@@ -211,7 +201,6 @@ namespace E.Deezer.Tests.Api
             Assert.That(parameters.Any(p => p.Value is ulong && ((ulong)p.Value) == kArtistId));
         }
 
-
         [Test]
         public void TestFavouriting()
         {
@@ -226,7 +215,6 @@ namespace E.Deezer.Tests.Api
 
             artist.AddArtistToFavorite();
             artist.RemoveArtistFromFavorite();
-
 
             client.Verify(c => c.User, Times.Exactly(2));
         }

@@ -1,10 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
@@ -18,42 +14,24 @@ namespace E.Deezer.Api
         Task<IEnumerable<ITrack>> GetFlow(uint aStart = 0, uint aCount = 100);
     }
 
-    internal class UserProfile : ObjectWithImage,  IUserProfile, IDeserializable<IDeezerClient>
+    internal class UserProfile : ObjectWithImage, IUserProfile, IDeserializable<IDeezerClient>
     {
-        public ulong Id
-        {
-            get;
-            set;
-        }
+        public ulong Id { get; set; }
 
         [JsonProperty(PropertyName = "name")]
-        public string Username
-        {
-            get;
-            set;
-        }
+        public string Username { get; set; }
 
         [JsonProperty(PropertyName = "link")]
-        public string ShareLink
-        {
-            get;
-            set;
-        }
+        public string ShareLink { get; set; }
 
         public string Country { get; set; }
 
 
         //IDeserializable
-        public IDeezerClient Client
-        {
-            get;
-            set;
-        }
+        public IDeezerClient Client { get; set; }
 
         public void Deserialize(IDeezerClient client)
             => this.Client = client;
-
-
 
         public Task<IEnumerable<ITrack>> GetFlow(uint aStart = 0, uint aCount = 100)
         {
@@ -68,7 +46,6 @@ namespace E.Deezer.Api
                                                             TaskContinuationOptions.NotOnCanceled,
                                                             TaskScheduler.Default);
         }
-
 
         public override string ToString()
             => string.Format("E.Deezer.UserProfile: {0} :: ({1})", this.Username, this.Id);

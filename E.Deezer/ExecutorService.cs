@@ -1,16 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using System.IO;
-using System.Threading;
 using System.IO.Compression;
-using System.Threading.Tasks;
-
-using Newtonsoft.Json;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
+using System.Threading.Tasks;
 
 using E.Deezer.Api;
 
@@ -21,28 +18,27 @@ namespace E.Deezer
     {
         private const int DEFAULT_TIMEOUT = 30000; //30secs
 
-        private readonly HttpClient client;
-        private readonly JsonSerializer jsonSerializer;
-        private readonly CancellationTokenSource cancellationTokenSource;
+        private readonly HttpClient _client;
+        private readonly JsonSerializer _jsonSerializer;
+        private readonly CancellationTokenSource _cancellationTokenSource;
 
         internal ExecutorService(HttpMessageHandler httpMessageHandler = null)
         {
-            this.jsonSerializer = CreateJsonSerializer();
-            this.cancellationTokenSource = new CancellationTokenSource();
+            _jsonSerializer = CreateJsonSerializer();
+            _cancellationTokenSource = new CancellationTokenSource();
 
             var handler = httpMessageHandler ?? new HttpClientHandler();
-            this.client = new HttpClient(handler, disposeHandler: true);
+            _client = new HttpClient(handler, disposeHandler: true);
 
-            ConfigureHttpClient(this.client);
+            ConfigureHttpClient();
         }
 
-        internal CancellationToken CancellationToken { get { return cancellationTokenSource.Token; } }
-
+        internal CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
         public Task<T> ExecuteGet<T>(string method, IEnumerable<IRequestParameter> parms)
         {
             string url = BuildUrl(method, parms);
-            return client.GetAsync(url, this.CancellationToken)
+            return _client.GetAsync(url, this.CancellationToken)
                          .ContinueWith(async t =>
                          {
                              if (t.IsFaulted)
@@ -66,7 +62,7 @@ namespace E.Deezer
         public Task<bool> ExecutePost(string method, IEnumerable<IRequestParameter> parms)
         {
             string url = BuildUrl(method, parms);
-            return client.PostAsync(url, null, this.CancellationToken)
+            return _client.PostAsync(url, null, this.CancellationToken)
                          .ContinueWith<bool>(t =>
                          {
                              if (t.IsFaulted)
@@ -86,7 +82,7 @@ namespace E.Deezer
         public Task<T> ExecutePost<T>(string method, IEnumerable<IRequestParameter> parms)
         {
             string url = BuildUrl(method, parms);
-            return client.PostAsync(url, null, this.CancellationToken)
+            return _client.PostAsync(url, null, this.CancellationToken)
                          .ContinueWith(async t =>
                          {
                              if (t.IsFaulted)
@@ -111,7 +107,7 @@ namespace E.Deezer
         {
             string url = BuildUrl(method, parms);
 
-            return client.DeleteAsync(url, CancellationToken)
+            return _client.DeleteAsync(url, CancellationToken)
                          .ContinueWith(t =>
                          {
                              if (t.IsFaulted)
@@ -128,15 +124,14 @@ namespace E.Deezer
                          }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
 
-
         internal string BuildUrl(string url, IEnumerable<IRequestParameter> parms)
         {
             string trueUrl = url;
             var queryStrings = new List<string>();
 
-            foreach(var p in parms)
+            foreach (var p in parms)
             {
-                switch(p.Type)
+                switch (p.Type)
                 {
                     case ParameterType.UrlSegment:
                         {
@@ -165,16 +160,15 @@ namespace E.Deezer
             return string.Format("{0}?{1}", trueUrl, string.Join("&", queryStrings));
         }
 
-
-        private void ConfigureHttpClient(HttpClient httpClient)
+        private void ConfigureHttpClient()
         {
-            httpClient.BaseAddress = new Uri("https://api.deezer.com/");
-            httpClient.Timeout = TimeSpan.FromMilliseconds(DEFAULT_TIMEOUT);
+            _client.BaseAddress = new Uri("https://api.deezer.com/");
+            _client.Timeout = TimeSpan.FromMilliseconds(DEFAULT_TIMEOUT);
 
             // Allow us to deal with compressed content, should Deezer support it.
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-            httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+            _client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
         }
 
         private JsonSerializer CreateJsonSerializer()
@@ -229,7 +223,7 @@ namespace E.Deezer
                     {
                         using (var jsonReader = new JsonTextReader(reader))
                         {
-                            return this.jsonSerializer.Deserialize<T>(jsonReader);
+                            return this._jsonSerializer.Deserialize<T>(jsonReader);
                         }
                     }
                 }
@@ -250,7 +244,7 @@ namespace E.Deezer
         //Checks a response for errors and exceptions
         private void CheckHttpResponse(HttpResponseMessage response)
         {
-            if(!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
                 string msg = $"Status: {response.StatusCode} :: {response.ReasonPhrase}";
                 throw new HttpRequestException(msg);
@@ -262,8 +256,6 @@ namespace E.Deezer
             }
         }
 
-
-
         public void Dispose()
         {
             this.Dispose(true);
@@ -274,11 +266,11 @@ namespace E.Deezer
         {
             if (disposing)
             {
-                this.cancellationTokenSource.Cancel();
-                this.cancellationTokenSource.Dispose();
+                this._cancellationTokenSource.Cancel();
+                this._cancellationTokenSource.Dispose();
 
-                this.client.CancelPendingRequests();
-                this.client.Dispose();
+                this._client.CancelPendingRequests();
+                this._client.Dispose();
             }
         }
     }

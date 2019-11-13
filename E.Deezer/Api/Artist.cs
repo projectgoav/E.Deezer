@@ -1,11 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
@@ -36,7 +32,6 @@ namespace E.Deezer.Api
 
         Task<IEnumerable<IComment>> GetComments(uint aStart = 0, uint aCount = 10);
 
-
         Task<bool> AddArtistToFavorite();
         Task<bool> RemoveArtistFromFavorite();
 
@@ -45,72 +40,37 @@ namespace E.Deezer.Api
 
     internal class Artist : ObjectWithImage, IArtist, IDeserializable<IDeezerClient>
     {
-        public ulong Id
-        {
-            get;
-            set;
-        }
+        public ulong Id { get; set; }
 
-        public string Name
-        {
-            get;
-            set;
-        }
+        public string Name { get; set; }
 
-        public string Link
-        {
-            get;
-            set;
-        }
+        public string Link { get; set; }
 
         [JsonProperty (PropertyName = "share")]
-        public string ShareLink
-        {
-            get;
-            set;
-        }
-
+        public string ShareLink { get; set; }
 
         [JsonProperty(PropertyName = "radio")]
-        public bool HasSmartRadio
-        {
-            get;
-            set;
-        }
+        public bool HasSmartRadio { get; set; }
 
         [JsonProperty(PropertyName = "nb_album")]
-        public uint AlbumCount
-        {
-            get;
-            set;
-        }
+        public uint AlbumCount { get; set; }
 
         [JsonProperty(PropertyName = "nb_fan")]
-        public uint Fans
-        {
-            get;
-            set;
-        }
-
+        public uint Fans { get; set; }
 
         //IDeserializable
-        public IDeezerClient Client
-        {
-            get;
-            set;
-        }
+        public IDeezerClient Client { get; set; }
 
-        public void Deserialize(IDeezerClient aClient) 
+        public void Deserialize(IDeezerClient aClient)
             => Client = aClient;
 
-
         [Obsolete("Use of GetSmartRadio is encouraged")]
-        public Task<IEnumerable<ITrack>> GetTracklist(uint aStart = 0, uint aCount = 100) 
+        public Task<IEnumerable<ITrack>> GetTracklist(uint aStart = 0, uint aCount = 100)
             => Get<Track, ITrack>("artist/{id}/radio", aStart, aCount);
 
         public Task<IEnumerable<ITrack>> GetSmartRadio(uint aStart = 0, uint aCount = 100)
         {
-            if(this.HasSmartRadio)
+            if (this.HasSmartRadio)
             {
                 return Get<Track, ITrack>("artist/{id}/radio", aStart, aCount);
             }
@@ -118,27 +78,23 @@ namespace E.Deezer.Api
             throw new InvalidOperationException("Unable to get SmartRadio for an aritst which doesn't support it. Please check 'HasSmartRadio' property before calling this method");
         }
 
-
-        public Task<IEnumerable<ITrack>> GetTopTracks(uint aStart = 0, uint aCount = 100) 
+        public Task<IEnumerable<ITrack>> GetTopTracks(uint aStart = 0, uint aCount = 100)
             => Get<Track, ITrack>("artist/{id}/top", aStart, aCount);
 
         public Task<IEnumerable<IAlbum>> GetAlbums(uint aStart = 0, uint aCount = 100)
             => Get<Album, IAlbum>("artist/{id}/albums", aStart, aCount);
 
-
         public Task<IEnumerable<IArtist>> GetRelated(uint aStart = 0, uint aCount = 100)
             => Get<Artist, IArtist>("artist/{id}/related", aStart, aCount);
 
-        public Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aStart = 0, uint aCount = 100) 
+        public Task<IEnumerable<IPlaylist>> GetPlaylistsContaining(uint aStart = 0, uint aCount = 100)
             => Get<Playlist, IPlaylist>("artist/{id}/playlists", aStart, aCount);
-
 
         public Task<IEnumerable<IUserProfile>> GetFans(uint aStart = 0, uint aCount = 25)
             => Get<UserProfile, IUserProfile>("artist/{id}/fans", aStart, aCount);
 
         public Task<IEnumerable<IComment>> GetComments(uint aStart = 0, uint aCount = 10)
             => Get<Comment, IComment>("artist/{id}/comments", aStart, aCount);
-
 
         //Internal wrapper around get for all artist methods :)
         private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aStart, uint aCount) where TSource : TDest, IDeserializable<IDeezerClient>
@@ -154,17 +110,15 @@ namespace E.Deezer.Api
             }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
-
-        public Task<bool> AddArtistToFavorite() 
+        public Task<bool> AddArtistToFavorite()
             => Client.User.AddArtistToFavourite(Id);
 
-        public Task<bool> RemoveArtistFromFavorite() 
-            => Client.User.RemoveArtistFromFavourite(Id);       
-
+        public Task<bool> RemoveArtistFromFavorite()
+            => Client.User.RemoveArtistFromFavourite(Id);
 
         public Task<bool> AddComment(string commentText)
         {
-            if(string.IsNullOrEmpty(commentText))
+            if (string.IsNullOrEmpty(commentText))
             {
                 throw new ArgumentException("A comment is required.");
             }
@@ -178,8 +132,7 @@ namespace E.Deezer.Api
             return Client.Post("artist/{id}/comments", p, DeezerPermissions.BasicAccess);
         }
 
-
         public override string ToString()
-            => string.Format("E.Deezer: Artist({0})", Name);     
+            => string.Format("E.Deezer: Artist({0})", Name);
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace E.Deezer
 {
@@ -15,7 +13,6 @@ namespace E.Deezer
         internal const string DELETE_LIBRARY    = "delete_library";
         internal const string LISTENING_HISTORY = "listening_history";
 
-
         internal static readonly IReadOnlyDictionary<DeezerPermissions, string> PERMISSION_NAME_LOOKUP = new Dictionary<DeezerPermissions, string>()
         {
             { DeezerPermissions.BasicAccess, BASIC_ACCESS },
@@ -26,7 +23,6 @@ namespace E.Deezer
             { DeezerPermissions.DeleteLibrary, DELETE_LIBRARY },
             { DeezerPermissions.ListeningHistory, LISTENING_HISTORY },
         };
-
 
         public static string PermissionToString(this DeezerPermissions permissions)
         {
@@ -62,48 +58,48 @@ namespace E.Deezer
     }
 
     /// <summary>
-    /// Deezer OAuth Permission requests
+    /// Deezer OAuth Permission requests.
     /// </summary>
     [Flags]
     public enum DeezerPermissions
     {
         /// <summary>
         /// Access users basic information.
-        /// INFO: Include name, firstname, profile picture, gender
+        /// INFO: Include name, firstname, profile picture, gender.
         /// </summary>
         BasicAccess = 1 << 0,
 
         /// <summary>
-        /// Get the user's email
+        /// Get the user's email.
         /// </summary>
         Email = 1 << 1,
 
         /// <summary>
-        /// Access user data any time
+        /// Access user data any time.
         /// NOTE: Almost the same as all other permissions
         /// </summary>
         OfflineAccess = 1 << 2,
 
         /// <summary>
-        /// Manage users' library 
+        /// Manage users' library.
         /// INFO: Add/rename a playlist. Add/order songs in the playlist.
         /// </summary>
         ManageLibrary = 1 << 3,
 
         /// <summary>
-        /// Manage users' friends
+        /// Manage users' friends.
         /// INFO: Add/remove a following/follower.
         /// </summary>
         ManageCommunity = 1 << 4,
 
         /// <summary>
-        /// Delete library items 	
-        /// INFO: Allow the application to delete items in the user's library
+        /// Delete library items.
+        /// INFO: Allow the application to delete items in the user's library.
         /// </summary>
         DeleteLibrary = 1 << 5,
 
         /// <summary>
-        /// Allow the application to access the user's listening history
+        /// Allow the application to access the user's listening history.
         /// </summary>
         ListeningHistory = 1 << 6,
     }

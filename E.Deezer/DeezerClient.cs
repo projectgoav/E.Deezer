@@ -1,15 +1,10 @@
-﻿using System;
+﻿using E.Deezer.Api;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
-using System.Net.Http;
-
-using E.Deezer.Api;
 
 namespace E.Deezer
 {
@@ -20,7 +15,6 @@ namespace E.Deezer
         bool IsAuthenticated { get; }
 
         CancellationToken CancellationToken { get; }
-        
 
         //GET
         Task<DeezerFragment<T>> Get<T>(string aMethod, uint aStart, uint aCount);
@@ -36,54 +30,45 @@ namespace E.Deezer
         Task<T> GetPlain<T>(string aMethod, IList<IRequestParameter> aParams);
         Task<T> GetPlainWithError<T>(string aMethod, IList<IRequestParameter> aParams) where T : IHasError;
 
-
         //POST
         Task<bool> Post(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission);
 
         Task<T> Post<T>(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission);
 
-
         //DELETE
         Task<bool> Delete(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission);
-
 
         //Helpers
         IEnumerable<TDest> Transform<TSource, TDest>(DeezerFragment<TSource> aFragment) where TSource : TDest, IDeserializable<IDeezerClient>;
 
         bool HasPermission(DeezerPermissions aRequiredPermissions);
     }
-    
-    
+
     internal class DeezerClient : IDeezerClient, IDisposable
     {
-        private readonly DeezerSession iSession;
-        private readonly ExecutorService executor;
+        private readonly DeezerSession _session;
+        private readonly ExecutorService _executor;
+        private IPermissions _permissions;
 
-        private IUser iUser;
-        private IPermissions iPermissions;
-
-        internal DeezerClient(DeezerSession aSession, HttpMessageHandler httpMessageHandler = null)
+        internal DeezerClient(DeezerSession session, HttpMessageHandler httpMessageHandler = null)
         {
-            iSession = aSession;
-            executor = new ExecutorService(httpMessageHandler);
+            _session = session;
+            _executor = new ExecutorService(httpMessageHandler);
         }
 
+        public IUser User { get; private set; }
 
-        public IUser User => iUser;
+        public bool IsAuthenticated => _session.Authenticated;
 
-        public bool IsAuthenticated => iSession.Authenticated;
+        public CancellationToken CancellationToken => _executor.CancellationToken;
 
-        public CancellationToken CancellationToken => executor.CancellationToken;
+        internal string AccessToken => _session.AccessToken;
 
-
-        internal string AccessToken => iSession.AccessToken;
-
-
-        //Another copy for those without params!
-        public Task<DeezerFragment<T>> Get<T>(string aMethod, uint aStart, uint aCount)           
+        // TODO: Another copy for those without params!
+        public Task<DeezerFragment<T>> Get<T>(string aMethod, uint aStart, uint aCount)
             => Get<T>(aMethod, RequestParameter.EmptyList, aStart, aCount);
 
-        public Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams)   
+        public Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams)
             => Get<T>(aMethod, aParams, uint.MinValue, uint.MaxValue);
 
         public Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
@@ -113,7 +98,6 @@ namespace E.Deezer
                        }, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
-
         public Task<IChart> GetChart(long aId, uint aStart, uint aCount)
         {
             string method = "chart/{id}";
@@ -123,9 +107,8 @@ namespace E.Deezer
             };
 
             return GetChart(method, parms, aStart, aCount);
-
         }
-       
+
         public Task<T> GetPlainWithError<T>(string method, IList<IRequestParameter> parms = null) where T : IHasError
         {
             if (parms == null)
@@ -133,7 +116,7 @@ namespace E.Deezer
                 parms = RequestParameter.EmptyList;
             }
 
-            return this.executor.ExecuteGet<T>(method, parms)
+            return this._executor.ExecuteGet<T>(method, parms)
                                 .ContinueWith(t =>
                                 {
                                     CheckForDeezerError<T>(t.Result);
@@ -148,7 +131,7 @@ namespace E.Deezer
                 parms = RequestParameter.EmptyList;
             }
 
-            return this.executor.ExecuteGet<T>(method, parms);
+            return this._executor.ExecuteGet<T>(method, parms);
         }
 
         //Performs a POST request
@@ -159,7 +142,7 @@ namespace E.Deezer
 
             AddDefaultsToParamList(parms);
 
-            return this.executor.ExecutePost(method, parms);
+            return this._executor.ExecutePost(method, parms);
         }
 
         public Task<T> Post<T>(string method, IList<IRequestParameter> parms, DeezerPermissions requiredPermissions)
@@ -169,7 +152,7 @@ namespace E.Deezer
 
             AddDefaultsToParamList(parms);
 
-            return this.executor.ExecutePost<T>(method, parms);
+            return this._executor.ExecutePost<T>(method, parms);
         }
 
         //Performs a DELETE request
@@ -180,9 +163,8 @@ namespace E.Deezer
 
             AddDefaultsToParamList(parms);
 
-            return this.executor.ExecuteDelete(method, parms);
+            return this._executor.ExecuteDelete(method, parms);
         }
-
 
         //Performs a transform from Deezer Fragment to IEnumerable.
         public IEnumerable<TDest> Transform<TSource, TDest>(DeezerFragment<TSource> fragment) where TSource : TDest, IDeserializable<IDeezerClient>
@@ -193,18 +175,16 @@ namespace E.Deezer
                 })
                 .ToList();
 
-
-
         public bool HasPermission(DeezerPermissions requiredPermissions)
         {
-            if (IsAuthenticated && iPermissions != null)
+            if (IsAuthenticated && _permissions != null)
             {
-                return iPermissions.HasPermission(requiredPermissions);
+                return _permissions.HasPermission(requiredPermissions);
             }
 
             return false;
         }
-               
+
         //'OAuth' Stuff
 
         //Grabs the user's permissions when the user Logs into the library.
@@ -219,22 +199,21 @@ namespace E.Deezer
                         var userInstance = aTask.Result;
                         userInstance.Deserialize(this);
 
-                        iUser = userInstance;
+                        User = userInstance;
 
                         IList<IRequestParameter> permissionParams = RequestParameter.EmptyList;
                         AddDefaultsToParamList(permissionParams);
 
                         DoGet<DeezerPermissionRequest>("user/me/permissions", permissionParams)
-                                .ContinueWith((aPermissionTask) => iPermissions = aPermissionTask.Result.Permissions, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default)
+                                .ContinueWith((aPermissionTask) => _permissions = aPermissionTask.Result.Permissions, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default)
                                 .Wait();
 
                     }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
         }
 
-
         private Task<T> DoGet<T>(string method, IEnumerable<IRequestParameter> parm) where T : IHasError
         {
-            return this.executor.ExecuteGet<T>(method, parm)
+            return this._executor.ExecuteGet<T>(method, parm)
                                 .ContinueWith(t =>
                                 {
                                     if (t.IsFaulted)
@@ -247,7 +226,6 @@ namespace E.Deezer
 
                                 }, CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
-
 
         private Task<IChart> GetChart(string method, IList<IRequestParameter> parm, uint start, uint count)
         {
@@ -272,22 +250,19 @@ namespace E.Deezer
                         }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
         }
 
-       
-
         private void CheckForDeezerError<T>(T deezerObject) where T : IHasError
         {
-            if(deezerObject == null)
+            if (deezerObject == null)
             {
                 throw new InvalidOperationException("JSON response failed to be parsed into suitable object.");
             }
 
             //Make sure our API call didn't fail...
-            if(deezerObject.TheError != null)
+            if (deezerObject.TheError != null)
             {
                 ThrowDeezerError(deezerObject.TheError);
             }
         }
-
 
         private void ThrowDeezerError(IError error)
         {
@@ -295,9 +270,9 @@ namespace E.Deezer
                     || error.Code == 300)     //300 == Authentication error
             {
                 //We've got an invalid/expired auth code -> auto logout + clear internals
-                iSession.Logout();
-                iPermissions = null;
-                iUser = null;
+                _session.Logout();
+                _permissions = null;
+                User = null;
             }
 
             throw new DeezerException(error);
@@ -313,19 +288,18 @@ namespace E.Deezer
 
         private void CheckPermissions(DeezerPermissions requiredPermissions)
         {
-            if(iPermissions == null)
+            if (_permissions == null)
             {
                 throw new NotLoggedInException();
             }
 
-            if(!HasPermission(requiredPermissions))
+            if (!HasPermission(requiredPermissions))
             {
                 throw new DeezerPermissionsException(requiredPermissions);
             }
         }
 
-
-        private void AddDefaultsToParamList(IList<IRequestParameter> parms) 
+        private void AddDefaultsToParamList(IList<IRequestParameter> parms)
             => AddToParamList(parms, uint.MinValue, uint.MaxValue);
 
         private void AddToParamList(IList<IRequestParameter> parms, uint start, uint count)
@@ -342,10 +316,9 @@ namespace E.Deezer
             }
         }
 
-
         public void Dispose()
         {
-            executor.Dispose();
+            _executor.Dispose();
         }
     }
 }

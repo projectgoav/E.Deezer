@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using System.Net.Http;
-
-//using E.Deezer.Endpoint;
+﻿using System.Net.Http;
 
 namespace E.Deezer
 {
@@ -18,20 +11,13 @@ namespace E.Deezer
             AccessToken = string.Empty;
         }
 
+        internal string AccessToken { get; private set; }
 
-        internal string AccessToken
-        {
-            get;
-            private set;
-        }
-
-        internal bool Authenticated => AccessToken != string.Empty; 
-
+        internal bool Authenticated => AccessToken != string.Empty;
 
         internal void Login(string aAccessToken) => AccessToken = aAccessToken;
 
         internal void Logout() => AccessToken = string.Empty;
-
 
         //Generates a permission string which can be used to grant people
         //Access to features of the app
@@ -39,8 +25,8 @@ namespace E.Deezer
         {
             string perms = null;
 
-            if((iPermissions & DeezerPermissions.BasicAccess) == DeezerPermissions.BasicAccess)
-            { 
+            if ((iPermissions & DeezerPermissions.BasicAccess) == DeezerPermissions.BasicAccess)
+            {
                 AddToString(perms, DeezerPermissions.BasicAccess.PermissionToString());
             }
 
@@ -77,23 +63,24 @@ namespace E.Deezer
             return perms;
         }
 
-        //Adds the permissions in a comma seperated list
-        private static void AddToString(string aString, string aAdd)
+        /// <summary>
+        /// Adds the permissions in a comma seperated list.
+        /// </summary>
+        private static void AddToString(string container, string newValue)
         {
-            if(string.IsNullOrEmpty(aString))
+            if (string.IsNullOrEmpty(container))
             {
-                aString = aAdd;
+                container = newValue;
             }
             else
             {
-                aString += string.Format(",{0}", aAdd);
+                container += string.Format(",{0}", newValue);
             }
         }
 
-
         /// <summary>
         /// Starts a new session on the Deezer API.
-        /// Setup internal workings of E.Deezer
+        /// Setup internal workings of E.Deezer.
         /// </summary>
         public static Deezer CreateNew(HttpMessageHandler httpMessageHandler = null)
             => new Deezer(new DeezerSession(), httpMessageHandler);

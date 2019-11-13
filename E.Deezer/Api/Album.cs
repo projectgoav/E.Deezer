@@ -1,11 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
@@ -33,7 +29,6 @@ namespace E.Deezer.Api
         IEnumerable<IGenre> Genre { get; }
         IEnumerable<IArtist> Contributors { get; }
 
-
         //Methods
         Task<IEnumerable<ITrack>> GetTracks();
 
@@ -51,71 +46,27 @@ namespace E.Deezer.Api
 
     internal class Album : ObjectWithImage, IAlbum, IDeserializable<IDeezerClient>
     {
-        public ulong Id
-        {
-            get;
-            set;
-        }
+        public ulong Id { get; set; }
 
-        public string Title
-        {
-            get;
-            set;
-        }
+        public string Title { get; set; }
 
-        public string UPC
-        {
-            get;
-            set;
-        }
+        public string UPC { get; set; }
 
-        public string Link
-        {
-            get;
-            set;
-        }
+        public string Link { get; set; }
 
-        public long Rating
-        {
-            get;
-            set;
-        }
+        public long Rating { get; set; }
 
-        public string Label
-        {
-            get;
-            set;
-        }
+        public string Label { get; set; }
 
-        public uint Duration
-        {
-            get;
-            set;
-        }
+        public uint Duration { get; set; }
 
-        public uint Fans
-        {
-            get;
-            set;    
-        }
+        public uint Fans { get; set; }
 
-        public string RecordType
-        {
-            get;
-            set;
-        }
+        public string RecordType { get; set; }
 
-        public bool Available
-        {
-            get;
-            set;
-        }
+        public bool Available { get; set; }
 
-        public DateTime ReleaseDate
-        {
-            get;
-            set;
-        }
+        public DateTime ReleaseDate { get; set; }
 
         public bool HasRating => Rating > 0;
 
@@ -129,69 +80,32 @@ namespace E.Deezer.Api
 
         public string ArtistName => ArtistInternal?.Name ?? string.Empty;
 
-
         [JsonProperty(PropertyName = "share")]
-        public string ShareLink
-        {
-            get;
-            set;
-        }
+        public string ShareLink { get; set; }
 
         [JsonProperty(PropertyName = "explicit_lyrics")]
-        public bool HasExplicitLyrics
-        {
-            get;
-            set;
-        }
+        public bool HasExplicitLyrics { get; set; }
 
         [JsonProperty(PropertyName = "artist")]
-        public Artist ArtistInternal
-        {
-            get;
-            set;
-        }
+        public Artist ArtistInternal { get; set; }
 
         [JsonProperty(PropertyName = "genre_id")]
-        public long GenreId
-        {
-            get;
-            set;
-        }
-        
+        public long GenreId { get; set; }
+
         [JsonProperty(PropertyName = "genres")]
-        public DeezerFragment<Genre> GenreInternal
-        {
-            get;
-            set;
-        }
+        public DeezerFragment<Genre> GenreInternal { get; set; }
 
         [JsonProperty(PropertyName = "nb_tracks")]
-        public uint Tracks
-        {
-            get;
-            set;
-        }
+        public uint Tracks { get; set; }
 
-        [JsonProperty(PropertyName ="tracks")]
-        public DeezerFragment<Track> TracklistInternal
-        {
-            get;
-            set;
-        }
+        [JsonProperty(PropertyName = "tracks")]
+        public DeezerFragment<Track> TracklistInternal { get; set; }
 
         [JsonProperty(PropertyName = "contributors")]
-        public List<Artist> ContributorsInternal
-        {
-            get;
-            set;
-        }
+        public List<Artist> ContributorsInternal { get; set; }
 
         [JsonProperty(PropertyName = "alternative")]
-        public Album AlternativeInternal
-        {
-            get;
-            set;
-        }
+        public Album AlternativeInternal { get; set; }
 
         //IDeserializable
         public IDeezerClient Client { get; set; }
@@ -210,25 +124,24 @@ namespace E.Deezer.Api
                 }
             }
 
-            if(this.ContributorsInternal != null)
+            if (this.ContributorsInternal != null)
             {
-                foreach(var artist in ContributorsInternal)
+                foreach (var artist in ContributorsInternal)
                 {
                     artist.Deserialize(aClient);
                 }
             }
         }
 
-
         public Task<IEnumerable<ITrack>> GetTracks()
         {
-            if(TracklistInternal != null)
+            if (TracklistInternal != null)
             {
                 return Task.Run(() =>
                 {
                     List<ITrack> tracks = new List<ITrack>();
 
-                    foreach(Track t in TracklistInternal.Items)
+                    foreach (Track t in TracklistInternal.Items)
                     {
                         t.Deserialize(Client);
                         tracks.Add(t);
@@ -239,7 +152,6 @@ namespace E.Deezer.Api
                 }, Client.CancellationToken);
             }
 
-
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
                 RequestParameter.GetNewUrlSegmentParamter("id", Id)
@@ -249,9 +161,8 @@ namespace E.Deezer.Api
                          .ContinueWith<IEnumerable<ITrack>>(task => Client.Transform<Track, ITrack>(task.Result),
                                                             Client.CancellationToken,
                                                             TaskContinuationOptions.NotOnCanceled,
-                                                            TaskScheduler.Default);  
+                                                            TaskScheduler.Default);
         }
-
 
         public Task<IEnumerable<IUserProfile>> GetFans(uint aStart = 0, uint aCount = 25)
         {
@@ -281,7 +192,6 @@ namespace E.Deezer.Api
                                                               TaskScheduler.Default);
         }
 
-
         public Task<bool> Rate(int aRating)
         {
             if (aRating < 1 || aRating > 5) { throw new ArgumentOutOfRangeException("aRating", "Rating value should be between 1 and 5 (inclusive)"); }
@@ -295,17 +205,15 @@ namespace E.Deezer.Api
             return Client.Post("album/{id}", parms, DeezerPermissions.BasicAccess);
         }
 
-
-        public Task<bool> AddAlbumToFavorite() 
+        public Task<bool> AddAlbumToFavorite()
             => Client.User.AddAlbumToFavourite(Id);
 
-        public Task<bool> RemoveAlbumFromFavorite() 
-            => Client.User.RemoveAlbumFromFavourite(Id);  
-
+        public Task<bool> RemoveAlbumFromFavorite()
+            => Client.User.RemoveAlbumFromFavourite(Id);
 
         public Task<bool> AddComment(string commentText)
         {
-            if(string.IsNullOrEmpty(commentText))
+            if (string.IsNullOrEmpty(commentText))
             {
                 throw new ArgumentException("A comment is required");
             }
@@ -318,9 +226,8 @@ namespace E.Deezer.Api
 
             return Client.Post("album/{id}/comments", p, DeezerPermissions.BasicAccess);
         }
-              
 
         public override string ToString()
-            => string.Format("E.Deezer: Album({0})", Title);   
+            => string.Format("E.Deezer: Album({0})", Title);
     }
 }

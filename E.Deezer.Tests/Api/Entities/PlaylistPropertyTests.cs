@@ -1,8 +1,5 @@
-﻿using System;
-
+﻿using E.Deezer.Api;
 using NUnit.Framework;
-
-using E.Deezer.Api;
 
 namespace E.Deezer.Tests.Api.Entities
 {

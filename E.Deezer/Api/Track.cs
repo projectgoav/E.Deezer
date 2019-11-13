@@ -1,11 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
@@ -42,70 +38,28 @@ namespace E.Deezer.Api
         Task<bool> RemoveTrackFromFavorite();
     }
 
-
     internal class Track : ObjectWithImage, ITrack, IDeserializable<IDeezerClient>
     {
-        public ulong Id
-        {
-            get;
-            set;
-        }
+        public ulong Id { get; set; }
 
-        public string Title
-        {
-            get;
-            set;
-        }
+        public string Title { get; set; }
 
-        public string Link
-        {
-            get;
-            set;
-        }
+        public string Link { get; set; }
 
-        public uint Duration
-        {
-            get;
-            set;
-        }
+        public uint Duration { get; set; }
 
-        public string Artwork
-        {
-            get;
-            set;
-        }
+        public string Artwork { get; set; }
 
-        public string Preview
-        {
-            get;
-            set;
-        }
+        public string Preview { get; set; }
 
-        public float BPM
-        {
-            get;
-            set;
-        }
+        public float BPM { get; set; }
 
-        public float Gain
-        {
-            get;
-            set;
-        }
+        public float Gain { get; set; }
 
-        public uint Rank
-        {
-            get;
-            set;
-        }
+        public uint Rank { get; set; }
 
-        public string ISRC
-        {
-            get;
-            set;
-        }
+        public string ISRC { get; set; }
 
-       
         public IAlbum Album => AlbumInternal;
 
         public IArtist Artist => ArtistInternal;
@@ -122,105 +76,50 @@ namespace E.Deezer.Api
 
         public string AlbumName => AlbumInternal?.Title ?? string.Empty;
 
-
         [Obsolete("Use of IsExplicit is encouraged")]
         public bool Explicit => IsExplicit;
 
-
         [JsonProperty(PropertyName = "share")]
-        public string ShareLink
-        {
-            get;
-            set;
-        }
+        public string ShareLink { get; set; }
 
         [JsonProperty(PropertyName = "explicit_lyrics")]
-        public bool IsExplicit
-        {
-            get;
-            set;
-        }
+        public bool IsExplicit { get; set; }
 
         [JsonProperty(PropertyName = "title_short")]
-        public string ShortTitle
-        {
-            get;
-            set;
-        }
+        public string ShortTitle { get; set; }
 
         [JsonProperty(PropertyName = "time_add")]
-        public long TimeAddInternal
-        {
-            get;
-            set;
-        }
+        public long TimeAddInternal { get; set; }
 
         [JsonProperty(PropertyName = "track_position")]
-        public uint Number
-        {
-            get;
-            set;
-        }
+        public uint Number { get; set; }
 
         [JsonProperty(PropertyName = "disk_number")]
-        public uint Disc
-        {
-            get;
-            set;
-        }
+        public uint Disc { get; set; }
 
         [JsonProperty(PropertyName = "release_date")]
-        public DateTime ReleaseDate
-        {
-            get;
-            set;
-        }
+        public DateTime ReleaseDate { get; set; }
 
         [JsonProperty(PropertyName = "artist")]
-        public Artist ArtistInternal
-        {
-            get;
-            set;
-        }
+        public Artist ArtistInternal { get; set; }
 
         [JsonProperty(PropertyName = "album")]
-        public Album AlbumInternal
-        {
-            get;
-            set;
-        }
+        public Album AlbumInternal { get; set; }
 
         [JsonProperty(PropertyName = "available_countries")]
-        public List<String> AvailableInInternal
-        {
-            get;
-            set;
-        }
+        public List<String> AvailableInInternal { get; set; }
 
         [JsonProperty(PropertyName = "alternative")]
-        public Track AlternativeTrackInternal
-        {
-            get;
-            set;
-        }
+        public Track AlternativeTrackInternal { get; set; }
 
         [JsonProperty(PropertyName = "contributors")]
-        public List<Artist> ContributorInternal
-        {
-            get;
-            set;
-        }
-
+        public List<Artist> ContributorInternal { get; set; }
 
         //IDeserializable
-        public IDeezerClient Client
-        {
-            get;
-            set;
-        }
+        public IDeezerClient Client { get; set; }
 
-        public void Deserialize(IDeezerClient aClient) 
-        { 
+        public void Deserialize(IDeezerClient aClient)
+        {
             Client = aClient;
 
             if (ArtistInternal != null)
@@ -233,7 +132,6 @@ namespace E.Deezer.Api
                 AlbumInternal.Deserialize(aClient);
             }
         }
-
 
         //Tracks don't often come with their own images so if there is none, we can use that from the album in which it belongs.
         public override string GetPicture(PictureSize aSize)
@@ -248,13 +146,11 @@ namespace E.Deezer.Api
             return (baseResult) ? baseResult : AlbumInternal.HasPicture(aSize);
         }
 
-
-        public Task<bool> AddTrackToFavorite() 
+        public Task<bool> AddTrackToFavorite()
             => Client.User.AddTrackToFavourite(Id);
 
         public Task<bool> RemoveTrackFromFavorite()
             => Client.User.RemoveTrackFromFavourite(Id);
-
 
         public override string ToString()
             => string.Format("E.Deezer: Track({0} - ({1}))", Title, ArtistName);

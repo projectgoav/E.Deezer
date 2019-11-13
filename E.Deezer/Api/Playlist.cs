@@ -1,15 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
-	public interface IPlaylist : IObjectWithImage
+    public interface IPlaylist : IObjectWithImage
     {
 		ulong Id { get; }
         uint Fans { get; }
@@ -27,13 +24,11 @@ namespace E.Deezer.Api
         bool IsCollaborative { get; }
         uint UnseenTrackCount { get; }
 
-
         [Obsolete("Use of IsPublic is encouraged")]
         bool Public { get; }
 
         [Obsolete("Use of TrackCount is encouraged")]
         uint NumTracks { get; }
-
 
         Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = uint.MaxValue);
 
@@ -66,55 +61,25 @@ namespace E.Deezer.Api
         Task<bool> AddComment(string commentText);
     }
 
-	internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<IDeezerClient>
-	{
-		public ulong Id
-        {
-            get;
-            set;
-        }
+    internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<IDeezerClient>
+    {
+        public ulong Id { get; set; }
 
-		public string Title
-        {
-            get;
-            set;
-        }
+        public string Title { get; set; }
 
-        public string Description
-        {
-            get;
-            set;
-        }
+        public string Description { get; set; }
 
-		public string Link
-        {
-            get;
-            set;
-        }
+        public string Link { get; set; }
 
-        public uint Duration
-        {
-            get;
-            set;
-        }
+        public uint Duration { get; set; }
 
-        public int Rating
-        {
-            get;
-            set;
-        }
+        public int Rating { get; set; }
 
-        public uint Fans
-        {
-            get;
-            set;
-        }
-
+        public uint Fans { get; set; }
 
         public IUserProfile Creator => CreatorInternal;
 
         public string CreatorName => CreatorInternal?.Username;
-
 
         [Obsolete("Use of IsPublic is encouraged")]
         public bool Public => IsPublic;
@@ -122,73 +87,38 @@ namespace E.Deezer.Api
         [Obsolete("User of TrackCount is encouraged")]
         public uint NumTracks => TrackCount;
 
-
         [JsonProperty(PropertyName = "public")]
-        public bool IsPublic
-        {
-            get;
-            set;
-        }
+        public bool IsPublic { get; set; }
 
         [JsonProperty(PropertyName = "collaborative")]
-        public bool IsCollaborative
-        {
-            get;
-            set;
-        }
+        public bool IsCollaborative { get; set; }
 
         [JsonProperty(PropertyName = "unseen_track_count")]
-        public uint UnseenTrackCount
-        {
-            get;
-            set;
-        }
+        public uint UnseenTrackCount { get; set; }
 
         [JsonProperty(PropertyName = "share")]
-        public string ShareLink
-        {
-            get;
-            set;
-        }
+        public string ShareLink { get; set; }
 
         [JsonProperty(PropertyName = "nb_tracks")]
-        public uint TrackCount
-        {
-            get;
-            set;
-        }
+        public uint TrackCount { get; set; }
 
         [JsonProperty(PropertyName = "is_loved_track")]
-        public bool IsLovedTrack
-        {
-            get;
-            set;
-        }
+        public bool IsLovedTrack { get; set; }
 
-		[JsonProperty(PropertyName = "creator")]
-		public UserProfile CreatorInternal
-        {
-            get; 
-            set;
-        }
+        [JsonProperty(PropertyName = "creator")]
+        public UserProfile CreatorInternal { get; set; }
 
-        
         //IDeserializable
-    	public IDeezerClient Client
-        {
-            get;
-            set;
-        }
+        public IDeezerClient Client { get; set; }
 
-		public void Deserialize(IDeezerClient aClient)
+        public void Deserialize(IDeezerClient aClient)
         {
             Client = aClient;
             CreatorInternal?.Deserialize(aClient);
         }
 
-
-		public Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount)
-		{
+        public Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount)
+        {
             List<IRequestParameter> parms = new List<IRequestParameter>()
             {
                 RequestParameter.GetNewUrlSegmentParamter("id", Id)
@@ -198,7 +128,7 @@ namespace E.Deezer.Api
             {
                 return Client.Transform<Track, ITrack>(aTask.Result);
             }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-		}
+        }
 
         public Task<bool> Rate(int aRating)
         {
@@ -213,13 +143,11 @@ namespace E.Deezer.Api
             return Client.Post("playlist/{id}", parms, DeezerPermissions.BasicAccess);
         }
 
-
         public Task<bool> AddTrack(ITrack aTrack)
             => AddTrack(aTrack.Id);
 
         public Task<bool> AddTrack(ulong aTrackId)
             => AddTracks(aTrackId.ToString());
-
 
         public Task<bool> AddTracks(IEnumerable<ulong> aTrackIds)
         {
@@ -257,13 +185,11 @@ namespace E.Deezer.Api
             return Client.Post("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary);
         }
 
-
-        public Task<bool> RemoveTrack(ITrack aTrack) 
+        public Task<bool> RemoveTrack(ITrack aTrack)
             => RemoveTrack(aTrack.Id);
 
         public Task<bool> RemoveTrack(ulong aTrackId)
             => RemoveTracks(aTrackId.ToString());
-
 
         public Task<bool> RemoveTracks(IEnumerable<ulong> aTrackIds)
         {
@@ -301,16 +227,15 @@ namespace E.Deezer.Api
             return Client.Delete("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
         }
 
-        public Task<bool> AddPlaylistToFavorite() 
+        public Task<bool> AddPlaylistToFavorite()
             => Client.User.AddPlaylistToFavourite(Id);
 
         public Task<bool> RemovePlaylistFromFavorite()
             => Client.User.RemovePlaylistFromFavourite(Id);
-        
-        
+
         public Task<bool> AddComment(string commentText)
         {
-            if(string.IsNullOrEmpty(commentText))
+            if (string.IsNullOrEmpty(commentText))
             {
                 throw new ArgumentException("A comment is required.");
             }
@@ -324,8 +249,6 @@ namespace E.Deezer.Api
             return Client.Post("playlist/{id}/comments", p, DeezerPermissions.BasicAccess);
         }
 
-
-
         public Task<bool> SetSeen()
         {
             List<IRequestParameter> p = new List<IRequestParameter>()
@@ -335,7 +258,6 @@ namespace E.Deezer.Api
 
             return Client.Post("playlist/{id}/seen", p, DeezerPermissions.BasicAccess);
         }
-
 
         public Task<IEnumerable<IUserProfile>> GetFans(uint aStart = 0, uint aCount = 25)
         {
@@ -365,9 +287,7 @@ namespace E.Deezer.Api
                                                                   TaskScheduler.Default);
         }
 
-
-
         public override string ToString()
-            => string.Format("E.Deezer: Playlist({0} [{1}])", Title, CreatorName);     
+            => string.Format("E.Deezer: Playlist({0} [{1}])", Title, CreatorName);
     }
 }

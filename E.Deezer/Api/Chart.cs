@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace E.Deezer.Api
 {
@@ -13,65 +11,51 @@ namespace E.Deezer.Api
         IEnumerable<IPlaylist> Playlists    { get; }
     }
 
-
     internal class Chart : IChart, IDeserializable<IDeezerClient>
     {
-        private readonly IEnumerable<IAlbum> iAlbums;
-        private readonly IEnumerable<IArtist> iArtists;
-        private readonly IEnumerable<ITrack> iTracks;
-        private readonly IEnumerable<IPlaylist> iPlaylists;
-
         public Chart(IEnumerable<IAlbum> aAlbums, IEnumerable<IArtist> aArtists, IEnumerable<ITrack> aTracks, IEnumerable<IPlaylist> aPlaylists)
         {
-            iAlbums = aAlbums;
-            iArtists = aArtists;
-            iTracks = aTracks;
-            iPlaylists = aPlaylists;
+            Albums = aAlbums;
+            Artists = aArtists;
+            Tracks = aTracks;
+            Playlists = aPlaylists;
         }
 
+        public IEnumerable<IAlbum> Albums { get; }
 
-        public IEnumerable<IAlbum> Albums => iAlbums;
+        public IEnumerable<IArtist> Artists { get; }
 
-        public IEnumerable<IArtist> Artists => iArtists;
+        public IEnumerable<ITrack> Tracks { get; }
 
-        public IEnumerable<ITrack> Tracks => iTracks;
-
-        public IEnumerable<IPlaylist> Playlists => iPlaylists;
-
+        public IEnumerable<IPlaylist> Playlists { get; }
 
         //IDeserializable
-        public IDeezerClient Client
-        {
-            get;
-            set;
-        }
+        public IDeezerClient Client { get; set; }
 
         public void Deserialize(IDeezerClient aClient)
         {
             Client = aClient;
 
-            DeserializeEnumerable(aClient, iAlbums.Select((v) => v as IDeserializable<IDeezerClient>));
-            DeserializeEnumerable(aClient, iArtists.Select((v) => v as IDeserializable<IDeezerClient>));
-            DeserializeEnumerable(aClient, iTracks.Select((v) => v as IDeserializable<IDeezerClient>));
-            DeserializeEnumerable(aClient, iPlaylists.Select((v) => v as IDeserializable<IDeezerClient>));
+            DeserializeEnumerable(aClient, Albums.Select((v) => v as IDeserializable<IDeezerClient>));
+            DeserializeEnumerable(aClient, Artists.Select((v) => v as IDeserializable<IDeezerClient>));
+            DeserializeEnumerable(aClient, Tracks.Select((v) => v as IDeserializable<IDeezerClient>));
+            DeserializeEnumerable(aClient, Playlists.Select((v) => v as IDeserializable<IDeezerClient>));
         }
 
         private void DeserializeEnumerable(IDeezerClient aClient, IEnumerable<IDeserializable<IDeezerClient>> aEnumerable)
         {
-            foreach(var entry in aEnumerable)
+            foreach (var entry in aEnumerable)
             {
                 entry.Deserialize(aClient);
             }
         }
 
-
-
         public override string ToString()
         {
-            return string.Format("E.Deezer.Chart : \n Albums :: {0} \n Artists :: {1} \n Tracks :: {2} \n Playlists :: {3}", iAlbums.Count(),
-                                                                                                                             iArtists.Count(),
-                                                                                                                             iTracks.Count(),
-                                                                                                                             iPlaylists.Count());
+            return string.Format("E.Deezer.Chart : \n Albums :: {0} \n Artists :: {1} \n Tracks :: {2} \n Playlists :: {3}", Albums.Count(),
+                                                                                                                             Artists.Count(),
+                                                                                                                             Tracks.Count(),
+                                                                                                                             Playlists.Count());
         }
     }
 }

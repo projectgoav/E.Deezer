@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
@@ -22,25 +17,25 @@ namespace E.Deezer.Api
 
     internal class OAuthPermissions : IPermissions
     {
-        public bool HasEmail {get; set; }
+        public bool HasEmail { get; set; }
 
         [JsonProperty(PropertyName="basic_access")]
-        public bool HasBasicAccess {get; set; }
+        public bool HasBasicAccess { get; set; }
 
         [JsonProperty(PropertyName="offline_access")]
-        public bool HasOfflineAccess {get; set; }
+        public bool HasOfflineAccess { get; set; }
 
         [JsonProperty(PropertyName="manage_library")]
-        public bool HasManageLibrary {get; set; }
+        public bool HasManageLibrary { get; set; }
 
         [JsonProperty(PropertyName="manage_community")]
-        public bool HasManageCommunity {get; set; }
+        public bool HasManageCommunity { get; set; }
 
         [JsonProperty(PropertyName="delete_library")]
-        public bool HasDeleteLibrary {get; set; }
+        public bool HasDeleteLibrary { get; set; }
 
         [JsonProperty(PropertyName="listening_history")]
-        public bool HasListeningHistory {get; set; }
+        public bool HasListeningHistory { get; set; }
 
         //TODO - Check a method that has multiple permissions...
         public bool HasPermission(DeezerPermissions aPermission)

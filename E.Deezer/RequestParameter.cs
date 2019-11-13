@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 
 namespace E.Deezer
 {
@@ -12,7 +8,6 @@ namespace E.Deezer
         UrlSegment,
     }
 
-
     internal interface IRequestParameter
     {
         ParameterType Type { get; }
@@ -20,36 +15,28 @@ namespace E.Deezer
         object Value       { get; }
     }
 
-
     internal class RequestParameter : IRequestParameter
     {
-        private ParameterType iType;
-        private string iId;
-        private object iValue;
-
         public RequestParameter(string aId, object aValue, ParameterType aType)
         {
-            iType = aType;
-            iId = aId;
-            iValue = aValue;
+            Type = aType;
+            Id = aId;
+            Value = aValue;
         }
 
-        public ParameterType Type => iType;
-        public string Id          => iId;
-        public object Value       => iValue;
-
+        public ParameterType Type { get; }
+        public string Id          { get; }
+        public object Value       { get; }
 
         public static IRequestParameter GetAccessTokenParamter(string aAccessToken)
             => GetNewQueryStringParameter("access_token", aAccessToken);
 
-        public static IRequestParameter GetNewQueryStringParameter(string aId, object aValue) 
+        public static IRequestParameter GetNewQueryStringParameter(string aId, object aValue)
             => new RequestParameter(aId, aValue, ParameterType.QueryString);
-
 
         public static IRequestParameter GetNewUrlSegmentParamter(string aId, object aValue)
             => new RequestParameter(aId, aValue, ParameterType.UrlSegment);
 
         public static IList<IRequestParameter> EmptyList => new List<IRequestParameter>();
     }
-
 }

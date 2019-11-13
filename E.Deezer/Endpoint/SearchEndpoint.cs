@@ -28,13 +28,12 @@ namespace E.Deezer.Endpoint
     {
         private const string SEARCH_BASE = "search";
 
-        private readonly DeezerClient iClient;
+        private readonly DeezerClient _client;
 
-        public SearchEndpoint(DeezerClient aClient)
+        public SearchEndpoint(DeezerClient client)
         {
-            iClient = aClient;
+            _client = client;
         }
-
 
         public Task<IEnumerable<IAlbum>> Albums(string aQuery, uint aStart = 0, uint aCount = 100)
             => Get<Album, IAlbum>("album", aQuery, aStart, aCount);
@@ -55,7 +54,7 @@ namespace E.Deezer.Endpoint
             => Get<User, IUser>("user", aQuery, aStart, aCount);
 
         public Task<IEnumerable<ITrack>> Advanced(string aArtist = "", string aAlbum = "", string aTrack = "", string aLabel = "",
-            uint aDur_Min = 0, uint aDur_Max = 0, uint aBpm_Min = 0, uint aBpm_Max = 0, 
+            uint aDur_Min = 0, uint aDur_Max = 0, uint aBpm_Min = 0, uint aBpm_Max = 0,
             uint aStart = 0, uint aCount = 100)
         {
             StringBuilder sb = new StringBuilder("q=");
@@ -71,11 +70,11 @@ namespace E.Deezer.Endpoint
 
             return Get<Track, ITrack>(string.Empty, aQuery, aStart, aCount);
         }
-        
+
         private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aSearchEndpoint, string aQuery, uint aStart, uint aCount) where TSource : TDest, IDeserializable<IDeezerClient>
         {
-            string method = (aSearchEndpoint.Length == 0) ? 
-                    SEARCH_BASE : 
+            string method = (aSearchEndpoint.Length == 0) ?
+                    SEARCH_BASE :
                     string.Format("{0}/{1}", SEARCH_BASE, aSearchEndpoint);
 
             List<IRequestParameter> parms = new List<IRequestParameter>()
@@ -83,12 +82,11 @@ namespace E.Deezer.Endpoint
                 RequestParameter.GetNewQueryStringParameter("q", aQuery)
             };
 
-            return iClient.Get<TSource>(method, parms, aStart, aCount)
+            return _client.Get<TSource>(method, parms, aStart, aCount)
                 .ContinueWith<IEnumerable<TDest>>((aTask) =>
                 {
-                    return iClient.Transform<TSource, TDest>(aTask.Result);
-                }, iClient.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                    return _client.Transform<TSource, TDest>(aTask.Result);
+                }, _client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
-
     }
 }

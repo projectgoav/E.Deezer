@@ -1,11 +1,6 @@
-﻿using System;
+﻿using E.Deezer.Api;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using System.Threading.Tasks;
-
-using E.Deezer.Api;
 
 namespace E.Deezer.Endpoint
 {
@@ -15,7 +10,6 @@ namespace E.Deezer.Endpoint
         IChartsEndpoint Charts { get; }
 
         IUserEndpoint CurrentUser { get; }
-
 
         Task<IAlbum> GetAlbumById(uint albumId);
         Task<IArtist> GetArtistById(uint artistId);
@@ -27,39 +21,35 @@ namespace E.Deezer.Endpoint
 
     internal class BrowseEndpoint : IBrowseEndpoint
     {
-        private readonly IGenreEndpoint iGenre;
-        private readonly IChartsEndpoint iCharts;
-        private readonly IUserEndpoint iUserEndpoint;
+        private readonly IUserEndpoint _userEndpoint;
 
-        private readonly DeezerClient iClient;
+        private readonly DeezerClient _client;
 
-        public BrowseEndpoint(DeezerClient aClient)
+        public BrowseEndpoint(DeezerClient client)
         {
-            iClient = aClient;
+            _client = client;
 
-            iGenre = new GenreEndpoint(iClient);
-            iCharts = new ChartsEndpoint(iClient);
-            iUserEndpoint = new UserEndpoint(aClient);
+            Genre = new GenreEndpoint(_client);
+            Charts = new ChartsEndpoint(_client);
+            _userEndpoint = new UserEndpoint(client);
         }
 
+        public IGenreEndpoint Genre { get; }
 
-        public IGenreEndpoint Genre => iGenre;
-
-        public IChartsEndpoint Charts => iCharts;
+        public IChartsEndpoint Charts { get; }
 
         public IUserEndpoint CurrentUser
         {
             get
             {
-                if(!iClient.IsAuthenticated)
+                if (!_client.IsAuthenticated)
                 {
                     throw new NotLoggedInException();
                 }
 
-                return iUserEndpoint;
+                return _userEndpoint;
             }
         }
-
 
         public async Task<IAlbum> GetAlbumById(uint albumId)
         {
@@ -69,10 +59,10 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetDeezerObject<AlbumObjectResponse>("album/{id}", p)
+            var response = await _client.GetDeezerObject<AlbumObjectResponse>("album/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Object.Deserialize(iClient);
+            response.Object.Deserialize(_client);
 
             return response.Object;
         }
@@ -85,10 +75,10 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetDeezerObject<ArtistObjectResponse>("artist/{id}", p)
+            var response = await _client.GetDeezerObject<ArtistObjectResponse>("artist/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Object.Deserialize(iClient);
+            response.Object.Deserialize(_client);
 
             return response.Object;
         }
@@ -101,10 +91,10 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetDeezerObject<PlaylistObjectResponse>("playlist/{id}", p)
+            var response = await _client.GetDeezerObject<PlaylistObjectResponse>("playlist/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Object.Deserialize(iClient);
+            response.Object.Deserialize(_client);
 
             return response.Object;
         }
@@ -117,10 +107,10 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetDeezerObject<TrackObjectResponse>("track/{id}", p)
+            var response = await _client.GetDeezerObject<TrackObjectResponse>("track/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Object.Deserialize(iClient);
+            response.Object.Deserialize(_client);
 
             return response.Object;
         }
@@ -133,10 +123,10 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetDeezerObject<RadioObjectResponse>("radio/{id}", p)
+            var response = await _client.GetDeezerObject<RadioObjectResponse>("radio/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Object.Deserialize(iClient);
+            response.Object.Deserialize(_client);
 
             return response.Object;
         }
@@ -149,10 +139,10 @@ namespace E.Deezer.Endpoint
             };
 
             // Will throw if Deezer error
-            var response = await iClient.GetDeezerObject<UserProfileObjectResponse>("user/{id}", p)
+            var response = await _client.GetDeezerObject<UserProfileObjectResponse>("user/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Object.Deserialize(iClient);
+            response.Object.Deserialize(_client);
 
             return response.Object;
         }

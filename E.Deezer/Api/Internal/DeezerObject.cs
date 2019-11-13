@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 #if NETSTANDARD11
+using System.Linq;
 using System.Reflection;
 #endif
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace E.Deezer.Api
 {
@@ -22,7 +18,6 @@ namespace E.Deezer.Api
         TObject Object { get; }
     }
 
-
     internal class AlbumObjectResponse : IDeezerObjectResponse<Album>
     {
         public Album Object{ get; private set; }
@@ -30,10 +25,11 @@ namespace E.Deezer.Api
 
         public static AlbumObjectResponse CreateFrom(Album album, IError error)
         {
-            var resp = new AlbumObjectResponse();
-
-            resp.Object = album;
-            resp.Error = error;
+            var resp = new AlbumObjectResponse
+            {
+                Object = album,
+                Error = error
+            };
 
             return resp;
         }
@@ -136,10 +132,9 @@ namespace E.Deezer.Api
         }
     }
 
-
     internal class DeezerObjectResponseJsonDeserializer : JsonConverter
     {
-        private static readonly Type typeToConvert = typeof(IDeezerObjectResponse);
+        private static readonly Type _typeToConvert = typeof(IDeezerObjectResponse);
 
         public override bool CanRead => true;
 
@@ -150,12 +145,11 @@ namespace E.Deezer.Api
 #if NETSTANDARD11
             return objectType.GetTypeInfo()
                              .ImplementedInterfaces
-                             .Contains(typeToConvert);
+                             .Contains(_typeToConvert);
 #else
-            return typeToConvert.IsAssignableFrom(objectType);
+            return _typeToConvert.IsAssignableFrom(objectType);
 #endif
         }
-
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
@@ -179,8 +173,6 @@ namespace E.Deezer.Api
         {
             throw new NotImplementedException();
         }
-
-
 
         private object CreateErrorResponse(Type objectType, Error error)
         {

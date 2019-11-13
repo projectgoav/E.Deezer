@@ -1,11 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
@@ -23,48 +18,27 @@ namespace E.Deezer.Api
         Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = 100);
 
         Task<bool> AddRadioToFavorite();
-        Task<bool> RemoveRadioFromFavorite();        
+        Task<bool> RemoveRadioFromFavorite();
     }
 
     internal class Radio : ObjectWithImage, IRadio, IDeserializable<IDeezerClient>
     {
-        public ulong Id
-        {
-            get;
-            set;
-        }
+        public ulong Id { get; set; }
 
-        public string Title
-        {
-            get;
-            set;
-        }
+        public string Title { get; set; }
 
-        public string Description
-        {
-            get;
-            set;
-        }
+        public string Description { get; set; }
 
         [JsonProperty (PropertyName = "share")]
-        public string ShareLink
-        {
-            get;
-            set;
-        }
-
+        public string ShareLink { get; set; }
 
         //IDeserializable
-        public IDeezerClient Client
-        {
-            get;
-            set;
-        }
+        public IDeezerClient Client { get; set; }
 
-        public void Deserialize(IDeezerClient aClient) 
+        public void Deserialize(IDeezerClient aClient)
             => Client = aClient;
 
-        public Task<IEnumerable<ITrack>> GetFirst40Tracks() 
+        public Task<IEnumerable<ITrack>> GetFirst40Tracks()
             => GetTracks(0, 40);
 
         public Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = 100)
@@ -78,7 +52,7 @@ namespace E.Deezer.Api
                          .ContinueWith<IEnumerable<ITrack>>((aTask) =>
                             {
                                 return Client.Transform<Track, ITrack>(aTask.Result);
-                            }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default); 
+                            }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
         }
 
         public Task<bool> AddRadioToFavorite()
@@ -87,11 +61,9 @@ namespace E.Deezer.Api
         public Task<bool> RemoveRadioFromFavorite()
             => Client.User.RemoveRadioFromFavourite(Id);
 
-
         public override string ToString()
         {
             return string.Format("E.Deezer: Radio({0} - ({1}))", Title, Description);
         }
-
     }
 }

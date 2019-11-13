@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using E.Deezer.Api;
 using Moq;
 using NUnit.Framework;
-
-using E.Deezer.Api;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace E.Deezer.Tests.Api
 {
@@ -45,9 +40,7 @@ namespace E.Deezer.Tests.Api
                 new Playlist(),
             };
 
-
             var chart = new Chart(albums, artists, tracks, playlists);
-
 
             Assert.NotNull(chart);
 
@@ -58,7 +51,7 @@ namespace E.Deezer.Tests.Api
                                   .Concat(chart.Tracks.Select(v => v as IDeserializable<IDeezerClient>))
                                   .Concat(chart.Playlists.Select(v => v as IDeserializable<IDeezerClient>));
 
-            foreach(var entry in obj)
+            foreach (var entry in obj)
             {
                 Assert.NotNull(entry.Client);
             }
