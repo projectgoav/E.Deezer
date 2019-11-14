@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System;
 
-namespace E.Deezer.Tests.Api.Entities
+namespace E.Deezer.Tests.Unit.Api.Entities
 {
     [TestFixture]
     public class TrackPropertyTests : ObjectWithImageTestBase

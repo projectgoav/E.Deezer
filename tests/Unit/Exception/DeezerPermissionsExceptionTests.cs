@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace E.Deezer.Tests.Exception
+namespace E.Deezer.Tests.Unit.Exception
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]

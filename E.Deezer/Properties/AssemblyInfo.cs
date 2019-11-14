@@ -16,9 +16,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
 
-[assembly: InternalsVisibleTo("E.Deezer.Tests")]
 [assembly: InternalsVisibleTo("E.Deezer.Tests.Regression")]
 [assembly: InternalsVisibleTo("E.Deezer.Tests.Integration")]
+[assembly: InternalsVisibleTo("E.Deezer.Tests.Unit")]
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 

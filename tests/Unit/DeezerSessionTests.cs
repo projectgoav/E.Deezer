@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace E.Deezer.Tests
+namespace E.Deezer.Tests.Unit
 {
     [TestFixture]
     class DeezerSessionTests

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using System.IO;
 
-namespace E.Deezer.Tests.Api.Internal
+namespace E.Deezer.Tests.Unit.Api.Internal
 {
     [TestFixture]
     public class TestObjectWithImage

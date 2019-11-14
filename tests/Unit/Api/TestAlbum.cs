@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace E.Deezer.Tests.Api
+namespace E.Deezer.Tests.Unit.Api
 {
     [TestFixture]
     public class TestAlbum

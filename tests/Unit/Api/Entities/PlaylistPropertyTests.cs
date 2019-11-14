@@ -1,7 +1,7 @@
 ﻿using E.Deezer.Api;
 using NUnit.Framework;
 
-namespace E.Deezer.Tests.Api.Entities
+namespace E.Deezer.Tests.Unit.Api.Entities
 {
     [TestFixture]
     public class PlaylisyPropertyTests : ObjectWithImageTestBase

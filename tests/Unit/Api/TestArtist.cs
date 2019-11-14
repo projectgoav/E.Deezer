@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace E.Deezer.Tests.Api
+namespace E.Deezer.Tests.Unit.Api
 {
     [TestFixture]
     public class TestArtist

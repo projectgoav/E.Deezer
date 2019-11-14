@@ -4,7 +4,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace E.Deezer.Tests.Api
+namespace E.Deezer.Tests.Unit.Api
 {
     [TestFixture]
     public class TestChart

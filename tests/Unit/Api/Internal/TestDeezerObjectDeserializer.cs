@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace E.Deezer.Tests.Api.Internal
+namespace E.Deezer.Tests.Unit.Api.Internal
 {
     [TestFixture]
     public class TestDeezerObjectDeserializer
