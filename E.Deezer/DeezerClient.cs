@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -45,7 +44,7 @@ namespace E.Deezer
     {
         private readonly DeezerSession _session;
         private readonly ExecutorService _executor;
-        private readonly JsonSerializer _serializer;
+        private readonly ExceptionFactory _exceptionFactory;
 
         private IPermissions _permissions;
 
@@ -53,7 +52,7 @@ namespace E.Deezer
         {
             _session = session;
             _executor = new ExecutorService(httpMessageHandler);
-            _serializer = new JsonSerializer();
+            _exceptionFactory = new ExceptionFactory();
         }
 
         public IUser User { get; private set; }
@@ -88,21 +87,29 @@ namespace E.Deezer
             return GetChart(method, parms, aStart, aCount);
         }
 
-        public Task<T> GetPlainWithError<T>(string method, IList<IRequestParameter> parms = null) where T : IHasError
+        public async Task<T> GetPlainWithError<T>(string method, IList<IRequestParameter> parms = null) where T : IHasError
         {
             if (parms == null)
             {
                 parms = RequestParameter.EmptyList;
             }
 
-            return this.GetPlain<T>(method, parms)
-                                .ContinueWith(t =>
-                                {
-                                    CheckForDeezerError<T>(t.Result);
-                                    return t.Result;
-                                }, CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            return await GetPlain<T>(method, parms).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Gets a GET request response as a T object.
+        /// </summary>
+        /// <typeparam name="T">Server response type.</typeparam>
+        /// <param name="method">Additional parts after the base URL.</param>
+        /// <param name="parms">Additional parameters for the URL.</param>
+        /// <exception cref="HttpRequestException">Occurs
+        /// when the response was not HTTP 200 or when the response
+        /// content is null.</exception>
+        /// <exception cref="InvalidOperationException">Error with one
+        /// or more URL segment(s).</exception>
+        /// <exception cref="DeezerException">Occurs when
+        /// the API response is not data but an Exception.</exception>
         public async Task<T> GetPlain<T>(string method, IList<IRequestParameter> parms = null)
         {
             if (parms == null)
@@ -110,12 +117,11 @@ namespace E.Deezer
                 parms = RequestParameter.EmptyList;
             }
 
-            var response = await _executor.GetAsync(method, parms).ConfigureAwait(false);
-
+            string response = await _executor.GetAsync(method, parms).ConfigureAwait(false);
+            _exceptionFactory.ThrowIfNeeded(response);
             return await Deserialize<T>(response).ConfigureAwait(false);
         }
 
-        //Performs a POST request
         public async Task<bool> Post(string method, IList<IRequestParameter> parms, DeezerPermissions requiredPermissions)
         {
             CheckAuthentication();
@@ -123,8 +129,8 @@ namespace E.Deezer
 
             AddDefaultsToParamList(parms);
 
-            var response = await _executor.PostAsync(method, parms).ConfigureAwait(false);
-
+            string response = await _executor.PostAsync(method, parms).ConfigureAwait(false);
+            _exceptionFactory.ThrowIfNeeded(response);
             return await Deserialize<bool>(response).ConfigureAwait(false);
         }
 
@@ -135,12 +141,11 @@ namespace E.Deezer
 
             AddDefaultsToParamList(parms);
 
-            var response = await _executor.PostAsync(method, parms).ConfigureAwait(false);
-
+            string response = await _executor.PostAsync(method, parms).ConfigureAwait(false);
+            _exceptionFactory.ThrowIfNeeded(response);
             return await Deserialize<T>(response).ConfigureAwait(false);
         }
 
-        //Performs a DELETE request
         public async Task<bool> Delete(string method, IList<IRequestParameter> parms, DeezerPermissions aRequiredPermission)
         {
             CheckAuthentication();
@@ -148,8 +153,8 @@ namespace E.Deezer
 
             AddDefaultsToParamList(parms);
 
-            var response = await _executor.DeleteAsync(method, parms).ConfigureAwait(false);
-
+            string response = await _executor.DeleteAsync(method, parms).ConfigureAwait(false);
+            _exceptionFactory.ThrowIfNeeded(response);
             return await Deserialize<bool>(response).ConfigureAwait(false);
         }
 
@@ -200,8 +205,8 @@ namespace E.Deezer
 
         private async Task<T> DoGet<T>(string method, IList<IRequestParameter> parm) where T : IHasError
         {
-            var response = await _executor.GetAsync(method, parm).ConfigureAwait(false);
-
+            string response = await _executor.GetAsync(method, parm).ConfigureAwait(false);
+            _exceptionFactory.ThrowIfNeeded(response);
             return await Deserialize<T>(response)
                                 .ContinueWith(t =>
                                 {
@@ -210,7 +215,6 @@ namespace E.Deezer
                                         throw t.Exception.GetBaseException();
                                     }
 
-                                    CheckForDeezerError(t.Result);
                                     return t.Result;
 
                                 }, CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
@@ -239,18 +243,9 @@ namespace E.Deezer
                         }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
         }
 
-        private async Task<T> Deserialize<T>(Stream response)
+        private async Task<T> Deserialize<T>(string json)
         {
-            T result = default(T);
-            using (var reader = new StreamReader(response))
-            {
-                //var asd = await reader.ReadToEndAsync();
-                using (var jsonReader = new JsonTextReader(reader))
-                {
-                    result = _serializer.Deserialize<T>(jsonReader);
-                }
-            }
-            return await Task.FromResult(result);
+            return await Task.FromResult(JsonConvert.DeserializeObject<T>(json));
         }
 
         private void CheckForDeezerError<T>(T deezerObject) where T : IHasError
@@ -270,7 +265,7 @@ namespace E.Deezer
         private void ThrowDeezerError(IError error)
         {
             if (error.Code == 200          //200 == Logout fail
-                    || error.Code == 300)     //300 == Authentication error
+                || error.Code == 300)      //300 == Authentication error
             {
                 //We've got an invalid/expired auth code -> auto logout + clear internals
                 _session.Logout();
@@ -289,6 +284,15 @@ namespace E.Deezer
             }
         }
 
+        /// <summary>
+        /// Runs a check to determinate the current User has
+        /// the required permission(s).
+        /// </summary>
+        /// <param name="requiredPermissions">User should own these.</param>
+        /// <exception cref="NotLoggedInException" />
+        /// <exception cref="DeezerPermissionsException">Occurs
+        /// when the current User does not have the required permission(s)
+        /// to execute the request.</exception>
         private void CheckPermissions(DeezerPermissions requiredPermissions)
         {
             if (_permissions == null)

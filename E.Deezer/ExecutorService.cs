@@ -44,7 +44,7 @@ namespace E.Deezer
         /// content is null.</exception>
         /// <exception cref="InvalidOperationException">Error with one
         /// or more URL segment(s).</exception>
-        internal virtual async Task<Stream> GetAsync(string methodName, IList<IRequestParameter> @params)
+        internal virtual async Task<string> GetAsync(string methodName, IList<IRequestParameter> @params)
         {
             string url = BuildUrl(methodName, @params);
 
@@ -56,7 +56,12 @@ namespace E.Deezer
                 .ReadAsStreamAsync()
                 .ConfigureAwait(false);
 
-            return GetDecompessionStreamForResponse(responseStream, response.Content.Headers);
+            Stream uncompressedStream = GetDecompessionStreamForResponse(responseStream, response.Content.Headers);
+
+            using (StreamReader reader = new StreamReader(uncompressedStream))
+            {
+                return await reader.ReadToEndAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -70,7 +75,7 @@ namespace E.Deezer
         /// content is null.</exception>
         /// <exception cref="InvalidOperationException">Error with one
         /// or more URL segment(s).</exception>
-        internal virtual Task<Stream> PostAsync(string methodName, IList<IRequestParameter> @params)
+        internal virtual Task<string> PostAsync(string methodName, IList<IRequestParameter> @params)
         {
             @params.Add(RequestParameter.GetNewQueryStringParameter("request_method", "post"));
 
@@ -88,7 +93,7 @@ namespace E.Deezer
         /// content is null.</exception>
         /// <exception cref="InvalidOperationException">Error with one
         /// or more URL segment(s).</exception>
-        internal virtual Task<Stream> DeleteAsync(string methodName, IList<IRequestParameter> @params)
+        internal virtual Task<string> DeleteAsync(string methodName, IList<IRequestParameter> @params)
         {
             @params.Add(RequestParameter.GetNewQueryStringParameter("request_method", "delete"));
 
