@@ -17,6 +17,7 @@ namespace E.Deezer.Api
 
     internal class OAuthPermissions : IPermissions
     {
+        [JsonProperty("email")]
         public bool HasEmail { get; set; }
 
         [JsonProperty(PropertyName="basic_access")]

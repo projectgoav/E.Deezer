@@ -58,13 +58,11 @@ namespace E.Deezer.Endpoint
                 RequestParameter.GetNewUrlSegmentParamter("id", albumId),
             };
 
-            // Will throw if Deezer error
-            var response = await _client.GetDeezerObject<AlbumObjectResponse>("album/{id}", p)
+            var response = await _client.GetPlain<Album>("album/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Object.Deserialize(_client);
-
-            return response.Object;
+            response.Deserialize(_client);
+            return response;
         }
 
         public async Task<IArtist> GetArtistById(uint artistId)
@@ -74,13 +72,11 @@ namespace E.Deezer.Endpoint
                 RequestParameter.GetNewUrlSegmentParamter("id", artistId),
             };
 
-            // Will throw if Deezer error
-            var response = await _client.GetDeezerObject<ArtistObjectResponse>("artist/{id}", p)
+            var response = await _client.GetPlain<Artist>("artist/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Object.Deserialize(_client);
-
-            return response.Object;
+            response.Deserialize(_client);
+            return response;
         }
 
         public async Task<IPlaylist> GetPlaylistById(uint playlistId)
@@ -90,13 +86,11 @@ namespace E.Deezer.Endpoint
                 RequestParameter.GetNewUrlSegmentParamter("id", playlistId),
             };
 
-            // Will throw if Deezer error
-            var response = await _client.GetDeezerObject<PlaylistObjectResponse>("playlist/{id}", p)
+            var response = await _client.GetPlain<Playlist>("playlist/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Object.Deserialize(_client);
-
-            return response.Object;
+            response.Deserialize(_client);
+            return response;
         }
 
         public async Task<ITrack> GetTrackById(uint TrackId)
@@ -106,13 +100,11 @@ namespace E.Deezer.Endpoint
                 RequestParameter.GetNewUrlSegmentParamter("id", TrackId),
             };
 
-            // Will throw if Deezer error
-            var response = await _client.GetDeezerObject<TrackObjectResponse>("track/{id}", p)
+            var response = await _client.GetPlain<Track>("track/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Object.Deserialize(_client);
-
-            return response.Object;
+            response.Deserialize(_client);
+            return response;
         }
 
         public async Task<IRadio> GetRadioById(uint RadioId)
@@ -122,13 +114,11 @@ namespace E.Deezer.Endpoint
                 RequestParameter.GetNewUrlSegmentParamter("id", RadioId),
             };
 
-            // Will throw if Deezer error
-            var response = await _client.GetDeezerObject<RadioObjectResponse>("radio/{id}", p)
+            var response = await _client.GetPlain<Radio>("radio/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Object.Deserialize(_client);
-
-            return response.Object;
+            response.Deserialize(_client);
+            return response;
         }
 
         public async Task<IUserProfile> GetUserById(uint UserId)
@@ -138,13 +128,11 @@ namespace E.Deezer.Endpoint
                 RequestParameter.GetNewUrlSegmentParamter("id", UserId),
             };
 
-            // Will throw if Deezer error
-            var response = await _client.GetDeezerObject<UserProfileObjectResponse>("user/{id}", p)
+            var response = await _client.GetPlain<UserProfile>("user/{id}", p)
                                         .ConfigureAwait(false);
 
-            response.Object.Deserialize(_client);
-
-            return response.Object;
+            response.Deserialize(_client);
+            return response;
         }
     }
 }

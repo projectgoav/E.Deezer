@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -9,122 +8,100 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-using E.Deezer.Api;
-
-
 namespace E.Deezer
 {
+    /// <summary>
+    /// Class to directly interact with the internet.
+    /// </summary>
     internal class ExecutorService : IDisposable
     {
         private const int DEFAULT_TIMEOUT = 30000; //30secs
-
         private readonly HttpClient _client;
-        private readonly JsonSerializer _jsonSerializer;
         private readonly CancellationTokenSource _cancellationTokenSource;
 
+        /// <summary>
+        /// Initialize a new instance with a custom <see cref="HttpMessageHandler"/>.
+        /// </summary>
         internal ExecutorService(HttpMessageHandler httpMessageHandler = null)
         {
-            _jsonSerializer = CreateJsonSerializer();
             _cancellationTokenSource = new CancellationTokenSource();
 
             var handler = httpMessageHandler ?? new HttpClientHandler();
             _client = new HttpClient(handler, disposeHandler: true);
-
             ConfigureHttpClient();
         }
 
         internal CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
-        public Task<T> ExecuteGet<T>(string method, IEnumerable<IRequestParameter> parms)
+        /// <summary>
+        /// Sends a GET request to the API.
+        /// </summary>
+        /// <param name="methodName">Additional parts of the URL.</param>
+        /// <param name="params">Additional parameters for the URL.</param>
+        /// <returns>Server response as <see cref="Stream"/>. Do not forget to Dispose() it!</returns>
+        /// <exception cref="HttpRequestException">Occurs
+        /// when the response was not HTTP 200 or when the response
+        /// content is null.</exception>
+        /// <exception cref="InvalidOperationException">Error with one
+        /// or more URL segment(s).</exception>
+        internal virtual async Task<Stream> GetAsync(string methodName, IList<IRequestParameter> @params)
         {
-            string url = BuildUrl(method, parms);
-            return _client.GetAsync(url, this.CancellationToken)
-                         .ContinueWith(async t =>
-                         {
-                             if (t.IsFaulted)
-                             {
-                                 throw t.Exception.GetBaseException();
-                             }
+            string url = BuildUrl(methodName, @params);
 
-                             // Ensure we dispose of stuff should things go bad
-                             using (t.Result)
-                             {
-                                 CheckHttpResponse(t.Result);
+            var response = await _client.GetAsync(url, CancellationToken).ConfigureAwait(false);
 
-                                 return await GetJsonObjectFromResponse<T>(t.Result)
-                                                .ConfigureAwait(false);
-                             }
+            Check(response);
 
-                         }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default)
-                        .Unwrap();
+            var responseStream = await response.Content
+                .ReadAsStreamAsync()
+                .ConfigureAwait(false);
+
+            return GetDecompessionStreamForResponse(responseStream, response.Content.Headers);
         }
 
-        public Task<bool> ExecutePost(string method, IEnumerable<IRequestParameter> parms)
+        /// <summary>
+        /// Sends a POST request to the API.
+        /// </summary>
+        /// <param name="methodName">Additional parts of the URL.</param>
+        /// <param name="params">Additional parameters for the URL.</param>
+        /// <returns>Server response as <see cref="Stream"/>. Do not forget to Dispose() it!</returns>
+        /// <exception cref="HttpRequestException">Occurs
+        /// when the response was not HTTP 200 or when the response
+        /// content is null.</exception>
+        /// <exception cref="InvalidOperationException">Error with one
+        /// or more URL segment(s).</exception>
+        internal virtual Task<Stream> PostAsync(string methodName, IList<IRequestParameter> @params)
         {
-            string url = BuildUrl(method, parms);
-            return _client.PostAsync(url, null, this.CancellationToken)
-                         .ContinueWith<bool>(t =>
-                         {
-                             if (t.IsFaulted)
-                             {
-                                 throw t.Exception.GetBaseException();
-                             }
+            @params.Add(RequestParameter.GetNewQueryStringParameter("request_method", "post"));
 
-                             using (t.Result)
-                             {
-                                 // TODO -> This isn't entirely correct, as there can often be a Deezer error hidden in here...
-                                 return t.Result.IsSuccessStatusCode;
-                             }
-
-                         }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            return GetAsync(methodName, @params);
         }
 
-        public Task<T> ExecutePost<T>(string method, IEnumerable<IRequestParameter> parms)
+        /// <summary>
+        /// Sends a DELETE request to the API.
+        /// </summary>
+        /// <param name="methodName">Additional parts of the URL.</param>
+        /// <param name="params">Additional parameters for the URL.</param>
+        /// <returns>Server response as <see cref="Stream"/>. Do not forget to Dispose() it!</returns>
+        /// <exception cref="HttpRequestException">Occurs
+        /// when the response was not HTTP 200 or when the response
+        /// content is null.</exception>
+        /// <exception cref="InvalidOperationException">Error with one
+        /// or more URL segment(s).</exception>
+        internal virtual Task<Stream> DeleteAsync(string methodName, IList<IRequestParameter> @params)
         {
-            string url = BuildUrl(method, parms);
-            return _client.PostAsync(url, null, this.CancellationToken)
-                         .ContinueWith(async t =>
-                         {
-                             if (t.IsFaulted)
-                             {
-                                 throw t.Exception.GetBaseException();
-                             }
+            @params.Add(RequestParameter.GetNewQueryStringParameter("request_method", "delete"));
 
-                             using (t.Result)
-                             {
-                                 CheckHttpResponse(t.Result);
-
-                                 // TODO -> This isn't entirely correct, as there can often be a Deezer error hidden in here...
-                                 return await GetJsonObjectFromResponse<T>(t.Result)
-                                                .ConfigureAwait(false);
-                             }
-
-                         }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default)
-                        .Unwrap();
+            return GetAsync(methodName, @params);
         }
 
-        public Task<bool> ExecuteDelete(string method, IEnumerable<IRequestParameter> parms)
-        {
-            string url = BuildUrl(method, parms);
-
-            return _client.DeleteAsync(url, CancellationToken)
-                         .ContinueWith(t =>
-                         {
-                             if (t.IsFaulted)
-                             {
-                                 throw t.Exception.GetBaseException();
-                             }
-
-                             using (t.Result)
-                             {
-                                 //TODO => This isn't entirely correct, as there can often be a Deezer error hidden in here..
-                                 return t.Result.IsSuccessStatusCode;
-                             }
-
-                         }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-        }
-
-        internal string BuildUrl(string url, IEnumerable<IRequestParameter> parms)
+        /// <summary>
+        /// Crafts the final URL which will be added to the base URL.
+        /// </summary>
+        /// <returns>Non null string.</returns>
+        /// <exception cref="InvalidOperationException">Error with one
+        /// or more URL segment(s).</exception>
+        private string BuildUrl(string url, IEnumerable<IRequestParameter> parms)
         {
             string trueUrl = url;
             var queryStrings = new List<string>();
@@ -148,7 +125,7 @@ namespace E.Deezer
                 }
             }
 
-            //Make sure we've filled all url segments...
+            // Make sure we've filled all URL segments
             if (trueUrl.Contains("{") || trueUrl.Contains("}"))
             {
                 throw new InvalidOperationException("Failed to fill out all url segment parameters. Perhaps they weren't all provided?");
@@ -169,22 +146,6 @@ namespace E.Deezer
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
             _client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
-        }
-
-        private JsonSerializer CreateJsonSerializer()
-        {
-            var customConverters = new List<JsonConverter>()
-            {
-                // TODO add any customer converters we might end up with..
-                new DeezerObjectResponseJsonDeserializer(),
-            };
-
-            var jsonSerailizerSettings = new JsonSerializerSettings()
-            {
-                Converters = customConverters,
-            };
-
-            return JsonSerializer.Create(jsonSerailizerSettings);
         }
 
         private Stream GetDecompessionStreamForResponse(Stream responseStream, HttpContentHeaders contentHeaders)
@@ -212,37 +173,13 @@ namespace E.Deezer
             return responseStream;
         }
 
-        private async Task<T> DeserializeResponseStream<T>(HttpResponseMessage response)
-        {
-            using (var responseStream = await response.Content.ReadAsStreamAsync()
-                                                              .ConfigureAwait(false))
-            {
-                using (var compressedStream = GetDecompessionStreamForResponse(responseStream, response.Content.Headers))
-                {
-                    using (var reader = new StreamReader(compressedStream))
-                    {
-                        using (var jsonReader = new JsonTextReader(reader))
-                        {
-                            return this._jsonSerializer.Deserialize<T>(jsonReader);
-                        }
-                    }
-                }
-            }
-        }
-
-        private async Task<T> GetJsonObjectFromResponse<T>(HttpResponseMessage response)
-        {
-            using (response)
-            {
-                CheckHttpResponse(response);
-
-                return await DeserializeResponseStream<T>(response)
-                                .ConfigureAwait(false);
-            }
-        }
-
-        //Checks a response for errors and exceptions
-        private void CheckHttpResponse(HttpResponseMessage response)
+        /// <summary>
+        /// Checks the response for HTTP errors and Exceptions.
+        /// </summary>
+        /// <exception cref="HttpRequestException">Occurs
+        /// when the response was not HTTP 200 or when the response
+        /// content is null.</exception>
+        private void Check(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)
             {
@@ -258,7 +195,7 @@ namespace E.Deezer
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -266,11 +203,11 @@ namespace E.Deezer
         {
             if (disposing)
             {
-                this._cancellationTokenSource.Cancel();
-                this._cancellationTokenSource.Dispose();
+                _cancellationTokenSource.Cancel();
+                _cancellationTokenSource.Dispose();
 
-                this._client.CancelPendingRequests();
-                this._client.Dispose();
+                _client.CancelPendingRequests();
+                _client.Dispose();
             }
         }
     }

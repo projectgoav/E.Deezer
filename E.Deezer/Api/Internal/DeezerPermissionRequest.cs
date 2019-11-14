@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 
 namespace E.Deezer.Api
 {
     internal class DeezerPermissionRequest : IHasError
     {
+        [JsonProperty("permissions")]
         internal OAuthPermissions Permissions { get; set; }
 
         //IHasError

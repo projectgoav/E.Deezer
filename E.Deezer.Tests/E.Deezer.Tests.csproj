@@ -88,7 +88,6 @@
     <Compile Include="DeezerSessionTests.cs" />
     <Compile Include="Exception\DeezerExceptionTests.cs" />
     <Compile Include="Exception\DeezerPermissionsExceptionTests.cs" />
-    <Compile Include="ExecutorServiceTests.cs" />
     <Compile Include="PermissionsTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

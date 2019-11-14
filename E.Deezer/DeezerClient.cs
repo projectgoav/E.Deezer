@@ -1,6 +1,8 @@
 ﻿using E.Deezer.Api;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -15,27 +17,22 @@ namespace E.Deezer
         bool IsAuthenticated { get; }
 
         CancellationToken CancellationToken { get; }
-
-        //GET
+        
         Task<DeezerFragment<T>> Get<T>(string aMethod, uint aStart, uint aCount);
 
         Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams);
 
         Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount);
 
-        Task<T> GetDeezerObject<T>(string aMethod, IList<IRequestParameter> aParams) where T : IDeezerObjectResponse;
-
         Task<IChart> GetChart(long aId, uint aStart, uint aCount);
 
         Task<T> GetPlain<T>(string aMethod, IList<IRequestParameter> aParams);
         Task<T> GetPlainWithError<T>(string aMethod, IList<IRequestParameter> aParams) where T : IHasError;
-
-        //POST
+        
         Task<bool> Post(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission);
 
         Task<T> Post<T>(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission);
-
-        //DELETE
+        
         Task<bool> Delete(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission);
 
         //Helpers
@@ -48,12 +45,15 @@ namespace E.Deezer
     {
         private readonly DeezerSession _session;
         private readonly ExecutorService _executor;
+        private readonly JsonSerializer _serializer;
+
         private IPermissions _permissions;
 
         internal DeezerClient(DeezerSession session, HttpMessageHandler httpMessageHandler = null)
         {
             _session = session;
             _executor = new ExecutorService(httpMessageHandler);
+            _serializer = new JsonSerializer();
         }
 
         public IUser User { get; private set; }
@@ -77,27 +77,6 @@ namespace E.Deezer
             return DoGet<DeezerFragment<T>>(aMethod, aParams);
         }
 
-        public Task<T> GetDeezerObject<T>(string aMethod, IList<IRequestParameter> aParams) where T : IDeezerObjectResponse
-        {
-            return GetPlain<T>(aMethod, aParams)
-                       .ContinueWith(t =>
-                       {
-                           if (t.IsFaulted)
-                           {
-                               throw t.Exception.GetBaseException();
-                           }
-
-                           var response = t.Result;
-
-                           if (response.Error != null)
-                           {
-                               ThrowDeezerError(response.Error);
-                           }
-
-                           return response;
-                       }, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-        }
-
         public Task<IChart> GetChart(long aId, uint aStart, uint aCount)
         {
             string method = "chart/{id}";
@@ -116,7 +95,7 @@ namespace E.Deezer
                 parms = RequestParameter.EmptyList;
             }
 
-            return this._executor.ExecuteGet<T>(method, parms)
+            return this.GetPlain<T>(method, parms)
                                 .ContinueWith(t =>
                                 {
                                     CheckForDeezerError<T>(t.Result);
@@ -124,46 +103,54 @@ namespace E.Deezer
                                 }, CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
 
-        public Task<T> GetPlain<T>(string method, IList<IRequestParameter> parms = null)
+        public async Task<T> GetPlain<T>(string method, IList<IRequestParameter> parms = null)
         {
             if (parms == null)
             {
                 parms = RequestParameter.EmptyList;
             }
 
-            return this._executor.ExecuteGet<T>(method, parms);
+            var response = await _executor.GetAsync(method, parms).ConfigureAwait(false);
+
+            return await Deserialize<T>(response).ConfigureAwait(false);
         }
 
         //Performs a POST request
-        public Task<bool> Post(string method, IList<IRequestParameter> parms, DeezerPermissions requiredPermissions)
+        public async Task<bool> Post(string method, IList<IRequestParameter> parms, DeezerPermissions requiredPermissions)
         {
             CheckAuthentication();
             CheckPermissions(requiredPermissions);
 
             AddDefaultsToParamList(parms);
 
-            return this._executor.ExecutePost(method, parms);
+            var response = await _executor.PostAsync(method, parms).ConfigureAwait(false);
+
+            return await Deserialize<bool>(response).ConfigureAwait(false);
         }
 
-        public Task<T> Post<T>(string method, IList<IRequestParameter> parms, DeezerPermissions requiredPermissions)
+        public async Task<T> Post<T>(string method, IList<IRequestParameter> parms, DeezerPermissions requiredPermissions)
         {
             CheckAuthentication();
             CheckPermissions(requiredPermissions);
 
             AddDefaultsToParamList(parms);
 
-            return this._executor.ExecutePost<T>(method, parms);
+            var response = await _executor.PostAsync(method, parms).ConfigureAwait(false);
+
+            return await Deserialize<T>(response).ConfigureAwait(false);
         }
 
         //Performs a DELETE request
-        public Task<bool> Delete(string method, IList<IRequestParameter> parms, DeezerPermissions aRequiredPermission)
+        public async Task<bool> Delete(string method, IList<IRequestParameter> parms, DeezerPermissions aRequiredPermission)
         {
             CheckAuthentication();
             CheckPermissions(aRequiredPermission);
 
             AddDefaultsToParamList(parms);
 
-            return this._executor.ExecuteDelete(method, parms);
+            var response = await _executor.DeleteAsync(method, parms).ConfigureAwait(false);
+
+            return await Deserialize<bool>(response).ConfigureAwait(false);
         }
 
         //Performs a transform from Deezer Fragment to IEnumerable.
@@ -211,9 +198,11 @@ namespace E.Deezer
                     }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
         }
 
-        private Task<T> DoGet<T>(string method, IEnumerable<IRequestParameter> parm) where T : IHasError
+        private async Task<T> DoGet<T>(string method, IList<IRequestParameter> parm) where T : IHasError
         {
-            return this._executor.ExecuteGet<T>(method, parm)
+            var response = await _executor.GetAsync(method, parm).ConfigureAwait(false);
+
+            return await Deserialize<T>(response)
                                 .ContinueWith(t =>
                                 {
                                     if (t.IsFaulted)
@@ -248,6 +237,20 @@ namespace E.Deezer
                             return chart;
 
                         }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
+        }
+
+        private async Task<T> Deserialize<T>(Stream response)
+        {
+            T result = default(T);
+            using (var reader = new StreamReader(response))
+            {
+                //var asd = await reader.ReadToEndAsync();
+                using (var jsonReader = new JsonTextReader(reader))
+                {
+                    result = _serializer.Deserialize<T>(jsonReader);
+                }
+            }
+            return await Task.FromResult(result);
         }
 
         private void CheckForDeezerError<T>(T deezerObject) where T : IHasError
