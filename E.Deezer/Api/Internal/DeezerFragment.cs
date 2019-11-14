@@ -20,12 +20,16 @@ namespace E.Deezer.Api
     //ChartFragment is used to get all 4 charts at once
     internal class DeezerChartFragment : IHasError
     {
+        [JsonProperty("tracks")]
         internal DeezerFragment<Track> Tracks { get; set; }
 
+        [JsonProperty("albums")]
         internal DeezerFragment<Album> Albums { get; set; }
 
+        [JsonProperty("artists")]
         internal DeezerFragment<Artist> Artists { get; set; }
 
+        [JsonProperty("playlists")]
         internal DeezerFragment<Playlist> Playlists { get; set; }
 
         //IHasError
