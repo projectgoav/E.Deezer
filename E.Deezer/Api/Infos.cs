@@ -14,6 +14,8 @@ namespace E.Deezer.Api
         bool IsAvailable { get; }
     }
 
+    // TODO: This class might go from the API in the future, 
+    //       depending on how it's used internally.
     internal class Infos : IServceInfo
     {
         public string Country

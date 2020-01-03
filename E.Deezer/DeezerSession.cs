@@ -1,101 +1,126 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
-//using E.Deezer.Endpoint;
+using E.Deezer.Endpoints;
 
 namespace E.Deezer
 {
-    public class DeezerSession
+    public interface IDeezerSession : IDisposable
     {
-        public const string ENDPOINT = "https://api.deezer.com/";
+        // Authentication stuff...
+        /*
+        bool IsAuthenticated { get; }
+        string CurrentAccessToken { get; }
 
-        public DeezerSession()
+        //TODO: Something like the below??
+        //IUser CurrentUserProfile { get; }
+        DeezerPermissions CurrentPermissions { get; }
+
+        bool HasPermissions(DeezerPermissions permissions);
+
+        //TODO: An authentication event?
+        Task<bool> Logout();
+        */
+
+        Task<bool> Login(string accessToken, CancellationToken cancellationToken);
+
+
+    
+        // References to the Client...
+        IAlbumEndpoint Albums { get; }
+        IArtistEndpoint Artists { get; }
+       
+        IChartsEndpoint Charts { get; }
+        IGenreEndpoint Genre { get; }
+
+        IPlaylistsEndpoint Playlists { get; }
+        /*
+        IArtistEndpoint Artists { get; }
+        IPlaylistEndpoint Playlists { get; }
+        ITrackEndpoint Tracks { get; }
+
+        IBrowseEndpoint Browse { get; }
+        IChartEndpoint Charts { get; }
+        //TODO: Genre etc...
+        */
+    }
+
+
+    // Internal interface used by internal objects to allow a session 
+    // reference to be held by individual objects and therefore expose
+    // methods on that object without duplicating code!
+    internal interface IClientObject
+    {
+        IDeezerClient Client { get; }
+    }
+
+
+    public class DeezerSession : IDeezerSession
+    {
+        private readonly DeezerClient client;
+
+        public DeezerSession(HttpMessageHandler handler)
         {
-            AccessToken = string.Empty;
+            this.client = new DeezerClient(handler);
         }
 
+        //Readonly references to all the various endpoints.
+        //Might create a wrapper class to house them all and have this class
+        //forward all it's properties onto that object instead!
 
-        internal string AccessToken
+
+        internal IDeezerClient Client => this.client;
+
+        // IDeezerSession
+        // Endpoints
+        public IAlbumEndpoint Albums => this.client.Endpoints.Albums;
+
+        public IArtistEndpoint Artists => this.client.Endpoints.Artists;
+
+        public IChartsEndpoint Charts => this.client.Endpoints.Charts;
+
+        public ICommentsEndpoint Comments => this.client.Endpoints.Comments;
+
+        public IGenreEndpoint Genre => this.client.Endpoints.Genre;
+
+        public IPlaylistsEndpoint Playlists => this.client.Endpoints.Playlists;
+
+        public IRadioEndpoint Radio => this.client.Endpoints.Radio;
+
+        public ITrackEndpoint Track => this.client.Endpoints.Track;
+
+        public IUserEndpoint User => this.client.Endpoints.User;
+
+
+        // Authentication
+        public bool IsAuthenticated => this.client.IsAuthenticated;
+
+
+        public Task<bool> Login(string accessToken, CancellationToken cancellationToken)
+            => this.client.Login(accessToken, cancellationToken);
+
+        public Task<bool> Logout(CancellationToken cancellationToken)
+            => this.client.Logout(cancellationToken);
+
+
+
+        public void Dispose()
         {
-            get;
-            private set;
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        internal bool Authenticated => AccessToken != string.Empty; 
-
-
-        internal void Login(string aAccessToken) => AccessToken = aAccessToken;
-
-        internal void Logout() => AccessToken = string.Empty;
-
-
-        //Generates a permission string which can be used to grant people
-        //Access to features of the app
-        public static string GeneratePermissionString(DeezerPermissions iPermissions)
+        protected virtual void Dispose(bool disposing)
         {
-            string perms = null;
-
-            if((iPermissions & DeezerPermissions.BasicAccess) == DeezerPermissions.BasicAccess)
-            { 
-                AddToString(perms, DeezerPermissions.BasicAccess.PermissionToString());
-            }
-
-            if ((iPermissions & DeezerPermissions.DeleteLibrary) == DeezerPermissions.DeleteLibrary)
+            if (disposing)
             {
-                AddToString(perms, DeezerPermissions.DeleteLibrary.PermissionToString());
-            }
-
-            if ((iPermissions & DeezerPermissions.Email) == DeezerPermissions.Email)
-            {
-                AddToString(perms, DeezerPermissions.Email.PermissionToString());
-            }
-
-            if ((iPermissions & DeezerPermissions.ListeningHistory) == DeezerPermissions.ListeningHistory)
-            {
-                AddToString(perms, DeezerPermissions.ListeningHistory.PermissionToString());
-            }
-
-            if ((iPermissions & DeezerPermissions.ManageCommunity) == DeezerPermissions.ManageCommunity)
-            {
-                AddToString(perms, DeezerPermissions.ManageCommunity.PermissionToString());
-            }
-
-            if ((iPermissions & DeezerPermissions.ManageLibrary) == DeezerPermissions.ManageLibrary)
-            {
-                AddToString(perms, DeezerPermissions.ManageLibrary.PermissionToString());
-            }
-
-            if ((iPermissions & DeezerPermissions.OfflineAccess) == DeezerPermissions.OfflineAccess)
-            {
-                AddToString(perms, DeezerPermissions.OfflineAccess.PermissionToString());
-            }
-
-            return perms;
-        }
-
-        //Adds the permissions in a comma seperated list
-        private static void AddToString(string aString, string aAdd)
-        {
-            if(string.IsNullOrEmpty(aString))
-            {
-                aString = aAdd;
-            }
-            else
-            {
-                aString += string.Format(",{0}", aAdd);
+                this.client.Dispose();
             }
         }
-
-
-        /// <summary>
-        /// Starts a new session on the Deezer API.
-        /// Setup internal workings of E.Deezer
-        /// </summary>
-        public static Deezer CreateNew(HttpMessageHandler httpMessageHandler = null)
-            => new Deezer(new DeezerSession(), httpMessageHandler);
     }
 }

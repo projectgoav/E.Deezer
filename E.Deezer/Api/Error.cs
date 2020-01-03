@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Newtonsoft.Json.Linq;
+
 namespace E.Deezer.Api
 {
     internal interface IHasError
@@ -20,10 +22,56 @@ namespace E.Deezer.Api
     //Grabs an error, if there was one, from the reply
     internal class Error : IError
     {
-        public string Message { get; set; }
+        private Error(uint code,
+                      string type,
+                      string message)
+        {
+            this.Code = code;
+            this.Type = type;
+            this.Message = message;
+        }
 
-        public uint Code { get; set; }
 
-        public string Type { get; set; }
+        public string Message { get; }
+
+        public uint Code { get;  }
+
+        public string Type { get; }
+
+
+        // JSON
+        // TODO: Maybe put this into a factory??
+        internal const string ERROR_OBJECT_PROPERTY_NAME = "error";
+        internal const string CODE_PROPERTY_NAME = "code";
+        internal const string TYPE_PROPERTY_NAME = "type";
+        internal const string MESSAGE_PROPERTY_NAME = "message";
+
+        internal const string EXCEPTION_NAME = "exception";
+
+        public static IError FromJson(JObject json)
+        {
+            JToken errorValue = null;
+            if (!json.TryGetValue(ERROR_OBJECT_PROPERTY_NAME, out errorValue))
+            {
+                // Sometimes the Deezer API just shove back the 3 error properties and you gotta deal with it...
+                errorValue = json;
+            }
+
+            uint code = errorValue.Value<uint>(CODE_PROPERTY_NAME);
+            string type = errorValue.Value<string>(TYPE_PROPERTY_NAME);
+            string message = errorValue.Value<string>(MESSAGE_PROPERTY_NAME);
+
+            // Type will be either Exception or XXXException
+            if (!string.IsNullOrEmpty(type) && type.ToLowerInvariant()
+                                                   .Contains(EXCEPTION_NAME))
+            {
+                return new Error(code,
+                                 type,
+                                 message);
+            }
+
+            // No error parsed
+            return null;
+        }
     }
 }

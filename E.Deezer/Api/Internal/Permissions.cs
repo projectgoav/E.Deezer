@@ -4,43 +4,38 @@ using System.Linq;
 using System.Text;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace E.Deezer.Api
 {
-    internal interface IPermissions
+    public interface IPermissions
     {
-        bool HasBasicAccess { get; set; }
-        bool HasEmail { get; set; }
-        bool HasOfflineAccess { get; set; }
-        bool HasManageLibrary { get; set; }
-        bool HasManageCommunity { get; set; }
-        bool HasDeleteLibrary { get; set; }
-        bool HasListeningHistory { get; set; }
+        bool HasBasicAccess { get; }
+        bool HasEmail { get; }
+        bool HasOfflineAccess { get; }
+        bool HasManageLibrary { get; }
+        bool HasManageCommunity { get; }
+        bool HasDeleteLibrary { get; }
+        bool HasListeningHistory { get; }
 
-        bool HasPermission(DeezerPermissions aPermission);
+        bool HasPermission(DeezerPermissions requestedPermission);
     }
 
     internal class OAuthPermissions : IPermissions
     {
-        public bool HasEmail {get; set; }
+        public bool HasEmail { get; private set; }
 
-        [JsonProperty(PropertyName="basic_access")]
-        public bool HasBasicAccess {get; set; }
+        public bool HasBasicAccess { get; private set; }
 
-        [JsonProperty(PropertyName="offline_access")]
-        public bool HasOfflineAccess {get; set; }
+        public bool HasOfflineAccess { get; private set; }
 
-        [JsonProperty(PropertyName="manage_library")]
-        public bool HasManageLibrary {get; set; }
+        public bool HasManageLibrary { get; private set; }
 
-        [JsonProperty(PropertyName="manage_community")]
-        public bool HasManageCommunity {get; set; }
+        public bool HasManageCommunity { get; private set; }
 
-        [JsonProperty(PropertyName="delete_library")]
-        public bool HasDeleteLibrary {get; set; }
+        public bool HasDeleteLibrary { get; private set; }
 
-        [JsonProperty(PropertyName="listening_history")]
-        public bool HasListeningHistory {get; set; }
+        public bool HasListeningHistory { get; private set; }
 
         //TODO - Check a method that has multiple permissions...
         public bool HasPermission(DeezerPermissions aPermission)
@@ -71,5 +66,27 @@ namespace E.Deezer.Api
 
             return permission;
         }
+
+
+        // JSON
+        internal const string PERMISSION_OBJECT_PROPERTY_NAME = "permissions";
+
+
+        public static IPermissions FromJson(JToken json)
+        {
+            var permissionJson = json[PERMISSION_OBJECT_PROPERTY_NAME];
+
+            return new OAuthPermissions()
+            {
+                HasBasicAccess = permissionJson.Value<bool>(Permissions.BASIC_ACCESS),
+                HasOfflineAccess = permissionJson.Value<bool>(Permissions.OFFLINE_ACCESS),
+                HasManageLibrary = permissionJson.Value<bool>(Permissions.MANAGE_LIBRARY),
+                HasManageCommunity = permissionJson.Value<bool>(Permissions.MANAGE_COMMUNITY),
+                HasDeleteLibrary = permissionJson.Value<bool>(Permissions.DELETE_LIBRARY),
+                HasListeningHistory = permissionJson.Value<bool>(Permissions.LISTENING_HISTORY),
+                HasEmail = permissionJson.Value<bool>(Permissions.EMAIL),
+            };
+        }
+
     }
 }
