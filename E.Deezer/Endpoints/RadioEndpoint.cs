@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using E.Deezer.Api;
+using E.Deezer.Util;
 using E.Deezer.Api.Internal;
 
 namespace E.Deezer.Endpoints
@@ -59,10 +60,7 @@ namespace E.Deezer.Endpoints
         
         public Task<IEnumerable<ITrack>> GetTracks(IRadio radio, CancellationToken cancellationToken, uint trackCount = 50)
         {
-            if (radio == null)
-            {
-                throw new ArgumentNullException(nameof(radio));
-            }
+            radio.ThrowIfNull();
 
             return GetTracks(radio.Id, cancellationToken, trackCount);
         }

@@ -49,9 +49,11 @@ namespace E.Deezer
             this.Endpoints = new Endpoints.Endpoints(this);
         }
 
-
         public Endpoints.Endpoints Endpoints { get; }
 
+
+        // FIX ME: There's a lot of duplication in this class.
+        //         We should try condense some of this down.
 
         public Task<TItem> Get<TItem>(string resource, CancellationToken cancellationToken, Func<JToken, TItem> itemFactory)
         {

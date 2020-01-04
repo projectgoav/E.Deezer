@@ -57,10 +57,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IChart> GetChartsForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)
         {
-            if (genre == null)
-            {
-                throw new ArgumentNullException(nameof(genre));
-            }
+            genre.ThrowIfNull();
 
             return GetChartsForGenre(genre.Id, cancellationToken, start, count);
         }
@@ -84,10 +81,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)
         {
-            if (genre == null)
-            {
-                throw new ArgumentNullException(nameof(genre));
-            }
+            genre.ThrowIfNull();
 
             return GetAlbumChartForGenre(genre.Id, cancellationToken, start, count);
         }
@@ -115,10 +109,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IArtist>> GetArtistChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)
         {
-            if (genre == null)
-            {
-                throw new ArgumentNullException(nameof(genre));
-            }
+            genre.ThrowIfNull();
 
             return GetArtistChartForGenre(genre.Id, cancellationToken, start, count);
         }
@@ -146,10 +137,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)
         {
-            if (genre == null)
-            {
-                throw new ArgumentNullException(nameof(genre));
-            }
+            genre.ThrowIfNull();
 
             return GetPlaylistChartForGenre(genre.Id, cancellationToken, start, count);
         }
@@ -177,10 +165,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<ITrack>> GetTrackChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)
         {
-            if (genre == null)
-            {
-                throw new ArgumentNullException(nameof(genre));
-            }
+            genre.ThrowIfNull();
 
             return GetTrackChartForGenre(genre.Id, cancellationToken, start, count);
         }

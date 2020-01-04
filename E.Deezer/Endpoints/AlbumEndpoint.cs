@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using E.Deezer.Api;
+using E.Deezer.Util;
 using E.Deezer.Api.Internal;
 
 namespace E.Deezer.Endpoints
@@ -54,10 +55,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<ITrack>> GetAlbumTracks(IAlbum album, CancellationToken cancellationToken)
         {
-            if (album == null)
-            {
-                throw new ArgumentNullException(nameof(album));
-            }
+            album.ThrowIfNull();
 
             if (album is Album albumImpl)
             {
@@ -82,10 +80,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IUserProfile>> GetAlbumFans(IAlbum album, CancellationToken cancellationToken, uint start = 0, uint count = 10)
         {
-            if (album == null)
-            {
-                throw new ArgumentNullException(nameof(album));
-            }
+            album.ThrowIfNull();
 
             return GetAlbumFans(album.Id, cancellationToken, start, count);
         }
@@ -98,10 +93,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IComment>> GetAlbumComments(IAlbum album, CancellationToken cancellationToken, uint start = 0, uint count = 10)
         {
-            if (album == null)
-            {
-                throw new ArgumentNullException(nameof(album));
-            }
+            album.ThrowIfNull();
 
             return GetAlbumComments(album.Id, cancellationToken, start, count);
         }
@@ -115,10 +107,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> RateAlbum(IAlbum album, DeezerRating rating, CancellationToken cancellationToken)
         {
-            if (album == null)
-            {
-                throw new ArgumentNullException(nameof(album));
-            }
+            album.ThrowIfNull();
 
             return RateAlbum(album.Id, rating, cancellationToken);
         }
@@ -132,10 +121,7 @@ namespace E.Deezer.Endpoints
 
         public Task<ulong> AddComment(IAlbum album, string commentText, CancellationToken cancellationToken)
         {
-            if (album == null)
-            {
-                throw new ArgumentNullException(nameof(album));
-            }
+x            album.ThrowIfNull();
 
             return AddComment(album.Id, commentText, cancellationToken);
         }

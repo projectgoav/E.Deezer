@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using E.Deezer.Api;
+using E.Deezer.Util;
 using E.Deezer.Api.Internal;
 
 namespace E.Deezer.Endpoints
@@ -105,10 +106,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<ITrack>> GetFlow(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 50)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            user.ThrowIfNull();
 
             return GetFlow(user.Id, cancellationToken, start, count);
         }
@@ -130,10 +128,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            user.ThrowIfNull();
 
             return GetFavouriteAlbums(user.Id, cancellationToken, start, count);
         }
@@ -146,10 +141,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IArtist>> GetFavouriteArtists(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            user.ThrowIfNull();
 
             return GetFavouriteArtists(user.Id, cancellationToken, start, count);
         }
@@ -162,10 +154,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IPlaylist>> GetFavouritePlaylists(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            user.ThrowIfNull();
 
             return GetFavouritePlaylists(user.Id, cancellationToken, start, count);
         }
@@ -178,10 +167,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<ITrack>> GetFavouriteTracks(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            user.ThrowIfNull();
 
             return GetFavouriteTracks(user.Id, cancellationToken, start, count);
         }
@@ -194,10 +180,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IRadio>> GetFavouriteRadio(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            user.ThrowIfNull();
 
             return GetFavouriteRadio(user.Id, cancellationToken, start, count);
         }
@@ -210,10 +193,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IUserProfile>> GetFollowers(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            user.ThrowIfNull();
 
             return GetFollowers(user.Id, cancellationToken, start, count);
         }
@@ -225,10 +205,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IUserProfile>> GetFollowings(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            user.ThrowIfNull();
 
             return GetFollowings(user.Id, cancellationToken, start, count);
         }
@@ -286,10 +263,7 @@ namespace E.Deezer.Endpoints
         // FAVOURITING
         public Task<bool> FavouriteAlbum(IAlbum album, CancellationToken cancellationToken)
         {
-            if (album == null)
-            {
-                throw new ArgumentNullException(nameof(album));
-            }
+            album.ThrowIfNull();
 
             return FavouriteAlbum(album.Id, cancellationToken);
         }
@@ -302,10 +276,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> UnfavouriteAlbum(IAlbum album, CancellationToken cancellationToken)
         {
-            if (album == null)
-            {
-                throw new ArgumentNullException(nameof(album));
-            }
+            album.ThrowIfNull();
 
             return UnfavouriteAlbum(album.Id, cancellationToken);
         }
@@ -319,10 +290,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> FavouriteArtist(IArtist artist, CancellationToken cancellationToken)
         {
-            if (artist == null)
-            {
-                throw new ArgumentNullException(nameof(artist));
-            }
+            artist.ThrowIfNull();
 
             return FavouriteArtist(artist.Id, cancellationToken);
         }
@@ -335,10 +303,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> UnfavouriteArtist(IArtist artist, CancellationToken cancellationToken)
         {
-            if (artist == null)
-            {
-                throw new ArgumentNullException(nameof(artist));
-            }
+            artist.ThrowIfNull();
 
             return UnfavouriteArtist(artist.Id, cancellationToken);
         }
@@ -352,10 +317,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> FavouritePlaylist(IPlaylist playlist, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             return FavouritePlaylist(playlist.Id, cancellationToken);
         }
@@ -368,10 +330,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> UnfavouritePlaylist(IPlaylist playlist, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             return UnfavouritePlaylist(playlist.Id, cancellationToken);
         }
@@ -385,10 +344,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> FavouriteTrack(ITrack track, CancellationToken cancellationToken)
         {
-            if (track == null)
-            {
-                throw new ArgumentNullException(nameof(track));
-            }
+            track.ThrowIfNull();
 
             return FavouriteTrack(track.Id, cancellationToken);
         }
@@ -401,10 +357,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> UnfavouriteTrack(ITrack track, CancellationToken cancellationToken)
         {
-            if (track == null)
-            {
-                throw new ArgumentNullException(nameof(track));
-            }
+            track.ThrowIfNull();
 
             return UnfavouriteTrack(track.Id, cancellationToken);
         }
@@ -419,10 +372,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> FavouriteRadio(IRadio radio, CancellationToken cancellationToken)
         {
-            if (radio == null)
-            {
-                throw new ArgumentNullException(nameof(radio));
-            }
+            radio.ThrowIfNull();
 
             return FavouriteRadio(radio.Id, cancellationToken);
         }
@@ -435,10 +385,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> UnfavouriteRadio(IRadio radio, CancellationToken cancellationToken)
         {
-            if (radio == null)
-            {
-                throw new ArgumentNullException(nameof(radio));
-            }
+            radio.ThrowIfNull();
 
             return UnfavouriteRadio(radio.Id, cancellationToken);
         }

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using E.Deezer.Api;
+using E.Deezer.Util;
 using E.Deezer.Api.Internal;
 
 namespace E.Deezer.Endpoints
@@ -63,10 +64,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<ITrack>> GetArtistsTopTracks(IArtist artist, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (artist == null)
-            {
-                throw new ArgumentNullException(nameof(artist));
-            }
+            artist.ThrowIfNull();
 
             return GetArtistsTopTracks(artist.Id, cancellationToken, start, count);
         }
@@ -79,10 +77,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IAlbum>> GetArtistsAlbums(IArtist artist, CancellationToken cancellationToken, uint start = 0, uint count = 10)
         {
-            if (artist == null)
-            {
-                throw new ArgumentNullException(nameof(artist));
-            }
+            artist.ThrowIfNull();
 
             return GetArtistsAlbums(artist.Id, cancellationToken, start, count);
         }
@@ -96,10 +91,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IUserProfile>> GetArtistsFans(IArtist artist, CancellationToken cancellationToken, uint start = 0, uint count = 10)
         {
-            if (artist == null)
-            {
-                throw new ArgumentNullException(nameof(artist));
-            }
+            artist.ThrowIfNull();
 
             return GetArtistsFans(artist.Id, cancellationToken, start, count);
         }
@@ -112,10 +104,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IComment>> GetArtistsComments(IArtist artist, CancellationToken cancellationToken, uint start = 0, uint count = 10)
         {
-            if (artist == null)
-            {
-                throw new ArgumentNullException(nameof(artist));
-            }
+            artist.ThrowIfNull();
 
             return GetArtistsComments(artist.Id, cancellationToken, start, count);
         }
@@ -129,10 +118,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IArtist>> GetRelatedArtists(IArtist artist, CancellationToken cancellationToken, uint start = 0, uint count = 10)
         {
-            if (artist == null)
-            {
-                throw new ArgumentNullException(nameof(artist));
-            }
+            artist.ThrowIfNull();
 
             return GetRelatedArtists(artist.Id, cancellationToken, start, count);
         }
@@ -146,10 +132,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<ITrack>> GetArtistsRadio(IArtist artist, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (artist == null)
-            {
-                throw new ArgumentNullException(nameof(artist));
-            }
+            artist.ThrowIfNull();
 
             if (!artist.HasSmartRadio)
             {
@@ -168,10 +151,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IPlaylist>> GetPlaylistsFeaturingArtist(IArtist artist, CancellationToken cancellationToken, uint start = 0, uint count = 10)
         {
-            if (artist == null)
-            {
-                throw new ArgumentNullException(nameof(artist));
-            }
+            artist.ThrowIfNull();
 
             return GetPlaylistsFeaturingArtist(artist.Id, cancellationToken, start, count);
         }
@@ -186,10 +166,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> RateArtist(IArtist artist, DeezerRating rating, CancellationToken cancellationToken)
         {
-            if (artist == null)
-            {
-                throw new ArgumentNullException(nameof(artist));
-            }
+            artist.ThrowIfNull();
 
             return RateArtist(artist.Id, rating, cancellationToken);
         }
@@ -202,10 +179,7 @@ namespace E.Deezer.Endpoints
 
         public Task<ulong> CommentOnArtist(IArtist artist, string commentText, CancellationToken cancellationToken)
         {
-            if (artist == null)
-            {
-                throw new ArgumentNullException(nameof(artist));
-            }
+            artist.ThrowIfNull();
 
             return CommentOnArtist(artist.Id, commentText, cancellationToken);
         }

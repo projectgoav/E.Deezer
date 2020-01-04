@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using E.Deezer.Api;
+using E.Deezer.Util;
 using E.Deezer.Api.Internal;
 
 namespace E.Deezer.Endpoints
@@ -95,10 +96,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<ITrack>> GetTracks(IPlaylist playlist, CancellationToken cancellationToken, uint start = 0, uint count = 50)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             if (playlist is Playlist playlistImpl)
             {
@@ -125,10 +123,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IComment>> GetComments(IPlaylist playlist, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             return GetComments(playlist.Id, cancellationToken, start, count);
         }
@@ -141,10 +136,7 @@ namespace E.Deezer.Endpoints
 
         public Task<IEnumerable<IUserProfile>> GetFans(IPlaylist playlist, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             return GetFans(playlist.Id, cancellationToken, start, count);
         }
@@ -158,10 +150,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> RatePlaylist(IPlaylist playlist, DeezerRating rating, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             return RatePlaylist(playlist.Id, rating, cancellationToken);
         }
@@ -174,10 +163,7 @@ namespace E.Deezer.Endpoints
 
         public Task<ulong> CommentOnPlaylist(IPlaylist playlist, string commentText, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             return CommentOnPlaylist(playlist.Id, commentText, cancellationToken);
         }
@@ -201,10 +187,7 @@ namespace E.Deezer.Endpoints
         // MANAGEMENT METHODS
         public Task<bool> SetPlaylistSeen(IPlaylist playlist, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             return SetPlaylistSeen(playlist.Id, cancellationToken);
         }
@@ -235,10 +218,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> DeletePlaylist(IPlaylist playlist, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             return DeletePlaylist(playlist.Id, cancellationToken);
         }
@@ -252,15 +232,9 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> AddTrackTo(IPlaylist playlist, ITrack track, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
-            if (track == null)
-            {
-                throw new ArgumentNullException(nameof(track));
-            }
+            track.ThrowIfNull();
 
             return AddTrackTo(playlist.Id, track.Id, cancellationToken);
         }
@@ -268,20 +242,14 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> AddTrackTo(IPlaylist playlist, ulong trackId, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             return AddTrackTo(playlist.Id, trackId, cancellationToken);
         }
 
         public Task<bool> AddTrackTo(ulong playlistId, ITrack track, CancellationToken cancellationToken)
         {
-            if (track == null)
-            {
-                throw new ArgumentNullException(nameof(track));
-            }
+            track.ThrowIfNull();
 
             return AddTrackTo(playlistId, track.Id, cancellationToken);
         }
@@ -292,10 +260,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> AddTracksTo(IPlaylist playlist, IEnumerable<ITrack> tracks, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             if (tracks.Any(x => x == null))
             {
@@ -307,10 +272,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> AddTracksTo(IPlaylist playlist, IEnumerable<ulong> trackIds, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             if (!trackIds.Any())
             {
@@ -352,15 +314,9 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> RemoveTrackFrom(IPlaylist playlist, ITrack track, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
-            if (track == null)
-            {
-                throw new ArgumentNullException(nameof(track));
-            }
+            track.ThrowIfNull();
 
             return RemoveTrackFrom(playlist.Id, track.Id, cancellationToken);
         }
@@ -368,20 +324,15 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> RemoveTrackFrom(IPlaylist playlist, ulong trackId, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+
+
 
             return RemoveTrackFrom(playlist.Id, trackId, cancellationToken);
         }
 
         public Task<bool> RemoveTrackFrom(ulong playlistId, ITrack track, CancellationToken cancellationToken)
         {
-            if (track == null)
-            {
-                throw new ArgumentNullException(nameof(track));
-            }
+            track.ThrowIfNull();
 
             return RemoveTrackFrom(playlistId, track.Id, cancellationToken);
         }
@@ -392,10 +343,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> RemoveTracksFrom(IPlaylist playlist, IEnumerable<ITrack> tracks, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             if (tracks.Any(x => x == null))
             {
@@ -407,10 +355,7 @@ namespace E.Deezer.Endpoints
 
         public Task<bool> RemoveTracksFrom(IPlaylist playlist, IEnumerable<ulong> trackIds, CancellationToken cancellationToken)
         {
-            if (playlist == null)
-            {
-                throw new ArgumentNullException(nameof(playlist));
-            }
+            playlist.ThrowIfNull();
 
             if (!trackIds.Any())
             {

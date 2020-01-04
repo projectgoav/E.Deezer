@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using E.Deezer.Api;
+using E.Deezer.Util;
 using E.Deezer.Api.Internal;
 
 namespace E.Deezer.Endpoints
@@ -54,10 +55,7 @@ namespace E.Deezer.Endpoints
         // TODO: Endpoint accepts paging but doesn't take note of it
         public Task<IEnumerable<IArtist>> GetArtistsForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (genre == null)
-            {
-                throw new ArgumentNullException(nameof(genre));
-            }
+            genre.ThrowIfNull();
 
             return GetArtistsForGenre(genre.Id, cancellationToken, start, count);
         }
@@ -72,10 +70,7 @@ namespace E.Deezer.Endpoints
         // TODO: Endpoint accepts paging but doesn't take note of it
         public Task<IEnumerable<IRadio>> GetRadioForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
-            if (genre == null)
-            {
-                throw new ArgumentNullException(nameof(genre));
-            }
+            genre.ThrowIfNull();
 
             return GetRadioForGenre(genre.Id, cancellationToken, start, count);
         }
