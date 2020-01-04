@@ -1,36 +1,52 @@
-﻿using E.Deezer.Api;
-using NUnit.Framework;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
+
+using NUnit.Framework;
+
+using E.Deezer.Api;
 
 namespace E.Deezer.Tests.Integration.Endpoint
 {
     [TestFixture]
-    public class GenreEndpointTests //: TestClassBase
+    public class GenreEndpointTests : TestClassBase, IDisposable
     {
-        /*
-        private OfflineMessageHandler _server;
-        private IGenreEndpoint _genre;
+        private OfflineMessageHandler handler;
+        private DeezerSession session;
 
         public GenreEndpointTests()
-            : base("GenreEndpoint") { }
-
-        [SetUp]
-        public void SetUp()
+            : base("GenreEndpoint")
         {
-            var session = OfflineDeezerSession.WithoutAuthentication();
+            this.handler = new OfflineMessageHandler();
+            this.session = new DeezerSession(this.handler);
+        }
+        
 
-            _genre = session.Library.Browse.Genre;
-            _server = session.MessageHandler;
+        // IDisposabe
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        [Test]
-        public async Task GetCommonGenre()
+        protected virtual void Dispose(bool disposing)
         {
-            _server.Content = base.GetServerResponse("GetCommonGenre");
+            if (disposing)
+            {
+                this.session.Dispose();
+            }
+        }
 
-            IEnumerable<IGenre> actual = await _genre.GetCommonGenre();
+
+        [Test]
+        public void GetCommonGenre()
+        {
+            handler.Content = base.GetServerResponse("GetCommonGenre");
+
+            IEnumerable<IGenre> actual = session.Genre.GetCommonGenre(CancellationToken.None)
+                                                      .Result;
 
             var genres = actual.ToList();
             Assert.AreEqual(22, genres.Count, "Count");
@@ -39,8 +55,5 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.AreEqual(132, secondGenre.Id, nameof(secondGenre.Id));
             Assert.AreEqual("Pop", secondGenre.Name, nameof(secondGenre.Name));
         }
-
-
-        */
     }
 }
