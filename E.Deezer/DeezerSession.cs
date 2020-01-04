@@ -97,6 +97,8 @@ namespace E.Deezer
         // Authentication
         public bool IsAuthenticated => this.client.IsAuthenticated;
 
+        public ulong CurrentUserId => this.client.CurrentUserId;
+
 
         public Task<bool> Login(string accessToken, CancellationToken cancellationToken)
             => this.client.Login(accessToken, cancellationToken);
