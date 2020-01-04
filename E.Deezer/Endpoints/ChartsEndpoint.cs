@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using E.Deezer.Api;
 using E.Deezer.Util;
+using E.Deezer.Api.Internal;
 
 namespace E.Deezer.Endpoints
 {
@@ -70,13 +71,9 @@ namespace E.Deezer.Endpoints
 
 
         public Task<IEnumerable<IAlbum>> GetAlbumChart(CancellationToken cancellationToken, uint start = 0, uint count = 50)
-            => GetCharts(cancellationToken, start, count)
-                    .ContinueWith<IEnumerable<IAlbum>>(t =>
-                    {
-                        t.ThrowIfFaulted();
-
-                        return t.Result.Albums;
-                    }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            => this.client.Get($"/chart/albums?{START_PARAM}={start}&{COUNT_PARAM}={count}",
+                               cancellationToken,
+                               json => FragmentOf<IAlbum>.FromJson(json, x => Api.Album.FromJson(x, this.client)));
 
 
         public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)
@@ -87,24 +84,16 @@ namespace E.Deezer.Endpoints
         }
 
         public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(ulong genreId, CancellationToken cancellationToken, uint start = 0, uint count = 50)
-            => this.GetChartsForGenre(genreId, cancellationToken, start, count)
-                    .ContinueWith(t =>
-                    {
-                        t.ThrowIfFaulted();
-
-                        return t.Result.Albums;
-                    }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            => this.client.Get($"/chart/{genreId}/albums?{START_PARAM}={start}&{COUNT_PARAM}={count}",
+                               cancellationToken,
+                               json => FragmentOf<IAlbum>.FromJson(json, x => Api.Album.FromJson(x, this.client)));
 
 
 
         public Task<IEnumerable<IArtist>> GetArtistChart(CancellationToken cancellationToken, uint start = 0, uint count = 50)
-            => GetCharts(cancellationToken, start, count)
-                    .ContinueWith<IEnumerable<IArtist>>(t =>
-                    {
-                        t.ThrowIfFaulted();
-
-                        return t.Result.Artists;
-                    }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            => this.client.Get($"/chart/artists?{START_PARAM}={start}&{COUNT_PARAM}={count}",
+                               cancellationToken,
+                               json => FragmentOf<IArtist>.FromJson(json, x => Api.Artist.FromJson(x, this.client)));
 
 
         public Task<IEnumerable<IArtist>> GetArtistChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)
@@ -115,24 +104,16 @@ namespace E.Deezer.Endpoints
         }
 
         public Task<IEnumerable<IArtist>> GetArtistChartForGenre(ulong genreId, CancellationToken cancellationToken, uint start = 0, uint count = 50)
-            => this.GetChartsForGenre(genreId, cancellationToken, start, count)
-                    .ContinueWith(t =>
-                    {
-                        t.ThrowIfFaulted();
-
-                        return t.Result.Artists;
-                    }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            => this.client.Get($"/chart/{genreId}/artists?{START_PARAM}={start}&{COUNT_PARAM}={count}",
+                               cancellationToken,
+                               json => FragmentOf<IArtist>.FromJson(json, x => Api.Artist.FromJson(x, this.client)));
 
 
 
         public Task<IEnumerable<IPlaylist>> GetPlaylistChart(CancellationToken cancellationToken, uint start = 0, uint count = 50)
-            => GetCharts(cancellationToken, start, count)
-                    .ContinueWith<IEnumerable<IPlaylist>>(t =>
-                    {
-                        t.ThrowIfFaulted();
-
-                        return t.Result.Playlists;
-                    }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            => this.client.Get($"/chart/playlists?{START_PARAM}={start}&{COUNT_PARAM}={count}",
+                               cancellationToken,
+                               json => FragmentOf<IPlaylist>.FromJson(json, x => Api.Playlist.FromJson(x, this.client)));
 
 
         public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)
@@ -143,24 +124,16 @@ namespace E.Deezer.Endpoints
         }
 
         public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(ulong genreId, CancellationToken cancellationToken, uint start = 0, uint count = 50)
-            => this.GetChartsForGenre(genreId, cancellationToken, start, count)
-                    .ContinueWith(t =>
-                    {
-                        t.ThrowIfFaulted();
-
-                        return t.Result.Playlists;
-                    }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            => this.client.Get($"/chart/{genreId}/playlists?{START_PARAM}={start}&{COUNT_PARAM}={count}",
+                               cancellationToken,
+                               json => FragmentOf<IPlaylist>.FromJson(json, x => Api.Playlist.FromJson(x, this.client)));
 
 
 
         public Task<IEnumerable<ITrack>> GetTrackChart(CancellationToken cancellationToken, uint start = 0, uint count = 50)
-            => GetCharts(cancellationToken, start, count)
-                    .ContinueWith<IEnumerable<ITrack>>(t =>
-                    {
-                        t.ThrowIfFaulted();
-
-                        return t.Result.Tracks;
-                    }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            => this.client.Get($"/chart/tracks?{START_PARAM}={start}&{COUNT_PARAM}={count}",
+                               cancellationToken,
+                               json => FragmentOf<ITrack>.FromJson(json, x => Api.Track.FromJson(x, this.client)));
 
 
         public Task<IEnumerable<ITrack>> GetTrackChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)
@@ -171,12 +144,8 @@ namespace E.Deezer.Endpoints
         }
 
         public Task<IEnumerable<ITrack>> GetTrackChartForGenre(ulong genreId, CancellationToken cancellationToken, uint start = 0, uint count = 50)
-            => this.GetChartsForGenre(genreId, cancellationToken, start, count)
-                    .ContinueWith(t =>
-                    {
-                        t.ThrowIfFaulted();
-
-                        return t.Result.Tracks;
-                    }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            => this.client.Get($"/chart/{genreId}/tracks?{START_PARAM}={start}&{COUNT_PARAM}={count}",
+                               cancellationToken,
+                               json => FragmentOf<ITrack>.FromJson(json, x => Api.Track.FromJson(x, this.client)));
     }
 }

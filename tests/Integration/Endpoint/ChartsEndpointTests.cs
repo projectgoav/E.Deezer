@@ -1,38 +1,55 @@
-﻿using E.Deezer.Api;
-using NUnit.Framework;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
+
+using NUnit.Framework;
+
+using E.Deezer.Api;
 
 namespace E.Deezer.Tests.Integration.Endpoint
 {
     [TestFixture]
-    public class ChartsEndpointTests //: TestClassBase
+    public class ChartsEndpointTests : TestClassBase, IDisposable
     {
-        /*
-        private OfflineMessageHandler _server;
-        private IChartsEndpoint _charts;
+        private OfflineMessageHandler handler;
+        private DeezerSession session;
 
         public ChartsEndpointTests()
-            : base("ChartsEndpoint") { }
-
-        [SetUp]
-        public void SetUp()
+            : base("ChartsEndpoint")
         {
-            var session = OfflineDeezerSession.WithoutAuthentication();
+            this.handler = new OfflineMessageHandler();
 
-            _charts = session.Library.Browse.Charts;
-            _server = session.MessageHandler;
+            this.session = new DeezerSession(this.handler);
+
         }
 
-        [Test]
-        public async Task GetChart()
+
+        // IDisposable
+        public void Dispose()
         {
-            _server.Content = base.GetServerResponse("chart");
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.session.Dispose();
+            }
+        }
 
 
-            IChart chart = await _charts.GetChart();
 
+        [Test]
+        public void GetChart()
+        {
+            handler.Content = base.GetServerResponse("chart");
+
+            IChart chart = session.Charts.GetCharts(CancellationToken.None)
+                                         .Result;
 
             Assert.IsNotNull(chart, nameof(chart));
 
@@ -50,13 +67,12 @@ namespace E.Deezer.Tests.Integration.Endpoint
         }
 
         [Test]
-        public async Task GetAlbumChart()
+        public void GetAlbumChart()
         {
-            _server.Content = base.GetServerResponse("album");
+            handler.Content = base.GetServerResponse("album");
 
-
-            IEnumerable<IAlbum> albums = await _charts.GetAlbumChart();
-
+            IEnumerable<IAlbum> albums = session.Charts.GetAlbumChart(CancellationToken.None)
+                                                       .Result;
 
             Assert.IsNotNull(albums, nameof(albums));
             Assert.AreEqual(99, albums.Count(), "Count");
@@ -68,13 +84,12 @@ namespace E.Deezer.Tests.Integration.Endpoint
         }
 
         [Test]
-        public async Task GetArtistChart()
+        public void GetArtistChart()
         {
-            _server.Content = base.GetServerResponse("artist");
+            handler.Content = base.GetServerResponse("artist");
 
-
-            IEnumerable<IArtist> artists = await _charts.GetArtistChart();
-
+            IEnumerable<IArtist> artists = session.Charts.GetArtistChart(CancellationToken.None)
+                                                         .Result;
 
             Assert.IsNotNull(artists, nameof(artists));
             Assert.AreEqual(100, artists.Count(), "Count");
@@ -86,13 +101,12 @@ namespace E.Deezer.Tests.Integration.Endpoint
         }
 
         [Test]
-        public async Task GetPlaylistChart()
+        public void GetPlaylistChart()
         {
-            _server.Content = base.GetServerResponse("playlist");
+            handler.Content = base.GetServerResponse("playlist");
 
-
-            IEnumerable<IPlaylist> playlists = await _charts.GetPlaylistChart();
-
+            IEnumerable<IPlaylist> playlists = session.Charts.GetPlaylistChart(CancellationToken.None)
+                                                             .Result;
 
             Assert.IsNotNull(playlists, nameof(playlists));
             Assert.AreEqual(100, playlists.Count(), "Count");
@@ -104,13 +118,12 @@ namespace E.Deezer.Tests.Integration.Endpoint
         }
 
         [Test]
-        public async Task GetTrackChart()
+        public void GetTrackChart()
         {
-            _server.Content = base.GetServerResponse("track");
+            handler.Content = base.GetServerResponse("track");
 
-
-            IEnumerable<ITrack> tracks = await _charts.GetTrackChart();
-
+            IEnumerable<ITrack> tracks = session.Charts.GetTrackChart(CancellationToken.None)
+                                                       .Result;
 
             Assert.IsNotNull(tracks, nameof(tracks));
             Assert.AreEqual(100, tracks.Count(), "Count");
@@ -126,8 +139,5 @@ namespace E.Deezer.Tests.Integration.Endpoint
         {
             Assert.Warn("This functionality not yet implemented!");
         }
-
-
-        */
     }
 }
