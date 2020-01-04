@@ -8,25 +8,22 @@ namespace E.Deezer.Tests.Exception
     [Parallelizable(ParallelScope.All)]
     public class DeezerExceptionTests
     {
-        [TestCase("QuotaException", 4u)]
-        [TestCase("ItemsLimitExceededException", 100u)]
-        [TestCase("PermissionException", 200u)]
-        [TestCase("InvalidTokenException", 300u)]
-        [TestCase("ParameterException", 500u)]
-        [TestCase("MissingParameterException", 501u)]
-        [TestCase("InvalidQueryException", 600u)]
-        [TestCase("ServiceBusyException", 700u)]
-        [TestCase("DataNotFoundException", 800u)]
-        public void TestExceptionMessageFor(string _, uint errorCode)
+        [TestCase("QuotaException",              4u,   DeezerException.QUOTA_MESSAGE)]
+        [TestCase("ItemsLimitExceededException", 100u, DeezerException.ITEM_LIMIT_MESSAGE)]
+        [TestCase("PermissionException",         200u, DeezerException.INVALID_PERMISSION_MESSAGE)]
+        [TestCase("InvalidTokenException",       300u, DeezerException.INVALID_TOKEN_MESSAGE)]
+        [TestCase("ParameterException",          500u, DeezerException.INVALID_PARAMETER_MESSAGE)]
+        [TestCase("MissingParameterException",   501u, DeezerException.MISSING_PARAMETER_MESSAGE)]
+        [TestCase("InvalidQueryException",       600u, DeezerException.INVALID_QUERY_MESSAGE)]
+        [TestCase("ServiceBusyException",        700u, DeezerException.SERVICE_BUSY_MESSAGE)]
+        [TestCase("DataNotFoundException",       800u, DeezerException.NOT_FOUND_MESSAGE)]
+        public void TestExceptionMessageFor(string _, uint errorCode, string expectedMessage)
         {
-            var error = new Error()
-            {
-                Code = errorCode
-            };
+            var error = Error.FromValues(errorCode, string.Empty, string.Empty);
 
             var ex = new DeezerException(error);
 
-            Assert.AreNotEqual(DeezerException.DEFAULT_EXCEPTION_MESSAGE, ex.Message);
+            Assert.AreEqual(expectedMessage, ex.Message);
         }
     }
 }

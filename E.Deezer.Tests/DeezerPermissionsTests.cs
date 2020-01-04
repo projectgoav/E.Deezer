@@ -4,7 +4,7 @@ namespace E.Deezer.Tests
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    public class PermissionsTests
+    public class DeezerPermissionsTests
     {
         private const string JOINT_A = Permissions.BASIC_ACCESS + ", " + Permissions.EMAIL;
         private const string JOINT_B = Permissions.BASIC_ACCESS + ", " + Permissions.MANAGE_COMMUNITY + ", " + Permissions.MANAGE_LIBRARY;

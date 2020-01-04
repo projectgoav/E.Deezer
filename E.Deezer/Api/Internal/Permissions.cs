@@ -37,30 +37,30 @@ namespace E.Deezer.Api
 
         public bool HasListeningHistory { get; private set; }
 
-        //TODO - Check a method that has multiple permissions...
-        public bool HasPermission(DeezerPermissions aPermission)
+
+        public bool HasPermission(DeezerPermissions desiredPermission)
         {
             bool permission = true;
 
-            if (aPermission.HasPermission(DeezerPermissions.BasicAccess))
+            if (desiredPermission.HasPermission(DeezerPermissions.BasicAccess))
                 permission &= HasBasicAccess;
 
-            if (aPermission.HasPermission(DeezerPermissions.DeleteLibrary))
+            if (desiredPermission.HasPermission(DeezerPermissions.DeleteLibrary))
                 permission &= HasDeleteLibrary;
 
-            if (aPermission.HasPermission(DeezerPermissions.Email))
+            if (desiredPermission.HasPermission(DeezerPermissions.Email))
                 permission &= HasEmail; 
 
-            if (aPermission.HasPermission(DeezerPermissions.ListeningHistory))
+            if (desiredPermission.HasPermission(DeezerPermissions.ListeningHistory))
                 permission &= HasListeningHistory; 
 
-            if (aPermission.HasPermission(DeezerPermissions.ManageCommunity))
+            if (desiredPermission.HasPermission(DeezerPermissions.ManageCommunity))
                 permission &= HasManageCommunity; 
 
-            if (aPermission.HasPermission(DeezerPermissions.ManageLibrary))
+            if (desiredPermission.HasPermission(DeezerPermissions.ManageLibrary))
                 permission &= HasManageLibrary;
 
-            if (aPermission.HasPermission(DeezerPermissions.OfflineAccess))
+            if (desiredPermission.HasPermission(DeezerPermissions.OfflineAccess))
                 permission &= HasOfflineAccess;
 
 
@@ -87,6 +87,26 @@ namespace E.Deezer.Api
                 HasEmail = permissionJson.Value<bool>(Permissions.EMAIL),
             };
         }
+
+
+        // Useful for unit tests :)
+        internal static IPermissions FromValues(bool hasEmail = false,
+                                                bool hasBasicAccess = false,
+                                                bool hasOfflineAccess = false,
+                                                bool hasManageLibrary = false,
+                                                bool hasManageCommunity = false,
+                                                bool hasDeleteLibrary = false,
+                                                bool hasListeningHistory = false)
+            => new OAuthPermissions()
+                {
+                    HasEmail = hasEmail,
+                    HasBasicAccess = hasBasicAccess,
+                    HasOfflineAccess = hasOfflineAccess,
+                    HasManageCommunity = hasManageCommunity,
+                    HasManageLibrary = hasManageLibrary,
+                    HasDeleteLibrary = hasDeleteLibrary,
+                    HasListeningHistory = hasListeningHistory
+                };
 
     }
 }

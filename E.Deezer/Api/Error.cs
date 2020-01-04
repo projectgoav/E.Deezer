@@ -73,5 +73,11 @@ namespace E.Deezer.Api
             // No error parsed
             return null;
         }
+
+
+        internal static IError FromValues(uint code,
+                                          string type,
+                                          string message)
+            => new Error(code, type, message);
     }
 }
