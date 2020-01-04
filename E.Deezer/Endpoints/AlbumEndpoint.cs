@@ -121,7 +121,7 @@ namespace E.Deezer.Endpoints
 
         public Task<ulong> AddComment(IAlbum album, string commentText, CancellationToken cancellationToken)
         {
-x            album.ThrowIfNull();
+            album.ThrowIfNull();
 
             return AddComment(album.Id, commentText, cancellationToken);
         }
