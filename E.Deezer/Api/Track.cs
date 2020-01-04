@@ -144,7 +144,7 @@ namespace E.Deezer.Api
 
         internal const string ID_PROPERTY_NAME = "id";
         internal const string TITLE_PROPERTY_NAME = "title";
-        internal const string SHORT_TITLE_PROPERTY_NAME = "short_title";
+        internal const string SHORT_TITLE_PROPERTY_NAME = "title_short";
         internal const string ISRC_PROPERTY_NAME = "isrc";
         internal const string LINK_PROPERTY_NAME = "link";
         internal const string SHARE_LINK_PROPERTY_NAME = "share";

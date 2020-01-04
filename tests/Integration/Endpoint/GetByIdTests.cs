@@ -1,38 +1,53 @@
-﻿using E.Deezer.Api;
-using E.Deezer.Endpoint;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
+
+using NUnit.Framework;
+
+using E.Deezer.Api;
 
 namespace E.Deezer.Tests.Integration.Endpoint
 {
     [TestFixture]
-    class BrowseEndpointTests : TestClassBase
+    public class GetByIdTests : TestClassBase, IDisposable
     {
-        private static readonly uint _dummyID = 0;
-        private OfflineMessageHandler _server;
-        private IBrowseEndpoint _browse;
+        private static readonly uint DUMMY_ID = 0;
 
-        public BrowseEndpointTests()
-            : base("BrowseEndpoint") { }
+        private readonly DeezerSession session;
+        private readonly OfflineMessageHandler handler;
 
-        [SetUp]
-        public void SetUp()
+        public GetByIdTests()
+            : base("BrowseEndpoint")
         {
-            var session = OfflineDeezerSession.WithoutAuthentication();
-
-            _browse = session.Library.Browse;
-            _server = session.MessageHandler;
+            this.handler = new OfflineMessageHandler();
+            this.session = new DeezerSession(this.handler);
         }
 
-        [Test]
-        public async Task GetAlbumById()
+
+        // IDisposable
+        public void Dispose()
         {
-            _server.Content = base.GetServerResponse("album");
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.session.Dispose();
+            }
+        }
 
 
-            IAlbum album = await _browse.GetAlbumById(_dummyID);
+
+        [Test]
+        public void GetAlbumById()
+        {
+            handler.Content = base.GetServerResponse("album");
+
+            IAlbum album = session.Albums.GetById(DUMMY_ID, CancellationToken.None)
+                                         .Result;
 
 
             Assert.IsNotNull(album, nameof(album));
@@ -58,36 +73,37 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.AreEqual(27, album.Artist.Id, "Artist.Id");
             Assert.AreEqual("Daft Punk", album.Artist.Name, "Artist.Name");
 
-            Assert.AreEqual(14, album.Tracks, nameof(album.Tracks));
+            Assert.AreEqual(14, album.TrackCount, nameof(album.TrackCount));
         }
 
+
         [Test]
-        public async Task GetArtistById()
+        public void GetArtistById()
         {
-            _server.Content = base.GetServerResponse("artist");
+            handler.Content = base.GetServerResponse("artist");
 
-
-            IArtist artist = await _browse.GetArtistById(_dummyID);
-
+            IArtist artist = session.Artists.GetById(DUMMY_ID, CancellationToken.None)
+                                            .Result;
 
             Assert.IsNotNull(artist, nameof(artist));
             Assert.AreEqual(1, artist.Id, nameof(artist.Id));
             Assert.AreEqual("The Beatles", artist.Name, nameof(artist.Name));
             Assert.AreEqual("https://www.deezer.com/artist/1", artist.Link, nameof(artist.Link));
             Assert.AreEqual("https://www.deezer.com/artist/1?utm_source=deezer&utm_content=artist-1&utm_term=0_1562078771&utm_medium=web", artist.ShareLink, nameof(artist.ShareLink));
-            Assert.AreEqual(45, artist.AlbumCount, nameof(artist.AlbumCount));
-            Assert.AreEqual(5110265, artist.Fans, nameof(artist.Fans));
+            Assert.AreEqual(45, artist.NumberOfAlbums, nameof(artist.NumberOfAlbums));
+            Assert.AreEqual(5110265, artist.NumberOfFans, nameof(artist.NumberOfFans));
             Assert.IsTrue(artist.HasSmartRadio, nameof(artist.HasSmartRadio));
         }
 
+
+
         [Test]
-        public async Task GetPlaylistById()
+        public void GetPlaylistById()
         {
-            _server.Content = base.GetServerResponse("playlist");
+            handler.Content = base.GetServerResponse("playlist");
 
-
-            IPlaylist playlist = await _browse.GetPlaylistById(_dummyID);
-
+            IPlaylist playlist = session.Playlists.GetById(DUMMY_ID, CancellationToken.None)
+                                                  .Result;
 
             Assert.IsNotNull(playlist, nameof(playlist));
             Assert.AreEqual(300, playlist.Id, nameof(playlist.Id));
@@ -97,26 +113,24 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.IsTrue(playlist.IsPublic, nameof(playlist.IsPublic));
             Assert.IsFalse(playlist.IsLovedTrack, nameof(playlist.IsLovedTrack));
             Assert.IsFalse(playlist.IsCollaborative, nameof(playlist.IsCollaborative));
-            Assert.AreEqual(5, playlist.TrackCount, nameof(playlist.TrackCount));
-            Assert.AreEqual(0, playlist.Fans, nameof(playlist.Fans));
+            Assert.AreEqual(5, playlist.NumberOfTracks, nameof(playlist.NumberOfTracks));
+            Assert.AreEqual(0, playlist.NumberOfFans, nameof(playlist.NumberOfFans));
             Assert.AreEqual("https://www.deezer.com/playlist/300", playlist.Link, nameof(playlist.Link));
             Assert.AreEqual("https://www.deezer.com/playlist/300?utm_source=deezer&utm_content=playlist-300&utm_term=0_1562078987&utm_medium=web", playlist.ShareLink, nameof(playlist.ShareLink));
 
             Assert.IsNotNull(playlist.Creator, nameof(playlist.Creator));
-            Assert.IsNotNull(playlist.CreatorName, nameof(playlist.CreatorName));
             Assert.AreEqual(203, playlist.Creator.Id, "Creator.Id");
             Assert.AreEqual("anonymous", playlist.Creator.Username, "Creator.Username");
-            Assert.IsNull(playlist.Creator.ShareLink, "Creator.ShareLink");
+            Assert.IsNull(playlist.Creator.Link, "Creator.ShareLink");
         }
 
         [Test]
-        public async Task GetTrackById()
+        public void GetTrackById()
         {
-            _server.Content = base.GetServerResponse("track");
+            handler.Content = base.GetServerResponse("track");
 
-
-            ITrack track = await _browse.GetTrackById(_dummyID);
-
+            ITrack track = session.Track.GetById(DUMMY_ID, CancellationToken.None)
+                                        .Result;
 
             Assert.IsNotNull(track, nameof(track));
             Assert.AreEqual(3135556, track.Id, nameof(track.Id));
@@ -126,24 +140,31 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.AreEqual("https://www.deezer.com/track/3135556", track.Link, nameof(track.Link));
             Assert.AreEqual("https://www.deezer.com/track/3135556?utm_source=deezer&utm_content=track-3135556&utm_term=0_1562079211&utm_medium=web", track.ShareLink, nameof(track.ShareLink));
             Assert.AreEqual(224, track.Duration, nameof(track.Duration));
-            Assert.AreEqual(4, track.Number, nameof(track.Number));
-            Assert.AreEqual(1, track.Disc, nameof(track.Disc));
+            Assert.AreEqual(4, track.TrackNumber, nameof(track.TrackNumber));
+            Assert.AreEqual(1, track.DiscNumber, nameof(track.DiscNumber));
             Assert.AreEqual(759175, track.Rank, nameof(track.Rank));
             Assert.AreEqual(new DateTime(2001, 03, 07), track.ReleaseDate, nameof(track.ReleaseDate));
             Assert.IsFalse(track.IsExplicit, nameof(track.IsExplicit));
-            Assert.AreEqual("https://cdns-preview-d.dzcdn.net/stream/c-deda7fa9316d9e9e880d2c6207e92260-5.mp3", track.Preview, nameof(track.Preview));
+            Assert.AreEqual("https://cdns-preview-d.dzcdn.net/stream/c-deda7fa9316d9e9e880d2c6207e92260-5.mp3", track.PreviewLink, nameof(track.PreviewLink));
             Assert.AreEqual(123.4f, track.BPM, nameof(track.BPM));
             Assert.AreEqual(-12.4f, track.Gain, nameof(track.Gain));
 
+            /*
+             * TODO: Await AvailableIn support again
             Assert.IsNotNull(track.AvailableIn, nameof(track.AvailableIn));
             var countries = track.AvailableIn.ToList();
             Assert.AreEqual(209, countries.Count, "AvailableIn.Count");
+            */
 
+            /*
+             * TODO: Await contributors support again
             Assert.IsNotNull(track.Contributors, nameof(track.Contributors));
             var contributors = track.Contributors.ToList();
             Assert.AreEqual(1, contributors.Count, "contributors.Count");
+
             Assert.AreEqual(27, contributors[0].Id, "contributors[0].Id");
             Assert.AreEqual("Daft Punk", contributors[0].Name, "contributors[0].Name");
+            */
 
             Assert.IsNotNull(track.Artist, nameof(track.Artist));
             Assert.AreEqual(27, track.Artist.Id, "Artist.Id");
@@ -156,12 +177,12 @@ namespace E.Deezer.Tests.Integration.Endpoint
         }
 
         [Test]
-        public async Task GetRadioById()
+        public void GetRadioById()
         {
-            _server.Content = base.GetServerResponse("radio");
+            handler.Content = base.GetServerResponse("radio");
 
-
-            IRadio radio = await _browse.GetRadioById(_dummyID);
+            IRadio radio = session.Radio.GetById(DUMMY_ID, CancellationToken.None)
+                                        .Result;
 
 
             Assert.IsNotNull(radio, nameof(radio));
@@ -171,13 +192,15 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.AreEqual("https://www.deezer.com/mixes/genre/6?utm_source=deezer&utm_content=mixes-genre-6&utm_term=0_1562079884&utm_medium=web", radio.ShareLink, nameof(radio.ShareLink));
         }
 
+        /*
         [Test]
-        public async Task GetUserById()
+        public void GetUserById()
         {
-            _server.Content = base.GetServerResponse("user");
+            handler.Content = base.GetServerResponse("user");
 
 
-            IUserProfile user = await _browse.GetUserById(_dummyID);
+            IUserProfile user = session.User.GetUserById(DUMMY_ID, CancellationToken.None)
+                                            .Result;
 
 
             Assert.IsNotNull(user, nameof(user));
@@ -186,5 +209,6 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.AreEqual("https://www.deezer.com/profile/5", user.ShareLink, nameof(user.ShareLink));
             Assert.AreEqual("JP", user.Country, nameof(user.Country));
         }
+        */
     }
 }

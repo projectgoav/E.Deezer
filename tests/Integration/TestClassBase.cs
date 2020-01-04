@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace E.Deezer.Tests.Integration
 {
-    abstract class TestClassBase
+    public abstract class TestClassBase
     {
         private readonly string _directory;
 
