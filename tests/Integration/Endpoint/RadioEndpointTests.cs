@@ -11,6 +11,7 @@ using E.Deezer.Api;
 namespace E.Deezer.Tests.Integration.Endpoint
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.Fixtures)]
     public class RadioEndpointTests : TestClassBase, IDisposable 
     {
         private OfflineMessageHandler handler;

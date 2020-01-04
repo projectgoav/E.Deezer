@@ -9,6 +9,7 @@ using E.Deezer.Api;
 namespace E.Deezer.Tests.Integration.Endpoint
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.Fixtures)]
     public class GetByIdTests : TestClassBase, IDisposable
     {
         private static readonly uint DUMMY_ID = 0;
