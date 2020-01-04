@@ -17,6 +17,7 @@ namespace E.Deezer.Endpoints
             this.Radio = new RadioEndpoint(client);
             this.Track = new TrackEndpoint(client);
             this.User = new UserEndpoint(client);
+            this.Search = new SearchEndpoint(client);
         }
 
 
@@ -37,5 +38,7 @@ namespace E.Deezer.Endpoints
         public ITrackEndpoint Track { get; }
 
         public IUserEndpoint User { get; }
+
+        public ISearchEndpoint Search { get; }
     }
 }

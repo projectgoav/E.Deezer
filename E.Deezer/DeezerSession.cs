@@ -39,15 +39,10 @@ namespace E.Deezer
         IGenreEndpoint Genre { get; }
 
         IPlaylistsEndpoint Playlists { get; }
-        /*
-        IArtistEndpoint Artists { get; }
-        IPlaylistEndpoint Playlists { get; }
         ITrackEndpoint Tracks { get; }
 
-        IBrowseEndpoint Browse { get; }
-        IChartEndpoint Charts { get; }
-        //TODO: Genre etc...
-        */
+        ISearchEndpoint Search { get; }
+
     }
 
 
@@ -92,9 +87,11 @@ namespace E.Deezer
 
         public IRadioEndpoint Radio => this.client.Endpoints.Radio;
 
-        public ITrackEndpoint Track => this.client.Endpoints.Track;
+        public ITrackEndpoint Tracks => this.client.Endpoints.Track;
 
         public IUserEndpoint User => this.client.Endpoints.User;
+
+        public ISearchEndpoint Search => this.client.Endpoints.Search;
 
 
         // Authentication

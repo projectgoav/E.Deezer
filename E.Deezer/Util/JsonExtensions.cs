@@ -37,5 +37,21 @@ namespace E.Deezer.Util
             return (null, objectDeserializationFunc(json));
         }
 
+
+
+
+        public static TResult ValueOrDefault<TResult>(this JToken token, string key, TResult defaultValue)
+        {
+            try
+            {
+                return token.Value<TResult>(key);
+            }
+            catch (Exception ex)
+            {
+                //TODO: Log?
+                return defaultValue;
+            }
+        }
+
     }
 }

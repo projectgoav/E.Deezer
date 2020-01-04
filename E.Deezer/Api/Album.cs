@@ -196,7 +196,7 @@ namespace E.Deezer.Api
 
                 CoverArtwork = Images.FromJson(json),
 
-                GenreId = json.Value<ulong>(GENRE_ID_PROPERTY_NAME),
+                GenreId = json.ValueOrDefault<ulong>(GENRE_ID_PROPERTY_NAME, 0),
                 Genre = FragmentOf<IGenre>.FromJson(json[GENRE_LIST_PROPERTY_NAME],
                                                     x => Api.Genre.FromJson(x, client)),
 

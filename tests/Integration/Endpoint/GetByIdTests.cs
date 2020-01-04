@@ -129,7 +129,7 @@ namespace E.Deezer.Tests.Integration.Endpoint
         {
             handler.Content = base.GetServerResponse("track");
 
-            ITrack track = session.Track.GetById(DUMMY_ID, CancellationToken.None)
+            ITrack track = session.Tracks.GetById(DUMMY_ID, CancellationToken.None)
                                         .Result;
 
             Assert.IsNotNull(track, nameof(track));
