@@ -32,13 +32,14 @@ namespace E.Deezer
     // TODO: Will need to check for authentication errors and handle logouts etc..
     // TODO: Relies on the clients above this to call something to check for Deezer
     //       errors. Can this be improved any?
-    public interface IAuthenticationService
+    internal interface IAuthenticationService
     {
         IUserV2 CurrentUser { get; }
         string AccessToken { get; }
         bool IsAuthenticated { get; }
         IPermissions UserPermissions { get; }
 
+        // Publically avaliable functions
         Task<bool> Login(string accessToken, CancellationToken cancellationToken);
         Task<bool> Logout(CancellationToken cancellationToken);
 
@@ -63,14 +64,15 @@ namespace E.Deezer
 
 
         private readonly object lockObj;
+        private readonly IDeezerClient client;
         private readonly ExecutorService executorService;
 
 
         private AuthenticationStatus currentAuthStatus;
 
-        public AuthenticationService(ExecutorService executorService)
+        public AuthenticationService(IDeezerClient client)
         {
-            this.executorService = executorService;
+            this.client = client;
 
             this.lockObj = new object();
         }
@@ -105,60 +107,40 @@ namespace E.Deezer
             //      So, should a user request a method that requires permissions
             //      We can evalute it AFTER the permissions tasks have completed!
 
-            //TODO: This should reference the correct access token...
-
             //TODO: Raise new status changed for the Logging-In state?
-            return this.executorService.ExecuteGet(resource, this.CancellationToken)
-                                       .ContinueWith(async t =>
-                                       {
-                                           t.ThrowIfFaulted();
+            return this.client.Get(resource, this.CancellationToken, json => Api.UserV2.FromJson(json, this.client))
+                              .ContinueWith(async t =>
+                              {
+                                  if (t.IsFaulted)
+                                  {
+                                      return false;
+                                  }
 
-                                           var json = JsonExtensions.JObjectFromStream(t.Result);
+                                  this.CurrentUser = t.Result;
 
-                                           // FIX MEEEE
-                                           // NULL client passed into this object :(
-                                           (IError error, IUserV2 currentUser) = json.DeserializeErrorOr<IUserV2>(x => UserV2.FromJson(x, null));
+                                  try
+                                  {
+                                      this.UserPermissions = await GetUserPermissions();
 
-                                           if (error != null)
-                                           {
-                                               // We've failed to fetch the user from the current access token.
-                                               // Logout and bail...
-                                               LogoutInternal();
-
-                                               //TODO: Should we do something with the returned Deezer error?
-                                               //      We should pass it back to the user ...
-
-                                               return false;
-                                           }
-
-                                           this.CurrentUser = currentUser;
-
-                                           try
-                                           {
-                                               this.UserPermissions = await GetUserPermissions();
-
-                                               if (this.UserPermissions == null)
-                                               {
-                                                   this.LogoutInternal();
-                                                   return false;
-                                               }
-                                           }
-                                           catch
-                                           {
-                                               // Something went wrong fetching user permissions
-                                               // Logout and bail...
-
-                                               // TODO: Should we log something to the terminal??
-                                               this.LogoutInternal();
-                                               return false;
-                                           }
+                                      if (this.UserPermissions == null)
+                                      {
+                                          return false;
+                                      }
+                                  }
+                                  catch
+                                  {
+                                      // Something went wrong fetching user permissions
+                                      // TODO: Should we log something to the terminal??
+                                      // In theory, the underlying client will catch any issues when deserializing
+                                      return false;
+                                  }
 
 
-                                           RaiseAuthenticationStateChanged(AuthenticationStatus.Authenticated);
-                                           return true;
+                                  RaiseAuthenticationStateChanged(AuthenticationStatus.Authenticated);
+                                  return true;
 
-                                       }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default)
-                                       .Unwrap();
+                              }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default)
+                              .Unwrap();
         }
 
         public Task<bool> Logout(CancellationToken cancellationToken)
@@ -172,29 +154,12 @@ namespace E.Deezer
         {
             string resource = $"user/me/permissions?{GetAccessTokenQueryString()}";
 
-            return this.executorService.ExecuteGet(resource, this.CancellationToken)
-                                       .ContinueWith(t =>
-                                       {
-                                           t.ThrowIfFaulted();
-
-                                           var json = JsonExtensions.JObjectFromStream(t.Result);
-
-                                           (IError error, IPermissions permissions) = json.DeserializeErrorOr<IPermissions>(OAuthPermissions.FromJson);
-
-                                           if (error != null)   
-                                           {
-                                               this.LogoutInternal();
-
-                                               //TODO: We should do something with the returned error...
-                                               //TODO: This is wrapped in try/catch. Could we throw here? 
-                                               //      Exceptions for control flow is bogging...
-
-                                               return null;
-                                           }
-
-                                           return permissions;
-
-                                       }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            return this.client.Get(resource, this.CancellationToken, OAuthPermissions.FromJson)
+                              .ContinueWith(t =>
+                              {
+                                  return t.IsFaulted ? null
+                                                     : t.Result;
+                              }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
 
 
@@ -217,7 +182,6 @@ namespace E.Deezer
         {
             switch(error.Code)
             {
-                case PERMISSION_ERROR_CODE:
                 case INVALID_TOKEN_ERROR_CODE:
                     this.LogoutInternal();
                     return true;
@@ -228,7 +192,7 @@ namespace E.Deezer
 
 
         // Private Impl
-        private void LogoutInternal()
+        public void LogoutInternal()
         {
             lock (this.lockObj)
             {

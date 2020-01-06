@@ -14,7 +14,7 @@ namespace E.Deezer.Tests.Integration.Endpoint
     [Parallelizable(ParallelScope.Fixtures)]
     public class UserEndpointTests : TestClassBase
     {
-        private OfflineMessageHandler handler;
+        private OfflineAuthenticationMessageHandler handler;
         private DeezerSession session;
 
         public UserEndpointTests()

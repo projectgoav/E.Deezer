@@ -44,7 +44,7 @@ namespace E.Deezer
         public DeezerClient(HttpMessageHandler handler)
         {
             this.executor = new ExecutorService(handler);
-            this.authService = new AuthenticationService(this.executor);
+            this.authService = new AuthenticationService(this);
 
             this.Endpoints = new Endpoints.Endpoints(this);
         }
@@ -296,10 +296,8 @@ namespace E.Deezer
             var error = Error.FromJson(json);
             if (error != null)
             {
-                //TODO: Translate this error into a DeezerException
-                //      Will likely need a hook for the AuthService to 
-                //      auto logout on authentication issues...
-                throw new Exception("Something went wrong...");
+                this.authService.LogoutIfAuthenticationError(error);
+                throw new DeezerException(error);
             }
 
             //TODO: Handle Json Parsing issues
