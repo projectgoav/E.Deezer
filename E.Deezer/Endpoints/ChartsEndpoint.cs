@@ -71,10 +71,7 @@ namespace E.Deezer.Endpoints
 
 
         public Task<IEnumerable<IAlbum>> GetAlbumChart(CancellationToken cancellationToken, uint start = 0, uint count = 50)
-            => this.client.Get($"/chart/albums?{START_PARAM}={start}&{COUNT_PARAM}={count}",
-                               cancellationToken,
-                               json => FragmentOf<IAlbum>.FromJson(json, x => Api.Album.FromJson(x, this.client)));
-
+            => GetAlbumChartForGenre(0, cancellationToken, start, count);
 
         public Task<IEnumerable<IAlbum>> GetAlbumChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)
         {
@@ -91,9 +88,7 @@ namespace E.Deezer.Endpoints
 
 
         public Task<IEnumerable<IArtist>> GetArtistChart(CancellationToken cancellationToken, uint start = 0, uint count = 50)
-            => this.client.Get($"/chart/artists?{START_PARAM}={start}&{COUNT_PARAM}={count}",
-                               cancellationToken,
-                               json => FragmentOf<IArtist>.FromJson(json, x => Api.Artist.FromJson(x, this.client)));
+            => GetArtistChartForGenre(0, cancellationToken, start, count);
 
 
         public Task<IEnumerable<IArtist>> GetArtistChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)
@@ -111,9 +106,7 @@ namespace E.Deezer.Endpoints
 
 
         public Task<IEnumerable<IPlaylist>> GetPlaylistChart(CancellationToken cancellationToken, uint start = 0, uint count = 50)
-            => this.client.Get($"/chart/playlists?{START_PARAM}={start}&{COUNT_PARAM}={count}",
-                               cancellationToken,
-                               json => FragmentOf<IPlaylist>.FromJson(json, x => Api.Playlist.FromJson(x, this.client)));
+            => GetPlaylistChartForGenre(0, cancellationToken, start, count);
 
 
         public Task<IEnumerable<IPlaylist>> GetPlaylistChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)
@@ -131,9 +124,7 @@ namespace E.Deezer.Endpoints
 
 
         public Task<IEnumerable<ITrack>> GetTrackChart(CancellationToken cancellationToken, uint start = 0, uint count = 50)
-            => this.client.Get($"/chart/tracks?{START_PARAM}={start}&{COUNT_PARAM}={count}",
-                               cancellationToken,
-                               json => FragmentOf<ITrack>.FromJson(json, x => Api.Track.FromJson(x, this.client)));
+            => GetTrackChartForGenre(0, cancellationToken, start, count);
 
 
         public Task<IEnumerable<ITrack>> GetTrackChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50)

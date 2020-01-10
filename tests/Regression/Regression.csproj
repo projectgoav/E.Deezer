@@ -8,6 +8,12 @@
     <AssemblyName>E.Deezer.Tests.Regression</AssemblyName>
 
     <RootNamespace>E.Deezer.Tests.Regression</RootNamespace>
+
+    <Configurations>Debug;Release;LiveApiTests</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LiveApiTests|AnyCPU'">
+    <DefineConstants>TRACE;LIVE_API_TEST</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

@@ -21,23 +21,32 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		LiveApiTests|Any CPU = LiveApiTests|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.LiveApiTests|Any CPU.ActiveCfg = LiveApiTests|Any CPU
+		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.LiveApiTests|Any CPU.Build.0 = LiveApiTests|Any CPU
 		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}.LiveApiTests|Any CPU.ActiveCfg = LiveApiTests|Any CPU
+		{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}.LiveApiTests|Any CPU.Build.0 = LiveApiTests|Any CPU
 		{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DAB15430-0472-40D5-9FDB-66BE8FAA3596}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DAB15430-0472-40D5-9FDB-66BE8FAA3596}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAB15430-0472-40D5-9FDB-66BE8FAA3596}.LiveApiTests|Any CPU.ActiveCfg = LiveApiTests|Any CPU
+		{DAB15430-0472-40D5-9FDB-66BE8FAA3596}.LiveApiTests|Any CPU.Build.0 = LiveApiTests|Any CPU
 		{DAB15430-0472-40D5-9FDB-66BE8FAA3596}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAB15430-0472-40D5-9FDB-66BE8FAA3596}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F3A3B85-D101-48A8-B5FD-273B487C32F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7F3A3B85-D101-48A8-B5FD-273B487C32F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F3A3B85-D101-48A8-B5FD-273B487C32F2}.LiveApiTests|Any CPU.ActiveCfg = LiveApiTests|Any CPU
+		{7F3A3B85-D101-48A8-B5FD-273B487C32F2}.LiveApiTests|Any CPU.Build.0 = LiveApiTests|Any CPU
 		{7F3A3B85-D101-48A8-B5FD-273B487C32F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F3A3B85-D101-48A8-B5FD-273B487C32F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

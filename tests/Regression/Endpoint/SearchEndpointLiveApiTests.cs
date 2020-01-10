@@ -1,28 +1,57 @@
-﻿using E.Deezer.Api;
-using E.Deezer.Endpoint;
-using NUnit.Framework;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using System.Net.Http;
+using System.Threading;
+
+using NUnit.Framework;
+
+using E.Deezer.Api;
+
+
 namespace E.Deezer.Tests.Regression.Endpoint
 {
+#if LIVE_API_TEST
     [TestFixture]
-    class SearchEndpointTests
+#else
+    [Ignore("Live API tests not enabled for this configuration")]
+#endif
+    public class SearchEndpointLiveApiTests : IDisposable
     {
-        private static readonly string _searchQuery = "eminem";
-        private static ISearchEndpoint _search;
+        private readonly DeezerSession session;
 
-        [OneTimeSetUp]
-        public static void OneTimeSetUp()
+        
+        public SearchEndpointLiveApiTests()
         {
-            _search = DeezerSession.CreateNew().Search;
+            this.session = new DeezerSession(new HttpClientHandler());
         }
 
-        [Test]
-        public async Task Albums()
+
+        public void Dispose()
         {
-            IEnumerable<IAlbum> albums = await _search.Albums(_searchQuery);
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.session.Dispose();
+            }
+        }
+
+
+
+        [Test]
+        public void Albums()
+        {
+            const string SEARCH_TERM = "enimem";
+
+            IEnumerable<IAlbum> albums = this.session.Search.FindAlbums(SEARCH_TERM, CancellationToken.None)
+                                                            .Result;
 
 
             Assert.IsNotNull(albums, nameof(albums));
@@ -35,10 +64,12 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task Artists()
+        public void Artists()
         {
-            IEnumerable<IArtist> artists = await _search.Artists(_searchQuery);
+            const string SEARCH_TERM = "enimem";
 
+            IEnumerable<IArtist> artists = this.session.Search.FindArtists(SEARCH_TERM, CancellationToken.None)
+                                                              .Result;
 
             Assert.IsNotNull(artists, nameof(artists));
             Assert.That(artists.Count(), Is.GreaterThan(0), "Count");
@@ -50,10 +81,12 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task Playlists()
+        public void Playlists()
         {
-            IEnumerable<IPlaylist> playlists = await _search.Playlists(_searchQuery);
+            const string SEARCH_TERM = "enimem";
 
+            IEnumerable<IPlaylist> playlists = this.session.Search.FindPlaylists(SEARCH_TERM, CancellationToken.None)
+                                                                  .Result;
 
             Assert.IsNotNull(playlists, nameof(playlists));
             Assert.That(playlists.Count(), Is.GreaterThan(0), "Count");
@@ -65,10 +98,12 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task Tracks()
+        public void Tracks()
         {
-            IEnumerable<ITrack> tracks = await _search.Tracks(_searchQuery);
+            const string SEARCH_TERM = "enimem";
 
+            IEnumerable<ITrack> tracks = this.session.Search.FindTracks(SEARCH_TERM, CancellationToken.None)
+                                                            .Result;
 
             Assert.IsNotNull(tracks, nameof(tracks));
             Assert.That(tracks.Count(), Is.GreaterThan(0), "Count");
@@ -80,11 +115,13 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task Radio()
+        public void Radio()
         {
-            IEnumerable<IRadio> radios = await _search.Radio("Electro");
+            const string SEARCH_TERM = "electro";
 
-
+            IEnumerable<IRadio> radios = this.session.Search.FindRadio(SEARCH_TERM, CancellationToken.None)
+                                                            .Result;
+            
             Assert.IsNotNull(radios, nameof(radios));
             Assert.That(radios.Count(), Is.GreaterThan(0), "Count");
 
@@ -95,20 +132,23 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task User()
+        public void User()
         {
-            IEnumerable<IUser> users = await _search.User(_searchQuery);
+            const string SEARCH_TERM = "ddgh";
 
-
+            IEnumerable<IUserProfile> users = this.session.Search.FindUsers(SEARCH_TERM, CancellationToken.None)
+                                                                 .Result;
+            
             Assert.IsNotNull(users, nameof(users));
             Assert.That(users.Count(), Is.GreaterThan(0), "Count");
 
             var firstUser = users.First();
             Assert.IsNotNull(firstUser, nameof(firstUser));
             Assert.That(firstUser.Id, Is.GreaterThan(0), nameof(firstUser.Id));
-            Assert.IsNotNull(firstUser.Name, nameof(firstUser.Name));
+            Assert.IsNotNull(firstUser.Username, nameof(firstUser.Username));
         }
 
+        /*
         [Test]
         public async Task Advanced()
         {
@@ -123,12 +163,17 @@ namespace E.Deezer.Tests.Regression.Endpoint
             Assert.That(firstTrack.Id, Is.GreaterThan(0), nameof(firstTrack.Id));
             Assert.IsNotNull(firstTrack.Title, nameof(firstTrack.Title));
         }
+        */
 
         [Test]
         public void TestGithubIssue79()
         {
-            /* If there is a regression, then this should fail. See github comments. */
-            var result = _search.Albums("Impronta", 200).Result;
+            const string SEARCH_TERM = "Impronta";
+
+            // If there is a regression then this search result will fail to parse.
+            // For further information see the Github issue.
+            var result = this.session.Search.FindAlbums(SEARCH_TERM, CancellationToken.None, start: 200, count: 10)
+                                            .Result;
         }
     }
 }

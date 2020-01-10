@@ -4,7 +4,8 @@
     <Copyright>Copyright 2019</Copyright>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild> 
-    <Deterministic>False</Deterministic>
+    <Deterministic>False</Deterministic> 
+    <Configurations>Debug;Release;LiveApiTests</Configurations>
   </PropertyGroup>
 
   <PropertyGroup>

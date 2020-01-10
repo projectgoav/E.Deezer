@@ -1,72 +1,116 @@
-﻿using E.Deezer.Api;
-using E.Deezer.Endpoint;
-using NUnit.Framework;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using System.Net.Http;
+using System.Threading;
+
+using NUnit.Framework;
+
+using E.Deezer.Api;
+
 namespace E.Deezer.Tests.Regression.Endpoint
 {
+#if LIVE_API_TEST
     [TestFixture]
-    class UserEndpointTests
+#else
+    [Ignore("Live API tests not enabled for this configuration")]
+#endif
+    public class UserEndpointLiveApiTests : IDisposable
     {
-        private static IAlbum _album;
-        private static IArtist _artist;
-        private static ITrack _track;
-        private static IPlaylist _playlist;
-        private static IRadio _radio;
-        private static IUserEndpoint _user;
+        private const ulong RADIO_ID = 6L;
+        private const ulong ARTIST_ID = 27L;
+        private const ulong ALBUM_ID = 302127L;
+        private const ulong TRACK_ID = 3135556L;
+        private const ulong PLAYLIST_ID = 908622995L;
+        private const string ACCESS_TOKEN = "frmFoXgyyO1ATzluA6gZIFIoWAf8b8G4tGWHaoxtDN9oCKMghM";
 
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
+        private readonly DeezerSession session;
+
+        private IUser user;
+        private IRadio radio;
+        private IAlbum album;
+        private ITrack track;
+        private IArtist artist;
+        private IPlaylist playlist;
+
+        public UserEndpointLiveApiTests()
         {
-            var deezer = DeezerSession.CreateNew();
-            string token = "frmFoXgyyO1ATzluA6gZIFIoWAf8b8G4tGWHaoxtDN9oCKMghM";
+            this.session = new DeezerSession(new HttpClientHandler());
 
-            if (string.IsNullOrEmpty(token))
-                throw new NotLoggedInException();
+            LoginSession();
 
-            deezer.Login(token)
-                .GetAwaiter().GetResult();
-
-            _user = deezer.User;
-
-            _album = deezer.Browse.GetAlbumById(302127)
-                .GetAwaiter().GetResult();
-
-            _artist = deezer.Browse.GetArtistById(27)
-                .GetAwaiter().GetResult();
-
-            _track = deezer.Browse.GetTrackById(3135556)
-                .GetAwaiter().GetResult();
-
-            _playlist = deezer.Browse.GetPlaylistById(908622995)
-                .GetAwaiter().GetResult();
-
-            _radio = deezer.Browse.GetRadioById(6)
-                .GetAwaiter().GetResult();
+            FetchObjects();
         }
 
-        [Test]
-        public async Task GetHistory()
-        {
-            IEnumerable<ITrack> tracks = await _user.GetHistory();
 
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.session.Dispose();
+            }
+        }
+
+
+        private void LoginSession()
+        {
+            bool didLogin = this.session.Login(ACCESS_TOKEN, CancellationToken.None)
+                                        .Result;
+
+            Assert.IsTrue(didLogin);
+
+            //TODO: Access and assert we have enough permissions to run thses tests?
+        }
+
+        private void FetchObjects()
+        {
+            this.album = this.session.Albums.GetById(ALBUM_ID, CancellationToken.None)
+                                            .Result;
+
+            this.artist = this.session.Artists.GetById(ARTIST_ID, CancellationToken.None)
+                                              .Result;
+
+            this.playlist = this.session.Playlists.GetById(PLAYLIST_ID, CancellationToken.None)
+                                                  .Result;
+
+            this.track = this.session.Tracks.GetById(TRACK_ID, CancellationToken.None)
+                                            .Result;
+
+            this.radio = this.session.Radio.GetById(RADIO_ID, CancellationToken.None)
+                                           .Result;
+
+            Assert.NotNull(album);
+            Assert.NotNull(artist);
+            Assert.NotNull(playlist);
+            Assert.NotNull(track);
+            Assert.NotNull(radio);
+        }
+
+
+        [Test]
+        public void GetHistory()
+        {
+            IEnumerable<ITrack> tracks = this.session.User.GetListeningHistory(CancellationToken.None)
+                                                          .Result;
 
             Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.AreEqual(13, tracks.Count(), "Count");
-
-            var firstTrack = tracks.First();
-            Assert.IsNotNull(firstTrack, nameof(firstTrack));
-            Assert.AreEqual(85963055, firstTrack.Id, nameof(firstTrack.Id));
-            Assert.AreEqual("Waves (Tomorrowland 2014 Anthem) (Radio Edit)", firstTrack.Title, nameof(firstTrack.Title));
+            Assert.That(tracks.Count(), Is.GreaterThan(0), nameof(tracks));
         }
 
         [Test]
-        public async Task GetFlow()
+        public void GetFlow()
         {
-            IEnumerable<ITrack> tracks = await _user.GetFlow();
-
+            IEnumerable<ITrack> tracks = this.session.User.GetFlow(this.session.CurrentUserId, CancellationToken.None)
+                                                          .Result;
 
             Assert.IsNotNull(tracks, nameof(tracks));
             Assert.That(tracks.Count(), Is.GreaterThan(0), "Count");
@@ -78,8 +122,9 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
         }
 
+        /*
         [Test]
-        public async Task GetPersonalTracks()
+        public void GetPersonalTracks()
         {
             IEnumerable<ITrack> tracks = await _user.GetPersonalTracks();
 
@@ -96,12 +141,13 @@ namespace E.Deezer.Tests.Regression.Endpoint
                 Assert.Fail($"User has {tracks.Count()} personal tracks.");
             }
         }
+        */
 
         [Test]
-        public async Task GetPlaylists()
+        public void GetPlaylists()
         {
-            IEnumerable<IPlaylist> playlists = await _user.GetPlaylists();
-
+            IEnumerable<IPlaylist> playlists = this.session.User.GetPlaylists(CancellationToken.None)
+                                                                .Result;
 
             Assert.IsNotNull(playlists, nameof(playlists));
             Assert.That(playlists.Count(), Is.GreaterThan(0), "Count");
@@ -113,10 +159,10 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task GetFavouriteAlbums()
+        public void GetFavouriteAlbums()
         {
-            IEnumerable<IAlbum> albums = await _user.GetFavouriteAlbums();
-
+            IEnumerable<IAlbum> albums = this.session.User.GetFavouriteAlbums(this.session.CurrentUserId, CancellationToken.None)
+                                                          .Result;
 
             Assert.IsNotNull(albums, nameof(albums));
             Assert.AreEqual(11, albums.Count(), "Count");
@@ -128,10 +174,10 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task GetFavouriteArtists()
+        public void GetFavouriteArtists()
         {
-            IEnumerable<IArtist> artists = await _user.GetFavouriteArtists();
-
+            IEnumerable<IArtist> artists = this.session.User.GetFavouriteArtists(this.session.CurrentUserId, CancellationToken.None)
+                                                            .Result;
 
             Assert.IsNotNull(artists, nameof(artists));
             Assert.That(artists.Count(), Is.GreaterThan(0), "Count");
@@ -143,12 +189,11 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task GetFavouriteTracks()
+        public void GetFavouriteTracks()
         {
-            var actual = await _user.GetFavouriteTracks();
-            IEnumerable<ITrack> tracks = await _user.GetFavouriteTracks();
-
-
+            IEnumerable<ITrack> tracks = this.session.User.GetFavouriteTracks(this.session.CurrentUserId, CancellationToken.None)
+                                                          .Result;
+            
             Assert.IsNotNull(tracks, nameof(tracks));
             Assert.AreEqual(7, tracks.Count(), "Count");
 
@@ -159,10 +204,10 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task GetRecommendedAlbums()
+        public void GetRecommendedAlbums()
         {
-            IEnumerable<IAlbum> albums = await _user.GetRecommendedAlbums();
-
+            IEnumerable<IAlbum> albums = this.session.User.GetRecommendedAlbums(CancellationToken.None)
+                                                          .Result;
 
             Assert.IsNotNull(albums, nameof(albums));
             Assert.AreEqual(9, albums.Count(), "Count");
@@ -174,10 +219,10 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task GetRecommendedArtists()
+        public void GetRecommendedArtists()
         {
-            IEnumerable<IArtist> artists = await _user.GetRecommendedArtists();
-
+            IEnumerable<IArtist> artists = this.session.User.GetRecommendedArtists(CancellationToken.None)
+                                                            .Result;
 
             Assert.IsNotNull(artists, nameof(artists));
             Assert.That(artists.Count(), Is.GreaterThan(0), "Count");
@@ -189,10 +234,10 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task GetRecommendedPlaylists()
+        public void GetRecommendedPlaylists()
         {
-            IEnumerable<IPlaylist> playlists = await _user.GetRecommendedPlaylists();
-
+            IEnumerable<IPlaylist> playlists = this.session.User.GetRecommendedPlaylists(CancellationToken.None)
+                                                                .Result;
 
             Assert.IsNotNull(playlists, nameof(playlists));
             Assert.That(playlists.Count(), Is.GreaterThan(0), "Count");
@@ -204,11 +249,11 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task GetRecommendedTracks()
+        public void GetRecommendedTracks()
         {
-            IEnumerable<ITrack> tracks = await _user.GetRecommendedTracks();
-
-
+            IEnumerable<ITrack> tracks = this.session.User.GetRecommendedTracks(CancellationToken.None)
+                                                          .Result;
+            
             Assert.IsNotNull(tracks, nameof(tracks));
             Assert.That(tracks.Count(), Is.GreaterThan(0), "Count");
 
@@ -219,11 +264,11 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
         [Test]
-        public async Task GetRecommendedRadio()
+        public void GetRecommendedRadio()
         {
-            IEnumerable<IRadio> radios = await _user.GetRecommendedRadio();
-
-
+            IEnumerable<IRadio> radios = this.session.User.GetRecommendedRadio(CancellationToken.None)
+                                                          .Result;
+            
             Assert.IsNotNull(radios, nameof(radios));
             Assert.That(radios.Count(), Is.GreaterThan(0), "Count");
 
@@ -234,6 +279,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
         
 
+        /*
         [Test, Order(1)]
         public async Task AddAlbumToFavourite()
         {
@@ -397,5 +443,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
             Assert.IsTrue(response);
         }
+        */
     }
 }

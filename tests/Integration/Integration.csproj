@@ -8,6 +8,8 @@
     <AssemblyName>E.Deezer.Tests.Integration</AssemblyName>
 
     <RootNamespace>E.Deezer.Tests.Integration</RootNamespace>
+
+    <Configurations>Debug;Release;LiveApiTests</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
