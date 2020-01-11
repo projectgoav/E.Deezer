@@ -204,8 +204,11 @@ namespace E.Deezer.Api
                                                 internalArtwork?.ExtraLarge);
 
             bool hasAvailabiltyList = (json as JObject)?.ContainsKey(AVAILABLE_COUNTRY_PROPERTY_NAME) ?? false;
-            IEnumerable<string> availableInList = hasAvailabiltyList ? json.Values<string>(AVAILABLE_COUNTRY_PROPERTY_NAME)
-                                                                     : new string[0];
+
+            // Json.Values<string>() is lazy, need to wrap and eval into a list at this point
+            // as the underlying json is disposed as soon as the parsing has been completed.
+            IEnumerable<string> availableInList = hasAvailabiltyList ? new List<string>(json[AVAILABLE_COUNTRY_PROPERTY_NAME].Values<string>())
+                                                                     : new List<string>(0);
 
             return new Track()
             {

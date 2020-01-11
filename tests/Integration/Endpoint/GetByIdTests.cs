@@ -150,13 +150,11 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.AreEqual(123.4f, track.BPM, nameof(track.BPM));
             Assert.AreEqual(-12.4f, track.Gain, nameof(track.Gain));
 
-            /*
-             * TODO: Await AvailableIn support again
+
             Assert.IsNotNull(track.AvailableIn, nameof(track.AvailableIn));
             var countries = track.AvailableIn.ToList();
             Assert.AreEqual(209, countries.Count, "AvailableIn.Count");
-            */
-
+   
             /*
              * TODO: Await contributors support again
             Assert.IsNotNull(track.Contributors, nameof(track.Contributors));

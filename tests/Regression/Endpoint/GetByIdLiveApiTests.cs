@@ -176,12 +176,10 @@ namespace E.Deezer.Tests.Regression.Endpoint
             Assert.AreEqual(123.4f, track.BPM, nameof(track.BPM));
             Assert.AreEqual(-12.4f, track.Gain, nameof(track.Gain));
 
-            // FIX ME
-            /*
+
             Assert.IsNotNull(track.AvailableIn, nameof(track.AvailableIn));
             var countries = track.AvailableIn.ToList();
-            Assert.AreEqual(209, countries.Count, "AvailableIn.Count");
-            */
+            Assert.AreEqual(countries.Count, Is.AtLeast(100), "AvailableIn.Count");
 
             //FIX ME
             /*
