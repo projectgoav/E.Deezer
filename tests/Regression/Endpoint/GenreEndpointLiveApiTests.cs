@@ -95,6 +95,28 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
 
 
-        // TODO: Maybe add some test for getting the charts?
+        [Test]
+        public void TestGetDeezerSelection()
+        {
+            var result = this.session.Genre.GetDeezerSelectionForGenre(0, CancellationToken.None)
+                                           .Result;
+
+            Assert.NotNull(result);
+            Assert.That(result.Count(), Is.GreaterThan(0));
+        }
+
+
+        [Test]
+        public void TestNewReleases()
+        {
+            var result = this.session.Genre.GetNewReleasesForGenre(0, CancellationToken.None)
+                                           .Result;
+
+            Assert.NotNull(result);
+            Assert.That(result.Count(), Is.GreaterThan(0));
+        }
+
+
+        //TODO: Need to add methods to get a genre's chart?
     }
 }
