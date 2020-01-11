@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using System.Net.Http;
 
+using NUnit.Framework;
+
 namespace E.Deezer.Tests.Integration
 {
     public abstract class TestClassBase
@@ -9,7 +11,7 @@ namespace E.Deezer.Tests.Integration
 
         protected TestClassBase(string moduleName)
         {
-            _directory = Path.Combine("StaticResources", moduleName);
+            _directory = Path.Combine(TestContext.CurrentContext.TestDirectory, "StaticResources", moduleName);
         }
 
         /// <summary>

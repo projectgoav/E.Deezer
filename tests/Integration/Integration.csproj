@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <IsPackable>false</IsPackable>
+    <TargetFramework>net462</TargetFramework>
     <AssemblyName>E.Deezer.Tests.Integration</AssemblyName>
     <RootNamespace>E.Deezer.Tests.Integration</RootNamespace>
     <Configurations>Debug;Release</Configurations>
