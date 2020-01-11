@@ -48,31 +48,20 @@ Task("Run-Unit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
 {
+    var testSettings = new NUnit3Settings
+        {
+            Labels=NUnit3Labels.All,
+            NoResults=true,
+        };
+
     NUnit3("./build/E.Deezer.Tests/bin/" + configuration + "/net462/*.Tests.dll",
-           new NUnit3Settings
-            {
-                Labels=NUnit3Labels.All,
-                NoResults=true,
-            });
+           testSettings);
 
-    var testSettings = new DotNetCoreTestSettings()
-    {
-        Configuration = configuration,
-        NoBuild = true,
-        NoRestore = true,
-    };
+    NUnit3("./build/Integration/bin/" + configuration + "/net462/*.Tests.*.dll",
+           testSettings);
 
-    /* TODO, NUnit doesn't support running NET STANDARD or NET CORE
-     * tests so we have to resort to using the 'dotnet test'
-     *
-     * Need to find a way to get the details back out from the test
-     * runner OR convert the tests to a net462 lib */
-    DotNetCoreTest("./build/Integration/bin/" + configuration + "/netcoreapp2.1/*.Tests.*.dll",
-                   testSettings);
-
-    DotNetCoreTest("./build/Regression/bin/" + configuration + "/netcoreapp2.1/*Tests.*.dll",
-                   testSettings);
-
+    NUnit3("./build/Regression/bin/" + configuration + "/net462/*Tests.*.dll",
+           testSettings);
 });
 
 //////////////////////////////////////////////////////////////////////
