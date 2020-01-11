@@ -172,7 +172,7 @@ namespace E.Deezer.Api
         internal const string PREVIEW_PROPERTY_NAME = "preview";
         internal const string BPM_PROPERTY_NAME = "bpm";
         internal const string GAIN_PROPERTY_NAME = "gain";
-        internal const string AVAIlABLE_COUNTRY_PROPERTY_NAME = "available_countries";
+        internal const string AVAILABLE_COUNTRY_PROPERTY_NAME = "available_countries";
         internal const string CONTRIBUTORS_PROPERTY_NAME = "contributors";
         internal const string ARTIST_PROPERTY_NAME = "artist";
         internal const string ALBUM_PROPERTY_NAME = "album";
@@ -203,6 +203,9 @@ namespace E.Deezer.Api
                                                 internalArtwork?.Large, 
                                                 internalArtwork?.ExtraLarge);
 
+            bool hasAvailabiltyList = (json as JObject)?.ContainsKey(AVAILABLE_COUNTRY_PROPERTY_NAME) ?? false;
+            IEnumerable<string> availableInList = hasAvailabiltyList ? json.Values<string>(AVAILABLE_COUNTRY_PROPERTY_NAME)
+                                                                     : new string[0];
 
             return new Track()
             {
@@ -229,14 +232,13 @@ namespace E.Deezer.Api
 
                 Artwork = actualArtwork,
 
-                //TODO: Will need to check for null values here...
-                //AvailableIn = json.Values<string>(AVAIlABLE_COUNTRY_PROPERTY_NAME),
+                AvailableIn = availableInList,
 
                 Artist = Api.Artist.FromJson(json[ARTIST_PROPERTY_NAME], client),
                 Album = containedInAlbum,
                 Conrtibutors = CollectionOf<IArtist>.FromJson(json[CONTRIBUTORS_PROPERTY_NAME], x => Api.Artist.FromJson(x, client)),
 
-
+                // ISssionObject
                 Client = client,
             };
         }
