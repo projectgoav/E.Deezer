@@ -26,9 +26,9 @@ namespace E.Deezer.Tests.Regression.Endpoint
         private const ulong PLAYLIST_ID = 908622995L;
         private const string ACCESS_TOKEN = "frmFoXgyyO1ATzluA6gZIFIoWAf8b8G4tGWHaoxtDN9oCKMghM";
 
+        private readonly Random random;
         private readonly DeezerSession session;
 
-        private IUser user;
         private IRadio radio;
         private IAlbum album;
         private ITrack track;
@@ -37,6 +37,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
         public UserEndpointLiveApiTests()
         {
+            this.random = new Random((int)DateTime.UtcNow.Ticks);
             this.session = new DeezerSession(new HttpClientHandler());
 
             LoginSession();
@@ -106,6 +107,27 @@ namespace E.Deezer.Tests.Regression.Endpoint
             Assert.That(tracks.Count(), Is.GreaterThan(0), nameof(tracks));
         }
 
+
+        /* NOTE: To prevent getting API limited by making the many requests contained in some of these tests
+         *       we add a small delay to the beginning and the end of the tests. */
+        [SetUp]
+        public void SetUp()
+        {
+            var waitTime = this.random.Next(100, 1500);
+            Task.Delay(waitTime)
+                .Wait();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            var waitTime = this.random.Next(50, 100);
+            Task.Delay(waitTime)
+                .Wait();
+        }
+
+
+
         [Test]
         public void GetFlow()
         {
@@ -122,7 +144,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
         }
 
-        /*
+        /* TODO: Implement
         [Test]
         public void GetPersonalTracks()
         {
@@ -151,11 +173,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
             Assert.IsNotNull(playlists, nameof(playlists));
             Assert.That(playlists.Count(), Is.GreaterThan(0), "Count");
-
-            var firstPlaylist = playlists.First();
-            Assert.IsNotNull(firstPlaylist, nameof(firstPlaylist));
-            Assert.That(firstPlaylist.Id, Is.GreaterThan(0), nameof(firstPlaylist.Id));
-            Assert.IsNotNull(firstPlaylist.Title, nameof(firstPlaylist.Title));
         }
 
         [Test]
@@ -165,12 +182,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                           .Result;
 
             Assert.IsNotNull(albums, nameof(albums));
-            Assert.AreEqual(11, albums.Count(), "Count");
-
-            var firstAlbum = albums.First();
-            Assert.IsNotNull(firstAlbum, nameof(firstAlbum));
-            Assert.AreEqual(6063443, firstAlbum.Id, nameof(firstAlbum.Id));
-            Assert.AreEqual("Mainstage, Vol. 1", firstAlbum.Title, nameof(firstAlbum.Title));
+            Assert.That(albums.Count(), Is.GreaterThan(0), "Count");
         }
 
         [Test]
@@ -181,11 +193,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
             Assert.IsNotNull(artists, nameof(artists));
             Assert.That(artists.Count(), Is.GreaterThan(0), "Count");
-
-            var firstArtist = artists.First();
-            Assert.IsNotNull(firstArtist, nameof(firstArtist));
-            Assert.That(firstArtist.Id, Is.GreaterThan(0), nameof(firstArtist.Id));
-            Assert.IsNotNull(firstArtist.Name, nameof(firstArtist.Name));
         }
 
         [Test]
@@ -195,12 +202,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                           .Result;
             
             Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.AreEqual(7, tracks.Count(), "Count");
-
-            var firstTrack = tracks.First();
-            Assert.IsNotNull(firstTrack, nameof(firstTrack));
-            Assert.AreEqual(137745477, firstTrack.Id, nameof(firstTrack.Id));
-            Assert.AreEqual("Arcade", firstTrack.Title, nameof(firstTrack.Title));
+            Assert.That(tracks.Count(), Is.GreaterThan(0), "Count");
         }
 
         [Test]
@@ -279,170 +281,213 @@ namespace E.Deezer.Tests.Regression.Endpoint
         }
         
 
-        /*
-        [Test, Order(1)]
-        public async Task AddAlbumToFavourite()
+
+        [Test]
+        public void TestFavouritingAlbum()
         {
-            bool response = await _user.AddAlbumToFavourite(_album);
+            // Ensure album isn't already favourited..
+            this.session.User.UnfavouriteAlbum(this.album, CancellationToken.None)
+                             .Wait();
 
-            Assert.IsTrue(response);
-        }
+            // Favourite
+            Assert.True(this.session.User.FavouriteAlbum(this.album, CancellationToken.None)
+                                         .Result);
 
-        [Test, Order(2)]
-        public async Task AddAlreadyAddedAlbumToFavourites()
-        {
-            bool response = await _album.AddAlbumToFavorite();
+            var favouriteAlbums = this.session.User.GetFavouriteAlbums(this.session.CurrentUserId, CancellationToken.None, 0, 100)
+                                                   .Result;
 
-            Assert.IsTrue(response);
-        }
+            Assert.That(favouriteAlbums.Select(x => x.Id)
+                                       .Any(x => x == this.album.Id));
 
-        [Test, Order(3)]
-        public async Task RemoveAlbumFromFavourite()
-        {
-            bool response = await _user.RemoveAlbumFromFavourite(_album);
+            // Test when already added to favourites
+            Assert.True(this.session.User.FavouriteAlbum(this.album, CancellationToken.None)
+                                         .Result);
 
-            Assert.IsTrue(response);
-        }
+            // Then unfavourite
+            Assert.True(this.session.User.UnfavouriteAlbum(this.album, CancellationToken.None)
+                                         .Result);
 
-        [Test, Order(4)]
-        public async Task RemoveAlreadyRemovedAlbumFromFavourites()
-        {
-            bool response = await _album.RemoveAlbumFromFavorite();
+            var updatedFavouriteAlbums = this.session.User.GetFavouriteAlbums(this.session.CurrentUserId, CancellationToken.None, 0, 100)
+                                                          .Result;
 
-            Assert.IsTrue(response);
-        }
-
-
-        [Test, Order(5)]
-        public async Task AddArtistToFavourite()
-        {
-            bool response = await _user.AddArtistToFavourite(_artist);
-
-            Assert.IsTrue(response);
-        }
-
-        [Test, Order(6)]
-        public async Task AddAlreadyAddedArtistToFavourites()
-        {
-            bool response = await _artist.AddArtistToFavorite();
-
-            Assert.IsTrue(response);
-        }
-
-        [Test, Order(7)]
-        public async Task RemoveArtistFromFavourite()
-        {
-            bool response = await _user.RemoveArtistFromFavourite(_artist);
-
-            Assert.IsTrue(response);
-        }
-
-        [Test, Order(8)]
-        public async Task RemoveAlreadyRemovedArtistFromFavourites()
-        {
-            bool response = await _artist.RemoveArtistFromFavorite();
-
-            Assert.IsTrue(response);
+            Assert.AreEqual(0, updatedFavouriteAlbums.Select(x => x.Id)
+                                                     .Where(x => x == this.album.Id)
+                                                     .Count());
+                
+            // And test when not already a favorite
+            Assert.True(this.session.User.UnfavouriteAlbum(this.album, CancellationToken.None)
+                                         .Result);
         }
 
 
-        [Test, Order(9)]
-        public async Task AddTrackToFavourite()
+        [Test]
+        public void TestFavouritingArtist()
         {
-            bool response = await _user.AddTrackToFavourite(_track);
+            // Ensure artist isn't already favourited..
+            this.session.User.UnfavouriteArtist(this.artist, CancellationToken.None)
+                             .Wait();
 
-            Assert.IsTrue(response);
-        }
+            // Favourite
+            Assert.True(this.session.User.FavouriteArtist(this.artist, CancellationToken.None)
+                                         .Result);
 
-        [Test, Order(10)]
-        public async Task AddAlreadyAddedTrackToFavourites()
-        {
-            bool response = await _track.AddTrackToFavorite();
+            var favouriteArtists = this.session.User.GetFavouriteArtists(this.session.CurrentUserId, CancellationToken.None, 0, 100)
+                                                   .Result;
 
-            Assert.IsTrue(response);
-        }
+            Assert.That(favouriteArtists.Select(x => x.Id)
+                                       .Any(x => x == this.artist.Id));
 
-        [Test, Order(11)]
-        public async Task RemoveTrackFromFavourite()
-        {
-            bool response = await _user.RemoveTrackFromFavourite(_track);
+            // Test when already added to favourites
+            Assert.True(this.session.User.FavouriteArtist(this.artist, CancellationToken.None)
+                                         .Result);
 
-            Assert.IsTrue(response);
-        }
+            // Then unfavourite
+            Assert.True(this.session.User.UnfavouriteArtist(this.artist, CancellationToken.None)
+                                         .Result);
 
-        [Test, Order(12)]
-        public async Task RemoveAlreadyRemovedTrackFromFavourites()
-        {
-            bool response = await _track.RemoveTrackFromFavorite();
+            var updatedFavouriteArtists = this.session.User.GetFavouriteArtists(this.session.CurrentUserId, CancellationToken.None, 0, 100)
+                                                          .Result;
 
-            Assert.IsTrue(response);
-        }
+            Assert.AreEqual(0, updatedFavouriteArtists.Select(x => x.Id)
+                                                     .Where(x => x == this.artist.Id)
+                                                     .Count());
 
-
-        [Test, Order(13)]
-        public async Task AddPlaylistToFavourite()
-        {
-            bool response = await _user.AddPlaylistToFavourite(_playlist);
-
-            Assert.IsTrue(response);
-        }
-
-        [Test, Order(14)]
-        public async Task AddAlreadyAddedPlaylistToFavourites()
-        {
-            bool response = await _playlist.AddPlaylistToFavorite();
-
-            Assert.IsTrue(response);
-        }
-
-        [Test, Order(15)]
-        public async Task RemovePlaylistFromFavourite()
-        {
-            bool response = await _user.RemovePlaylistFromFavourite(_playlist);
-
-            Assert.IsTrue(response);
-        }
-
-        [Test, Order(16)]
-        public async Task RemoveAlreadyRemovedPlaylistFromFavourites()
-        {
-            bool response = await _playlist.RemovePlaylistFromFavorite();
-
-            Assert.IsTrue(response);
+            // And test when not already a favorite
+            Assert.True(this.session.User.UnfavouriteArtist(this.artist, CancellationToken.None)
+                                         .Result);
         }
 
 
-        [Test, Order(17)]
-        public async Task AddRadioToFavourite()
+        [Test]
+        public void TestFavouritingTrack()
         {
-            bool response = await _user.AddRadioToFavourite(_radio);
+            // Ensure track isn't already favourited..
+            this.session.User.UnfavouriteTrack(this.track, CancellationToken.None)
+                             .Wait();
 
-            Assert.IsTrue(response);
+            // Favourite
+            Assert.True(this.session.User.FavouriteTrack(this.track, CancellationToken.None)
+                                         .Result);
+
+            var favouriteTracks = this.session.User.GetFavouriteTracks(this.session.CurrentUserId, CancellationToken.None, 0, 100)
+                                                   .Result;
+
+            Assert.That(favouriteTracks.Select(x => x.Id)
+                                       .Any(x => x == this.track.Id));
+
+            // Test when already added to favourites
+            /* NOTE: Interestingly, this API appears to give back a Deezer exception
+             *       if the item already is favourited. None of the other favourite API
+             *       calls appear to do this... */
+
+            try
+            {
+                this.session.User.FavouriteTrack(this.track, CancellationToken.None)
+                                 .Wait();
+
+                Assert.Fail("This API should throw if the track is already present in favourite list.");
+            }
+            catch (AggregateException ex)
+            {
+                var innerEx = ex.GetBaseException();
+
+                if (innerEx is DeezerException deezerEx)
+                    Assert.That(deezerEx.Error.Code == (uint)EDeezerApiError.DataException);
+
+                else
+                    throw;           
+            }
+
+            // Then unfavourite
+            Assert.True(this.session.User.UnfavouriteTrack(this.track, CancellationToken.None)
+                                         .Result);
+
+            var updatedFavouriteTracks = this.session.User.GetFavouriteTracks(this.session.CurrentUserId, CancellationToken.None, 0, 100)
+                                                          .Result;
+
+            Assert.AreEqual(0, updatedFavouriteTracks.Select(x => x.Id)
+                                                     .Where(x => x == this.track.Id)
+                                                     .Count());
+
+            // And test when not already a favorite
+            Assert.True(this.session.User.UnfavouriteTrack(this.track, CancellationToken.None)
+                                         .Result);
         }
 
-        [Test, Order(18)]
-        public async Task AddAlreadyAddedRadioToFavourites()
-        {
-            bool response = await _radio.AddRadioToFavorite();
 
-            Assert.IsTrue(response);
+        [Test]
+        public void TestFavouritingPlaylist()
+        {
+            // Ensure playlist isn't already favourited..
+            this.session.User.UnfavouritePlaylist(this.playlist, CancellationToken.None)
+                             .Wait();
+
+            // Favourite
+            Assert.True(this.session.User.FavouritePlaylist(this.playlist, CancellationToken.None)
+                                         .Result);
+
+            var favouritePlaylists = this.session.User.GetFavouritePlaylists(this.session.CurrentUserId, CancellationToken.None, 0, 100)
+                                                   .Result;
+
+            Assert.That(favouritePlaylists.Select(x => x.Id)
+                                       .Any(x => x == this.playlist.Id));
+
+            // Test when already added to favourites
+            Assert.True(this.session.User.FavouritePlaylist(this.playlist, CancellationToken.None)
+                                         .Result);
+
+            // Then unfavourite
+            Assert.True(this.session.User.UnfavouritePlaylist(this.playlist, CancellationToken.None)
+                                         .Result);
+
+            var updatedFavouritePlaylists = this.session.User.GetFavouritePlaylists(this.session.CurrentUserId, CancellationToken.None, 0, 100)
+                                                          .Result;
+
+            Assert.AreEqual(0, updatedFavouritePlaylists.Select(x => x.Id)
+                                                     .Where(x => x == this.playlist.Id)
+                                                     .Count());
+
+            // And test when not already a favorite
+            Assert.True(this.session.User.UnfavouritePlaylist(this.playlist, CancellationToken.None)
+                                         .Result);
         }
 
-        [Test, Order(19)]
-        public async Task RemoveRadioFromFavourite()
+
+        [Test]
+        public void TestFavouritingRadio()
         {
-            bool response = await _user.RemoveRadioFromFavourite(_radio);
+            // Ensure radio isn't already favourited..
+            this.session.User.UnfavouriteRadio(this.radio, CancellationToken.None)
+                             .Wait();
 
-            Assert.IsTrue(response);
+            // Favourite
+            Assert.True(this.session.User.FavouriteRadio(this.radio, CancellationToken.None)
+                                         .Result);
+
+            var favouriteRadios = this.session.User.GetFavouriteRadio(this.session.CurrentUserId, CancellationToken.None, 0, 100)
+                                                   .Result;
+
+            Assert.That(favouriteRadios.Select(x => x.Id)
+                                       .Any(x => x == this.radio.Id));
+
+            // Test when already added to favourites
+            Assert.True(this.session.User.FavouriteRadio(this.radio, CancellationToken.None)
+                                         .Result);
+
+            // Then unfavourite
+            Assert.True(this.session.User.UnfavouriteRadio(this.radio, CancellationToken.None)
+                                         .Result);
+
+            var updatedFavouriteRadios = this.session.User.GetFavouriteRadio(this.session.CurrentUserId, CancellationToken.None, 0, 100)
+                                                          .Result;
+
+            Assert.AreEqual(0, updatedFavouriteRadios.Select(x => x.Id)
+                                                     .Where(x => x == this.radio.Id)
+                                                     .Count());
+
+            // And test when not already a favorite
+            Assert.True(this.session.User.UnfavouriteRadio(this.radio, CancellationToken.None)
+                                         .Result);
         }
-
-        [Test, Order(20)]
-        public async Task RemoveAlreadyRemovedRadioFromFavourites()
-        {
-            bool response = await _radio.RemoveRadioFromFavorite();
-
-            Assert.IsTrue(response);
-        }
-        */
     }
 }

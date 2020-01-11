@@ -17,7 +17,8 @@ namespace E.Deezer
         MissingParameter    = 501,
         InvalidQuery        = 600,
         ServiceBusy         = 700,
-        NotFound            = 800
+        NotFound            = 800,
+        DataException       = 801,
     }
 
 
@@ -69,6 +70,9 @@ namespace E.Deezer
             get
             {
                 EDeezerApiError errorCode = (EDeezerApiError)this.Error.Code;
+
+                if (errorCode == EDeezerApiError.DataException)
+                    return this.Error.Message;
 
                 return ERROR_MSG_LOOKUP.ContainsKey(errorCode) ? ERROR_MSG_LOOKUP[errorCode]
                                                                : DEFAULT_EXCEPTION_MESSAGE;

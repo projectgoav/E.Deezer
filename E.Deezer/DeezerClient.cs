@@ -167,7 +167,7 @@ namespace E.Deezer
 
             string actualResource = AppendAccessTokenToResourceIfRequired(resource);
 
-            return executor.ExecutePost(actualResource, cancellationToken)
+            return executor.ExecuteDelete(actualResource, cancellationToken)
                             .ContinueWith(t =>
                             {
                                 t.ThrowIfFaulted();
