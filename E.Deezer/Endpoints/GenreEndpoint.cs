@@ -22,6 +22,13 @@ namespace E.Deezer.Endpoints
 
         Task<IEnumerable<IRadio>> GetRadioForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 25);
         Task<IEnumerable<IRadio>> GetRadioForGenre(ulong genreId, CancellationToken cancellationToken, uint start = 0, uint count = 25);
+
+
+        Task<IEnumerable<IAlbum>> GetDeezerSelectionForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<IAlbum>> GetDeezerSelectionForGenre(ulong genreId, CancellationToken cancellationToken, uint start = 0, uint count = 25);
+
+        Task<IEnumerable<IAlbum>> GetNewReleasesForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<IAlbum>> GetNewReleasesForGenre(ulong genreId, CancellationToken cancellationToken, uint start = 0, uint count = 25);
     }
 
 
@@ -81,5 +88,35 @@ namespace E.Deezer.Endpoints
             => this.client.Get($"genre/{genreId}/radios?{START_PARAM}={start}&{COUNT_PARAM}={count}",
                                cancellationToken,
                                json => FragmentOf<IRadio>.FromJson(json, x => Api.Radio.FromJson(x, this.client)));
+
+
+
+        // *****
+        // Incorporates the 'Editorial' endpoint since it largely hinges off genre anyway
+
+        public Task<IEnumerable<IAlbum>> GetDeezerSelectionForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 25)
+        {
+            genre.ThrowIfNull();
+
+            return GetDeezerSelectionForGenre(genre.Id, cancellationToken, start, count);
+        }
+
+        public Task<IEnumerable<IAlbum>> GetDeezerSelectionForGenre(ulong genreId, CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.client.Get($"/editorial/{genreId}/selection?{START_PARAM}={start}&{COUNT_PARAM}&{count}",
+                               cancellationToken,
+                               json => FragmentOf<IAlbum>.FromJson(json, x => Api.Album.FromJson(x, this.client)));
+
+
+        public Task<IEnumerable<IAlbum>> GetNewReleasesForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 25)
+        {
+            genre.ThrowIfNull();
+
+            return GetNewReleasesForGenre(genre.Id, cancellationToken, start, count);
+        }
+
+        public Task<IEnumerable<IAlbum>> GetNewReleasesForGenre(ulong genreId, CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.client.Get($"/editorial/{genreId}/releases?{START_PARAM}={start}&{COUNT_PARAM}={count}",
+                               cancellationToken,
+                               json => FragmentOf<IAlbum>.FromJson(json, x => Api.Album.FromJson(x, this.client)));
     }
 }
