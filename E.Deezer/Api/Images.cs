@@ -22,10 +22,6 @@ namespace E.Deezer.Api
         string Medium { get; }
         string Large { get; }
         string ExtraLarge { get; }
-
-        IEnumerable<PictureSize> AvailableSizes { get; }
-
-        bool HasPictureOfSize(PictureSize pictureSize);
     }
 
 
@@ -40,39 +36,12 @@ namespace E.Deezer.Api
             this.Medium = medium;
             this.Large = large;
             this.ExtraLarge = extraLarge;
-
-            this.AvailableSizes = CalculateAvailableSizes();
         }
-
 
         public string Small { get; }
         public string Medium { get; }
         public string Large { get; }
         public string ExtraLarge { get; }
-
-        public IEnumerable<PictureSize> AvailableSizes { get; }
-
-        public bool HasPictureOfSize(PictureSize size)
-            => this.AvailableSizes.Contains(size);
-
-        private IEnumerable<PictureSize> CalculateAvailableSizes()
-        {
-            var sizes = new List<PictureSize>(4);
-
-            if (!string.IsNullOrEmpty(this.Small))
-                sizes.Add(PictureSize.Small);
-
-            if (!string.IsNullOrEmpty(this.Medium))
-                sizes.Add(PictureSize.Medium);
-
-            if (!string.IsNullOrEmpty(this.Large))
-                sizes.Add(PictureSize.Large);
-
-            if (!string.IsNullOrEmpty(this.ExtraLarge))
-                sizes.Add(PictureSize.ExtraLarge);
-
-            return sizes;
-        }
 
 
         // JSON
@@ -101,6 +70,36 @@ namespace E.Deezer.Api
                               large,
                               extraLarge);
         }
+    }
 
+
+    public static class ImagesExtensions
+    {
+
+        public static IEnumerable<PictureSize> AvailableSizes(this IImages image)
+        {
+            var sizes = new List<PictureSize>(4);
+
+            if (image == null)
+                return sizes;
+
+            if (!string.IsNullOrEmpty(image.Small))
+                sizes.Add(PictureSize.Small);
+
+            if (!string.IsNullOrEmpty(image.Medium))
+                sizes.Add(PictureSize.Medium);
+
+            if (!string.IsNullOrEmpty(image.Large))
+                sizes.Add(PictureSize.Large);
+
+            if (!string.IsNullOrEmpty(image.ExtraLarge))
+                sizes.Add(PictureSize.ExtraLarge);
+
+            return sizes;
+        }
+
+        public static bool HasPictureOfSize(this IImages images, PictureSize pictureSize)
+            => images.AvailableSizes()
+                     .Contains(pictureSize);
     }
 }

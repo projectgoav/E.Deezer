@@ -171,7 +171,7 @@ namespace E.Deezer.Api
         internal const string CONTRIBUTORS_PROPERTY_NAME = "contributors";
         internal const string ARTIST_PROPERTY_NAME = "artist";
 
-        internal const string TRACKS_PROPERTY_NAME = "tracks"; //TODO: Also has a sub-entry of 'Data'
+        internal const string TRACKS_PROPERTY_NAME = "tracks";
 
 
         public static IAlbum FromJson(JToken json, IDeezerClient client)

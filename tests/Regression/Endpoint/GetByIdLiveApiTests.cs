@@ -200,6 +200,18 @@ namespace E.Deezer.Tests.Regression.Endpoint
             Assert.AreEqual(302127, track.Album.Id, "Album.Id");
             Assert.AreEqual("Discovery", track.Album.Title, "Album.Title");
             Assert.AreEqual("Discovery", track.AlbumName, nameof(track.AlbumName));
+
+            Assert.NotNull(track.Artwork);
+
+            var artworks = new string[]
+            {
+                track.Artwork.Small,
+                track.Artwork.Medium,
+                track.Artwork.Large,
+                track.Artwork.ExtraLarge
+            };
+
+            Assert.That(artworks.Any(x => !string.IsNullOrEmpty(x)));
         }
 
         [Test]

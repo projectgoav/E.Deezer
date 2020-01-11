@@ -24,6 +24,7 @@ namespace E.Deezer.Api
         uint TrackNumber { get; }
         string ISRC { get; }
         string Title { get; }
+        IImages Artwork { get; }
         IAlbum Album { get; }
         uint Duration { get; }
         string PreviewLink { get; }
@@ -51,6 +52,38 @@ namespace E.Deezer.Api
 
     internal class Track : ITrack, IClientObject
     {
+        private class TrackImages : IImages
+        {
+            private const string DEFAULT_IMAGE = "";
+
+            public TrackImages(IAlbum containingAlbum,
+                               string smallImage,
+                               string mediumImage,
+                               string largeImage,
+                               string extraLargeImage)
+            {
+                this.Small = string.IsNullOrEmpty(smallImage) ? containingAlbum?.CoverArtwork?.Small ?? DEFAULT_IMAGE
+                                                              : smallImage;
+
+                this.Medium = string.IsNullOrEmpty(mediumImage) ? containingAlbum?.CoverArtwork?.Medium ?? DEFAULT_IMAGE
+                                                                : mediumImage;
+
+                this.Large = string.IsNullOrEmpty(largeImage) ? containingAlbum?.CoverArtwork?.Large ?? DEFAULT_IMAGE
+                                                              : largeImage;
+
+                this.ExtraLarge = string.IsNullOrEmpty(extraLargeImage) ? containingAlbum?.CoverArtwork?.ExtraLarge ?? DEFAULT_IMAGE
+                                                                        : extraLargeImage;
+            }
+
+
+            //IImages
+            public string Small { get; }
+            public string Medium { get; }
+            public string Large { get; }
+            public string ExtraLarge { get; }
+        }
+
+
         public ulong Id { get; private set; }
 
         public string Title { get; private set; }
@@ -58,8 +91,6 @@ namespace E.Deezer.Api
         public string Link { get; private set; }
 
         public uint Duration { get; private set; }
-
-        public string Artwork { get; private set; }
 
         public string PreviewLink { get; private set; }
 
@@ -75,6 +106,8 @@ namespace E.Deezer.Api
         public IAlbum Album { get; private set; }
 
         public IArtist Artist { get; private set; }
+
+        public IImages Artwork { get; private set; }
 
         public DateTime? AvailableFrom { get; private set; }
 
@@ -118,23 +151,6 @@ namespace E.Deezer.Api
         public Task<bool> Unfavourite(CancellationToken cancellationToken)
             => this.Client.Endpoints.User.UnfavouriteTrack(this, cancellationToken);
 
-
-        /*
-        //Tracks don't often come with their own images so if there is none, we can use that from the album in which it belongs.
-        //TODO -> Need to port this across to do this with the internal album :)
-        public override string GetPicture(PictureSize aSize)
-        {
-            string url = base.GetPicture(aSize);
-            return (url == string.Empty) ? AlbumInternal.GetPicture(aSize) : url;
-        }
-
-        public override bool HasPicture(PictureSize aSize)
-        {
-            bool baseResult = base.HasPicture(aSize);
-            return (baseResult) ? baseResult : AlbumInternal.HasPicture(aSize);
-        }
-
-        */
    
         public override string ToString()
             => string.Format("E.Deezer: Track({0} - ({1}))", Title, ArtistName);
@@ -174,6 +190,20 @@ namespace E.Deezer.Api
             //TODO -> AvailableFrom property??
             //var availabilityDateString = json.Value<String>(TimeAdd)
 
+            /* Tracks don't always come with their own artwork.
+             * Instead, we'll pinch the artwork from the 'Album' property
+             * if this is available in the returned JSON. */
+            var containedInAlbum = Api.Album.FromJson(json[ALBUM_PROPERTY_NAME], client);
+
+            var internalArtwork = Api.Images.FromJson(json);
+
+            var actualArtwork = new TrackImages(containedInAlbum, 
+                                                internalArtwork?.Small, 
+                                                internalArtwork?.Medium, 
+                                                internalArtwork?.Large, 
+                                                internalArtwork?.ExtraLarge);
+
+
             return new Track()
             {
                 Id = json.Value<ulong>(ID_PROPERTY_NAME),
@@ -197,11 +227,13 @@ namespace E.Deezer.Api
 
                 ReleaseDate = releaseDate,
 
+                Artwork = actualArtwork,
+
                 //TODO: Will need to check for null values here...
                 //AvailableIn = json.Values<string>(AVAIlABLE_COUNTRY_PROPERTY_NAME),
 
                 Artist = Api.Artist.FromJson(json[ARTIST_PROPERTY_NAME], client),
-                Album = Api.Album.FromJson(json[ALBUM_PROPERTY_NAME], client),
+                Album = containedInAlbum,
                 Conrtibutors = CollectionOf<IArtist>.FromJson(json[CONTRIBUTORS_PROPERTY_NAME], x => Api.Artist.FromJson(x, client)),
 
 
