@@ -236,5 +236,7 @@ E.Deezer.TestConsole/
 res/*
 .vs/*
 
+tools/**
+
 Playground.cs/**
 

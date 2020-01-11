@@ -1,19 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
     <AssemblyName>E.Deezer.Tests.Regression</AssemblyName>
-
     <RootNamespace>E.Deezer.Tests.Regression</RootNamespace>
-
-    <Configurations>Debug;Release;LiveApiTests</Configurations>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LiveApiTests|AnyCPU'">
-    <DefineConstants>TRACE;LIVE_API_TEST</DefineConstants>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>LIVE_API_TEST</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

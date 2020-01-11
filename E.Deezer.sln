@@ -27,8 +27,8 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.LiveApiTests|Any CPU.ActiveCfg = LiveApiTests|Any CPU
-		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.LiveApiTests|Any CPU.Build.0 = LiveApiTests|Any CPU
+		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.LiveApiTests|Any CPU.ActiveCfg = Release|Any CPU
+		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.LiveApiTests|Any CPU.Build.0 = Release|Any CPU
 		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{728BFDB3-DCA8-464C-91A5-B5AC2E873ADA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7DC0FD2E-3A4F-49A2-94F1-E54D51835948}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
