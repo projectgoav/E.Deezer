@@ -38,7 +38,7 @@ namespace E.Deezer.Api
         DateTime? ReleaseDate { get; }
         ITrack AlternativeTrack { get; }
         IEnumerable<string> AvailableIn { get; }
-        //IEnumerable<IArtist> Contributors { get; }
+        IEnumerable<IArtist> Contributors { get; }
 
         [Obsolete("Use of IsExplicit is encouraged")]
         bool Explicit { get; }
@@ -115,7 +115,7 @@ namespace E.Deezer.Api
         
         public IEnumerable<string> AvailableIn { get; private set; }
 
-        public IEnumerable<IArtist> Conrtibutors { get; private set; }
+        public IEnumerable<IArtist> Contributors { get; private set; }
 
         public string ShareLink { get; private set; }
 
@@ -239,7 +239,7 @@ namespace E.Deezer.Api
 
                 Artist = Api.Artist.FromJson(json[ARTIST_PROPERTY_NAME], client),
                 Album = containedInAlbum,
-                Conrtibutors = CollectionOf<IArtist>.FromJson(json[CONTRIBUTORS_PROPERTY_NAME], x => Api.Artist.FromJson(x, client)),
+                Contributors = CollectionOf<IArtist>.FromJson(json[CONTRIBUTORS_PROPERTY_NAME], x => Api.Artist.FromJson(x, client)),
 
                 // ISssionObject
                 Client = client,

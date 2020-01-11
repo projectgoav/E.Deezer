@@ -155,15 +155,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             var countries = track.AvailableIn.ToList();
             Assert.AreEqual(209, countries.Count, "AvailableIn.Count");
    
-            /*
-             * TODO: Await contributors support again
+
             Assert.IsNotNull(track.Contributors, nameof(track.Contributors));
             var contributors = track.Contributors.ToList();
             Assert.AreEqual(1, contributors.Count, "contributors.Count");
 
             Assert.AreEqual(27, contributors[0].Id, "contributors[0].Id");
             Assert.AreEqual("Daft Punk", contributors[0].Name, "contributors[0].Name");
-            */
 
             Assert.IsNotNull(track.Artist, nameof(track.Artist));
             Assert.AreEqual(27, track.Artist.Id, "Artist.Id");
