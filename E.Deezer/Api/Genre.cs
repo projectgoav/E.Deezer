@@ -29,14 +29,8 @@ namespace E.Deezer.Api
         Task<IEnumerable<IPlaylist>> PlaylistChart(CancellationToken cancellationToken, uint start = 0, uint count = 100);
         Task<IEnumerable<ITrack>> TrackChart(CancellationToken cancellationToken, uint start = 0, uint count = 0);
 
-
-        //METHODS
-        /*
-         * 
-         * THESE BELOW NEED EDITORIAL SUPPORT
-        Task<IEnumerable<IAlbum>> GetSelection(uint aStart = 0, uint aCount = 100);
-        Task<IEnumerable<IAlbum>> GetReleases(uint aStart = 0 , uint aCount = 100);
-        */
+        Task<IEnumerable<IAlbum>> NewReleases(CancellationToken cancellationToken, uint start = 0, uint count = 0);
+        Task<IEnumerable<IAlbum>> DeezerSelection(CancellationToken cancellationToken, uint start = 0, uint count = 0);
 
         //TODO
         //Task<IBook<IPodcast>> GetPodcasts();
@@ -77,6 +71,13 @@ namespace E.Deezer.Api
 
         public Task<IEnumerable<ITrack>> TrackChart(CancellationToken cancellationToken, uint start = 0, uint count = 25)
             => this.Client.Endpoints.Charts.GetTrackChartForGenre(this, cancellationToken, start, count);
+
+
+        public Task<IEnumerable<IAlbum>> NewReleases(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.Genre.GetNewReleasesForGenre(this, cancellationToken, start, count);
+
+        public Task<IEnumerable<IAlbum>> DeezerSelection(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.Genre.GetDeezerSelectionForGenre(this, cancellationToken, start, count);
 
 
         public override string ToString()
