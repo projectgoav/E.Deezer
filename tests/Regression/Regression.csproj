@@ -5,6 +5,8 @@
     <AssemblyName>E.Deezer.Tests.Regression</AssemblyName>
     <RootNamespace>E.Deezer.Tests.Regression</RootNamespace>
     <Configurations>Debug;Release</Configurations>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

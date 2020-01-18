@@ -6,6 +6,7 @@
     <RootNamespace>E.Deezer.Tests.Integration</RootNamespace>
     <Configurations>Debug;Release</Configurations>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
