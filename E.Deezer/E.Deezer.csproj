@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard1.1;net45</TargetFrameworks>
-    <Copyright>Copyright 2019</Copyright>
+    <Copyright>Copyright 2020</Copyright>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild> 
     <Deterministic>False</Deterministic> 
@@ -15,7 +15,7 @@
     <PackageProjectUrl>https://github.com/projectgoav/E.Deezer</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageDescription>.NET Deezer API wrapper</PackageDescription>
-    <PackageCopyright>Copyright 2019</PackageCopyright>
+    <PackageCopyright>Copyright 2020</PackageCopyright>
     <PackageTags>.NET Rest Deezer API</PackageTags>
     <RepositoryUrl>https://github.com/projectgoav/E.Deezer</RepositoryUrl>
   </PropertyGroup>
