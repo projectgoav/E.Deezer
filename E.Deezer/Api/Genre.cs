@@ -3,116 +3,107 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using System.Threading;
 using System.Threading.Tasks;
 
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace E.Deezer.Api
 {
-    public interface IGenre : IObjectWithImage
+    public interface IGenre
     {
-        long Id { get;  }
+        ulong Id { get;  }
         string Name { get;  }
-
-        //METHODS
-        Task<IEnumerable<IArtist>> GetArtists(uint aStart = 0, uint aCount = 100);
-
-        Task<IEnumerable<IAlbum>> GetSelection(uint aStart = 0, uint aCount = 100);
-
-        Task<IEnumerable<IAlbum>> GetReleases(uint aStart = 0 , uint aCount = 100);
+        IImages Images { get; }
 
 
-        //Charts!
-        Task<IChart> GetCharts(uint aStart = 0, uint aCount = 100);
+        Task<IEnumerable<IArtist>> Artists(CancellationToken cancellationToken, uint start = 0, uint count = 25);
 
-        Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart = 0, uint aCount = 100);
+        Task<IEnumerable<IRadio>> Radio(CancellationToken cancellationToken, uint start = 0, uint count = 25);
 
-        Task<IEnumerable<IArtist>> GetArtistChart(uint aStart = 0, uint aCount = 100);
 
-        Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart = 0, uint aCount = 100);
+        Task<IChart> Charts(CancellationToken cancellationToken, uint start = 0, uint count = 100);
 
-        Task<IEnumerable<ITrack>> GetTrackChart(uint aStart = 0, uint aCount = 0);
+        Task<IEnumerable<IAlbum>> AlbumChart(CancellationToken cancellatiomToken, uint start = 0, uint count = 100);
+        Task<IEnumerable<IArtist>> ArtistChart(CancellationToken cancellationToken, uint start = 0, uint count = 100);
+        Task<IEnumerable<IPlaylist>> PlaylistChart(CancellationToken cancellationToken, uint start = 0, uint count = 100);
+        Task<IEnumerable<ITrack>> TrackChart(CancellationToken cancellationToken, uint start = 0, uint count = 0);
 
+        Task<IEnumerable<IAlbum>> NewReleases(CancellationToken cancellationToken, uint start = 0, uint count = 0);
+        Task<IEnumerable<IAlbum>> DeezerSelection(CancellationToken cancellationToken, uint start = 0, uint count = 0);
 
         //TODO
         //Task<IBook<IPodcast>> GetPodcasts();
-
-        //Task<IBook<IRadio>> GetRadios();
-
     }
 
-    internal class Genre : ObjectWithImage, IGenre, IDeserializable<IDeezerClient>
+    internal class Genre : IGenre, IClientObject
     {
-        public long Id
-        {
-            get;
-            set;
-        }
+        public ulong Id { get; private set; }
 
-        public string Name
-        {
-            get;
-            set;
-        }
+        public string Name { get; private set; }
+
+        public IImages Images { get; private set; }
 
 
-        //IDeserializable
-        public IDeezerClient Client
-        {
-            get;
-            set;
-        }
-
-        public void Deserialize(IDeezerClient aClient)
-            => Client = aClient;
-
-        //Methods
-        public Task<IEnumerable<IArtist>> GetArtists(uint aStart = 0, uint aCount = 100)
-            => Get<Artist, IArtist>("genre/{id}/artists", aStart, aCount); 
-
-        public Task<IEnumerable<IAlbum>> GetSelection(uint aStart = 0, uint aCount = 100) 
-            => Get<Album, IAlbum>("editorial/{id}/selection", aStart, aCount); 
-
-        public Task<IEnumerable<IAlbum>> GetReleases(uint aStart = 0, uint aCount = 100) 
-            => Get<Album, IAlbum>("editorial/{id}/releases", aStart, aCount);
-
-        //Charting
-        public Task<IChart> GetCharts(uint aStart = 0, uint aCount = 100)
-            => Client.GetChart(Id, aStart, aCount);
-
-        public Task<IEnumerable<IAlbum>> GetAlbumChart(uint aStart = 0, uint aCount = 100) 
-            => Get<Album, IAlbum>("chart/{id}/albums", aStart, aCount); 
-
-        public Task<IEnumerable<IArtist>> GetArtistChart(uint aStart = 0, uint aCount = 100) 
-            => Get<Artist, IArtist>("chart/{id}/artists", aStart, aCount); 
-
-        public Task<IEnumerable<IPlaylist>> GetPlaylistChart(uint aStart = 0, uint aCount = 100) 
-            => Get<Playlist, IPlaylist>("chart/{id}/playlists", aStart, aCount); 
-
-        public Task<IEnumerable<ITrack>> GetTrackChart(uint aStart = 0, uint aCount = 100) 
-            => Get<Track, ITrack>("chart/{id}/tracks", aStart, aCount); 
+        // IClientObject
+        public IDeezerClient Client { get; private set; }
 
 
-        //Internal wrapper around get for all genre methods :)
-        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, uint aStart, uint aCount) where TSource : TDest, IDeserializable<IDeezerClient>
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewUrlSegmentParamter("id", Id)
-            };
+        public Task<IEnumerable<IArtist>> Artists(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.Genre.GetArtistsForGenre(this, cancellationToken, start, count);
 
-            return Client.Get<TSource>(aMethod, parms, aStart, aCount)
-                         .ContinueWith<IEnumerable<TDest>>((aTask) =>
-                            {
-                                return Client.Transform<TSource, TDest>(aTask.Result);
-                            }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-        }
+        public Task<IEnumerable<IRadio>> Radio(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.Genre.GetRadioForGenre(this, cancellationToken, start, count);
 
+
+        public Task<IChart> Charts(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.Charts.GetChartsForGenre(this, cancellationToken, start, count);
+
+
+        public Task<IEnumerable<IAlbum>> AlbumChart(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.Charts.GetAlbumChartForGenre(this, cancellationToken, start, count);
+
+        public Task<IEnumerable<IArtist>> ArtistChart(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.Charts.GetArtistChartForGenre(this, cancellationToken, start, count);
+
+        public Task<IEnumerable<IPlaylist>> PlaylistChart(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.Charts.GetPlaylistChartForGenre(this, cancellationToken, start, count);
+
+        public Task<IEnumerable<ITrack>> TrackChart(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.Charts.GetTrackChartForGenre(this, cancellationToken, start, count);
+
+
+        public Task<IEnumerable<IAlbum>> NewReleases(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.Genre.GetNewReleasesForGenre(this, cancellationToken, start, count);
+
+        public Task<IEnumerable<IAlbum>> DeezerSelection(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.Genre.GetDeezerSelectionForGenre(this, cancellationToken, start, count);
 
 
         public override string ToString()
         {
             return string.Format("E.Deezer: Genre({0} ({1}))", Name, Id);
+        }
+
+
+        // JSON
+        internal const string ID_PROPERTY_NAME = "id";
+        internal const string NAME_RROPERY_NAME = "name";
+
+
+        public static IGenre FromJson(JToken json, IDeezerClient client)
+        {
+            ulong id = json.Value<ulong>(ID_PROPERTY_NAME);
+            string name = json.Value<string>(NAME_RROPERY_NAME);
+
+            return new Genre()
+            {
+                Id = id,
+                Name = name,
+                Images = Api.Images.FromJson(json),
+
+                Client = client,
+            };
         }
     }
 

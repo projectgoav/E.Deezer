@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
+using NUnit.Framework;
+
 namespace E.Deezer.Tests.Integration
 {
     /// <summary>
@@ -15,24 +17,30 @@ namespace E.Deezer.Tests.Integration
     /// </summary>
     class OfflineAuthenticationMessageHandler : OfflineMessageHandler
     {
-        private byte _requestCount;
-        private readonly string _dirPath = "StaticResources";
+        private readonly string dirPath;
+
+        private byte requestCount;
+
+        public OfflineAuthenticationMessageHandler()
+        {
+            dirPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "StaticResources");
+        }
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (_requestCount == 0)
+            if (requestCount == 0)
             {
-                _requestCount++;
+                requestCount++;
                 return GetUser();
             }
-            else if (_requestCount == 1)
+            else if (requestCount == 1)
             {
-                _requestCount++;
+                requestCount++;
                 return GetUserPermissions();
             }
-            else if (_requestCount == 2)
+            else if (requestCount == 2)
             {
-                _requestCount++;
+                requestCount++;
                 return base.SendAsync(request, cancellationToken);
             }
             else
@@ -54,7 +62,7 @@ namespace E.Deezer.Tests.Integration
         private HttpResponseMessage FromFile(string fileName)
         {
             string json = File.ReadAllText(
-                Path.Combine(_dirPath, $"{fileName}.json"));
+                Path.Combine(dirPath, $"{fileName}.json"));
 
             return new HttpResponseMessage()
             {

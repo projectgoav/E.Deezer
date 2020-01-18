@@ -1,39 +1,58 @@
-﻿using E.Deezer.Api;
-using E.Deezer.Endpoint;
-using NUnit.Framework;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
+
+using NUnit.Framework;
+
+using E.Deezer.Api;
 
 namespace E.Deezer.Tests.Integration.Endpoint
 {
     [TestFixture]
-    class SearchEndpointTests : TestClassBase
+    [Parallelizable(ParallelScope.Fixtures)]
+    public class SearchEndpointTests : TestClassBase, IDisposable
     {
-        private static readonly string _dummyText = "";
-        private OfflineMessageHandler _server;
-        private ISearchEndpoint _search;
+        private static readonly string DUMMY_TEXT = "search-term";
+
+
+        private OfflineMessageHandler handler;
+        private DeezerSession session;
+
+
 
         public SearchEndpointTests()
-            : base("SearchEndpoint") { }
-
-        [SetUp]
-        public void SetUp()
+            : base("SearchEndpoint")
         {
-            var session = OfflineDeezerSession.WithoutAuthentication();
-
-            _search = session.Library.Search;
-            _server = session.MessageHandler;
+            this.handler = new OfflineMessageHandler();
+            this.session = new DeezerSession(this.handler);
         }
 
-        [Test]
-        public async Task Albums()
+        
+        //IDisposable
+        public void Dispose()
         {
-            _server.Content = base.GetServerResponse("albums");
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.session.Dispose();
+            }
+        }
 
 
-            IEnumerable<IAlbum> albums = await _search.Albums(_dummyText);
+        [Test]
+        public void Albums()
+        {
+            handler.Content = base.GetServerResponse("albums");
 
+            IEnumerable<IAlbum> albums = session.Search.FindAlbums(DUMMY_TEXT, CancellationToken.None)
+                                                       .Result;
 
             Assert.IsNotNull(albums, nameof(albums));
             Assert.AreEqual(100, albums.Count(), "Count");
@@ -45,13 +64,12 @@ namespace E.Deezer.Tests.Integration.Endpoint
         }
 
         [Test]
-        public async Task Artists()
+        public void Artists()
         {
-            _server.Content = base.GetServerResponse("artists");
+            handler.Content = base.GetServerResponse("artists");
 
-
-            IEnumerable<IArtist> artists = await _search.Artists(_dummyText);
-
+            IEnumerable<IArtist> artists = session.Search.FindArtists(DUMMY_TEXT, CancellationToken.None)
+                                                         .Result;
 
             Assert.IsNotNull(artists, nameof(artists));
             Assert.AreEqual(48, artists.Count(), "Count");
@@ -63,13 +81,12 @@ namespace E.Deezer.Tests.Integration.Endpoint
         }
 
         [Test]
-        public async Task Playlists()
+        public void Playlists()
         {
-            _server.Content = base.GetServerResponse("playlists");
+            handler.Content = base.GetServerResponse("playlists");
 
-
-            IEnumerable<IPlaylist> playlists = await _search.Playlists(_dummyText);
-
+            IEnumerable<IPlaylist> playlists = session.Search.FindPlaylists(DUMMY_TEXT, CancellationToken.None)
+                                                             .Result;
 
             Assert.IsNotNull(playlists, nameof(playlists));
             Assert.AreEqual(100, playlists.Count(), "Count");
@@ -81,13 +98,12 @@ namespace E.Deezer.Tests.Integration.Endpoint
         }
 
         [Test]
-        public async Task Tracks()
+        public void Tracks()
         {
-            _server.Content = base.GetServerResponse("tracks");
+            handler.Content = base.GetServerResponse("tracks");
 
-
-            IEnumerable<ITrack> tracks = await _search.Tracks(_dummyText);
-
+            IEnumerable<ITrack> tracks = session.Search.FindTracks(DUMMY_TEXT, CancellationToken.None)
+                                                       .Result;
 
             Assert.IsNotNull(tracks, nameof(tracks));
             Assert.AreEqual(100, tracks.Count(), "Count");
@@ -99,26 +115,24 @@ namespace E.Deezer.Tests.Integration.Endpoint
         }
 
         [Test]
-        public async Task Radio()
+        public void Radio()
         {
-            _server.Content = base.GetServerResponse("radio");
+            handler.Content = base.GetServerResponse("radio");
 
-
-            IEnumerable<IRadio> radios = await _search.Radio(_dummyText);
-
+            IEnumerable<IRadio> radios = session.Search.FindRadio(DUMMY_TEXT, CancellationToken.None)
+                                                       .Result;
 
             Assert.IsNotNull(radios, nameof(radios));
             Assert.AreEqual(0, radios.Count(), "Count");
         }
 
         [Test]
-        public async Task User()
+        public void User()
         {
-            _server.Content = base.GetServerResponse("user");
+            handler.Content = base.GetServerResponse("user");
 
-
-            IEnumerable<IUser> users = await _search.User(_dummyText);
-
+            IEnumerable<IUserProfile> users = session.Search.FindUsers(DUMMY_TEXT, CancellationToken.None)
+                                                            .Result;
 
             Assert.IsNotNull(users, nameof(users));
             Assert.AreEqual(92, users.Count(), "Count");
@@ -126,16 +140,18 @@ namespace E.Deezer.Tests.Integration.Endpoint
             var firstUser = users.First();
             Assert.IsNotNull(firstUser, nameof(firstUser));
             Assert.AreEqual(7380218, firstUser.Id, nameof(firstUser.Id));
-            Assert.AreEqual("eminem01", firstUser.Name, nameof(firstUser.Name));
+            Assert.AreEqual("eminem01", firstUser.Username, nameof(firstUser.Username));
         }
 
+        /*
+         * TODO: Reimplement 'Advanced' search
         [Test]
         public async Task Advanced()
         {
-            _server.Content = base.GetServerResponse("advanced");
+            handler.Content = base.GetServerResponse("advanced");
 
 
-            IEnumerable<ITrack> tracks = await _search.Advanced(_dummyText);
+            IEnumerable<ITrack> tracks = await session.Advanced(DUMMY_TEXT);
 
 
             Assert.IsNotNull(tracks, nameof(tracks));
@@ -156,11 +172,15 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.AreEqual(103248, album.Id, nameof(album.Id));
             Assert.AreEqual("The Eminem Show", album.Title, nameof(album.Title));
         }
+        */
 
+
+        /* TODO: Awaiting History support
         [Test]
         public void History()
         {
             Assert.Warn("This functionality not yet implemented!");
         }
+        */
     }
 }

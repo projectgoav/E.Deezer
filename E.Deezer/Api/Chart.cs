@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Newtonsoft.Json.Linq;
+
+using E.Deezer.Api.Internal;
+
 namespace E.Deezer.Api
 {
     public interface IChart
@@ -14,64 +18,41 @@ namespace E.Deezer.Api
     }
 
 
-    internal class Chart : IChart, IDeserializable<IDeezerClient>
+    internal class Chart : IChart
     {
-        private readonly IEnumerable<IAlbum> iAlbums;
-        private readonly IEnumerable<IArtist> iArtists;
-        private readonly IEnumerable<ITrack> iTracks;
-        private readonly IEnumerable<IPlaylist> iPlaylists;
+        public IEnumerable<IAlbum> Albums { get; private set; }
 
-        public Chart(IEnumerable<IAlbum> aAlbums, IEnumerable<IArtist> aArtists, IEnumerable<ITrack> aTracks, IEnumerable<IPlaylist> aPlaylists)
-        {
-            iAlbums = aAlbums;
-            iArtists = aArtists;
-            iTracks = aTracks;
-            iPlaylists = aPlaylists;
-        }
+        public IEnumerable<IArtist> Artists { get; private set; }
 
+        public IEnumerable<ITrack> Tracks { get; private set; }
 
-        public IEnumerable<IAlbum> Albums => iAlbums;
-
-        public IEnumerable<IArtist> Artists => iArtists;
-
-        public IEnumerable<ITrack> Tracks => iTracks;
-
-        public IEnumerable<IPlaylist> Playlists => iPlaylists;
-
-
-        //IDeserializable
-        public IDeezerClient Client
-        {
-            get;
-            set;
-        }
-
-        public void Deserialize(IDeezerClient aClient)
-        {
-            Client = aClient;
-
-            DeserializeEnumerable(aClient, iAlbums.Select((v) => v as IDeserializable<IDeezerClient>));
-            DeserializeEnumerable(aClient, iArtists.Select((v) => v as IDeserializable<IDeezerClient>));
-            DeserializeEnumerable(aClient, iTracks.Select((v) => v as IDeserializable<IDeezerClient>));
-            DeserializeEnumerable(aClient, iPlaylists.Select((v) => v as IDeserializable<IDeezerClient>));
-        }
-
-        private void DeserializeEnumerable(IDeezerClient aClient, IEnumerable<IDeserializable<IDeezerClient>> aEnumerable)
-        {
-            foreach(var entry in aEnumerable)
-            {
-                entry.Deserialize(aClient);
-            }
-        }
-
+        public IEnumerable<IPlaylist> Playlists { get; private set; }
 
 
         public override string ToString()
         {
-            return string.Format("E.Deezer.Chart : \n Albums :: {0} \n Artists :: {1} \n Tracks :: {2} \n Playlists :: {3}", iAlbums.Count(),
-                                                                                                                             iArtists.Count(),
-                                                                                                                             iTracks.Count(),
-                                                                                                                             iPlaylists.Count());
+            return string.Format("E.Deezer.Chart : \n Albums :: {0} \n Artists :: {1} \n Tracks :: {2} \n Playlists :: {3}", this.Albums.Count(),
+                                                                                                                             this.Artists.Count(),
+                                                                                                                             this.Tracks.Count(),
+                                                                                                                             this.Playlists.Count());
+        }
+
+
+        //JSON
+        internal const string ALBUMS_PROPERTY_NAME = "albums";
+        internal const string ARTISTS_PROPERTY_NAME = "artists";
+        internal const string TRACKS_PROPERTY_NAME = "tracks";
+        internal const string PLAYLISTS_PROPERTY_NAME = "playlists";
+
+        public static IChart FromJson(JToken json, IDeezerClient client)
+        {
+            return new Chart()
+            {
+                Albums = FragmentOf<IAlbum>.FromJson(json[ALBUMS_PROPERTY_NAME], x => Api.Album.FromJson(x, client)),
+                Artists = FragmentOf<IArtist>.FromJson(json[ARTISTS_PROPERTY_NAME], x => Api.Artist.FromJson(x, client)),
+                Tracks = FragmentOf<ITrack>.FromJson(json[TRACKS_PROPERTY_NAME], x => Api.Track.FromJson(x, client)),
+                Playlists = FragmentOf<IPlaylist>.FromJson(json[PLAYLISTS_PROPERTY_NAME], x => Api.Playlist.FromJson(x, client)),
+            };
         }
     }
 }

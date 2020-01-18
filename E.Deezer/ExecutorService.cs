@@ -8,12 +8,10 @@ using System.Threading;
 using System.IO.Compression;
 using System.Threading.Tasks;
 
-using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-using E.Deezer.Api;
-
+using E.Deezer.Util;
 
 namespace E.Deezer
 {
@@ -21,14 +19,27 @@ namespace E.Deezer
     {
         private const int DEFAULT_TIMEOUT = 30000; //30secs
 
+        private const string GZIP_COMPRESSION = "gzip";
+        private const string DEFLATE_COMPRESSION = "deflate";
+
+        private static readonly CancellationToken PRECANCELLED_TOKEN = new CancellationToken(canceled: true);
+
+#if NET45 || NETSTANDARD11
+        private readonly TaskCompletionSource<Stream> cancelledTaskSource;
+#endif
+
+
         private readonly HttpClient client;
-        private readonly JsonSerializer jsonSerializer;
         private readonly CancellationTokenSource cancellationTokenSource;
 
         internal ExecutorService(HttpMessageHandler httpMessageHandler = null)
         {
-            this.jsonSerializer = CreateJsonSerializer();
             this.cancellationTokenSource = new CancellationTokenSource();
+
+#if NET45 || NETSTANDARD11
+            this.cancelledTaskSource = new TaskCompletionSource<Stream>();
+            this.cancelledTaskSource.SetCanceled();
+#endif
 
             var handler = httpMessageHandler ?? new HttpClientHandler();
             this.client = new HttpClient(handler, disposeHandler: true);
@@ -36,135 +47,22 @@ namespace E.Deezer
             ConfigureHttpClient(this.client);
         }
 
-        internal CancellationToken CancellationToken { get { return cancellationTokenSource.Token; } }
+        internal CancellationToken CancellationToken => this.cancellationTokenSource.IsCancellationRequested ? PRECANCELLED_TOKEN
+                                                                                                             : this.cancellationTokenSource.Token;
 
 
-        public Task<T> ExecuteGet<T>(string method, IEnumerable<IRequestParameter> parms)
-        {
-            string url = BuildUrl(method, parms);
-            return client.GetAsync(url, this.CancellationToken)
-                         .ContinueWith(async t =>
-                         {
-                             if (t.IsFaulted)
-                             {
-                                 throw t.Exception.GetBaseException();
-                             }
-
-                             // Ensure we dispose of stuff should things go bad
-                             using (t.Result)
-                             {
-                                 CheckHttpResponse(t.Result);
-
-                                 return await GetJsonObjectFromResponse<T>(t.Result)
-                                                .ConfigureAwait(false);
-                             }
-
-                         }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default)
-                        .Unwrap();
-        }
-
-        public Task<bool> ExecutePost(string method, IEnumerable<IRequestParameter> parms)
-        {
-            string url = BuildUrl(method, parms);
-            return client.PostAsync(url, null, this.CancellationToken)
-                         .ContinueWith<bool>(t =>
-                         {
-                             if (t.IsFaulted)
-                             {
-                                 throw t.Exception.GetBaseException();
-                             }
-
-                             using (t.Result)
-                             {
-                                 // TODO -> This isn't entirely correct, as there can often be a Deezer error hidden in here...
-                                 return t.Result.IsSuccessStatusCode;
-                             }
-
-                         }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-        }
-
-        public Task<T> ExecutePost<T>(string method, IEnumerable<IRequestParameter> parms)
-        {
-            string url = BuildUrl(method, parms);
-            return client.PostAsync(url, null, this.CancellationToken)
-                         .ContinueWith(async t =>
-                         {
-                             if (t.IsFaulted)
-                             {
-                                 throw t.Exception.GetBaseException();
-                             }
-
-                             using (t.Result)
-                             {
-                                 CheckHttpResponse(t.Result);
-
-                                 // TODO -> This isn't entirely correct, as there can often be a Deezer error hidden in here...
-                                 return await GetJsonObjectFromResponse<T>(t.Result)
-                                                .ConfigureAwait(false);
-                             }
-
-                         }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default)
-                        .Unwrap();
-        }
-
-        public Task<bool> ExecuteDelete(string method, IEnumerable<IRequestParameter> parms)
-        {
-            string url = BuildUrl(method, parms);
-
-            return client.DeleteAsync(url, CancellationToken)
-                         .ContinueWith(t =>
-                         {
-                             if (t.IsFaulted)
-                             {
-                                 throw t.Exception.GetBaseException();
-                             }
-
-                             using (t.Result)
-                             {
-                                 //TODO => This isn't entirely correct, as there can often be a Deezer error hidden in here..
-                                 return t.Result.IsSuccessStatusCode;
-                             }
-
-                         }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-        }
+        public Task<Stream> ExecuteGet(string resource, CancellationToken cancellationToken)
+            => ExecuteRequest(cancellationToken, (token) => this.client.GetAsync(resource, token));
 
 
-        internal string BuildUrl(string url, IEnumerable<IRequestParameter> parms)
-        {
-            string trueUrl = url;
-            var queryStrings = new List<string>();
+        public Task<Stream> ExecutePost(string resource, CancellationToken cancellationToken)
+            => ExecuteRequest(cancellationToken, (token) => this.client.PostAsync(resource, null,  token));
 
-            foreach(var p in parms)
-            {
-                switch(p.Type)
-                {
-                    case ParameterType.UrlSegment:
-                        {
-                            string idToReplace = $"{{{p.Id}}}";
-                            trueUrl = trueUrl.Replace(idToReplace, p.Value.ToString());
-                            break;
-                        }
-                    case ParameterType.QueryString:
-                        {
-                            string escapedValue = Uri.EscapeDataString(p.Value.ToString());
-                            queryStrings.Add($"{p.Id}={escapedValue}");
-                            break;
-                        }
-                }
-            }
 
-            //Make sure we've filled all url segments...
-            if (trueUrl.Contains("{") || trueUrl.Contains("}"))
-            {
-                throw new InvalidOperationException("Failed to fill out all url segment parameters. Perhaps they weren't all provided?");
-            }
+        public Task<Stream> ExecuteDelete(string resource, CancellationToken cancellationToken)
+            => ExecuteRequest(cancellationToken, (token) => this.client.DeleteAsync(resource, token));
 
-            // Ensure we request json output (not default)
-            queryStrings.Add("output=json");
-
-            return string.Format("{0}?{1}", trueUrl, string.Join("&", queryStrings));
-        }
-
+        
 
         private void ConfigureHttpClient(HttpClient httpClient)
         {
@@ -173,28 +71,65 @@ namespace E.Deezer
 
             // Allow us to deal with compressed content, should Deezer support it.
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-            httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
+            httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue(GZIP_COMPRESSION));
+            httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue(DEFLATE_COMPRESSION));
         }
 
-        private JsonSerializer CreateJsonSerializer()
+
+        private Task<Stream> ExecuteRequest(CancellationToken cancellationToken,
+                                            Func<CancellationToken, Task<HttpResponseMessage>> requestFunc)
         {
-            var customConverters = new List<JsonConverter>()
-            {
-                // TODO add any customer converters we might end up with..
-                new DeezerObjectResponseJsonDeserializer(),
-            };
+            // Using a linkedtoken source allows both the calling code or this
+            // executor's token to cancel the request.
+            //
+            // As tokenSources implement IDisposable, we chain on tasks for both
+            // the happy and unhappy path to ensure we cleanup after ourselves.
+            var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(this.CancellationToken, cancellationToken);
 
-            var jsonSerailizerSettings = new JsonSerializerSettings()
+            if (linkedTokenSource.IsCancellationRequested)
             {
-                Converters = customConverters,
-            };
+                linkedTokenSource.Dispose();
 
-            return JsonSerializer.Create(jsonSerailizerSettings);
+#if NET45 || NETSTANDARD11
+                // NET45 && NetStandard 1.1 don't have the Task.FromXXX methods available
+                return this.cancelledTaskSource.Task;
+#else
+                return Task.FromCanceled<Stream>(PRECANCELLED_TOKEN);
+#endif
+            }
+
+            var requestTask = requestFunc(linkedTokenSource.Token);
+                
+            var returnTask = requestTask.ContinueWith(async t =>
+            {
+                t.ThrowIfFaulted();
+
+                var response = t.Result;
+
+                CheckHttpResponseForError(response);
+
+                return await GetDecompessionStreamForResponse(response)
+                                            .ConfigureAwait(false);
+
+            }, linkedTokenSource.Token, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+
+
+            // Clean up the linked token source
+            requestTask.ContinueWith(_ => linkedTokenSource.Dispose(), TaskContinuationOptions.OnlyOnCanceled | TaskContinuationOptions.ExecuteSynchronously);
+            returnTask.ContinueWith(_ => linkedTokenSource.Dispose(), TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously);
+
+            return returnTask.Unwrap();
         }
 
-        private Stream GetDecompessionStreamForResponse(Stream responseStream, HttpContentHeaders contentHeaders)
+
+        private async Task<Stream> GetDecompessionStreamForResponse(HttpResponseMessage response)
         {
+            if (response == null)
+                return null;
+
+            var contentHeaders = response.Content.Headers;
+            var responseStream = await response.Content.ReadAsStreamAsync();
+                                                
             // If header is not present the Deezer may not support this compression algorithm OR the
             // given HttpMessageHandler has support for automatic compression.
             if (contentHeaders != null && contentHeaders.ContentEncoding.Any())
@@ -203,14 +138,11 @@ namespace E.Deezer
                 {
                     switch (entry.ToLowerInvariant())
                     {
-                        case "gzip":
-                            {
-                                return new GZipStream(responseStream, CompressionMode.Decompress);
-                            }
-                        case "deflate":
-                            {
-                                return new DeflateStream(responseStream, CompressionMode.Decompress);
-                            }
+                        case GZIP_COMPRESSION:
+                            return new GZipStream(responseStream, CompressionMode.Decompress);
+
+                        case DEFLATE_COMPRESSION:
+                            return new DeflateStream(responseStream, CompressionMode.Decompress);
                     }
                 }
             }
@@ -218,50 +150,30 @@ namespace E.Deezer
             return responseStream;
         }
 
-        private async Task<T> DeserializeResponseStream<T>(HttpResponseMessage response)
-        {
-            using (var responseStream = await response.Content.ReadAsStreamAsync()
-                                                              .ConfigureAwait(false))
-            {
-                using (var compressedStream = GetDecompessionStreamForResponse(responseStream, response.Content.Headers))
-                {
-                    using (var reader = new StreamReader(compressedStream))
-                    {
-                        using (var jsonReader = new JsonTextReader(reader))
-                        {
-                            return this.jsonSerializer.Deserialize<T>(jsonReader);
-                        }
-                    }
-                }
-            }
-        }
 
-        private async Task<T> GetJsonObjectFromResponse<T>(HttpResponseMessage response)
+        private void CheckHttpResponseForError(HttpResponseMessage response)
         {
-            using (response)
-            {
-                CheckHttpResponse(response);
+            HttpRequestException exceptionToThrow = null;
 
-                return await DeserializeResponseStream<T>(response)
-                                .ConfigureAwait(false);
-            }
-        }
-
-        //Checks a response for errors and exceptions
-        private void CheckHttpResponse(HttpResponseMessage response)
-        {
             if(!response.IsSuccessStatusCode)
             {
                 string msg = $"Status: {response.StatusCode} :: {response.ReasonPhrase}";
-                throw new HttpRequestException(msg);
+                exceptionToThrow = new HttpRequestException(msg);
             }
 
             if (response.Content == null)
             {
-                throw new HttpRequestException("Request returned but there was no content attached.");
+                exceptionToThrow = new HttpRequestException("Request returned but there was no content attached.");
+            }
+
+
+            // Ensure we cleanup should we be throwing
+            if (exceptionToThrow != null)
+            {
+                response.Dispose();
+                throw exceptionToThrow;
             }
         }
-
 
 
         public void Dispose()

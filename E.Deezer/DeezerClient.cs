@@ -1,351 +1,323 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
+using System.IO;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
-using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 using E.Deezer.Api;
+using E.Deezer.Util;
 
 namespace E.Deezer
 {
-    internal interface IDeezerClient
+    internal interface IDeezerClient : IDisposable
     {
-        IUser User { get; }
+        Endpoints.Endpoints Endpoints { get; }
 
+        Task<TItem> Get<TItem>(string resource, CancellationToken cancellationToken, Func<JToken, TItem> itemFactory);
+        Task<TItem> Get<TItem>(string resource, DeezerPermissions requiredPermissons, CancellationToken cancellationToken, Func<JToken, TItem> itemFactory);
+
+        Task<bool> Post(string resource, DeezerPermissions requiredPermissions, CancellationToken cancellationToken);
+        Task<TResult> Post<TResult>(string resource, DeezerPermissions requiredPermissions, CancellationToken cancellationToken, Func<JToken, TResult> resultFactory);
+
+        Task<bool> Delete(string resource, DeezerPermissions requiredPermissions, CancellationToken cancellationToken);
+        Task<TResult> Delete<TResult>(string resource, DeezerPermissions requiredPermissions, CancellationToken cancellationToken, Func<JToken, TResult> resultFactory);
+
+        // Authentication
+        event AuthenticationStateChangedHandler OnAuthenticationStateChanged;
+
+        ulong CurrentUserId { get; }
         bool IsAuthenticated { get; }
-
-        CancellationToken CancellationToken { get; }
-        
-
-        //GET
-        Task<DeezerFragment<T>> Get<T>(string aMethod, uint aStart, uint aCount);
-
-        Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams);
-
-        Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount);
-
-        Task<T> GetDeezerObject<T>(string aMethod, IList<IRequestParameter> aParams) where T : IDeezerObjectResponse;
-
-        Task<IChart> GetChart(long aId, uint aStart, uint aCount);
-
-        Task<T> GetPlain<T>(string aMethod, IList<IRequestParameter> aParams);
-        Task<T> GetPlainWithError<T>(string aMethod, IList<IRequestParameter> aParams) where T : IHasError;
-
-
-        //POST
-        Task<bool> Post(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission);
-
-        Task<T> Post<T>(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission);
-
-
-        //DELETE
-        Task<bool> Delete(string aMethod, IList<IRequestParameter> aParams, DeezerPermissions aRequiredPermission);
-
-
-        //Helpers
-        IEnumerable<TDest> Transform<TSource, TDest>(DeezerFragment<TSource> aFragment) where TSource : TDest, IDeserializable<IDeezerClient>;
-
-        bool HasPermission(DeezerPermissions aRequiredPermissions);
     }
-    
-    
-    internal class DeezerClient : IDeezerClient, IDisposable
+
+
+    internal class DeezerClient : IDeezerClient
     {
-        private readonly DeezerSession iSession;
         private readonly ExecutorService executor;
+        private readonly AuthenticationService authService;
 
-        private IUser iUser;
-        private IPermissions iPermissions;
-
-        internal DeezerClient(DeezerSession aSession, HttpMessageHandler httpMessageHandler = null)
+        public DeezerClient(HttpMessageHandler handler)
         {
-            iSession = aSession;
-            executor = new ExecutorService(httpMessageHandler);
+            this.executor = new ExecutorService(handler);
+            this.authService = new AuthenticationService(this);
+
+            this.Endpoints = new Endpoints.Endpoints(this);
         }
 
-
-        public IUser User => iUser;
-
-        public bool IsAuthenticated => iSession.Authenticated;
-
-        public CancellationToken CancellationToken => executor.CancellationToken;
+        public Endpoints.Endpoints Endpoints { get; }
 
 
-        internal string AccessToken => iSession.AccessToken;
+        // FIX ME: There's a lot of duplication in this class.
+        //         We should try condense some of this down.
 
-
-        //Another copy for those without params!
-        public Task<DeezerFragment<T>> Get<T>(string aMethod, uint aStart, uint aCount)           
-            => Get<T>(aMethod, RequestParameter.EmptyList, aStart, aCount);
-
-        public Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams)   
-            => Get<T>(aMethod, aParams, uint.MinValue, uint.MaxValue);
-
-        public Task<DeezerFragment<T>> Get<T>(string aMethod, IList<IRequestParameter> aParams, uint aStart, uint aCount)
+        public Task<TItem> Get<TItem>(string resource, CancellationToken cancellationToken, Func<JToken, TItem> itemFactory)
         {
-            AddToParamList(aParams, aStart, aCount);
-            return DoGet<DeezerFragment<T>>(aMethod, aParams);
-        }
-
-        public Task<T> GetDeezerObject<T>(string aMethod, IList<IRequestParameter> aParams) where T : IDeezerObjectResponse
-        {
-            return GetPlain<T>(aMethod, aParams)
-                       .ContinueWith(t =>
-                       {
-                           if (t.IsFaulted)
+            return executor.ExecuteGet(resource, cancellationToken)
+                           .ContinueWith(t =>
                            {
-                               throw t.Exception.GetBaseException();
-                           }
+                               t.ThrowIfFaulted();
 
-                           var response = t.Result;
+                               var json = JObjectFromStream(t.Result);
 
-                           if (response.Error != null)
-                           {
-                               ThrowDeezerError(response.Error);
-                           }
+                               //TODO: Maybe we should handle the error in here?
+                               //      And only return on the happy path??            
+                               return DeserializeErrorOr<TItem>(json, itemFactory);
 
-                           return response;
-                       }, CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                           }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
 
-
-        public Task<IChart> GetChart(long aId, uint aStart, uint aCount)
+        public Task<TItem> Get<TItem>(string resource, DeezerPermissions requiredPermissions, CancellationToken cancellationToken, Func<JToken, TItem> itemFactory)
         {
-            string method = "chart/{id}";
-            List<IRequestParameter> parms = new List<IRequestParameter>()
+            var authenticationException = AssertAuthenticated(requiredPermissions);
+            if (authenticationException != null)
             {
-                RequestParameter.GetNewUrlSegmentParamter("id", aId),
-            };
-
-            return GetChart(method, parms, aStart, aCount);
-
-        }
-       
-        public Task<T> GetPlainWithError<T>(string method, IList<IRequestParameter> parms = null) where T : IHasError
-        {
-            if (parms == null)
-            {
-                parms = RequestParameter.EmptyList;
+                throw authenticationException;
             }
 
-            return this.executor.ExecuteGet<T>(method, parms)
-                                .ContinueWith(t =>
-                                {
-                                    CheckForDeezerError<T>(t.Result);
-                                    return t.Result;
-                                }, CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            string actualResource = AppendAccessTokenToResourceIfRequired(resource);
+
+            return Get<TItem>(actualResource, cancellationToken, itemFactory);
         }
 
-        public Task<T> GetPlain<T>(string method, IList<IRequestParameter> parms = null)
+
+        public Task<bool> Post(string resource,
+                               DeezerPermissions requiredPermissions,
+                               CancellationToken cancellationToken)
         {
-            if (parms == null)
+            var authenticationException = AssertAuthenticated(requiredPermissions);
+            if (authenticationException != null)
             {
-                parms = RequestParameter.EmptyList;
+                throw authenticationException;
             }
 
-            return this.executor.ExecuteGet<T>(method, parms);
-        }
+            string actualResource = AppendAccessTokenToResourceIfRequired(resource);
 
-        //Performs a POST request
-        public Task<bool> Post(string method, IList<IRequestParameter> parms, DeezerPermissions requiredPermissions)
-        {
-            CheckAuthentication();
-            CheckPermissions(requiredPermissions);
-
-            AddDefaultsToParamList(parms);
-
-            return this.executor.ExecutePost(method, parms);
-        }
-
-        public Task<T> Post<T>(string method, IList<IRequestParameter> parms, DeezerPermissions requiredPermissions)
-        {
-            CheckAuthentication();
-            CheckPermissions(requiredPermissions);
-
-            AddDefaultsToParamList(parms);
-
-            return this.executor.ExecutePost<T>(method, parms);
-        }
-
-        //Performs a DELETE request
-        public Task<bool> Delete(string method, IList<IRequestParameter> parms, DeezerPermissions aRequiredPermission)
-        {
-            CheckAuthentication();
-            CheckPermissions(aRequiredPermission);
-
-            AddDefaultsToParamList(parms);
-
-            return this.executor.ExecuteDelete(method, parms);
-        }
-
-
-        //Performs a transform from Deezer Fragment to IEnumerable.
-        public IEnumerable<TDest> Transform<TSource, TDest>(DeezerFragment<TSource> fragment) where TSource : TDest, IDeserializable<IDeezerClient>
-            => fragment.Items.Select<TSource, TDest>(x =>
-                {
-                    x.Deserialize(this);
-                    return x;
-                })
-                .ToList();
-
-
-
-        public bool HasPermission(DeezerPermissions requiredPermissions)
-        {
-            if (IsAuthenticated && iPermissions != null)
-            {
-                return iPermissions.HasPermission(requiredPermissions);
-            }
-
-            return false;
-        }
-               
-        //'OAuth' Stuff
-
-        //Grabs the user's permissions when the user Logs into the library.
-        internal Task Login()
-        {
-            IList<IRequestParameter> parms = RequestParameter.EmptyList;
-            AddDefaultsToParamList(parms);
-
-            return GetPlainWithError<User>("user/me", parms)
-                    .ContinueWith((aTask) =>
-                    {
-                        var userInstance = aTask.Result;
-                        userInstance.Deserialize(this);
-
-                        iUser = userInstance;
-
-                        IList<IRequestParameter> permissionParams = RequestParameter.EmptyList;
-                        AddDefaultsToParamList(permissionParams);
-
-                        DoGet<DeezerPermissionRequest>("user/me/permissions", permissionParams)
-                                .ContinueWith((aPermissionTask) => iPermissions = aPermissionTask.Result.Permissions, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default)
-                                .Wait();
-
-                    }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
-        }
-
-
-        private Task<T> DoGet<T>(string method, IEnumerable<IRequestParameter> parm) where T : IHasError
-        {
-            return this.executor.ExecuteGet<T>(method, parm)
-                                .ContinueWith(t =>
-                                {
-                                    if (t.IsFaulted)
-                                    {
-                                        throw t.Exception.GetBaseException();
-                                    }
-
-                                    CheckForDeezerError(t.Result);
-                                    return t.Result;
-
-                                }, CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-        }
-
-
-        private Task<IChart> GetChart(string method, IList<IRequestParameter> parm, uint start, uint count)
-        {
-            AddToParamList(parm, start, count);
-
-            return DoGet<DeezerChartFragment>(method, parm)
-                        .ContinueWith<IChart>(t =>
-                        {
-                            if (t.IsFaulted)
+            return executor.ExecutePost(actualResource, cancellationToken)
+                            .ContinueWith(t =>
                             {
-                                throw t.Exception.GetBaseException();
-                            }
+                                t.ThrowIfFaulted();
 
-                            Chart chart = new Chart(t.Result.Albums.Items,
-                                                    t.Result.Artists.Items,
-                                                    t.Result.Tracks.Items,
-                                                    t.Result.Playlists.Items);
+                                using (var stream = t.Result)
+                                using (var reader = new StreamReader(stream))
+                                {
+                                    // TODO: As the streams might be zipped we can't rely on stream length.
+                                    //       Instead, read everything, compare the 2 values or fallback to 
+                                    //       parsing json instead.
+                                    var possibleJson = reader.ReadToEnd();
 
-                            chart.Deserialize(this);
-                            return chart;
+                                    if (possibleJson == "true")
+                                        return true;
 
-                        }, CancellationToken, TaskContinuationOptions.NotOnFaulted, TaskScheduler.Default);
-        }
+                                    if (possibleJson == "false")
+                                        return false;
 
-       
+                                    var json = JObjectFromString(possibleJson);
 
-        private void CheckForDeezerError<T>(T deezerObject) where T : IHasError
-        {
-            if(deezerObject == null)
-            {
-                throw new InvalidOperationException("JSON response failed to be parsed into suitable object.");
-            }
+                                    //TODO: Maybe we should handle the error in here?
+                                    //      And only return on the happy path??            
+                                    return DeserializeErrorOr<bool>(json, j => j.Value<bool>());
+                                }
 
-            //Make sure our API call didn't fail...
-            if(deezerObject.TheError != null)
-            {
-                ThrowDeezerError(deezerObject.TheError);
-            }
+                            }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
 
 
-        private void ThrowDeezerError(IError error)
+        public Task<TResult> Post<TResult>(string resource, 
+                                           DeezerPermissions requiredPermissions, 
+                                           CancellationToken cancellationToken,
+                                           Func<JToken, TResult> resultFactory)
         {
-            if (error.Code == 200          //200 == Logout fail
-                    || error.Code == 300)     //300 == Authentication error
+            var authenticationException = AssertAuthenticated(requiredPermissions);
+            if (authenticationException != null)
             {
-                //We've got an invalid/expired auth code -> auto logout + clear internals
-                iSession.Logout();
-                iPermissions = null;
-                iUser = null;
+                throw authenticationException;
             }
 
-            throw new DeezerException(error);
+            string actualResource = AppendAccessTokenToResourceIfRequired(resource);
+
+            return executor.ExecutePost(actualResource, cancellationToken)
+                           .ContinueWith(t =>
+                           {
+                               t.ThrowIfFaulted();
+
+                               var json = JObjectFromStream(t.Result);
+
+                               //TODO: Maybe we should handle the error in here?
+                               //      And only return on the happy path??            
+                               return DeserializeErrorOr<TResult>(json, resultFactory);
+
+                           }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+
         }
 
-        private void CheckAuthentication()
+        public Task<bool> Delete(string resource,
+                       DeezerPermissions requiredPermissions,
+                       CancellationToken cancellationToken)
         {
-            if (!IsAuthenticated)
+            var authenticationException = AssertAuthenticated(requiredPermissions);
+            if (authenticationException != null)
             {
-                throw new NotLoggedInException();
+                throw authenticationException;
+            }
+
+            string actualResource = AppendAccessTokenToResourceIfRequired(resource);
+
+            return executor.ExecuteDelete(actualResource, cancellationToken)
+                            .ContinueWith(t =>
+                            {
+                                t.ThrowIfFaulted();
+
+                                using (var stream = t.Result)
+                                using (var reader = new StreamReader(stream))
+                                {
+                                    // TODO: As the streams might be zipped we can't rely on stream length.
+                                    //       Instead, read everything, compare the 2 values or fallback to 
+                                    //       parsing json instead.
+                                    var possibleJson = reader.ReadToEnd();
+
+                                    if (possibleJson == "true")
+                                        return true;
+
+                                    if (possibleJson == "false")
+                                        return false;
+
+                                    var json = JObjectFromString(possibleJson);
+
+                                    //TODO: Maybe we should handle the error in here?
+                                    //      And only return on the happy path??            
+                                    return DeserializeErrorOr<bool>(json, j => j.Value<bool>());
+                                }
+
+                            }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+        }
+
+
+        public Task<TResult> Delete<TResult>(string resource,
+                                             DeezerPermissions requiredPermissions,
+                                             CancellationToken cancellationToken,
+                                             Func<JToken, TResult> resultFactory)
+        {
+            var authenticationException = AssertAuthenticated(requiredPermissions);
+            if (authenticationException != null)
+            {
+                throw authenticationException;
+            }
+
+            string actualResource = AppendAccessTokenToResourceIfRequired(resource);
+
+            return executor.ExecuteDelete(actualResource, cancellationToken)
+                           .ContinueWith(t =>
+                           {
+                               t.ThrowIfFaulted();
+
+                               var json = JObjectFromStream(t.Result);
+
+                               //TODO: Maybe we should handle the error in here?
+                               //      And only return on the happy path??            
+                               return DeserializeErrorOr<TResult>(json, resultFactory);
+
+                           }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+
+        }
+
+
+        // Authentication
+        public event AuthenticationStateChangedHandler OnAuthenticationStateChanged
+        {
+            add => this.authService.OnAuthenticationStateChanged += value;
+            remove => this.authService.OnAuthenticationStateChanged -= value;
+        }
+
+        public Task<bool> Login(string accessToken, CancellationToken cancellationToken)
+            => this.authService.Login(accessToken, cancellationToken);
+
+
+        public Task<bool> Logout(CancellationToken cancellationToken)
+            => this.authService.Logout(cancellationToken);
+
+
+        public ulong CurrentUserId => this.authService.CurrentUser.Id; //TODO: Do we want to throw if not logged in??
+
+        public bool IsAuthenticated => this.authService.IsAuthenticated;
+
+
+
+        private JObject JObjectFromStream(Stream stream)
+        {
+            using (stream)
+            using (var streamReader = new StreamReader(stream))
+            using (var jsonReader = new JsonTextReader(streamReader))
+            {
+                return JObject.Load(jsonReader);
             }
         }
 
-        private void CheckPermissions(DeezerPermissions requiredPermissions)
+        private JObject JObjectFromString(string json)
         {
-            if(iPermissions == null)
+            using (var stringReader = new StringReader(json))
+            using (var jsonReader = new JsonTextReader(stringReader))
             {
-                throw new NotLoggedInException();
-            }
-
-            if(!HasPermission(requiredPermissions))
-            {
-                throw new DeezerPermissionsException(requiredPermissions);
+                return JObject.Load(jsonReader);
             }
         }
 
-
-        private void AddDefaultsToParamList(IList<IRequestParameter> parms) 
-            => AddToParamList(parms, uint.MinValue, uint.MaxValue);
-
-        private void AddToParamList(IList<IRequestParameter> parms, uint start, uint count)
+        private Exception AssertAuthenticated(DeezerPermissions requiredPermissions)
         {
-            if (count <= uint.MaxValue && start <= uint.MaxValue)
+            if (!this.IsAuthenticated)
             {
-                parms.Add(RequestParameter.GetNewQueryStringParameter("index", start));
-                parms.Add(RequestParameter.GetNewQueryStringParameter("limit", count));
+                return new Exception("Not authenticated");
             }
 
-            if (IsAuthenticated)
+            if (!this.authService.HasPermission(requiredPermissions))
             {
-                parms.Add(RequestParameter.GetAccessTokenParamter(AccessToken));
+                return new DeezerPermissionsException(requiredPermissions);
             }
+
+            return null;
+        }
+
+
+        private string AppendAccessTokenToResourceIfRequired(string resource)
+        {
+            var accessTokenQuery = this.authService.GetAccessTokenQueryString();
+
+            return resource.Contains(accessTokenQuery) ? resource
+                                                       : $"{resource}&{accessTokenQuery}";
+        }
+
+
+        private TItem DeserializeErrorOr<TItem>(JObject json, Func<JObject, TItem> itemFactory)
+        {
+            var error = Error.FromJson(json);
+            if (error != null)
+            {
+                this.authService.LogoutIfAuthenticationError(error);
+                throw new DeezerException(error);
+            }
+
+            //TODO: Handle Json Parsing issues
+            //      Wont they just be thrown automagically??
+            return itemFactory(json);
         }
 
 
         public void Dispose()
         {
-            executor.Dispose();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.executor.Dispose();
+            }
         }
     }
 }

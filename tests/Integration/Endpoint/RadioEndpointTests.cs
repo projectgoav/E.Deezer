@@ -1,38 +1,54 @@
-﻿using E.Deezer.Api;
-using E.Deezer.Endpoint;
-using NUnit.Framework;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
+
+using NUnit.Framework;
+
+using E.Deezer.Api;
 
 namespace E.Deezer.Tests.Integration.Endpoint
 {
     [TestFixture]
-    class RadioEndpointTests : TestClassBase
+    [Parallelizable(ParallelScope.Fixtures)]
+    public class RadioEndpointTests : TestClassBase, IDisposable 
     {
-        private OfflineMessageHandler _server;
-        private IRadioEndpoint _radio;
+        private OfflineMessageHandler handler;
+        private DeezerSession session;
 
         public RadioEndpointTests()
-            : base("RadioEndpoint") { }
-
-        [SetUp]
-        public void SetUp()
+            : base("RadioEndpoint")
         {
-            var session = OfflineDeezerSession.WithoutAuthentication();
-
-            _radio = session.Library.Radio;
-            _server = session.MessageHandler;
+            this.handler = new OfflineMessageHandler();
+            this.session = new DeezerSession(this.handler);
         }
 
-        [Test]
-        public async Task GetTop5()
+
+        // IDisposable
+        public void Dispose()
         {
-            _server.Content = base.GetServerResponse("top");
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.session.Dispose();
+            }
+        }
 
 
-            IEnumerable<IRadio> radios = await _radio.GetTop5();
 
+        [Test]
+        public void GetTop5()
+        {
+            handler.Content = base.GetServerResponse("top");
+
+            IEnumerable<IRadio> radios = session.Radio.GetTopRadio(CancellationToken.None)
+                                                      .Result;
 
             Assert.IsNotNull(radios, nameof(radios));
             Assert.AreEqual(25, radios.Count(), "Count");
@@ -43,13 +59,14 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.AreEqual("Deep House", firstRadio.Title, nameof(firstRadio.Title));
         }
 
+        /*
         [Test]
-        public async Task GetDeezerSelection()
+        public void GetDeezerSelection()
         {
-            _server.Content = base.GetServerResponse("list");
+            handler.Content = base.GetServerResponse("list");
 
 
-            IEnumerable<IRadio> radios = await _radio.GetDeezerSelection();
+            IEnumerable<IRadio> radios = session.Radio.GetDeezerSelection();
 
 
             Assert.IsNotNull(radios, nameof(radios));
@@ -60,15 +77,17 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.AreEqual(37151, firstRadio.Id, nameof(firstRadio.Id));
             Assert.AreEqual("Slágerek", firstRadio.Title, nameof(firstRadio.Title));
         }
+        */
 
+            /*
         [Test]
-        public async Task GetByGenres()
+        public void GetByGenres()
         {
-            _server.Content = base.GetServerResponse("genres");
+            handler.Content = base.GetServerResponse("genres");
 
 
-            IEnumerable<IGenreWithRadios> radios = await _radio.GetByGenres();
-
+            IEnumerable<IGenreWithRadios> radios = session.Radio.GetByGenres();
+        
 
             Assert.IsNotNull(radios, nameof(radios));
             Assert.AreEqual(20, radios.Count(), "radios.Count");
@@ -83,11 +102,15 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.AreEqual(32101, lastRadio.Id, $"{nameof(lastRadio)}.{nameof(lastRadio.Id)}");
             Assert.AreEqual("Phenom'enon", lastRadio.Title, $"{nameof(lastRadio)}.{nameof(lastRadio.Title)}");
         }
+        */
 
+        /* TODO This is implemented. We just need to hook up getting the
+         *      tracks present on a radio. 
         [Test]
         public void GetByTracks()
         {
             Assert.Warn("This functionality not yet implemented!");
         }
+        */
     }
 }

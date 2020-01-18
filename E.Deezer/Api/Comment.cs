@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+using E.Deezer.Util;
 
 namespace E.Deezer.Api
 {
@@ -12,83 +14,64 @@ namespace E.Deezer.Api
     {
         ulong Id { get; }
         string Text { get; }
-        DateTime Posted { get; }
+        DateTime? Posted { get; }
         IUserProfile Author { get; }
 
         bool IsUserComment { get; }
 
+        /*
         Task<bool> DeleteComment();
+        */
     }
 
-    internal class Comment : IComment, IDeserializable<IDeezerClient>
+    internal class Comment : IComment, IClientObject
     {
-        public ulong Id
-        {
-            get;
-            set;
-        }
+        public ulong Id { get; private set; }
 
-        public string Text
-        {
-            get;
-            set;
-        }
+        public string Text { get; private set; }
 
-        public DateTime Posted => new DateTime(PostedInternal);
+        public DateTime? Posted { get; private set; }
 
-        public IUserProfile Author => AuthorInternal;
+        public IUserProfile Author { get; private set; }
+
+        
+        // IClientObject
+        public IDeezerClient Client { get; private set; }
 
 
-        [JsonProperty(PropertyName = "date")]
-        public long PostedInternal
-        {
-            get;
-            set;
-        }
+        public bool IsUserComment => this.Author != null
+                                        && this.Client.IsAuthenticated
+                                        && this.Client.CurrentUserId == Author.Id;
 
-        [JsonProperty(PropertyName = "author")]
-        public UserProfile AuthorInternal
-        {
-            get;
-            set;
-        }
-
-        public bool IsUserComment => this.Author != null                            //We've got an author object...
-                                        && this.Client.User != null                 //And we're logged in...
-                                        && this.Author.Id == this.Client.User.Id;   //And the ids match
-
-
-        //IDeserializable
-        public IDeezerClient Client
-        {
-            get;
-            set;
-        }
-
-        public void Deserialize(IDeezerClient client)
-        {
-            this.Client = client;
-            this.AuthorInternal?.Deserialize(client);
-        }
-
-
-        public Task<bool> DeleteComment()
-        {
-            if(!this.IsUserComment)
-            {
-                throw new InvalidOperationException("Attempting to delete a comment which the user did not create. Please check 'IsUserComment' property before calling this method.");
-            }
-
-            List<IRequestParameter> p = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewUrlSegmentParamter("id", this.Id)
-            };
-
-            return Client.Delete("comment/{id}", p, DeezerPermissions.BasicAccess);
-        }
 
 
         public override string ToString()
             => string.Format("E.Deezer.Comment:{0}", this.Id);
+
+
+        //JSON
+        internal const string ID_PROPERTY_NAME = "id";
+        internal const string TEXT_PROPERTY_NAME = "text";
+        internal const string POSTED_PROPERTY_NAME = "date";
+        internal const string AUTHOR_PROPERTY_NAME = "author";
+
+        public static IComment FromJson(JToken json, IDeezerClient client)
+        {
+            uint dateAsUnixSeconds = json.Value<uint>(POSTED_PROPERTY_NAME);
+            DateTime? postedDate = DateTimeExtensions.ParseUnixTimeFromSeconds(dateAsUnixSeconds);
+
+            return new Comment()
+            {
+                Id = ulong.Parse(json.Value<string>(ID_PROPERTY_NAME)),
+                Text = json.Value<string>(TEXT_PROPERTY_NAME),
+
+                Posted = postedDate,
+
+                Author = Api.UserProfile.FromJson(json[AUTHOR_PROPERTY_NAME], client),
+
+
+                Client = client,
+            };
+        }
     }
 }

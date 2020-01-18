@@ -1,333 +1,326 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+
+using System.Threading;
 using System.Threading.Tasks;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+ 
+using E.Deezer.Util;
+
 
 namespace E.Deezer.Api
 {
-	public interface IUser : IObjectWithImage
+	public interface IUser
 	{
-        ulong Id { get; set; }
-        string Name { get; set; }
-        string Lastname { get; set; }
-        string Firstname { get; set; }
-        string Email { get; set; }
-        int Status { get; set; }
-        string Birthday { get; set; }
-        string Inscription_Date { get; set; }
-        string Gender { get; set; }
-        string Link { get; set; }
-        string Picture { get; set; }
-        string Picture_Small { get; set; }
-        string Picture_Medium { get; set; }
-        string Picture_Big { get; set; }
-        string Picture_XL { get; set; }
-        string Country { get; set; }
-        string Lang { get; set; }
-        bool Is_Kid { get; set; }
-        string Tracklist { get; set; }
-        string Type { get; set; }
+        ulong Id { get; }
+        string Username { get;  }
+        string Lastname { get;  }
+        string Firstname { get;  }
+        string Email { get;  }
+        int Status { get;  }
+        DateTime? Birthday { get;  }
+        DateTime? InscriptionDate { get;  }
+        string Gender { get;  }
+        string Link { get;  }
+
+        IImages ProfilePictures { get; }
+
+        string Country { get; }
+        string Language { get; }
+        bool IsKid { get; }
+
 
         // ** Methods **
         //Favourites
-        Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart = 0, uint aCount = 100);
-
-        Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart = 0, uint aCount = 100);
-
-        Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart = 0, uint aCount = 100);
+        /*
 
         Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart = 0 , uint aCount = 100);
 
-        Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart = 0, uint aCount = 100);
 
         Task<IEnumerable<ITrack>> GetFlow(uint aStart = 0 , uint aCount = 100);
 
         Task<IEnumerable<ITrack>> GetHistory(uint aStart = 0, uint aCount = 100);
 
         //Recommendations
-        Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart = 0, uint aCount = 100);
-
-        Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart = 0, uint aCount = 100);
-
-        Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart = 0, uint aCount = 100);
-
-        Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart = 0, uint aCount = 100);
-
-        Task<IEnumerable<IRadio>> GetRecommendedRadio(uint aStart = 0, uint aCount = 100);
 
         Task<ulong> CreatePlaylist(string title);
-
-        Task<bool> AddRadioToFavourite(IRadio aRadio);
-        Task<bool> AddRadioToFavourite(ulong radioId);
-
-        Task<bool> RemoveRadioFromFavourite(IRadio aRadio);
-        Task<bool> RemoveRadioFromFavourite(ulong radioId);
-
-        Task<bool> AddTrackToFavourite(ITrack aTrack);
-        Task<bool> AddTrackToFavourite(ulong trackId);
-
-        Task<bool> RemoveTrackFromFavourite(ITrack aTrack);
-        Task<bool> RemoveTrackFromFavourite(ulong trackId);
-
-        Task<bool> AddPlaylistToFavourite(IPlaylist aPlaylist);
-        Task<bool> AddPlaylistToFavourite(ulong playlistId);
-
-        Task<bool> RemovePlaylistFromFavourite(IPlaylist aPlaylist);
-        Task<bool> RemovePlaylistFromFavourite(ulong playlistId);
-
-        Task<bool> AddArtistToFavourite(IArtist aArtist);
-        Task<bool> AddArtistToFavourite(ulong artistId);
-
-        Task<bool> RemoveArtistFromFavourite(IArtist aArtist);
-        Task<bool> RemoveArtistFromFavourite(ulong artistId);
-
-        Task<bool> AddAlbumToFavourite(IAlbum aAlbum);
-        Task<bool> AddAlbumToFavourite(ulong albumId);
-
-        Task<bool> RemoveAlbumFromFavourite(IAlbum aAlbum);
-        Task<bool> RemoveAlbumFromFavourite(ulong albumId);
+ 
+        */
     }
 
-	internal class User : ObjectWithImage, IUser, IHasError, IDeserializable<IDeezerClient>
+	internal class User : IUser
 	{
-
-        public ulong Id { get; set; }
-        public string Name { get; set; }
-        public string Lastname { get; set; }
-        public string Firstname { get; set; }
-        public string Email { get; set; }
-        public int Status { get; set; }
-        public string Birthday { get; set; }
-        public string Inscription_Date { get; set; }
-        public string Gender { get; set; }
-        public string Link { get; set; }
-        public string Picture { get; set; }
-        public string Picture_Small { get; set; }
-        public string Picture_Medium { get; set; }
-        public string Picture_Big { get; set; }
-        public string Picture_XL { get; set; }
-        public string Country { get; set; }
-        public string Lang { get; set; }
-        public bool Is_Kid { get; set; }
-        public string Tracklist { get; set; }
-        public string Type { get; set; }
-
-		//IDeserializable
-		public IDeezerClient Client
-        {
-            get;
-            private set;
-        }
-
-        public void Deserialize(IDeezerClient aClient) 
-            => Client = aClient;
+        public ulong Id { get; private set; }
+        public string Username { get; private set; }
+        public string Lastname { get; private set; }
+        public string Firstname { get; private set; }
+        public string Email { get; private set; }
+        public int Status { get; private set; }
+        public DateTime? Birthday { get; private set; }
+        public DateTime? InscriptionDate { get; private set; }
+        public string Gender { get; private set; }
+        public string Link { get; private set; }
+        public string Country { get; private set; }
+        public string Language { get; private set; }
+        public bool IsKid { get; private set; }
+        public IImages ProfilePictures { get; private set; }
 
 
-        public override string ToString() => Name;
+        public override string ToString() => Username; 
 
-        public IError TheError => Error;
-
-
-        /* METHODS */
-        public Task<IEnumerable<IAlbum>> GetFavouriteAlbums(uint aStart = 0, uint aCount = 100)   
-            => Get<Album, IAlbum>("albums", DeezerPermissions.BasicAccess, aStart, aCount);
-
-        public Task<IEnumerable<IArtist>> GetFavouriteArtists(uint aStart = 0, uint aCount = 100) 
-            => Get<Artist, IArtist>("artists", DeezerPermissions.BasicAccess, aStart, aCount); 
-
-        public Task<IEnumerable<ITrack>> GetFavouriteTracks(uint aStart = 0, uint aCount = 100)   
-            => Get<Track, ITrack>("tracks", DeezerPermissions.BasicAccess, aStart, aCount);
+        /* METHODS
+         * ~~~~~~~~
 
         public Task<IEnumerable<ITrack>> GetPersonalTracks(uint aStart = 0, uint aCount = 100)   
             => Get<Track, ITrack>("personal_songs", DeezerPermissions.BasicAccess, aStart, aCount); 
 
-        public Task<IEnumerable<IPlaylist>> GetPlaylists(uint aStart = 0, uint aCount = 100)      
-            => Get<Playlist, IPlaylist>("playlists", DeezerPermissions.BasicAccess, aStart, aCount); 
+        */
 
-        public Task<IEnumerable<ITrack>> GetFlow(uint aStart = 0, uint aCount = 100)  
-            => Get<Track, ITrack>("flow", DeezerPermissions.BasicAccess, aStart, aCount);
+        //JSON
+        internal const string ID_PROPERTY_NAME = "id";
+        internal const string USERNAME_PROPERTY_NAME = "username";
+        internal const string FIRSTNAME_PROPERTY_NAME = "firstname";
+        internal const string LASTNAME_PROPERTY_NAME = "lastname";
+        internal const string EMAIL_PROPERTY_NAME = "email";
+        internal const string GENDER_PROPERTY_NAME = "gender";
+        internal const string STATUS_PROPERTY_NAME = "status";
+        internal const string BIRTHDAY_PROPERTY_NAME = "birthday";
+        internal const string JOINED_PROPERTY_NAME = "inscription_date";
+        internal const string COUNTRY_PROPERTY_NAME = "country";
+        internal const string LANGUAGE_PROPERTY_NAME = "language";
+        internal const string LINK_PROPERTY_NAME = "link";
+        internal const string CHILD_ACCOUNT_PROPERTY_NAME = "is_kid";
 
-        public Task<IEnumerable<ITrack>> GetHistory(uint aStart = 0, uint aCount = 100)   
-            => Get<Track, ITrack>("history", DeezerPermissions.ListeningHistory, aStart, aCount); 
+        //TODO: Explicit...
 
-        public Task<IEnumerable<IAlbum>> GetRecommendedAlbums(uint aStart = 0, uint aCount = 100) 
-            => Get<Album, IAlbum>("recommendations/albums", DeezerPermissions.BasicAccess, aStart, aCount); 
-
-        public Task<IEnumerable<IArtist>> GetRecommendedArtists(uint aStart = 0, uint aCount = 100)   
-            => Get<Artist, IArtist>("recommendations/artists", DeezerPermissions.BasicAccess, aStart, aCount); 
-    
-        public Task<IEnumerable<IPlaylist>> GetRecommendedPlaylists(uint aStart = 0, uint aCount = 100)   
-            => Get<Playlist, IPlaylist>("recommendations/playlists",DeezerPermissions.BasicAccess, aStart, aCount);
-
-        public Task<IEnumerable<ITrack>> GetRecommendedTracks(uint aStart = 0, uint aCount = 100) 
-            => Get<Track, ITrack>("recommendations/tracks", DeezerPermissions.BasicAccess, aStart, aCount);
-
-        public Task<IEnumerable<IRadio>> GetRecommendedRadio(uint aStart = 0, uint aCount = 100)
-            => Get<Radio, IRadio>("recommendations/radios", DeezerPermissions.BasicAccess, aStart, aCount);
-
-
-        public Task<ulong> CreatePlaylist(string title)
+        public static IUser FromJson(JToken json)
         {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
+            string birthdayStr = json.Value<string>(BIRTHDAY_PROPERTY_NAME);
+            DateTime? birthday = DateTimeExtensions.ParseApiDateTime(birthdayStr);
+
+            string joinedStr = json.Value<string>(JOINED_PROPERTY_NAME);
+            DateTime? joined = DateTimeExtensions.ParseApiDateTime(joinedStr);
+
+            return new User()
             {
-                RequestParameter.GetNewUrlSegmentParamter("id", Id),
-                RequestParameter.GetNewQueryStringParameter("title", title)
+                Id = json.Value<ulong>(ID_PROPERTY_NAME),
+
+                Username = json.Value<string>(USERNAME_PROPERTY_NAME),
+                Firstname = json.Value<string>(FIRSTNAME_PROPERTY_NAME),
+                Lastname = json.Value<string>(LASTNAME_PROPERTY_NAME),
+                Email = json.Value<string>(EMAIL_PROPERTY_NAME),
+
+                Status = json.Value<int>(STATUS_PROPERTY_NAME),
+
+                Gender = json.Value<string>(GENDER_PROPERTY_NAME),
+
+                Birthday = birthday,
+                InscriptionDate = joined,
+
+                Country = json.Value<string>(COUNTRY_PROPERTY_NAME),
+                Language = json.Value<string>(LANGUAGE_PROPERTY_NAME),
+
+                ProfilePictures = Api.Images.FromJson(json),
+
+                Link = json.Value<string>(LINK_PROPERTY_NAME),
+
+                IsKid = json.Value<bool>(CHILD_ACCOUNT_PROPERTY_NAME),
             };
-
-            return Client.Post<DeezerCreateResponse>("user/{id}/playlists", parms, DeezerPermissions.ManageLibrary)
-                            .ContinueWith(t => t.Result.Id);                        
         }
+    }
 
 
-        public Task<bool> AddRadioToFavourite(IRadio aRadio)
-            => AddRadioToFavourite(aRadio.Id);
 
-        public Task<bool> AddRadioToFavourite(ulong radioId)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewQueryStringParameter("radio_id", radioId),
-            };
-
-            return Client.Post("user/me/radios", parms, DeezerPermissions.ManageLibrary);
-        }
-
-        public Task<bool> RemoveRadioFromFavourite(IRadio aRadio)
-            => RemoveRadioFromFavourite(aRadio.Id);
-
-        public Task<bool> RemoveRadioFromFavourite(ulong radioId)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewQueryStringParameter("radio_id", radioId),
-            };
-
-            return Client.Delete("user/me/radios", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
-        }
-
-        public Task<bool> AddTrackToFavourite(ITrack aTrack)
-            => AddTrackToFavourite(aTrack.Id);
-
-        public Task<bool> AddTrackToFavourite(ulong trackId)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewQueryStringParameter("track_id", trackId),                
-            };
-
-            return Client.Post("user/me/tracks", parms, DeezerPermissions.ManageLibrary);
-        }
-
-        public Task<bool> RemoveTrackFromFavourite(ITrack aTrack)
-            => RemoveTrackFromFavourite(aTrack.Id);
-
-        public Task<bool> RemoveTrackFromFavourite(ulong trackId)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewQueryStringParameter("track_id", trackId),
-            };
-
-            return Client.Delete("user/me/tracks", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
-        }
-
-        public Task<bool> AddPlaylistToFavourite(IPlaylist aPlaylist)
-            => AddPlaylistToFavourite(aPlaylist.Id);
-
-        public Task<bool> AddPlaylistToFavourite(ulong playlistId)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewQueryStringParameter("playlist_id", playlistId),
-            };
-
-            return Client.Post("user/me/playlists", parms, DeezerPermissions.ManageLibrary);
-        }
-
-        public Task<bool> RemovePlaylistFromFavourite(IPlaylist aPlaylist)
-            => RemovePlaylistFromFavourite(aPlaylist.Id);
-
-        public Task<bool> RemovePlaylistFromFavourite(ulong playlistId)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewQueryStringParameter("playlist_id", playlistId),
-            };
-
-            return Client.Delete("user/me/playlists", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
-        }
-
-        public Task<bool> AddArtistToFavourite(IArtist aArtist)
-            => AddAlbumToFavourite(aArtist.Id);
+    public interface IUserV2
+    {
+        ulong Id { get; }
+        string Username { get; }
+        string Firstname { get; }
+        string Lastname { get; }
+        string EmailAddress { get; }
         
-        public Task<bool> AddArtistToFavourite(ulong artistId)
+        DateTime? Birthday { get; }
+        DateTime? Inscription { get; }
+
+        string Link { get; }
+
+        IImages ProfilePicture { get; }
+
+        string Country { get; }
+        string Language { get; }
+
+
+        Task<IEnumerable<ITrack>> Flow(CancellationToken cancellationToken, uint start = 0, uint count = 50);
+
+        Task<IEnumerable<IUserProfile>> Followers(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<IUserProfile>> Followings(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+
+        Task<IEnumerable<ITrack>> ListeningHistory(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+
+        Task<IEnumerable<IAlbum>> FavouriteAlbums(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<IArtist>> FavouriteArtists(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<IPlaylist>> FavouritePlaylists(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<ITrack>> FavouriteTracks(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<IRadio>> FavouriteRadio(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+
+        Task<IEnumerable<IAlbum>> RecommendedAlbums(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<IArtist>> RecommendedArtists(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<IPlaylist>> RecommendedPlaylists(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<ITrack>> RecommendedTracks(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<IRadio>> RecommendedRadio(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+
+
+        Task<IEnumerable<IPlaylist>> Playlists(CancellationToken cancellationToken, uint start = 0, uint count = 25);
+
+        Task<ulong> CreatePlaylist(string playlistName, CancellationToken cancellationToken);
+    }
+
+
+    internal class UserV2 : IUserV2, IClientObject
+    {
+
+        public ulong Id { get; private set; }
+        public string Username { get; private set; }
+        public string Firstname { get; private set; }
+        public string Lastname { get; private set; }
+        public string EmailAddress { get; private set; }
+
+        public DateTime? Birthday { get; private set; }
+        public DateTime? Inscription { get; private set; }
+
+        public string Link { get; private set; }
+
+        public IImages ProfilePicture { get; private set; }
+
+        public string Country { get; private set; }
+        public string Language { get; private set; }
+
+
+        // IClientObject
+        public IDeezerClient Client { get; private set; }
+
+
+        // Methods
+        public Task<IEnumerable<ITrack>> Flow(CancellationToken cancellationToken, uint start = 0, uint count = 50)
+            => this.Client.Endpoints.User.GetFlow(this.Id, cancellationToken, start, count);
+
+
+        public Task<IEnumerable<IUserProfile>> Followers(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetFollowers(this.Id, cancellationToken, start, count);
+
+        public Task<IEnumerable<IUserProfile>> Followings(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetFollowings(this.Id, cancellationToken, start, count);
+
+
+        public Task<IEnumerable<ITrack>> ListeningHistory(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetListeningHistory(cancellationToken, start, count);
+
+
+        public Task<IEnumerable<IAlbum>> FavouriteAlbums(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetFavouriteAlbums(this.Id, cancellationToken, start, count);
+
+        public Task<IEnumerable<IArtist>> FavouriteArtists(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetFavouriteArtists(this.Id, cancellationToken, start, count);
+
+        public Task<IEnumerable<IPlaylist>> FavouritePlaylists(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetFavouritePlaylists(this.Id, cancellationToken, start, count);
+
+        public Task<IEnumerable<ITrack>> FavouriteTracks(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetFavouriteTracks(this.Id, cancellationToken, start, count);
+
+        public Task<IEnumerable<IRadio>> FavouriteRadio(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetFavouriteRadio(this.Id, cancellationToken, start, count);
+
+
+        public Task<IEnumerable<IAlbum>> RecommendedAlbums(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetRecommendedAlbums(cancellationToken, start, count);
+
+        public Task<IEnumerable<IArtist>> RecommendedArtists(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetRecommendedArtists(cancellationToken, start, count);
+
+        public Task<IEnumerable<IPlaylist>> RecommendedPlaylists(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetRecommendedPlaylists(cancellationToken, start, count);
+
+        public Task<IEnumerable<ITrack>> RecommendedTracks(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetRecommendedTracks(cancellationToken, start, count);
+
+        public Task<IEnumerable<IRadio>> RecommendedRadio(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetRecommendedRadio(cancellationToken, start, count);
+
+
+        public Task<IEnumerable<IPlaylist>> Playlists(CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.Client.Endpoints.User.GetPlaylists(cancellationToken, start, count);
+
+
+        public Task<ulong> CreatePlaylist(string playlistName, CancellationToken cancellationToken)
+            => this.Client.Endpoints.Playlists.CreatePlaylist(playlistName, cancellationToken);
+
+
+
+        // JSON
+        internal const string ID_PROPERTY_NAME = "id";
+        internal const string USERNAME_PROPERTY_NAME = "name";
+        internal const string FIRSTNAME_PROPERTY_NAME = "firstname";
+        internal const string LASTNAME_PROPERTY_NAME = "lastname";
+        internal const string EMAIL_PROPERTY_NAME = "email";
+        internal const string BIRTHDAY_PROPERTY_NAME = "birthday";
+        internal const string INSCRIPTION_PROPERTY_NAME = "inscription";
+        internal const string LINK_PROPERTY_NAME = "link";
+        internal const string COUNTRY_PROPERTY_NAME = "country";
+        internal const string LANGUAGE_PROPERTY_NAME = "lang";
+
+        // TODO: Make this a public available thing? 
+        //       OR at least, available to the rest of the library
+        internal const string API_DATE_FORMAT = "YYYY-MM-DD";
+        internal const string DEFAULT_BIRTHDAY = "0000-00-00";
+
+        // TODO IsKid
+        // TODO: Gender. Would likely be parsed into an enum (M, F, Unknown/Not Specified
+        // TODO: status. Returns int, but docs don't specify anything about it's values
+        // TODO: explicit status ATM. Would need to generate ENUM from returned values to make it easier to user
+
+
+        public static IUserV2 FromJson(JToken json, IDeezerClient client)
         {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
+            var birthdayDate = json.Value<string>(BIRTHDAY_PROPERTY_NAME);
+
+            DateTime? birthdayAsDateTime = birthdayDate == DEFAULT_BIRTHDAY ? (DateTime?)null
+                                                                            : DateTime.ParseExact(birthdayDate, API_DATE_FORMAT, CultureInfo.InvariantCulture);
+
+            var inscriptionDateStr = json.Value<string>(INSCRIPTION_PROPERTY_NAME);
+            DateTime? inscriptionDate = null;
+
+            if (inscriptionDateStr != null)
             {
-                RequestParameter.GetNewQueryStringParameter("artist_id", artistId),
-            };
-
-            return Client.Post("user/me/artists", parms, DeezerPermissions.ManageLibrary);
-        }
-
-        public Task<bool> RemoveArtistFromFavourite(IArtist aArtist)
-            => RemoveArtistFromFavourite(aArtist.Id);
-
-        public Task<bool> RemoveArtistFromFavourite(ulong artistId)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewQueryStringParameter("artist_id", artistId),
-            };
-
-            return Client.Delete("user/me/artists", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
-        }
-
-        public Task<bool> AddAlbumToFavourite(IAlbum aAlbum)
-            => AddAlbumToFavourite(aAlbum.Id);
-
-        public Task<bool> AddAlbumToFavourite(ulong albumId)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewQueryStringParameter("album_id", albumId),
-            };
-
-            return Client.Post("user/me/albums", parms, DeezerPermissions.ManageLibrary);
-        }
-
-        public Task<bool> RemoveAlbumFromFavourite(IAlbum aAlbum)
-            => RemoveArtistFromFavourite(aAlbum.Id);
-
-        public Task<bool> RemoveAlbumFromFavourite(ulong albumId)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewQueryStringParameter("album_id", albumId),
-            };
-
-            return Client.Delete("user/me/albums", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
-        }
-
-
-
-        private Task<IEnumerable<TDest>> Get<TSource, TDest>(string aMethod, DeezerPermissions aPermisisons, uint aStart, uint aCount) where TSource : TDest, IDeserializable<IDeezerClient>
-        {
-
-            //TODO -> We should really have a Client.GET<T> that accepts a permissions check....
-            if (!Client.IsAuthenticated)
-            {
-                throw new NotLoggedInException();
+                inscriptionDate = DateTime.ParseExact(json.Value<string>(INSCRIPTION_PROPERTY_NAME), API_DATE_FORMAT, CultureInfo.InvariantCulture);
             }
-            if (!Client.HasPermission(aPermisisons)) { throw new DeezerPermissionsException(aPermisisons); }
 
-            string method = string.Format("user/me/{0}", aMethod);
-            return Client.Get<TSource>(method, aStart, aCount).ContinueWith<IEnumerable<TDest>>((aTask) =>
+            return new UserV2()
             {
-                return Client.Transform<TSource, TDest>(aTask.Result);
-            }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-        }
+                Id = json.Value<ulong>(ID_PROPERTY_NAME),
+                Username = json.Value<string>(USERNAME_PROPERTY_NAME),
+                Firstname = json.Value<string>(FIRSTNAME_PROPERTY_NAME),
+                Lastname = json.Value<string>(LASTNAME_PROPERTY_NAME),
+                EmailAddress = json.Value<string>(EMAIL_PROPERTY_NAME),
 
+                Birthday = birthdayAsDateTime,
+                Inscription = inscriptionDate,
+
+                ProfilePicture = Images.FromJson(json),
+
+                Country = json.Value<string>(COUNTRY_PROPERTY_NAME),
+                Language = json.Value<string>(LANGUAGE_PROPERTY_NAME),
+
+                Link = json.Value<string>(LINK_PROPERTY_NAME),
+
+
+                Client = client,
+            };
+        }
     }
 }

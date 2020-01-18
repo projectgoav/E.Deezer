@@ -3,371 +3,221 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using System.Threading;
 using System.Threading.Tasks;
 
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+using E.Deezer.Api.Internal;
 
 namespace E.Deezer.Api
 {
-	public interface IPlaylist : IObjectWithImage
+	public interface IPlaylist
     {
 		ulong Id { get; }
-        uint Fans { get; }
+        uint NumberOfFans { get; }
         int Rating { get; }
         string Link { get; }
         string Title { get; }
         bool IsPublic { get; }
         uint Duration { get; }
-        uint TrackCount { get; }
+        uint NumberOfTracks { get; }
         string ShareLink { get; }
         bool IsLovedTrack { get; }
-        string CreatorName { get; }
         string Description { get; }
+        IImages Images { get; }
         IUserProfile Creator { get; }
         bool IsCollaborative { get; }
+
+
+        //TODO
         uint UnseenTrackCount { get; }
 
 
-        [Obsolete("Use of IsPublic is encouraged")]
-        bool Public { get; }
+        Task<IEnumerable<ITrack>> Tracks(CancellationToken cancellationToken, uint start = 0, uint count = 50);
 
-        [Obsolete("Use of TrackCount is encouraged")]
-        uint NumTracks { get; }
+        Task<IEnumerable<IUserProfile>> Fans(CancellationToken cancellationToken, uint start = 0, uint count = 10);
+
+        Task<IEnumerable<IComment>> Comments(CancellationToken cancellationToken, uint start = 0, uint count = 10);
 
 
-        Task<IEnumerable<ITrack>> GetTracks(uint aStart = 0, uint aCount = uint.MaxValue);
+        Task<bool> Rate(DeezerRating rating, CancellationToken cancellationToken);
 
-        Task<bool> Rate(int aRating);
+        Task<ulong> CommentOn(string commentText, CancellationToken cancellationToken);
 
-        Task<bool> SetSeen();
 
-        Task<IEnumerable<IUserProfile>> GetFans(uint aStart = 0, uint aCount = 25);
+        Task<bool> Favourite(CancellationToken cancellationToken);
+        Task<bool> Unfavourite(CancellationToken cancellationToken);
 
-        Task<IEnumerable<IComment>> GetComments(uint aStart = 0, uint aCount = 10);
+        Task<bool> SetSeen(CancellationToken cancellationToken);
 
-        //Manage Tracks
-        Task<bool> AddTrack(ITrack aTrack);
-        Task<bool> AddTrack(ulong aTrackId);
 
-        Task<bool> AddTracks(IEnumerable<ITrack> aTracks);
-        Task<bool> AddTracks(IEnumerable<ulong> aTrackIds);
-        Task<bool> AddTracks(string aTrackIds);
+        Task<bool> AddTrack(ITrack track, CancellationToken cancellationToken);
+        Task<bool> AddTrack(ulong trackId, CancellationToken cancellationToken);
 
-        Task<bool> RemoveTrack(ITrack aTrack);
-        Task<bool> RemoveTrack(ulong aTrackId);
+        Task<bool> AddTracks(IEnumerable<ITrack> tracks, CancellationToken cancellationToken);
+        Task<bool> AddTracks(IEnumerable<ulong> trackIds, CancellationToken cancellationToken);
 
-        Task<bool> RemoveTracks(IEnumerable<ITrack> aTracks);
-        Task<bool> RemoveTracks(IEnumerable<ulong> aTrackIds);
-        Task<bool> RemoveTracks(string aTrackIds);
 
-        Task<bool> AddPlaylistToFavorite();
-        Task<bool> RemovePlaylistFromFavorite();
+        Task<bool> RemoveTrack(ITrack track, CancellationToken cancellationToken);
+        Task<bool> RemoveTrack(ulong trackId, CancellationToken cancellationToken);
 
-        Task<bool> AddComment(string commentText);
+        Task<bool> RemoveTracks(IEnumerable<ITrack> tracks, CancellationToken cancellationToken);
+        Task<bool> RemoveTracks(IEnumerable<ulong> trackIds, CancellationToken cancellationToken);
+
     }
 
-	internal class Playlist : ObjectWithImage, IPlaylist, IDeserializable<IDeezerClient>
-	{
-		public ulong Id
-        {
-            get;
-            set;
-        }
+    internal class Playlist : IPlaylist, IClientObject
+    {
+        public ulong Id { get; private set; }
 
-		public string Title
-        {
-            get;
-            set;
-        }
+        public string Title { get; private set; }
 
-        public string Description
-        {
-            get;
-            set;
-        }
+        public string Description { get; private set; }
 
-		public string Link
-        {
-            get;
-            set;
-        }
+        public string Link { get; private set; }
 
-        public uint Duration
-        {
-            get;
-            set;
-        }
+        public uint Duration { get; private set; }
 
-        public int Rating
-        {
-            get;
-            set;
-        }
+        public int Rating { get; private set; }
 
-        public uint Fans
-        {
-            get;
-            set;
-        }
+        public uint NumberOfFans { get; private set; }
+
+        public IUserProfile Creator { get; private set; }
+
+        public bool IsPublic { get; private set; }
+
+        public bool IsCollaborative { get; private set; }
+
+        public uint UnseenTrackCount { get; private set; }
+
+        public string ShareLink { get; private set; }
+
+        public uint NumberOfTracks { get; private set; }
+
+        public bool IsLovedTrack { get; private set; }
+
+        public IImages Images { get; private set; }
+
+        internal IEnumerable<ITrack> TracklistInternal { get; private set; }
 
 
-        public IUserProfile Creator => CreatorInternal;
-
-        public string CreatorName => CreatorInternal?.Username;
-
-
-        [Obsolete("Use of IsPublic is encouraged")]
-        public bool Public => IsPublic;
-
-        [Obsolete("User of TrackCount is encouraged")]
-        public uint NumTracks => TrackCount;
+        // IClientObject
+        public IDeezerClient Client { get; private set; }
 
 
-        [JsonProperty(PropertyName = "public")]
-        public bool IsPublic
-        {
-            get;
-            set;
-        }
+        public Task<IEnumerable<ITrack>> Tracks(CancellationToken cancellationToken, uint start = 0, uint count = 50)
+            => this.Client.Endpoints.Playlists.GetTracks(this, cancellationToken, start, count);
 
-        [JsonProperty(PropertyName = "collaborative")]
-        public bool IsCollaborative
-        {
-            get;
-            set;
-        }
+        public Task<IEnumerable<IUserProfile>> Fans(CancellationToken cancellationToken, uint start = 0, uint count = 10)
+            => this.Client.Endpoints.Playlists.GetFans(this, cancellationToken, start, count);
 
-        [JsonProperty(PropertyName = "unseen_track_count")]
-        public uint UnseenTrackCount
-        {
-            get;
-            set;
-        }
-
-        [JsonProperty(PropertyName = "share")]
-        public string ShareLink
-        {
-            get;
-            set;
-        }
-
-        [JsonProperty(PropertyName = "nb_tracks")]
-        public uint TrackCount
-        {
-            get;
-            set;
-        }
-
-        [JsonProperty(PropertyName = "is_loved_track")]
-        public bool IsLovedTrack
-        {
-            get;
-            set;
-        }
-
-		[JsonProperty(PropertyName = "creator")]
-		public UserProfile CreatorInternal
-        {
-            get; 
-            set;
-        }
-
-        
-        //IDeserializable
-    	public IDeezerClient Client
-        {
-            get;
-            set;
-        }
-
-		public void Deserialize(IDeezerClient aClient)
-        {
-            Client = aClient;
-            CreatorInternal?.Deserialize(aClient);
-        }
+        public Task<IEnumerable<IComment>> Comments(CancellationToken cancellationToken, uint start = 0, uint count = 10)
+            => this.Client.Endpoints.Playlists.GetComments(this, cancellationToken, start, count);
 
 
-		public Task<IEnumerable<ITrack>> GetTracks(uint aStart, uint aCount)
-		{
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewUrlSegmentParamter("id", Id)
-            };
+        public Task<bool> Rate(DeezerRating rating, CancellationToken cancellationToken)
+            => this.Client.Endpoints.Playlists.RatePlaylist(this, rating, cancellationToken);
 
-            return Client.Get<Track>("playlist/{id}/tracks", parms, aStart, aCount).ContinueWith<IEnumerable<ITrack>>((aTask) =>
-            {
-                return Client.Transform<Track, ITrack>(aTask.Result);
-            }, Client.CancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-		}
-
-        public Task<bool> Rate(int aRating)
-        {
-            if (aRating < 1 || aRating > 5) { throw new ArgumentOutOfRangeException("aRating", "Rating value should be between 1 and 5 (inclusive)"); }
-
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewUrlSegmentParamter("id", Id),
-                RequestParameter.GetNewQueryStringParameter("note", aRating)
-            };
-
-            return Client.Post("playlist/{id}", parms, DeezerPermissions.BasicAccess);
-        }
-
-
-        public Task<bool> AddTrack(ITrack aTrack)
-            => AddTrack(aTrack.Id);
-
-        public Task<bool> AddTrack(ulong aTrackId)
-            => AddTracks(aTrackId.ToString());
-
-
-        public Task<bool> AddTracks(IEnumerable<ulong> aTrackIds)
-        {
-            if (aTrackIds.Count() > 0)
-            {
-                return AddTracks(string.Join(",", aTrackIds.Select((v) => v.ToString())));
-            }
-            else
-            {
-                throw new ArgumentException("Must provide at least one track ID", "aTrackIds");
-            }
-
-        }
-
-        public Task<bool> AddTracks(IEnumerable<ITrack> aTracks)
-        {
-            if (aTracks.Count() > 0)
-            {
-                return AddTracks(string.Join(",", aTracks.Select((v) => v.Id.ToString())));
-            }
-            else
-            {
-                throw new ArgumentException("Must provide at least one track ID", "aTrackIds");
-            }
-        }
-
-        public Task<bool> AddTracks(string aTrackIds)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewUrlSegmentParamter("playlist_id", Id),
-                RequestParameter.GetNewQueryStringParameter("songs", aTrackIds)
-            };
-
-            return Client.Post("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary);
-        }
-
-
-        public Task<bool> RemoveTrack(ITrack aTrack) 
-            => RemoveTrack(aTrack.Id);
-
-        public Task<bool> RemoveTrack(ulong aTrackId)
-            => RemoveTracks(aTrackId.ToString());
-
-
-        public Task<bool> RemoveTracks(IEnumerable<ulong> aTrackIds)
-        {
-            if (aTrackIds.Count() > 0)
-            {
-                return RemoveTracks(string.Join(",", aTrackIds.Select((v) => v.ToString())));
-            }
-            else
-            {
-                throw new ArgumentException("Must provide at least one track ID", "aTrackIds");
-            }
-
-        }
-
-        public Task<bool> RemoveTracks(IEnumerable<ITrack> aTracks)
-        {
-            if (aTracks.Count() > 0)
-            {
-                return RemoveTracks(string.Join(",", aTracks.Select((v) => v.Id.ToString())));
-            }
-            else
-            {
-                throw new ArgumentException("Must provide at least one track ID", "aTrackIds");
-            }
-        }
-
-        public Task<bool> RemoveTracks(string aTrackIds)
-        {
-            List<IRequestParameter> parms = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewUrlSegmentParamter("playlist_id", Id),
-                RequestParameter.GetNewQueryStringParameter("songs", aTrackIds)
-            };
-
-            return Client.Delete("playlist/{playlist_id}/tracks", parms, DeezerPermissions.ManageLibrary | DeezerPermissions.DeleteLibrary);
-        }
-
-        public Task<bool> AddPlaylistToFavorite() 
-            => Client.User.AddPlaylistToFavourite(Id);
-
-        public Task<bool> RemovePlaylistFromFavorite()
-            => Client.User.RemovePlaylistFromFavourite(Id);
-        
-        
-        public Task<bool> AddComment(string commentText)
-        {
-            if(string.IsNullOrEmpty(commentText))
-            {
-                throw new ArgumentException("A comment is required.");
-            }
-
-            List<IRequestParameter> p = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewUrlSegmentParamter("id", this.Id),
-                RequestParameter.GetNewQueryStringParameter("comment", commentText),
-            };
-
-            return Client.Post("playlist/{id}/comments", p, DeezerPermissions.BasicAccess);
-        }
+        public Task<ulong> CommentOn(string commentText, CancellationToken cancellationToken)
+            => this.Client.Endpoints.Playlists.CommentOnPlaylist(this, commentText, cancellationToken);
 
 
 
-        public Task<bool> SetSeen()
-        {
-            List<IRequestParameter> p = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewUrlSegmentParamter("id", this.Id),
-            };
+        public Task<bool> Favourite(CancellationToken cancellationToken)
+            => this.Client.Endpoints.User.FavouritePlaylist(this, cancellationToken);
 
-            return Client.Post("playlist/{id}/seen", p, DeezerPermissions.BasicAccess);
-        }
+        public Task<bool> Unfavourite(CancellationToken cancellationToken)
+            => this.Client.Endpoints.User.UnfavouritePlaylist(this, cancellationToken);
 
 
-        public Task<IEnumerable<IUserProfile>> GetFans(uint aStart = 0, uint aCount = 25)
-        {
-            List<IRequestParameter> p = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewUrlSegmentParamter("id", this.Id)
-            };
 
-            return Client.Get<UserProfile>("playlist/{id}/fans", p, aStart, aCount)
-                         .ContinueWith<IEnumerable<IUserProfile>>(task => Client.Transform<UserProfile, IUserProfile>(task.Result),
-                                                                  Client.CancellationToken,
-                                                                  TaskContinuationOptions.NotOnCanceled,
-                                                                  TaskScheduler.Default);
-        }
+        public Task<bool> SetSeen(CancellationToken cancellationToken)
+            => this.Client.Endpoints.Playlists.SetPlaylistSeen(this, cancellationToken);
 
-        public Task<IEnumerable<IComment>> GetComments(uint aStart = 0, uint aCount = 10)
-        {
-            List<IRequestParameter> p = new List<IRequestParameter>()
-            {
-                RequestParameter.GetNewUrlSegmentParamter("id", this.Id)
-            };
 
-            return Client.Get<Comment>("playlist/{id}/comments", p, aStart, aCount)
-                         .ContinueWith<IEnumerable<IComment>>(task => Client.Transform<Comment, IComment>(task.Result),
-                                                                  Client.CancellationToken,
-                                                                  TaskContinuationOptions.NotOnCanceled,
-                                                                  TaskScheduler.Default);
-        }
+        public Task<bool> AddTrack(ITrack track, CancellationToken cancellationToken)
+            => this.Client.Endpoints.Playlists.AddTrackTo(this, track, cancellationToken);
 
+        public Task<bool> AddTrack(ulong trackId, CancellationToken cancellationToken)
+            => this.Client.Endpoints.Playlists.AddTrackTo(this, trackId, cancellationToken);
+
+
+        public Task<bool> AddTracks(IEnumerable<ITrack> tracks, CancellationToken cancellationToken)
+            => this.Client.Endpoints.Playlists.AddTracksTo(this, tracks, cancellationToken);
+
+        public Task<bool> AddTracks(IEnumerable<ulong> trackIds, CancellationToken cancellationToken)
+            => this.Client.Endpoints.Playlists.AddTracksTo(this, trackIds, cancellationToken);
+
+
+
+        public Task<bool> RemoveTrack(ITrack track, CancellationToken cancellationToken)
+            => this.Client.Endpoints.Playlists.RemoveTrackFrom(this, track, cancellationToken);
+
+        public Task<bool> RemoveTrack(ulong trackId, CancellationToken cancellationToken)
+            => this.Client.Endpoints.Playlists.RemoveTrackFrom(this, trackId, cancellationToken);
+
+
+        public Task<bool> RemoveTracks(IEnumerable<ITrack> tracks, CancellationToken cancellationToken)
+            => this.Client.Endpoints.Playlists.RemoveTracksFrom(this, tracks, cancellationToken);
+
+        public Task<bool> RemoveTracks(IEnumerable<ulong> trackIds, CancellationToken cancellationToken)
+            => this.Client.Endpoints.Playlists.RemoveTracksFrom(this, trackIds, cancellationToken);
 
 
         public override string ToString()
-            => string.Format("E.Deezer: Playlist({0} [{1}])", Title, CreatorName);     
+            => string.Format("E.Deezer: Playlist({0} [{1}])", Title, Creator?.Username ?? "<UNKOWN>");
+
+
+        //JSON
+        internal const string ID_PROPERTY_NAME = "id";
+        internal const string TITLE_PROPERTY_NAME = "title";
+        internal const string DESCRIPTION_PROPERTY_NAME = "description";
+        internal const string DURATION_PROPERTY_NAME = "duration";
+        internal const string PUBLIC_PROPERTY_NAME = "public";
+        internal const string LOVED_TRACKS_PROPERTY_NAME = "is_loved_track";
+        internal const string COLLABORATIVE_PROPERTY_NAME = "collaborative";
+        internal const string TRACK_COUNT_PROPERTY_NAME = "nb_tracks";
+        internal const string FANS_PROPERTY_NAME = "fans";
+        internal const string LINK_PROPERTY_NAME = "link";
+        internal const string SHARE_LINK_PROPERTY_NAME = "share";
+        internal const string CREATOR_PROPERTY_NAME = "creator";
+        internal const string USER_PROPERTY_NAME = "user";
+        internal const string TRACKS_PROPERTY_NAME = "tracks";
+
+
+        // TODO: UnseenTrackCount
+        // TODO: CreationDate
+        // TODO: Rating
+
+        public static IPlaylist FromJson(JToken json, IDeezerClient client)
+        {
+            return new Playlist()
+            {
+                Id = ulong.Parse(json.Value<string>(ID_PROPERTY_NAME)),
+
+                Title = json.Value<string>(TITLE_PROPERTY_NAME),
+                Description = json.Value<string>(DESCRIPTION_PROPERTY_NAME),
+
+                IsPublic = json.Value<bool>(PUBLIC_PROPERTY_NAME),
+                IsCollaborative = json.Value<bool>(COLLABORATIVE_PROPERTY_NAME),
+                IsLovedTrack = json.Value<bool>(LOVED_TRACKS_PROPERTY_NAME),
+
+                Duration = json.Value<uint>(DURATION_PROPERTY_NAME),
+
+                NumberOfFans = json.Value<uint>(FANS_PROPERTY_NAME),
+                NumberOfTracks = json.Value<uint>(TRACK_COUNT_PROPERTY_NAME),
+
+                Link = json.Value<string>(LINK_PROPERTY_NAME),
+                ShareLink = json.Value<string>(SHARE_LINK_PROPERTY_NAME),
+
+                Images = Api.Images.FromJson(json),
+
+                Creator = Api.UserProfile.FromJson(json[CREATOR_PROPERTY_NAME], client) ?? Api.UserProfile.FromJson(json[USER_PROPERTY_NAME], client),
+                TracklistInternal = FragmentOf<ITrack>.FromJson(json[TRACKS_PROPERTY_NAME], x => Api.Track.FromJson(x, client)),
+
+                Client = client,
+            };
+        }
     }
 }

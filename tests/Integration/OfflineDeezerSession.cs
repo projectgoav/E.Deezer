@@ -14,7 +14,7 @@ namespace E.Deezer.Tests.Integration
         private OfflineDeezerSession(OfflineMessageHandler messageHandler)
         {
             MessageHandler = messageHandler;
-            Library = DeezerSession.CreateNew(MessageHandler);
+            //Library = DeezerSession.CreateNew(MessageHandler);
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace E.Deezer.Tests.Integration
         /// Gets the actual API wrapper which will never
         /// call the live Deezer API.
         /// </summary>
-        public Deezer Library { get; }
+        //public Deezer Library { get; }
 
         /// <summary>
         /// Gets a session which can only work with
@@ -46,8 +46,8 @@ namespace E.Deezer.Tests.Integration
             var session = new OfflineDeezerSession(
                 new OfflineAuthenticationMessageHandler());
 
-            session.Library.Login("fake-token")
-                .GetAwaiter().GetResult();
+            //session.Library.Login("fake-token")
+            //    .GetAwaiter().GetResult();
 
             return session;
         }
