@@ -249,29 +249,30 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                                  .Message);
         }
 
-        /* FIX ME: UserProfile .GetById support
         [Test]
         public void GetUserById()
         {
-            IUserProfile user = session.User.GetUserById(5u, CancellationToken.None)    
+            IUserProfile user = session.User.GetById(5u, CancellationToken.None)    
                                             .Result;
-
 
             Assert.IsNotNull(user, nameof(user));
             Assert.AreEqual(5, user.Id, nameof(user.Id));
             Assert.AreEqual("Daniel Marhely", user.Username, nameof(user.Username));
-            Assert.AreEqual("https://www.deezer.com/profile/5", user.ShareLink, nameof(user.ShareLink));
+            Assert.AreEqual("https://www.deezer.com/profile/5", user.Link, nameof(user.Link));
             Assert.AreEqual("JP", user.Country, nameof(user.Country));
         }
 
         [Test]
         public void GetUserByIdWithNonExistingIdShouldThrowException()
         {
-            var ex = Assert.ThrowsAsync<DeezerException>(
-                async () => await _browse.GetUserById(1u));
+            var ex = Assert.Throws<AggregateException>(() => session.User.GetById(1u, CancellationToken.None)
+                                                                         .Wait());
 
-            Assert.AreEqual(DeezerException.NOT_FOUND_MESSAGE, ex.Message);
+            Assert.That(ex.GetBaseException() is DeezerException);
+
+            Assert.AreEqual(DeezerException.NOT_FOUND_MESSAGE, ex.GetBaseException()
+                                                                 .Message);
         }
-        */
+
     }
 }

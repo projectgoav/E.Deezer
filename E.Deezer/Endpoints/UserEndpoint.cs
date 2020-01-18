@@ -13,6 +13,8 @@ namespace E.Deezer.Endpoints
 {
     public interface IUserEndpoint
     {
+        Task<IUserProfile> GetById(ulong userId, CancellationToken cancellationToken);
+
         Task<IEnumerable<ITrack>> GetFlow(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 50);
         Task<IEnumerable<ITrack>> GetFlow(ulong userId, CancellationToken cancellationToken, uint start = 0, uint count = 50);
 
@@ -102,6 +104,12 @@ namespace E.Deezer.Endpoints
             this.client = client;
         }
 
+
+
+        public Task<IUserProfile> GetById(ulong userId, CancellationToken cancellationToken)
+            => this.client.Get($"user/{userId}",
+                               cancellationToken,
+                               json => Api.UserProfile.FromJson(json, this.client));
 
 
         public Task<IEnumerable<ITrack>> GetFlow(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 50)

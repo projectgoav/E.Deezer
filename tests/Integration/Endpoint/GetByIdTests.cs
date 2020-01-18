@@ -189,23 +189,20 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.AreEqual("https://www.deezer.com/mixes/genre/6?utm_source=deezer&utm_content=mixes-genre-6&utm_term=0_1562079884&utm_medium=web", radio.ShareLink, nameof(radio.ShareLink));
         }
 
-        /*
+        
         [Test]
         public void GetUserById()
         {
             handler.Content = base.GetServerResponse("user");
 
-
-            IUserProfile user = session.User.GetUserById(DUMMY_ID, CancellationToken.None)
+            IUserProfile user = session.User.GetById(DUMMY_ID, CancellationToken.None)
                                             .Result;
-
 
             Assert.IsNotNull(user, nameof(user));
             Assert.AreEqual(5, user.Id, nameof(user.Id));
             Assert.AreEqual("Daniel Marhely", user.Username, nameof(user.Username));
-            Assert.AreEqual("https://www.deezer.com/profile/5", user.ShareLink, nameof(user.ShareLink));
+            Assert.AreEqual("https://www.deezer.com/profile/5", user.Link, nameof(user.Link));
             Assert.AreEqual("JP", user.Country, nameof(user.Country));
         }
-        */
     }
 }
