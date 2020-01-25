@@ -13,36 +13,25 @@ namespace E.Deezer
     public interface IDeezerSession : IDisposable
     {
         // Authentication stuff...
-        /*
+        ulong CurrentUserId { get; }
         bool IsAuthenticated { get; }
-        string CurrentAccessToken { get; }
-
-        //TODO: Something like the below??
-        //IUser CurrentUserProfile { get; }
-        DeezerPermissions CurrentPermissions { get; }
-
-        bool HasPermissions(DeezerPermissions permissions);
-
-        //TODO: An authentication event?
-        Task<bool> Logout();
-        */
 
         Task<bool> Login(string accessToken, CancellationToken cancellationToken);
+        Task<bool> Logout(CancellationToken cancellationToken);
 
 
-    
+
         // References to the Client...
         IAlbumEndpoint Albums { get; }
         IArtistEndpoint Artists { get; }
-       
         IChartsEndpoint Charts { get; }
+        ICommentsEndpoint Comments { get; }
         IGenreEndpoint Genre { get; }
-
         IPlaylistsEndpoint Playlists { get; }
+        IRadioEndpoint Radio { get; }
         ITrackEndpoint Tracks { get; }
-
+        IUserEndpoint User { get; }
         ISearchEndpoint Search { get; }
-
     }
 
 
@@ -55,6 +44,9 @@ namespace E.Deezer
     }
 
 
+    //TODO: If we made all the client methods extensions from it with 
+    //      namespace opt-in, then we could intheory get rid of this class
+    //      as it really only forwards methods onto other class(es)....
     public class DeezerSession : IDeezerSession
     {
         private readonly DeezerClient client;

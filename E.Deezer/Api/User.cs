@@ -274,9 +274,6 @@ namespace E.Deezer.Api
         internal const string COUNTRY_PROPERTY_NAME = "country";
         internal const string LANGUAGE_PROPERTY_NAME = "lang";
 
-        // TODO: Make this a public available thing? 
-        //       OR at least, available to the rest of the library
-        internal const string API_DATE_FORMAT = "YYYY-MM-DD";
         internal const string DEFAULT_BIRTHDAY = "0000-00-00";
 
         // TODO IsKid
@@ -290,14 +287,14 @@ namespace E.Deezer.Api
             var birthdayDate = json.Value<string>(BIRTHDAY_PROPERTY_NAME);
 
             DateTime? birthdayAsDateTime = birthdayDate == DEFAULT_BIRTHDAY ? (DateTime?)null
-                                                                            : DateTime.ParseExact(birthdayDate, API_DATE_FORMAT, CultureInfo.InvariantCulture);
+                                                                            : DateTimeExtensions.ParseApiDateTime(birthdayDate);
 
             var inscriptionDateStr = json.Value<string>(INSCRIPTION_PROPERTY_NAME);
             DateTime? inscriptionDate = null;
 
             if (inscriptionDateStr != null)
             {
-                inscriptionDate = DateTime.ParseExact(json.Value<string>(INSCRIPTION_PROPERTY_NAME), API_DATE_FORMAT, CultureInfo.InvariantCulture);
+                inscriptionDate = DateTimeExtensions.ParseApiDateTime(inscriptionDateStr);
             }
 
             return new UserV2()

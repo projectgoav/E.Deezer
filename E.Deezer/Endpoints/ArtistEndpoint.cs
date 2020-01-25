@@ -137,6 +137,7 @@ namespace E.Deezer.Endpoints
             if (!artist.HasSmartRadio)
             {
                 //TODO: Assert or throw exception here??
+                //TODO: Is null a correct value, perhaps we should return an empty list?
                 return Task.FromResult<IEnumerable<ITrack>>(null);
             }
 
