@@ -47,7 +47,7 @@ namespace E.Deezer
     }
 
 
-    internal interface IAuthenticationServiceInternal
+    internal interface IAuthenticationServiceInternal : IDisposable
     {
         bool HasPermission(DeezerPermissions requestedPermission);
 
@@ -62,24 +62,27 @@ namespace E.Deezer
         private const uint PERMISSION_ERROR_CODE = 200;
         private const uint INVALID_TOKEN_ERROR_CODE = 300;
 
+        private static readonly CancellationToken PRE_CANCELLED_TOKEN = new CancellationToken(canceled: true);
+
 
         private readonly object lockObj;
         private readonly IDeezerClient client;
-        private readonly ExecutorService executorService;
 
-
+        private Task<bool> inflightAuthTask;
         private AuthenticationStatus currentAuthStatus;
+        private CancellationTokenSource cancellationTokenSource;
+
 
         public AuthenticationService(IDeezerClient client)
         {
             this.client = client;
 
             this.lockObj = new object();
+            this.inflightAuthTask = Task.FromResult<bool>(false);
         }
 
 
-        private CancellationToken CancellationToken => CancellationToken.None;
-
+        private CancellationToken CancellationToken => this.cancellationTokenSource.GetCancellationTokenSafe();
 
         // IAuthenticationService
         public IUserV2 CurrentUser { get; private set; }
@@ -94,53 +97,32 @@ namespace E.Deezer
 
         public Task<bool> Login(string accessToken, CancellationToken cancellationToken)
         {
-            LogoutInternal();
-
             lock (this.lockObj)
             {
+                // Tokens match so don't do anything
+                if (this.AccessToken == accessToken)
+                {
+                    return Task.FromResult<bool>(true);
+                }
+
+                LogoutInternal();
+
                 this.AccessToken = accessToken;
+
+                CancelInflightTask();
+
+                this.cancellationTokenSource = new CancellationTokenSource();
             }
+
+            RaiseAuthenticationStateChanged(AuthenticationStatus.LoggingIn);
 
             string resource = $"user/me?{GetAccessTokenQueryString()}";
 
-            //TODO: We should store this as an inflight task
-            //      So, should a user request a method that requires permissions
-            //      We can evalute it AFTER the permissions tasks have completed!
-
-            //TODO: Raise new status changed for the Logging-In state?
-            return this.client.Get(resource, this.CancellationToken, json => Api.UserV2.FromJson(json, this.client))
-                              .ContinueWith(async t =>
-                              {
-                                  if (t.IsFaulted)
-                                  {
-                                      return false;
-                                  }
-
-                                  this.CurrentUser = t.Result;
-
-                                  try
-                                  {
-                                      this.UserPermissions = await GetUserPermissions();
-
-                                      if (this.UserPermissions == null)
-                                      {
-                                          return false;
-                                      }
-                                  }
-                                  catch
-                                  {
-                                      // Something went wrong fetching user permissions
-                                      // TODO: Should we log something to the terminal??
-                                      // In theory, the underlying client will catch any issues when deserializing
-                                      return false;
-                                  }
-
-
-                                  RaiseAuthenticationStateChanged(AuthenticationStatus.Authenticated);
-                                  return true;
-
-                              }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default)
-                              .Unwrap();
+            this.inflightAuthTask = this.client.Get(resource, this.CancellationToken, json => Api.UserV2.FromJson(json, this.client))
+                                               .ContinueWith(OnLoginComplete)
+                                               .Unwrap();
+                                             
+            return this.inflightAuthTask;
         }
 
         public Task<bool> Logout(CancellationToken cancellationToken)
@@ -150,34 +132,17 @@ namespace E.Deezer
         }
 
 
-        private Task<IPermissions> GetUserPermissions()
-        {
-            string resource = $"user/me/permissions?{GetAccessTokenQueryString()}";
-
-            return this.client.Get(resource, this.CancellationToken, OAuthPermissions.FromJson)
-                              .ContinueWith(t =>
-                              {
-                                  return t.IsFaulted ? null
-                                                     : t.Result;
-                              }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-        }
 
 
         // IAuthenticationServiceInternal
         public bool HasPermission(DeezerPermissions requestedPermission)
-        {
-            if (this.UserPermissions == null)
-            {
-                return false;
-            }
+            => this.UserPermissions != null && this.UserPermissions.HasPermission(requestedPermission);
 
-            return this.UserPermissions.HasPermission(requestedPermission);
-        }
 
         public string GetAccessTokenQueryString()
             => $"access_token={this.AccessToken}";
 
-        // TODO: Audit this and make sure we do stuff correctly...
+
         public bool LogoutIfAuthenticationError(IError error)
         {
             switch(error.Code)
@@ -217,6 +182,73 @@ namespace E.Deezer
                 }
 
                 this.OnAuthenticationStateChanged?.Invoke(oldStatus, incomingStatus, this.CurrentUser);
+            }
+        }
+
+
+
+        private Task<bool> OnLoginComplete(Task<IUserV2> userFetchTask)
+        {
+            if (userFetchTask.IsFaulted)
+            {
+                RaiseAuthenticationStateChanged(AuthenticationStatus.AuthenticationFailed);
+                return Task.FromResult<bool>(false);
+            }
+
+            lock (lockObj)
+            {
+                this.CurrentUser = userFetchTask.Result;
+            }
+
+
+            string resource = $"user/me/permissions?{GetAccessTokenQueryString()}";
+
+            return this.client.Get(resource, this.CancellationToken, OAuthPermissions.FromJson)
+                              .ContinueWith(t =>
+                              {
+                                  if (t.IsFaulted)
+                                  {
+                                      LogoutInternal();
+                                      RaiseAuthenticationStateChanged(AuthenticationStatus.AuthenticationFailed);
+
+                                      return false;
+                                  }
+
+                                  this.UserPermissions = t.Result;
+
+                                  RaiseAuthenticationStateChanged(AuthenticationStatus.Authenticated);
+                                  return true;
+
+                              }, this.CancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+        }
+
+
+        private void CancelInflightTask()
+        {
+            if (this.cancellationTokenSource != null)
+            {
+                this.cancellationTokenSource.Cancel();
+                this.cancellationTokenSource.Dispose();
+                this.cancellationTokenSource = null;
+            }
+        }
+
+
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //TODO : Probs need to check or set something
+                //       so future calls will fail.
+
+                CancelInflightTask();
             }
         }
     }

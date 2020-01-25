@@ -22,13 +22,6 @@ namespace E.Deezer
         private const string GZIP_COMPRESSION = "gzip";
         private const string DEFLATE_COMPRESSION = "deflate";
 
-        private static readonly CancellationToken PRECANCELLED_TOKEN = new CancellationToken(canceled: true);
-
-#if NET45 || NETSTANDARD11
-        private readonly TaskCompletionSource<Stream> cancelledTaskSource;
-#endif
-
-
         private readonly HttpClient client;
         private readonly CancellationTokenSource cancellationTokenSource;
 
@@ -36,19 +29,13 @@ namespace E.Deezer
         {
             this.cancellationTokenSource = new CancellationTokenSource();
 
-#if NET45 || NETSTANDARD11
-            this.cancelledTaskSource = new TaskCompletionSource<Stream>();
-            this.cancelledTaskSource.SetCanceled();
-#endif
-
             var handler = httpMessageHandler ?? new HttpClientHandler();
             this.client = new HttpClient(handler, disposeHandler: true);
 
             ConfigureHttpClient(this.client);
         }
 
-        internal CancellationToken CancellationToken => this.cancellationTokenSource.IsCancellationRequested ? PRECANCELLED_TOKEN
-                                                                                                             : this.cancellationTokenSource.Token;
+        internal CancellationToken CancellationToken => this.cancellationTokenSource.GetCancellationTokenSafe();
 
 
         public Task<Stream> ExecuteGet(string resource, CancellationToken cancellationToken)
@@ -90,12 +77,7 @@ namespace E.Deezer
             {
                 linkedTokenSource.Dispose();
 
-#if NET45 || NETSTANDARD11
-                // NET45 && NetStandard 1.1 don't have the Task.FromXXX methods available
-                return this.cancelledTaskSource.Task;
-#else
-                return Task.FromCanceled<Stream>(PRECANCELLED_TOKEN);
-#endif
+                return Compat.Task.FromCanceled<Stream>();
             }
 
             var requestTask = requestFunc(linkedTokenSource.Token);

@@ -52,8 +52,17 @@ namespace E.Deezer
         public Endpoints.Endpoints Endpoints { get; }
 
 
-        // FIX ME: There's a lot of duplication in this class.
-        //         We should try condense some of this down.
+        // GET
+
+        public Task<TItem> Get<TItem>(string resource, DeezerPermissions requiredPermissions, CancellationToken cancellationToken, Func<JToken, TItem> itemFactory)
+        {
+            AssertAuthenticated(requiredPermissions);
+
+            string actualResource = AppendAccessTokenToResourceIfRequired(resource);
+
+            return Get<TItem>(actualResource, cancellationToken, itemFactory);
+        }
+
 
         public Task<TItem> Get<TItem>(string resource, CancellationToken cancellationToken, Func<JToken, TItem> itemFactory)
         {
@@ -63,80 +72,43 @@ namespace E.Deezer
                                t.ThrowIfFaulted();
 
                                var json = JObjectFromStream(t.Result);
-
-                               //TODO: Maybe we should handle the error in here?
-                               //      And only return on the happy path??            
-                               return DeserializeErrorOr<TItem>(json, itemFactory);
+         
+                               return DeserializeErrorOr<TItem>(json as JObject, itemFactory);
 
                            }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
 
-        public Task<TItem> Get<TItem>(string resource, DeezerPermissions requiredPermissions, CancellationToken cancellationToken, Func<JToken, TItem> itemFactory)
-        {
-            var authenticationException = AssertAuthenticated(requiredPermissions);
-            if (authenticationException != null)
-            {
-                throw authenticationException;
-            }
-
-            string actualResource = AppendAccessTokenToResourceIfRequired(resource);
-
-            return Get<TItem>(actualResource, cancellationToken, itemFactory);
-        }
-
+        // POST
 
         public Task<bool> Post(string resource,
                                DeezerPermissions requiredPermissions,
                                CancellationToken cancellationToken)
-        {
-            var authenticationException = AssertAuthenticated(requiredPermissions);
-            if (authenticationException != null)
-            {
-                throw authenticationException;
-            }
+            => Post<bool>(resource,
+                          requiredPermissions,
+                          cancellationToken,
+                          ParseBoolOrError);
+       
 
-            string actualResource = AppendAccessTokenToResourceIfRequired(resource);
-
-            return executor.ExecutePost(actualResource, cancellationToken)
-                            .ContinueWith(t =>
-                            {
-                                t.ThrowIfFaulted();
-
-                                using (var stream = t.Result)
-                                using (var reader = new StreamReader(stream))
-                                {
-                                    // TODO: As the streams might be zipped we can't rely on stream length.
-                                    //       Instead, read everything, compare the 2 values or fallback to 
-                                    //       parsing json instead.
-                                    var possibleJson = reader.ReadToEnd();
-
-                                    if (possibleJson == "true")
-                                        return true;
-
-                                    if (possibleJson == "false")
-                                        return false;
-
-                                    var json = JObjectFromString(possibleJson);
-
-                                    //TODO: Maybe we should handle the error in here?
-                                    //      And only return on the happy path??            
-                                    return DeserializeErrorOr<bool>(json, j => j.Value<bool>());
-                                }
-
-                            }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-        }
-
-
-        public Task<TResult> Post<TResult>(string resource, 
-                                           DeezerPermissions requiredPermissions, 
+        public Task<TResult> Post<TResult>(string resource,
+                                           DeezerPermissions requiredPermissions,
                                            CancellationToken cancellationToken,
                                            Func<JToken, TResult> resultFactory)
+            => Post<TResult>(resource,
+                             requiredPermissions,
+                             cancellationToken,
+                             stream =>
+                             {
+                                 var json = JObjectFromStream(stream);
+                                 return DeserializeErrorOr<TResult>(json, resultFactory);
+                             });
+        
+
+        private Task<TResult> Post<TResult>(string resource,
+                                            DeezerPermissions requiredPermissions,
+                                            CancellationToken cancellationToken,
+                                            Func<Stream, TResult> resultFactory)
         {
-            var authenticationException = AssertAuthenticated(requiredPermissions);
-            if (authenticationException != null)
-            {
-                throw authenticationException;
-            }
+            AssertAuthenticated(requiredPermissions);
 
             string actualResource = AppendAccessTokenToResourceIfRequired(resource);
 
@@ -145,68 +117,42 @@ namespace E.Deezer
                            {
                                t.ThrowIfFaulted();
 
-                               var json = JObjectFromStream(t.Result);
-
-                               //TODO: Maybe we should handle the error in here?
-                               //      And only return on the happy path??            
-                               return DeserializeErrorOr<TResult>(json, resultFactory);
+                               return resultFactory(t.Result);
 
                            }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-
         }
+
+
+        // DELETE
 
         public Task<bool> Delete(string resource,
                        DeezerPermissions requiredPermissions,
                        CancellationToken cancellationToken)
-        {
-            var authenticationException = AssertAuthenticated(requiredPermissions);
-            if (authenticationException != null)
-            {
-                throw authenticationException;
-            }
-
-            string actualResource = AppendAccessTokenToResourceIfRequired(resource);
-
-            return executor.ExecuteDelete(actualResource, cancellationToken)
-                            .ContinueWith(t =>
-                            {
-                                t.ThrowIfFaulted();
-
-                                using (var stream = t.Result)
-                                using (var reader = new StreamReader(stream))
-                                {
-                                    // TODO: As the streams might be zipped we can't rely on stream length.
-                                    //       Instead, read everything, compare the 2 values or fallback to 
-                                    //       parsing json instead.
-                                    var possibleJson = reader.ReadToEnd();
-
-                                    if (possibleJson == "true")
-                                        return true;
-
-                                    if (possibleJson == "false")
-                                        return false;
-
-                                    var json = JObjectFromString(possibleJson);
-
-                                    //TODO: Maybe we should handle the error in here?
-                                    //      And only return on the happy path??            
-                                    return DeserializeErrorOr<bool>(json, j => j.Value<bool>());
-                                }
-
-                            }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-        }
-
+            => Delete(resource,
+                      requiredPermissions,
+                      cancellationToken,
+                      ParseBoolOrError);
 
         public Task<TResult> Delete<TResult>(string resource,
                                              DeezerPermissions requiredPermissions,
                                              CancellationToken cancellationToken,
                                              Func<JToken, TResult> resultFactory)
+            => Delete<TResult>(resource,
+                               requiredPermissions,
+                               cancellationToken,
+                               stream =>
+                               {
+                                   var json = JObjectFromStream(stream);
+                                   return DeserializeErrorOr<TResult>(json, resultFactory);
+                               });
+        
+
+        private Task<TResult> Delete<TResult>(string resource,
+                                              DeezerPermissions requiredPermissions,
+                                              CancellationToken cancellationToken,
+                                              Func<Stream, TResult> resultFactory)
         {
-            var authenticationException = AssertAuthenticated(requiredPermissions);
-            if (authenticationException != null)
-            {
-                throw authenticationException;
-            }
+            AssertAuthenticated(requiredPermissions);
 
             string actualResource = AppendAccessTokenToResourceIfRequired(resource);
 
@@ -215,11 +161,7 @@ namespace E.Deezer
                            {
                                t.ThrowIfFaulted();
 
-                               var json = JObjectFromStream(t.Result);
-
-                               //TODO: Maybe we should handle the error in here?
-                               //      And only return on the happy path??            
-                               return DeserializeErrorOr<TResult>(json, resultFactory);
+                               return resultFactory(t.Result);
 
                            }, cancellationToken, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
@@ -241,7 +183,9 @@ namespace E.Deezer
             => this.authService.Logout(cancellationToken);
 
 
-        public ulong CurrentUserId => this.authService.CurrentUser.Id; //TODO: Do we want to throw if not logged in??
+        //TODO: Do we want to throw if not logged in??
+        //TODO: What happens if authentication is inflight??
+        public ulong CurrentUserId => this.authService.CurrentUser.Id; 
 
         public bool IsAuthenticated => this.authService.IsAuthenticated;
 
@@ -257,28 +201,42 @@ namespace E.Deezer
             }
         }
 
-        private JObject JObjectFromString(string json)
+
+        private bool ParseBoolOrError(Stream stream)
         {
-            using (var stringReader = new StringReader(json))
-            using (var jsonReader = new JsonTextReader(stringReader))
+            using (stream)
+            using (var streamReader = new StreamReader(stream))
+            using (var jsonReader = new JsonTextReader(streamReader))
             {
-                return JObject.Load(jsonReader);
+                var token = JToken.Load(jsonReader);
+
+                switch (token.Type)
+                {
+                    // Deezer sometimes just responds with 'true' or 'false'
+                    // which Newtonsoft can't parse into a JObject. 
+                    case JTokenType.Boolean:
+                        return (bool)((token as JValue).Value);
+
+                    case JTokenType.Object:
+                        return DeserializeErrorOr<bool>(token as JObject, j => j.Value<bool>());
+
+                    default:
+                        throw new Exception("Unable to parse response");
+                }
             }
         }
 
-        private Exception AssertAuthenticated(DeezerPermissions requiredPermissions)
+        private void AssertAuthenticated(DeezerPermissions requiredPermissions)
         {
             if (!this.IsAuthenticated)
             {
-                return new Exception("Not authenticated");
+                throw new Exception("Not authenticated");
             }
 
             if (!this.authService.HasPermission(requiredPermissions))
             {
-                return new DeezerPermissionsException(requiredPermissions);
+                throw new DeezerPermissionsException(requiredPermissions);
             }
-
-            return null;
         }
 
 
@@ -300,8 +258,9 @@ namespace E.Deezer
                 throw new DeezerException(error);
             }
 
-            //TODO: Handle Json Parsing issues
-            //      Wont they just be thrown automagically??
+            // Any JSON parsing issues will be thrown here.
+            // This causes any of the upstream tasks to enter the 
+            // 'Failed' state chain.
             return itemFactory(json);
         }
 
@@ -316,6 +275,7 @@ namespace E.Deezer
         {
             if (disposing)
             {
+                this.authService.Dispose();
                 this.executor.Dispose();
             }
         }
