@@ -81,8 +81,8 @@ namespace E.Deezer.Tests.Regression.Endpoint
         [TestCase(false)]
         public void GetArtistChart(bool useGenreFilter)
         {
-            IEnumerable<IArtist> artists =useGenreFilter ? this.session.Charts.GetArtistChartForGenre(0, CancellationToken.None).Result
-                                                         : this.session.Charts.GetArtistChart(CancellationToken.None).Result;
+            IEnumerable<IArtist> artists = useGenreFilter ? this.session.Charts.GetArtistChartForGenre(0, CancellationToken.None).Result
+                                                          : this.session.Charts.GetArtistChart(CancellationToken.None).Result;
 
             Assert.IsNotNull(artists, nameof(artists));
             Assert.That(artists.Count(), Is.GreaterThan(10), "Count");

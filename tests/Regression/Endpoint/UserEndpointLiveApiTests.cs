@@ -17,6 +17,12 @@ namespace E.Deezer.Tests.Regression.Endpoint
 #else
     [Ignore("Live API tests not enabled for this configuration")]
 #endif
+    /* As we can't fully rely on the responses from the Deezer API
+     * we mainly assert that we've not got a NULL return value.
+     * 
+     * This is enough to indicate we were able to complete the HTTP
+     * request out to the Deezer API, got a response and were able 
+     * to parse it. */
     public class UserEndpointLiveApiTests : IDisposable
     {
         private const ulong RADIO_ID = 6L;
@@ -135,13 +141,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                           .Result;
 
             Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.That(tracks.Count(), Is.GreaterThan(0), "Count");
-
-            var firstTrack = tracks.First();
-            Assert.IsNotNull(firstTrack, nameof(firstTrack));
-            Assert.That(firstTrack.Id, Is.GreaterThan(0), nameof(firstTrack.Id));
-            Assert.IsNotNull(firstTrack.Title, nameof(firstTrack.Title));
-
         }
 
         /* TODO: Implement
@@ -172,7 +171,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                                 .Result;
 
             Assert.IsNotNull(playlists, nameof(playlists));
-            Assert.That(playlists.Count(), Is.GreaterThan(0), "Count");
         }
 
         [Test]
@@ -182,7 +180,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                           .Result;
 
             Assert.IsNotNull(albums, nameof(albums));
-            Assert.That(albums.Count(), Is.GreaterThan(0), "Count");
         }
 
         [Test]
@@ -192,7 +189,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                             .Result;
 
             Assert.IsNotNull(artists, nameof(artists));
-            Assert.That(artists.Count(), Is.GreaterThan(0), "Count");
         }
 
         [Test]
@@ -202,7 +198,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                           .Result;
             
             Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.That(tracks.Count(), Is.GreaterThan(0), "Count");
         }
 
         [Test]
@@ -212,12 +207,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                           .Result;
 
             Assert.IsNotNull(albums, nameof(albums));
-            Assert.AreEqual(9, albums.Count(), "Count");
-
-            var firstAlbum = albums.First();
-            Assert.IsNotNull(firstAlbum, nameof(firstAlbum));
-            Assert.AreEqual(75783062, firstAlbum.Id, nameof(firstAlbum.Id));
-            Assert.AreEqual("BYLAW EP", firstAlbum.Title, nameof(firstAlbum.Title));
         }
 
         [Test]
@@ -227,12 +216,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                             .Result;
 
             Assert.IsNotNull(artists, nameof(artists));
-            Assert.That(artists.Count(), Is.GreaterThan(0), "Count");
-
-            var firstArtist = artists.First();
-            Assert.IsNotNull(firstArtist, nameof(firstArtist));
-            Assert.That(firstArtist.Id, Is.GreaterThan(0), nameof(firstArtist.Id));
-            Assert.IsNotNull(firstArtist.Name, nameof(firstArtist.Name));
         }
 
         [Test]
@@ -242,12 +225,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                                 .Result;
 
             Assert.IsNotNull(playlists, nameof(playlists));
-            Assert.That(playlists.Count(), Is.GreaterThan(0), "Count");
-
-            var firstPlaylist = playlists.First();
-            Assert.IsNotNull(firstPlaylist, nameof(firstPlaylist));
-            Assert.That(firstPlaylist.Id, Is.GreaterThan(0), nameof(firstPlaylist.Id));
-            Assert.IsNotNull(firstPlaylist.Title, nameof(firstPlaylist.Title));
         }
 
         [Test]
@@ -257,12 +234,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                           .Result;
             
             Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.That(tracks.Count(), Is.GreaterThan(0), "Count");
-
-            var firstTrack = tracks.First();
-            Assert.IsNotNull(firstTrack, nameof(firstTrack));
-            Assert.That(firstTrack.Id, Is.GreaterThan(0), nameof(firstTrack.Id));
-            Assert.IsNotNull(firstTrack.Title, nameof(firstTrack.Title));
         }
 
         [Test]
@@ -272,12 +243,6 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                           .Result;
             
             Assert.IsNotNull(radios, nameof(radios));
-            Assert.That(radios.Count(), Is.GreaterThan(0), "Count");
-
-            var firstRadio = radios.First();
-            Assert.IsNotNull(firstRadio, nameof(firstRadio));
-            Assert.That(firstRadio.Id, Is.GreaterThan(0), nameof(firstRadio.Id));
-            Assert.IsNotNull(firstRadio.Title, nameof(firstRadio.Title));
         }
         
 
