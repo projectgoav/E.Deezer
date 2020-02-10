@@ -53,7 +53,9 @@ namespace E.Deezer.Api
             JToken errorValue = null;
             if (!json.TryGetValue(ERROR_OBJECT_PROPERTY_NAME, out errorValue))
             {
-                // Sometimes the Deezer API just shove back the 3 error properties and you gotta deal with it...
+                // Sometimes the Deezer API will just shove back the 3 error properties
+                // as the root object, rather than inside an 'error' property. 
+                // Just gotta deal with it....
                 errorValue = json;
             }
 
@@ -75,6 +77,7 @@ namespace E.Deezer.Api
         }
 
 
+        // Used for testing purposes
         internal static IError FromValues(uint code,
                                           string type,
                                           string message)

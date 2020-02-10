@@ -39,5 +39,19 @@ namespace E.Deezer.Util
             }
         }
 
+
+
+        public static class Array
+        {
+            public static IEnumerable<T> Empty<T>()
+            {
+#if NETSTANDARD20
+                return Array.Empty<T>();
+#else
+                return new T[0];
+#endif
+            }
+        }
+
     }
 }

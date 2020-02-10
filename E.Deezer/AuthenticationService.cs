@@ -28,10 +28,6 @@ namespace E.Deezer
     // user to the session/object containing this one.
     // Internals will be thread-safe, but callers shouldn't suspect that
     // event callbacks will always occur on the same thread.
-
-    // TODO: Will need to check for authentication errors and handle logouts etc..
-    // TODO: Relies on the clients above this to call something to check for Deezer
-    //       errors. Can this be improved any?
     internal interface IAuthenticationService
     {
         IUserV2 CurrentUser { get; }

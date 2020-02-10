@@ -59,7 +59,7 @@ namespace E.Deezer.Endpoints
 
 
 
-        // TODO: Endpoint accepts paging but doesn't take note of it
+        // NOTE: Endpoint accepts paging but doesn't take note of it
         public Task<IEnumerable<IArtist>> GetArtistsForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
             genre.ThrowIfNull();
@@ -67,14 +67,14 @@ namespace E.Deezer.Endpoints
             return GetArtistsForGenre(genre.Id, cancellationToken, start, count);
         }
 
-        // TODO: Endpoint accepts paging but doesn't take note of it
+        // NOTE: Endpoint accepts paging but doesn't take note of it
         public Task<IEnumerable<IArtist>> GetArtistsForGenre(ulong genreId, CancellationToken cancellationToken, uint start = 0, uint count = 25)
             => this.client.Get($"genre/{genreId}/artists?{START_PARAM}={start}&{COUNT_PARAM}={count}",
                                cancellationToken,
                                json => FragmentOf<IArtist>.FromJson(json, x => Api.Artist.FromJson(x, this.client)));
 
 
-        // TODO: Endpoint accepts paging but doesn't take note of it
+        // NOTE: Endpoint accepts paging but doesn't take note of it
         public Task<IEnumerable<IRadio>> GetRadioForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 25)
         {
             genre.ThrowIfNull();
@@ -83,7 +83,7 @@ namespace E.Deezer.Endpoints
         }
 
 
-        // TODO: Endpoint accepts paging but doesn't take note of it
+        // NOTE: Endpoint accepts paging but doesn't take note of it
         public Task<IEnumerable<IRadio>> GetRadioForGenre(ulong genreId, CancellationToken cancellationToken, uint start = 0, uint count = 25)
             => this.client.Get($"genre/{genreId}/radios?{START_PARAM}={start}&{COUNT_PARAM}={count}",
                                cancellationToken,

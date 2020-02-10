@@ -42,8 +42,11 @@ namespace E.Deezer.Util
             }
             catch
             {
-                //TODO: Log something here?
-                //TODO: Do something better here about parsing.
+                // This is a bit nasty, but if we're failing to parse we'll
+                // simply let this return null.
+
+                // In the future we should include some logging or a way to incidate
+                // this portion of the code has been hit.
             }
 
             return parsed;

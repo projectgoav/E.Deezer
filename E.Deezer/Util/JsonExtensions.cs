@@ -46,9 +46,8 @@ namespace E.Deezer.Util
             {
                 return token.Value<TResult>(key);
             }
-            catch (Exception ex)
+            catch
             {
-                //TODO: Log?
                 return defaultValue;
             }
         }

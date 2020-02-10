@@ -94,7 +94,12 @@ namespace E.Deezer.Api
 
         public string PreviewLink { get; private set; }
 
-        // TODO, Merge some of these properties into a 'Playback Info' object / class??
+        /* In the future we could have a ITrackBasic, which has the populated information
+         * from most of the API calls and then an ITrackFull (or better names) for the full
+         * information.
+         * 
+         * See Github issue: https://github.com/projectgoav/E.Deezer/issues/89
+         * for some more background on this. */
         public float BPM { get; private set; }
 
         public float Gain { get; private set; }
@@ -134,7 +139,6 @@ namespace E.Deezer.Api
         public IDeezerClient Client { get; private set; }
 
 
-        // TODO? 
         public string ArtistName => Artist?.Name ?? string.Empty;
 
         public string AlbumName => Album?.Title ?? string.Empty;
@@ -157,7 +161,6 @@ namespace E.Deezer.Api
 
 
         //JSON
-
         internal const string ID_PROPERTY_NAME = "id";
         internal const string TITLE_PROPERTY_NAME = "title";
         internal const string SHORT_TITLE_PROPERTY_NAME = "title_short";
@@ -193,7 +196,7 @@ namespace E.Deezer.Api
             /* Tracks don't always come with their own artwork.
              * Instead, we'll pinch the artwork from the 'Album' property
              * if this is available in the returned JSON. */
-            var containedInAlbum = Api.Album.FromJson(json[ALBUM_PROPERTY_NAME], client);
+        var containedInAlbum = Api.Album.FromJson(json[ALBUM_PROPERTY_NAME], client);
 
             var internalArtwork = Api.Images.FromJson(json);
 

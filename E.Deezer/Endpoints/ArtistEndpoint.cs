@@ -135,11 +135,7 @@ namespace E.Deezer.Endpoints
             artist.ThrowIfNull();
 
             if (!artist.HasSmartRadio)
-            {
-                //TODO: Assert or throw exception here??
-                //TODO: Is null a correct value, perhaps we should return an empty list?
-                return Task.FromResult<IEnumerable<ITrack>>(null);
-            }
+                throw new InvalidOperationException("Artist doesn't have a radio available.");
 
             return GetArtistsRadio(artist.Id, cancellationToken, start, count);
         }
@@ -188,9 +184,7 @@ namespace E.Deezer.Endpoints
         public Task<ulong> CommentOnArtist(ulong artistId, string commentText, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(commentText))
-            {
                 throw new ArgumentNullException(nameof(commentText));
-            }
 
             var formattedComment = Uri.EscapeUriString(commentText);
 

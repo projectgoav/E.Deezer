@@ -130,12 +130,9 @@ namespace E.Deezer.Tests.Regression.Endpoint
 
             Assert.IsNotNull(playlist.Creator, nameof(playlist.Creator));
 
-            // FIX ME
-            //Assert.IsNotNull(playlist.CreatorName, nameof(playlist.CreatorName));
-            //Assert.IsNull(playlist.Creator.ShareLink, "Creator.ShareLink");
-
-            Assert.AreEqual(203, playlist.Creator.Id, "Creator.Id");
             Assert.AreEqual("anonymous", playlist.Creator.Username, "Creator.Username");
+            Assert.IsNotNull(playlist.Creator.Link, nameof(playlist.Creator.Link));
+
         }
 
         [Test]

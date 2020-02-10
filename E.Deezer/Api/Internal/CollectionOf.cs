@@ -4,6 +4,8 @@ using System.Text;
 
 using Newtonsoft.Json.Linq;
 
+using E.Deezer.Util;
+
 namespace E.Deezer.Api.Internal
 {
     /* Helper class to deserialize a JSON array of a given type.
@@ -16,25 +18,16 @@ namespace E.Deezer.Api.Internal
                                                   Func<JToken, TItem> itemFactoryFunc)
         {
             if (json == null)
-#if NETSTANDARD20
-                return Array.Empty<TItem>();
-#else
-                return new TItem[0];
-#endif
-
+                return Compat.Array.Empty<TItem>();
 
             if (json.Type != JTokenType.Array)
-            {
-                // TODO: Better exception handling here.
-                // TODO: Do we even want to throw an exception?
-                throw new InvalidOperationException("Something went wrong.");
-            }
+                throw new InvalidOperationException($"Attempting to deserialize a json object of type '{json.Type}' as an array. This can't be done.");
 
 
-            var jsonArray = (json as JArray);
+            var jsonArray = json as JArray;
 
             int numItems = jsonArray.Count;
-            var resultingContents = new List<TItem>(numItems);
+            var resultingContents = new List<TItem>(jsonArray.Count);
 
             for (int i = 0; i < numItems; ++i)
             {
@@ -43,7 +36,6 @@ namespace E.Deezer.Api.Internal
 
             return resultingContents;
         }
-
 
     }
 }
