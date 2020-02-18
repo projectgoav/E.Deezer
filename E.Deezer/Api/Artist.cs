@@ -19,6 +19,7 @@ namespace E.Deezer.Api
         uint NumberOfAlbums { get; }
         string ShareLink { get; }
         bool HasSmartRadio { get; }
+        IImages Picture { get; }
 
         Task<IEnumerable<ITrack>> TopTracks(CancellationToken cancellationToken, uint start = 0, uint count = 25);
 
