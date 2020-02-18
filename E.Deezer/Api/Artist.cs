@@ -19,7 +19,7 @@ namespace E.Deezer.Api
         uint NumberOfAlbums { get; }
         string ShareLink { get; }
         bool HasSmartRadio { get; }
-        IImages Picture { get; }
+        IImages Pictures { get; }
 
         Task<IEnumerable<ITrack>> TopTracks(CancellationToken cancellationToken, uint start = 0, uint count = 25);
 
@@ -62,8 +62,8 @@ namespace E.Deezer.Api
 
         public uint NumberOfFans { get; private set; }
 
-        public IImages Images { get; private set; }
-
+        public IImages Pictures { get; private set; }
+        
 
         // IClientObject
         public IDeezerClient Client { get; private set; }
@@ -156,7 +156,7 @@ namespace E.Deezer.Api
                 NumberOfAlbums = json.Value<uint>(ALBUM_COUNT_PROPERTY_NAME),
                 NumberOfFans = json.Value<uint>(FAN_COUNT_PROPERTY_NAME),
 
-                Images = Api.Images.FromJson(json),
+                Pictures = Api.Images.FromJson(json),
 
                 HasSmartRadio = json.Value<bool>(HAS_RADIO_PROPERTY_NAME),
 
