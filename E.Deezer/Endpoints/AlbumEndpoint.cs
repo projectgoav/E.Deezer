@@ -16,8 +16,8 @@ namespace E.Deezer.Endpoints
     {
         Task<IAlbum> GetById(ulong albumId, CancellationToken cancellationToken);
 
-        Task<IEnumerable<ITrack>> GetAlbumTracks(IAlbum album, CancellationToken cancellationToken);
-        Task<IEnumerable<ITrack>> GetAlbumTracks(ulong albumId, CancellationToken cancellationToken);
+        Task<IEnumerable<ITrack>> GetAlbumTracks(IAlbum album, CancellationToken cancellationToken, uint start = 0, uint count = 50);
+        Task<IEnumerable<ITrack>> GetAlbumTracks(ulong albumId, CancellationToken cancellationToken, uint start = 0, uint count = 50);
 
 
         Task<IEnumerable<IUserProfile>> GetAlbumFans(IAlbum album, CancellationToken cancellationToken, uint start = 0, uint count = 10);
@@ -31,7 +31,7 @@ namespace E.Deezer.Endpoints
         Task<bool> RateAlbum(ulong albumId, DeezerRating rating, CancellationToken cancellationToken);
 
         Task<ulong> AddComment(IAlbum album, string commentText, CancellationToken cancellationToken);
-        Task<ulong> AddComment(ulong albumIf, string commentText, CancellationToken cancellationToken);
+        Task<ulong> AddComment(ulong albumId, string commentText, CancellationToken cancellationToken);
     }
 
 
@@ -53,7 +53,7 @@ namespace E.Deezer.Endpoints
             => this.client.Get($"/album/{albumId}", cancellationToken, json => Api.Album.FromJson(json, this.client));
 
 
-        public Task<IEnumerable<ITrack>> GetAlbumTracks(IAlbum album, CancellationToken cancellationToken)
+        public Task<IEnumerable<ITrack>> GetAlbumTracks(IAlbum album, CancellationToken cancellationToken, uint start = 0, uint count = 50)
         {
             album.ThrowIfNull();
 
@@ -64,15 +64,17 @@ namespace E.Deezer.Endpoints
 
                 if (hasTracklist && tracklistPopulated)
                 {
-                    return Task.FromResult<IEnumerable<ITrack>>(albumImpl.TracklistInternal);
+                    return Task.FromResult<IEnumerable<ITrack>>(albumImpl.TracklistInternal.Skip((int)start)
+                                                                                           .Take((int)count)
+                                                                                           .ToList());
                 }
             }
 
-            return GetAlbumTracks(album.Id, cancellationToken);
+            return GetAlbumTracks(album.Id, cancellationToken, start, count);
         }
 
-        public Task<IEnumerable<ITrack>> GetAlbumTracks(ulong albumId, CancellationToken cancellationToken)
-            => this.client.Get($"/album/{albumId}/tracks",
+        public Task<IEnumerable<ITrack>> GetAlbumTracks(ulong albumId, CancellationToken cancellationToken, uint start = 0, uint count = 50)
+            => this.client.Get($"/album/{albumId}/tracks?{kStartParam}={start}&{kLimitParam}={count}",
                                cancellationToken,
                                json => FragmentOf<ITrack>.FromJson(json, x => Api.Track.FromJson(x, this.client)));
 
