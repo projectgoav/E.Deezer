@@ -48,7 +48,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
         [Test]
         public void Albums()
         {
-            const string SEARCH_TERM = "enimem";
+            const string SEARCH_TERM = "eminem";
 
             IEnumerable<IAlbum> albums = this.session.Search.FindAlbums(SEARCH_TERM, CancellationToken.None)
                                                             .Result;
@@ -66,7 +66,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
         [Test]
         public void Artists()
         {
-            const string SEARCH_TERM = "enimem";
+            const string SEARCH_TERM = "eminem";
 
             IEnumerable<IArtist> artists = this.session.Search.FindArtists(SEARCH_TERM, CancellationToken.None)
                                                               .Result;
@@ -83,7 +83,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
         [Test]
         public void Playlists()
         {
-            const string SEARCH_TERM = "enimem";
+            const string SEARCH_TERM = "eminem";
 
             IEnumerable<IPlaylist> playlists = this.session.Search.FindPlaylists(SEARCH_TERM, CancellationToken.None)
                                                                   .Result;
@@ -100,7 +100,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
         [Test]
         public void Tracks()
         {
-            const string SEARCH_TERM = "enimem";
+            const string SEARCH_TERM = "eminem";
 
             IEnumerable<ITrack> tracks = this.session.Search.FindTracks(SEARCH_TERM, CancellationToken.None)
                                                             .Result;
