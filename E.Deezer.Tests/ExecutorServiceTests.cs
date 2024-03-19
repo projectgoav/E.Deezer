@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 using System.Net.Http;
@@ -10,10 +7,7 @@ using System.Threading;
 using NUnit.Framework;
 
 using Moq;
-using Moq.Internals;
 using Moq.Protected;
-
-using E.Deezer;
 
 
 namespace E.Deezer.Tests

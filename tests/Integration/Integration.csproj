@@ -26,7 +26,13 @@
     <None Update="StaticResources\BrowseEndpoint\artist.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="StaticResources\BrowseEndpoint\episode.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="StaticResources\BrowseEndpoint\playlist.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="StaticResources\BrowseEndpoint\podcast.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="StaticResources\BrowseEndpoint\radio.json">
@@ -48,6 +54,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="StaticResources\ChartsEndpoint\playlist.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="StaticResources\ChartsEndpoint\podcast.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="StaticResources\ChartsEndpoint\track.json">
@@ -128,6 +137,10 @@
     <None Update="StaticResources\UserEndpoint\recommended_tracks.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="StaticResources\PodcastEndpoint\" />
   </ItemGroup>
 
 </Project>

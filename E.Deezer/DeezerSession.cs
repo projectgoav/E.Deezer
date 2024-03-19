@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using E.Deezer.Api;
+using E.Deezer.Endpoints;
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-
-using E.Deezer.Endpoints;
 
 namespace E.Deezer
 {
@@ -32,6 +29,8 @@ namespace E.Deezer
         ITrackEndpoint Tracks { get; }
         IUserEndpoint User { get; }
         ISearchEndpoint Search { get; }
+        IPodcastEndpoint Podcasts { get; }
+        IEpisodeEndpoint Episodes { get; }
     }
 
 
@@ -84,6 +83,9 @@ namespace E.Deezer
         public IUserEndpoint User => this.client.Endpoints.User;
 
         public ISearchEndpoint Search => this.client.Endpoints.Search;
+
+        public IPodcastEndpoint Podcasts => this.client.Endpoints.Podcasts;
+        public IEpisodeEndpoint Episodes => this.client.Endpoints.Episodes;
 
 
         // Authentication

@@ -1,15 +1,10 @@
-﻿using System;
+﻿using E.Deezer.Api.Internal;
+using E.Deezer.Util;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using System.Threading;
 using System.Threading.Tasks;
-
-using Newtonsoft.Json.Linq;
-
-using E.Deezer.Util;
-using E.Deezer.Api.Internal;
 
 namespace E.Deezer.Api
 {
@@ -188,7 +183,7 @@ namespace E.Deezer.Api
         public static ITrack FromJson(JToken json, IDeezerClient client)
         {
             var releaseDateString = json.Value<string>(RELEASE_PROPERTY_NAME);
-            DateTime? releaseDate = DateTimeExtensions.ParseApiDateTime(releaseDateString);
+            DateTime? releaseDate = DateTimeExtensions.ParseApiDate(releaseDateString);
 
             //TODO -> AvailableFrom property??
             //var availabilityDateString = json.Value<String>(TimeAdd)

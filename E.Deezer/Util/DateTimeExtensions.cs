@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using System.Globalization;
 
@@ -13,9 +11,10 @@ namespace E.Deezer.Util
 #endif
 
         public const string API_DATE_FORMAT = "yyyy-MM-dd";
+        public const string API_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
         public const string DEFAULT_DATE = "0000-00-00";
 
-        public static DateTime? ParseApiDateTime(string dateString)
+        public static DateTime? ParseApiDate(string dateString)
         {
             bool isEmpty = string.IsNullOrEmpty(dateString);
             bool isDefault = dateString == DEFAULT_DATE;
@@ -26,6 +25,16 @@ namespace E.Deezer.Util
             return DateTime.ParseExact(dateString, API_DATE_FORMAT, CultureInfo.InvariantCulture);
         }
 
+        public static DateTime? ParseApiDateTime(string dateTimeString)
+        {
+            bool isEmpty = string.IsNullOrEmpty(dateTimeString);
+            bool isDefault = dateTimeString == DEFAULT_DATE;
+
+            if (isEmpty || isDefault)
+                return null;
+
+            return DateTime.ParseExact(dateTimeString, API_DATE_TIME_FORMAT, CultureInfo.InvariantCulture);
+        }
 
         public static DateTime? ParseUnixTimeFromSeconds(uint seconds)
         {

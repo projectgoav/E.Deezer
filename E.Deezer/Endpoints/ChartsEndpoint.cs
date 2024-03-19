@@ -33,6 +33,8 @@ namespace E.Deezer.Endpoints
         Task<IEnumerable<ITrack>> GetTrackChart(CancellationToken cancellationToken, uint start = 0, uint count = 50);
         Task<IEnumerable<ITrack>> GetTrackChartForGenre(IGenre genre, CancellationToken cancellationToken, uint start = 0, uint count = 50);
         Task<IEnumerable<ITrack>> GetTrackChartForGenre(ulong genreId, CancellationToken cancellationToken, uint start = 0, uint count = 50);
+
+        Task<IEnumerable<IPodcast>> GetPodcastChart(CancellationToken cancellationToken, uint start = 0, uint count = 50);
     }
 
 
@@ -138,5 +140,11 @@ namespace E.Deezer.Endpoints
             => this.client.Get($"/chart/{genreId}/tracks?{START_PARAM}={start}&{COUNT_PARAM}={count}",
                                cancellationToken,
                                json => FragmentOf<ITrack>.FromJson(json, x => Api.Track.FromJson(x, this.client)));
+
+        public Task<IEnumerable<IPodcast>> GetPodcastChart(CancellationToken cancellationToken, uint start = 0, uint count = 50)
+            => this.client.Get(
+                    $"/chart/0/podcasts{START_PARAM}={start}&{COUNT_PARAM}={count}",
+                    cancellationToken,
+                    json => FragmentOf<IPodcast>.FromJson(json, x => Api.Podcast.FromJson(x, this.client)));
     }
 }

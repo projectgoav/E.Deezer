@@ -1,14 +1,11 @@
-﻿using System;
+﻿using E.Deezer.Api;
+using E.Deezer.Api.Internal;
+using E.Deezer.Util;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-
 using System.Threading;
 using System.Threading.Tasks;
-
-using E.Deezer.Api;
-using E.Deezer.Util;
-using E.Deezer.Api.Internal;
 
 namespace E.Deezer.Endpoints
 {
@@ -115,7 +112,6 @@ namespace E.Deezer.Endpoints
         }
 
 
-
         public Task<bool> RateAlbum(ulong albumId, DeezerRating rating, CancellationToken cancellationToken)
             => this.client.Post($"/album/{albumId}?{rating.AsRatingQueryParam()}",
                                 DeezerPermissions.BasicAccess,
@@ -137,7 +133,7 @@ namespace E.Deezer.Endpoints
 
             var formattedComment = Uri.EscapeUriString(commentText);
 
-            return this.client.Post<ulong>($"/album/{albumId}/comments?comment={formattedComment}",
+            return this.client.Post($"/album/{albumId}/comments?comment={formattedComment}",
                                            DeezerPermissions.BasicAccess,
                                            cancellationToken,
                                            json => CommentCreationResponse.FromJson(json));

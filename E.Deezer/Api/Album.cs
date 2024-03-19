@@ -182,7 +182,7 @@ namespace E.Deezer.Api
             }
 
             string apiDateString = json.Value<string>(RELEASE_DATE_PROPERTY_NAME);
-            DateTime? releaseDate = DateTimeExtensions.ParseApiDateTime(apiDateString);
+            DateTime? releaseDate = DateTimeExtensions.ParseApiDate(apiDateString);
 
             return new Album()
             {
