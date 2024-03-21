@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace E.Deezer.Api
 {
@@ -11,6 +15,8 @@ namespace E.Deezer.Api
         int Fans { get; }
         string Link { get; }
         string ShareLink { get; }
+
+        Task<IEnumerable<IEpisode>> GetEpisodes(CancellationToken cancellationToken);
     }
 
     internal class Podcast : IPodcast, IClientObject
@@ -29,6 +35,11 @@ namespace E.Deezer.Api
         {
             return string.Format("E.Deezer: Podcast({0} - ({1}))", Title, Id);
         }
+
+        public Task<IEnumerable<IEpisode>> GetEpisodes(CancellationToken cancellationToken)
+            => Client.Endpoints.Podcasts.GetPodcastEpisodes(this, cancellationToken);
+
+
 
         // JSON
         internal const string ID_PROPERTY_NAME = "id";
