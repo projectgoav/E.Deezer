@@ -69,6 +69,9 @@ namespace E.Deezer.Api
 
     internal class Playlist : IPlaylist, IClientObject
     {
+        private ulong UserReferenceId { get; set; }
+
+
         public ulong Id { get; private set; }
 
         public string Title { get; private set; }

@@ -35,9 +35,6 @@ namespace E.Deezer.Endpoints
         Task<IEnumerable<IArtist>> GetFavouriteArtists(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25);
         Task<IEnumerable<IArtist>> GetFavouriteArtists(ulong userId, CancellationToken cancellationToken, uint start = 0, uint count = 25);
 
-        Task<IEnumerable<IPlaylist>> GetFavouritePlaylists(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25);
-        Task<IEnumerable<IPlaylist>> GetFavouritePlaylists(ulong userId, CancellationToken cancellationToken, uint start = 0, uint count = 25);
-
         Task<IEnumerable<ITrack>> GetFavouriteTracks(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25);
         Task<IEnumerable<ITrack>> GetFavouriteTracks(ulong userId, CancellationToken cancellationToken, uint start = 0, uint count = 25);
 
@@ -51,7 +48,11 @@ namespace E.Deezer.Endpoints
         Task<IEnumerable<ITrack>> GetRecommendedTracks(CancellationToken cancellationToken, uint start = 0, uint count = 25);
         Task<IEnumerable<IRadio>> GetRecommendedRadio(CancellationToken cancellationToken, uint start = 0, uint count = 25);
 
-
+        /* Deezer playlist collection contains both user created playlists & favourited playlists.
+         * Filters can be achieved by using filters on the properties exposed by IPlaylist to determin
+         * if the playlist is a personal or favourite. */
+        Task<IEnumerable<IPlaylist>> GetPlaylists(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<IPlaylist>> GetPlaylists(ulong userId, CancellationToken cancellationToken, uint start = 0, uint count = 25);
         Task<IEnumerable<IPlaylist>> GetPlaylists(CancellationToken cancellationToken, uint start = 0, uint count = 25);
 
 
