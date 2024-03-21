@@ -7,9 +7,7 @@ using System.Net.Http;
 using System.Threading;
 
 using NUnit.Framework;
-
-using E.Deezer.Api;
-
+using NUnit.Framework.Legacy;
 
 namespace E.Deezer.Tests.Regression.Endpoint
 {
@@ -51,8 +49,8 @@ namespace E.Deezer.Tests.Regression.Endpoint
             var result = this.session.Genre.GetCommonGenre(CancellationToken.None)
                                            .Result;
 
-            Assert.NotNull(result);
-            Assert.That(result.Count(), Is.GreaterThan(0));
+            ClassicAssert.NotNull(result);
+            ClassicAssert.That(result.Count(), Is.GreaterThan(0));
         }
 
 
@@ -62,8 +60,8 @@ namespace E.Deezer.Tests.Regression.Endpoint
             var genre = this.session.Genre.GetById(0, CancellationToken.None)
                                           .Result;
 
-            Assert.NotNull(genre);
-            Assert.AreEqual(0, genre.Id);
+            ClassicAssert.NotNull(genre);
+            ClassicAssert.AreEqual(0, genre.Id);
         }
 
 
@@ -76,8 +74,8 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                            .Unwrap()
                                            .Result;
 
-            Assert.NotNull(result);
-            Assert.That(result.Count(), Is.GreaterThan(0));
+            ClassicAssert.NotNull(result);
+            ClassicAssert.That(result.Count(), Is.GreaterThan(0));
         }
 
 
@@ -90,8 +88,8 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                            .Unwrap()
                                            .Result;
 
-            Assert.NotNull(result);
-            Assert.That(result.Count(), Is.GreaterThan(0));
+            ClassicAssert.NotNull(result);
+            ClassicAssert.That(result.Count(), Is.GreaterThan(0));
         }
 
 
@@ -101,8 +99,8 @@ namespace E.Deezer.Tests.Regression.Endpoint
             var result = this.session.Genre.GetDeezerSelectionForGenre(0, CancellationToken.None)
                                            .Result;
 
-            Assert.NotNull(result);
-            Assert.That(result.Count(), Is.GreaterThan(0));
+            ClassicAssert.NotNull(result);
+            ClassicAssert.That(result.Count(), Is.GreaterThan(0));
         }
 
 
@@ -112,8 +110,8 @@ namespace E.Deezer.Tests.Regression.Endpoint
             var result = this.session.Genre.GetNewReleasesForGenre(0, CancellationToken.None)
                                            .Result;
 
-            Assert.NotNull(result);
-            Assert.That(result.Count(), Is.GreaterThan(0));
+            ClassicAssert.NotNull(result);
+            ClassicAssert.That(result.Count(), Is.GreaterThan(0));
         }
 
 

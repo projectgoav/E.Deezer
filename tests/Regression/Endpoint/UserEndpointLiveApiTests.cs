@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using E.Deezer.Api;
 
@@ -73,7 +74,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             bool didLogin = this.session.Login(ACCESS_TOKEN, CancellationToken.None)
                                         .Result;
 
-            Assert.IsTrue(didLogin);
+            ClassicAssert.IsTrue(didLogin);
 
             //TODO: Access and assert we have enough permissions to run thses tests?
         }
@@ -95,11 +96,11 @@ namespace E.Deezer.Tests.Regression.Endpoint
             this.radio = this.session.Radio.GetById(RADIO_ID, CancellationToken.None)
                                            .Result;
 
-            Assert.NotNull(album);
-            Assert.NotNull(artist);
-            Assert.NotNull(playlist);
-            Assert.NotNull(track);
-            Assert.NotNull(radio);
+            ClassicAssert.NotNull(album);
+            ClassicAssert.NotNull(artist);
+            ClassicAssert.NotNull(playlist);
+            ClassicAssert.NotNull(track);
+            ClassicAssert.NotNull(radio);
         }
 
 
@@ -109,8 +110,8 @@ namespace E.Deezer.Tests.Regression.Endpoint
             IEnumerable<ITrack> tracks = this.session.User.GetListeningHistory(CancellationToken.None)
                                                           .Result;
 
-            Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.That(tracks.Count(), Is.GreaterThan(0), nameof(tracks));
+            ClassicAssert.IsNotNull(tracks, nameof(tracks));
+            ClassicAssert.That(tracks.Count(), Is.GreaterThan(0), nameof(tracks));
         }
 
 
@@ -140,7 +141,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             IEnumerable<ITrack> tracks = this.session.User.GetFlow(this.session.CurrentUserId, CancellationToken.None)
                                                           .Result;
 
-            Assert.IsNotNull(tracks, nameof(tracks));
+            ClassicAssert.IsNotNull(tracks, nameof(tracks));
         }
 
         /* TODO: Implement
@@ -150,16 +151,16 @@ namespace E.Deezer.Tests.Regression.Endpoint
             IEnumerable<ITrack> tracks = await _user.GetPersonalTracks();
 
 
-            Assert.IsNotNull(tracks, nameof(tracks));
+            ClassicAssert.IsNotNull(tracks, nameof(tracks));
             
 
             if (tracks.Count() == 0)
             {
-                Assert.Warn("User doesn't have any personal track.");
+                ClassicAssert.Warn("User doesn't have any personal track.");
             }
             else
             {
-                Assert.Fail($"User has {tracks.Count()} personal tracks.");
+                ClassicAssert.Fail($"User has {tracks.Count()} personal tracks.");
             }
         }
         */
@@ -170,7 +171,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             IEnumerable<IPlaylist> playlists = this.session.User.GetPlaylists(CancellationToken.None)
                                                                 .Result;
 
-            Assert.IsNotNull(playlists, nameof(playlists));
+            ClassicAssert.IsNotNull(playlists, nameof(playlists));
         }
 
         [Test]
@@ -179,7 +180,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             IEnumerable<IAlbum> albums = this.session.User.GetFavouriteAlbums(this.session.CurrentUserId, CancellationToken.None)
                                                           .Result;
 
-            Assert.IsNotNull(albums, nameof(albums));
+            ClassicAssert.IsNotNull(albums, nameof(albums));
         }
 
         [Test]
@@ -188,7 +189,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             IEnumerable<IArtist> artists = this.session.User.GetFavouriteArtists(this.session.CurrentUserId, CancellationToken.None)
                                                             .Result;
 
-            Assert.IsNotNull(artists, nameof(artists));
+            ClassicAssert.IsNotNull(artists, nameof(artists));
         }
 
         [Test]
@@ -197,7 +198,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             IEnumerable<ITrack> tracks = this.session.User.GetFavouriteTracks(this.session.CurrentUserId, CancellationToken.None)
                                                           .Result;
             
-            Assert.IsNotNull(tracks, nameof(tracks));
+            ClassicAssert.IsNotNull(tracks, nameof(tracks));
         }
 
         [Test]
@@ -206,7 +207,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             IEnumerable<IAlbum> albums = this.session.User.GetRecommendedAlbums(CancellationToken.None)
                                                           .Result;
 
-            Assert.IsNotNull(albums, nameof(albums));
+            ClassicAssert.IsNotNull(albums, nameof(albums));
         }
 
         [Test]
@@ -215,7 +216,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             IEnumerable<IArtist> artists = this.session.User.GetRecommendedArtists(CancellationToken.None)
                                                             .Result;
 
-            Assert.IsNotNull(artists, nameof(artists));
+            ClassicAssert.IsNotNull(artists, nameof(artists));
         }
 
         [Test]
@@ -224,7 +225,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             IEnumerable<IPlaylist> playlists = this.session.User.GetRecommendedPlaylists(CancellationToken.None)
                                                                 .Result;
 
-            Assert.IsNotNull(playlists, nameof(playlists));
+            ClassicAssert.IsNotNull(playlists, nameof(playlists));
         }
 
         [Test]
@@ -233,7 +234,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             IEnumerable<ITrack> tracks = this.session.User.GetRecommendedTracks(CancellationToken.None)
                                                           .Result;
             
-            Assert.IsNotNull(tracks, nameof(tracks));
+            ClassicAssert.IsNotNull(tracks, nameof(tracks));
         }
 
         [Test]
@@ -242,7 +243,7 @@ namespace E.Deezer.Tests.Regression.Endpoint
             IEnumerable<IRadio> radios = this.session.User.GetRecommendedRadio(CancellationToken.None)
                                                           .Result;
             
-            Assert.IsNotNull(radios, nameof(radios));
+            ClassicAssert.IsNotNull(radios, nameof(radios));
         }
         
 
@@ -255,32 +256,32 @@ namespace E.Deezer.Tests.Regression.Endpoint
                              .Wait();
 
             // Favourite
-            Assert.True(this.session.User.FavouriteAlbum(this.album, CancellationToken.None)
+            ClassicAssert.True(this.session.User.FavouriteAlbum(this.album, CancellationToken.None)
                                          .Result);
 
             var favouriteAlbums = this.session.User.GetFavouriteAlbums(this.session.CurrentUserId, CancellationToken.None, 0, 100)
                                                    .Result;
 
-            Assert.That(favouriteAlbums.Select(x => x.Id)
+            ClassicAssert.That(favouriteAlbums.Select(x => x.Id)
                                        .Any(x => x == this.album.Id));
 
             // Test when already added to favourites
-            Assert.True(this.session.User.FavouriteAlbum(this.album, CancellationToken.None)
+            ClassicAssert.True(this.session.User.FavouriteAlbum(this.album, CancellationToken.None)
                                          .Result);
 
             // Then unfavourite
-            Assert.True(this.session.User.UnfavouriteAlbum(this.album, CancellationToken.None)
+            ClassicAssert.True(this.session.User.UnfavouriteAlbum(this.album, CancellationToken.None)
                                          .Result);
 
             var updatedFavouriteAlbums = this.session.User.GetFavouriteAlbums(this.session.CurrentUserId, CancellationToken.None, 0, 100)
                                                           .Result;
 
-            Assert.AreEqual(0, updatedFavouriteAlbums.Select(x => x.Id)
+            ClassicAssert.AreEqual(0, updatedFavouriteAlbums.Select(x => x.Id)
                                                      .Where(x => x == this.album.Id)
                                                      .Count());
                 
             // And test when not already a favorite
-            Assert.True(this.session.User.UnfavouriteAlbum(this.album, CancellationToken.None)
+            ClassicAssert.True(this.session.User.UnfavouriteAlbum(this.album, CancellationToken.None)
                                          .Result);
         }
 
@@ -293,32 +294,32 @@ namespace E.Deezer.Tests.Regression.Endpoint
                              .Wait();
 
             // Favourite
-            Assert.True(this.session.User.FavouriteArtist(this.artist, CancellationToken.None)
+            ClassicAssert.True(this.session.User.FavouriteArtist(this.artist, CancellationToken.None)
                                          .Result);
 
             var favouriteArtists = this.session.User.GetFavouriteArtists(this.session.CurrentUserId, CancellationToken.None, 0, 100)
                                                    .Result;
 
-            Assert.That(favouriteArtists.Select(x => x.Id)
+            ClassicAssert.That(favouriteArtists.Select(x => x.Id)
                                        .Any(x => x == this.artist.Id));
 
             // Test when already added to favourites
-            Assert.True(this.session.User.FavouriteArtist(this.artist, CancellationToken.None)
+            ClassicAssert.True(this.session.User.FavouriteArtist(this.artist, CancellationToken.None)
                                          .Result);
 
             // Then unfavourite
-            Assert.True(this.session.User.UnfavouriteArtist(this.artist, CancellationToken.None)
+            ClassicAssert.True(this.session.User.UnfavouriteArtist(this.artist, CancellationToken.None)
                                          .Result);
 
             var updatedFavouriteArtists = this.session.User.GetFavouriteArtists(this.session.CurrentUserId, CancellationToken.None, 0, 100)
                                                           .Result;
 
-            Assert.AreEqual(0, updatedFavouriteArtists.Select(x => x.Id)
+            ClassicAssert.AreEqual(0, updatedFavouriteArtists.Select(x => x.Id)
                                                      .Where(x => x == this.artist.Id)
                                                      .Count());
 
             // And test when not already a favorite
-            Assert.True(this.session.User.UnfavouriteArtist(this.artist, CancellationToken.None)
+            ClassicAssert.True(this.session.User.UnfavouriteArtist(this.artist, CancellationToken.None)
                                          .Result);
         }
 
@@ -331,13 +332,13 @@ namespace E.Deezer.Tests.Regression.Endpoint
                              .Wait();
 
             // Favourite
-            Assert.True(this.session.User.FavouriteTrack(this.track, CancellationToken.None)
+            ClassicAssert.True(this.session.User.FavouriteTrack(this.track, CancellationToken.None)
                                          .Result);
 
             var favouriteTracks = this.session.User.GetFavouriteTracks(this.session.CurrentUserId, CancellationToken.None, 0, 100)
                                                    .Result;
 
-            Assert.That(favouriteTracks.Select(x => x.Id)
+            ClassicAssert.That(favouriteTracks.Select(x => x.Id)
                                        .Any(x => x == this.track.Id));
 
             // Test when already added to favourites
@@ -350,32 +351,32 @@ namespace E.Deezer.Tests.Regression.Endpoint
                 this.session.User.FavouriteTrack(this.track, CancellationToken.None)
                                  .Wait();
 
-                Assert.Fail("This API should throw if the track is already present in favourite list.");
+                ClassicAssert.Fail("This API should throw if the track is already present in favourite list.");
             }
             catch (AggregateException ex)
             {
                 var innerEx = ex.GetBaseException();
 
                 if (innerEx is DeezerException deezerEx)
-                    Assert.That(deezerEx.Error.Code == (uint)EDeezerApiError.DataException);
+                    ClassicAssert.That(deezerEx.Error.Code == (uint)EDeezerApiError.DataException);
 
                 else
                     throw;           
             }
 
             // Then unfavourite
-            Assert.True(this.session.User.UnfavouriteTrack(this.track, CancellationToken.None)
+            ClassicAssert.True(this.session.User.UnfavouriteTrack(this.track, CancellationToken.None)
                                          .Result);
 
             var updatedFavouriteTracks = this.session.User.GetFavouriteTracks(this.session.CurrentUserId, CancellationToken.None, 0, 100)
                                                           .Result;
 
-            Assert.AreEqual(0, updatedFavouriteTracks.Select(x => x.Id)
+            ClassicAssert.AreEqual(0, updatedFavouriteTracks.Select(x => x.Id)
                                                      .Where(x => x == this.track.Id)
                                                      .Count());
 
             // And test when not already a favorite
-            Assert.True(this.session.User.UnfavouriteTrack(this.track, CancellationToken.None)
+            ClassicAssert.True(this.session.User.UnfavouriteTrack(this.track, CancellationToken.None)
                                          .Result);
         }
 
@@ -388,32 +389,32 @@ namespace E.Deezer.Tests.Regression.Endpoint
                              .Wait();
 
             // Favourite
-            Assert.True(this.session.User.FavouritePlaylist(this.playlist, CancellationToken.None)
+            ClassicAssert.True(this.session.User.FavouritePlaylist(this.playlist, CancellationToken.None)
                                          .Result);
 
             var favouritePlaylists = this.session.User.GetFavouritePlaylists(this.session.CurrentUserId, CancellationToken.None, 0, 100)
                                                    .Result;
 
-            Assert.That(favouritePlaylists.Select(x => x.Id)
+            ClassicAssert.That(favouritePlaylists.Select(x => x.Id)
                                        .Any(x => x == this.playlist.Id));
 
             // Test when already added to favourites
-            Assert.True(this.session.User.FavouritePlaylist(this.playlist, CancellationToken.None)
+            ClassicAssert.True(this.session.User.FavouritePlaylist(this.playlist, CancellationToken.None)
                                          .Result);
 
             // Then unfavourite
-            Assert.True(this.session.User.UnfavouritePlaylist(this.playlist, CancellationToken.None)
+            ClassicAssert.True(this.session.User.UnfavouritePlaylist(this.playlist, CancellationToken.None)
                                          .Result);
 
             var updatedFavouritePlaylists = this.session.User.GetFavouritePlaylists(this.session.CurrentUserId, CancellationToken.None, 0, 100)
                                                           .Result;
 
-            Assert.AreEqual(0, updatedFavouritePlaylists.Select(x => x.Id)
+            ClassicAssert.AreEqual(0, updatedFavouritePlaylists.Select(x => x.Id)
                                                      .Where(x => x == this.playlist.Id)
                                                      .Count());
 
             // And test when not already a favorite
-            Assert.True(this.session.User.UnfavouritePlaylist(this.playlist, CancellationToken.None)
+            ClassicAssert.True(this.session.User.UnfavouritePlaylist(this.playlist, CancellationToken.None)
                                          .Result);
         }
 
@@ -426,32 +427,32 @@ namespace E.Deezer.Tests.Regression.Endpoint
                              .Wait();
 
             // Favourite
-            Assert.True(this.session.User.FavouriteRadio(this.radio, CancellationToken.None)
+            ClassicAssert.True(this.session.User.FavouriteRadio(this.radio, CancellationToken.None)
                                          .Result);
 
             var favouriteRadios = this.session.User.GetFavouriteRadio(this.session.CurrentUserId, CancellationToken.None, 0, 100)
                                                    .Result;
 
-            Assert.That(favouriteRadios.Select(x => x.Id)
+            ClassicAssert.That(favouriteRadios.Select(x => x.Id)
                                        .Any(x => x == this.radio.Id));
 
             // Test when already added to favourites
-            Assert.True(this.session.User.FavouriteRadio(this.radio, CancellationToken.None)
+            ClassicAssert.True(this.session.User.FavouriteRadio(this.radio, CancellationToken.None)
                                          .Result);
 
             // Then unfavourite
-            Assert.True(this.session.User.UnfavouriteRadio(this.radio, CancellationToken.None)
+            ClassicAssert.True(this.session.User.UnfavouriteRadio(this.radio, CancellationToken.None)
                                          .Result);
 
             var updatedFavouriteRadios = this.session.User.GetFavouriteRadio(this.session.CurrentUserId, CancellationToken.None, 0, 100)
                                                           .Result;
 
-            Assert.AreEqual(0, updatedFavouriteRadios.Select(x => x.Id)
+            ClassicAssert.AreEqual(0, updatedFavouriteRadios.Select(x => x.Id)
                                                      .Where(x => x == this.radio.Id)
                                                      .Count());
 
             // And test when not already a favorite
-            Assert.True(this.session.User.UnfavouriteRadio(this.radio, CancellationToken.None)
+            ClassicAssert.True(this.session.User.UnfavouriteRadio(this.radio, CancellationToken.None)
                                          .Result);
         }
     }

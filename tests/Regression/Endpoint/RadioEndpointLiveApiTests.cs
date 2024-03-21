@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using E.Deezer.Api;
 
@@ -53,13 +54,13 @@ namespace E.Deezer.Tests.Regression.Endpoint
                                                            .Result;
 
 
-            Assert.IsNotNull(radios, nameof(radios));
-            Assert.AreEqual(25, radios.Count(), "Count");
+            ClassicAssert.IsNotNull(radios, nameof(radios));
+            ClassicAssert.AreEqual(25, radios.Count(), "Count");
 
             var firstRadio = radios.First();
-            Assert.IsNotNull(firstRadio, nameof(firstRadio));
-            Assert.That(firstRadio.Id, Is.GreaterThan(0), nameof(firstRadio.Id));
-            Assert.IsNotNull(firstRadio.Title, nameof(firstRadio.Title));
+            ClassicAssert.IsNotNull(firstRadio, nameof(firstRadio));
+            ClassicAssert.That(firstRadio.Id, Is.GreaterThan(0), nameof(firstRadio.Id));
+            ClassicAssert.IsNotNull(firstRadio.Title, nameof(firstRadio.Title));
         }
 
         /* TODO: On Selection support
