@@ -40,8 +40,6 @@ namespace E.Deezer.Tests.Integration.Endpoint
             }
         }
 
-
-
         [Test]
         public void GetAlbumById()
         {
@@ -185,7 +183,7 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.IsNotNull(radio, nameof(radio));
             Assert.AreEqual(6, radio.Id, nameof(radio.Id));
             Assert.AreEqual("Elektronikus zene", radio.Title, nameof(radio.Title));
-            Assert.AreEqual("Elektronikus zene", radio.Description, nameof(radio.Description));
+            Assert.AreEqual("Elektronikus zene description", radio.Description, nameof(radio.Description));
             Assert.AreEqual("https://www.deezer.com/mixes/genre/6?utm_source=deezer&utm_content=mixes-genre-6&utm_term=0_1562079884&utm_medium=web", radio.ShareLink, nameof(radio.ShareLink));
         }
 
@@ -203,6 +201,41 @@ namespace E.Deezer.Tests.Integration.Endpoint
             Assert.AreEqual("Daniel Marhely", user.Username, nameof(user.Username));
             Assert.AreEqual("https://www.deezer.com/profile/5", user.Link, nameof(user.Link));
             Assert.AreEqual("JP", user.Country, nameof(user.Country));
+        }
+
+        [Test]
+        public void GetPodcastById()
+        {
+            handler.Content = base.GetServerResponse("podcast");
+
+            IPodcast podcast = session.Podcasts.GetById(DUMMY_ID, CancellationToken.None)
+                                            .Result;
+
+            Assert.IsNotNull(podcast, nameof(podcast));
+            Assert.AreEqual(2888112, podcast.Id, nameof(podcast.Id));
+            Assert.AreEqual("The Rest Is History", podcast.Title, nameof(podcast.Title));
+            Assert.AreEqual("The Rest is History description.", podcast.Description, nameof(podcast.Description));
+            Assert.AreEqual(3774, podcast.Fans, nameof(podcast.Fans));
+            Assert.True(podcast.Available, nameof(podcast.Available));
+            Assert.AreEqual("https://www.deezer.com/show/2888112", podcast.Link, nameof(podcast.Link));
+        }
+
+        [Test]
+        public void GetEpisodeById()
+        {
+            handler.Content = base.GetServerResponse("episode");
+
+            IEpisode episode = session.Episodes.GetById(DUMMY_ID, CancellationToken.None)
+                                            .Result;
+
+            Assert.IsNotNull(episode, nameof(episode));
+            Assert.AreEqual(606723512, episode.Id, nameof(episode.Id));
+            Assert.AreEqual(new DateTime(2024, 2, 26, 00, 10, 00), episode.ReleaseDate, nameof(episode.ReleaseDate));
+            Assert.AreEqual("423. Carthage vs. Rome: The Wolf at the Gates (Part 3)", episode.Title, nameof(episode.Title));
+            Assert.AreEqual("Episode 606723512 description", episode.Description, nameof(episode.Description));
+            Assert.AreEqual(3089, episode.Duration, nameof(episode.Duration));
+            Assert.True(episode.Available, nameof(episode.Available));
+            Assert.AreEqual("https://www.deezer.com/episode/606723512", episode.Link, nameof(episode.Link));
         }
     }
 }

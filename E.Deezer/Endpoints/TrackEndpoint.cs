@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using E.Deezer.Api;
 using System.Threading;
 using System.Threading.Tasks;
-
-using E.Deezer.Api;
 
 namespace E.Deezer.Endpoints
 {

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using E.Deezer.Api;
+﻿using E.Deezer.Api;
+using System;
 
 namespace E.Deezer.Util
 {
@@ -68,6 +65,14 @@ namespace E.Deezer.Util
             if (radio == null)
             {
                 throw new ArgumentNullException(nameof(radio));
+            }
+        }
+
+        public static void ThrowIfNull(this IPodcast podcast)
+        {
+            if (podcast == null)
+            {
+                throw new ArgumentNullException(nameof(podcast));
             }
         }
     }

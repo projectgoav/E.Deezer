@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using System.IO;
-
+﻿using E.Deezer.Api;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
-using E.Deezer.Api;
+using System;
+using System.IO;
 
 namespace E.Deezer.Util
 {
@@ -52,5 +47,10 @@ namespace E.Deezer.Util
             }
         }
 
+        public static DateTime? ParseApiDateTime(this JToken token, string key)
+        {
+            var apiDateString = token.Value<string>(key);
+            return DateTimeExtensions.ParseApiDateTime(apiDateString);
+        }
     }
 }
