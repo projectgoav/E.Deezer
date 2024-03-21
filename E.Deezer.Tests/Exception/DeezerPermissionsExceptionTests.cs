@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace E.Deezer.Tests.Exception
 {
@@ -19,7 +20,7 @@ namespace E.Deezer.Tests.Exception
 
             var actual = new DeezerPermissionsException(permission);
 
-            Assert.AreEqual(expectedMessage, actual.Message);
+            ClassicAssert.AreEqual(expectedMessage, actual.Message);
         }
     }
 }

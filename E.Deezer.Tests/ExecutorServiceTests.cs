@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 using Moq;
 using Moq.Protected;
+using NUnit.Framework.Legacy;
 
 
 namespace E.Deezer.Tests
@@ -34,7 +35,7 @@ namespace E.Deezer.Tests
                 .Verifiable();
 
             executor = new ExecutorService(handler.Object);
-            Assert.NotNull(executor);
+            ClassicAssert.NotNull(executor);
         }
 
         [TearDown]

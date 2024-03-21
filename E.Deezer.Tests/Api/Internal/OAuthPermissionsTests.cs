@@ -1,5 +1,6 @@
 ﻿using E.Deezer.Api;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace E.Deezer.Tests.Api.Internal
 {
@@ -14,7 +15,7 @@ namespace E.Deezer.Tests.Api.Internal
         {
             var perms =  OAuthPermissions.FromValues(hasEmail: doesHaveEmail);
 
-            Assert.AreEqual(doesHaveEmail, perms.HasPermission(DeezerPermissions.Email));
+            ClassicAssert.AreEqual(doesHaveEmail, perms.HasPermission(DeezerPermissions.Email));
         }
 
         [TestCase(true)]
@@ -23,7 +24,7 @@ namespace E.Deezer.Tests.Api.Internal
         {
             var perms =  OAuthPermissions.FromValues(hasOfflineAccess: doesHaveOfflineAccess);
 
-            Assert.AreEqual(doesHaveOfflineAccess, perms.HasPermission(DeezerPermissions.OfflineAccess));
+            ClassicAssert.AreEqual(doesHaveOfflineAccess, perms.HasPermission(DeezerPermissions.OfflineAccess));
         }
 
         [TestCase(true)]
@@ -32,7 +33,7 @@ namespace E.Deezer.Tests.Api.Internal
         {
             var perms =  OAuthPermissions.FromValues(hasManageLibrary: doesHaveManageLibrary);
 
-            Assert.AreEqual(doesHaveManageLibrary, perms.HasPermission(DeezerPermissions.ManageLibrary));
+            ClassicAssert.AreEqual(doesHaveManageLibrary, perms.HasPermission(DeezerPermissions.ManageLibrary));
         }
 
         [TestCase(true)]
@@ -41,7 +42,7 @@ namespace E.Deezer.Tests.Api.Internal
         {
             var perms =  OAuthPermissions.FromValues(hasManageCommunity: doesHaveManageCommunity);
 
-            Assert.AreEqual(doesHaveManageCommunity, perms.HasPermission(DeezerPermissions.ManageCommunity));
+            ClassicAssert.AreEqual(doesHaveManageCommunity, perms.HasPermission(DeezerPermissions.ManageCommunity));
         }
 
         [TestCase(true)]
@@ -50,7 +51,7 @@ namespace E.Deezer.Tests.Api.Internal
         {
             var perms =  OAuthPermissions.FromValues(hasDeleteLibrary: doesHaveDeleteLibrary);
 
-            Assert.AreEqual(doesHaveDeleteLibrary, perms.HasPermission(DeezerPermissions.DeleteLibrary));
+            ClassicAssert.AreEqual(doesHaveDeleteLibrary, perms.HasPermission(DeezerPermissions.DeleteLibrary));
         }
 
         [TestCase(true)]
@@ -59,7 +60,7 @@ namespace E.Deezer.Tests.Api.Internal
         {
             var perms =  OAuthPermissions.FromValues(hasListeningHistory: doesHaveListeningHistory);
 
-            Assert.AreEqual(doesHaveListeningHistory, perms.HasPermission(DeezerPermissions.ListeningHistory));
+            ClassicAssert.AreEqual(doesHaveListeningHistory, perms.HasPermission(DeezerPermissions.ListeningHistory));
         }
 
 
@@ -72,8 +73,8 @@ namespace E.Deezer.Tests.Api.Internal
             var perms = OAuthPermissions.FromValues(hasEmail: hasEmail,
                                                     hasBasicAccess: hasBasicAccess);
 
-            Assert.AreEqual(hasEmail, perms.HasPermission(DeezerPermissions.Email));
-            Assert.AreEqual(hasBasicAccess, perms.HasPermission(DeezerPermissions.BasicAccess));
+            ClassicAssert.AreEqual(hasEmail, perms.HasPermission(DeezerPermissions.Email));
+            ClassicAssert.AreEqual(hasBasicAccess, perms.HasPermission(DeezerPermissions.BasicAccess));
         }
     }
 }

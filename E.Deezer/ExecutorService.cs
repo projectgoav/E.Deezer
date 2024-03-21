@@ -75,9 +75,11 @@ namespace E.Deezer
 
             if (linkedTokenSource.IsCancellationRequested)
             {
+                Task<Stream> result = Task.FromCanceled<Stream>(linkedTokenSource.Token);
+
                 linkedTokenSource.Dispose();
 
-                return Task.FromCanceled<Stream>(cancellationToken);
+                return result;
             }
 
             var requestTask = requestFunc(linkedTokenSource.Token);

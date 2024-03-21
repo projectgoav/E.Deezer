@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace E.Deezer.Tests
 {
@@ -21,7 +22,7 @@ namespace E.Deezer.Tests
         [TestCase(DeezerPermissions.ManageCommunity | DeezerPermissions.ManageLibrary | DeezerPermissions.BasicAccess,  JOINT_B)]
         public void PermissionToString(DeezerPermissions input, string expected)
         {
-            Assert.AreEqual(expected, input.PermissionToString());
+            ClassicAssert.AreEqual(expected, input.PermissionToString());
         }
 
 
@@ -32,7 +33,7 @@ namespace E.Deezer.Tests
         [TestCase(DeezerPermissions.Email | DeezerPermissions.OfflineAccess, DeezerPermissions.OfflineAccess, true)]
         public void TestHasPermissions(DeezerPermissions permissions, DeezerPermissions requestedPermission, bool shouldBeAvailable)
         {
-            Assert.AreEqual(shouldBeAvailable, permissions.HasPermission(requestedPermission));
+            ClassicAssert.AreEqual(shouldBeAvailable, permissions.HasPermission(requestedPermission));
         }
     }
 }

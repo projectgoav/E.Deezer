@@ -1,6 +1,7 @@
 ﻿using E.Deezer.Api;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace E.Deezer.Tests.Exception
 {
@@ -23,7 +24,7 @@ namespace E.Deezer.Tests.Exception
 
             var ex = new DeezerException(error);
 
-            Assert.AreEqual(expectedMessage, ex.Message);
+            ClassicAssert.AreEqual(expectedMessage, ex.Message);
         }
     }
 }
