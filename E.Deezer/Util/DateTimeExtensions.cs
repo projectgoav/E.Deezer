@@ -6,10 +6,6 @@ namespace E.Deezer.Util
 {
     public static class DateTimeExtensions
     {
-#if NET45 || NETSTANDARD11
-        private static readonly DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-#endif
-
         public const string API_DATE_FORMAT = "yyyy-MM-dd";
         public const string API_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
         public const string DEFAULT_DATE = "0000-00-00";
@@ -42,12 +38,8 @@ namespace E.Deezer.Util
 
             try
             {
-#if NETSTANDARD20
                 parsed = DateTimeOffset.FromUnixTimeSeconds(seconds)
                                        .UtcDateTime;
-#else
-                parsed = UNIX_EPOCH.AddSeconds(seconds);
-#endif
             }
             catch
             {

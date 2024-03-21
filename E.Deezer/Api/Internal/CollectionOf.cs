@@ -18,7 +18,7 @@ namespace E.Deezer.Api.Internal
                                                   Func<JToken, TItem> itemFactoryFunc)
         {
             if (json == null)
-                return Compat.Array.Empty<TItem>();
+                return Array.Empty<TItem>();
 
             if (json.Type != JTokenType.Array)
                 throw new InvalidOperationException($"Attempting to deserialize a json object of type '{json.Type}' as an array. This can't be done.");

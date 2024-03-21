@@ -26,11 +26,9 @@ namespace E.Deezer.Api.Internal
                                                   Func<JToken, TItem> itemFactoryFunc)
         {
             if (json == null)
-#if NETSTANDARD20
+            {
                 return Array.Empty<TItem>();
-#else
-                return new TItem[0];
-#endif
+            }
 
             var fragmentContents = json[DATA_PROPERTY_NAME];
 

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard1.1;net45</TargetFrameworks>
-    <Copyright>Copyright 2020</Copyright>
+    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+    <Copyright>Copyright 2024</Copyright>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild> 
     <Deterministic>False</Deterministic> 
@@ -15,40 +15,15 @@
     <PackageProjectUrl>https://github.com/projectgoav/E.Deezer</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageDescription>.NET Deezer API wrapper</PackageDescription>
-    <PackageCopyright>Copyright 2020</PackageCopyright>
+    <PackageCopyright>Copyright 2024</PackageCopyright>
     <PackageTags>.NET Rest Deezer API</PackageTags>
     <RepositoryUrl>https://github.com/projectgoav/E.Deezer</RepositoryUrl>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.1' OR '$(TargetFramework)' == 'netstandard2.0' ">
-    <DefineConstants>NETSTANDARD</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.1' ">
-    <DefineConstants>NETSTANDARD11</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <DefineConstants>NETSTANDARD20</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <DefineConstants>NETFULL;NET45</DefineConstants>
-  </PropertyGroup>
-  
-  
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'netstandard1.1' ">
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <PackageReference Include="System.Net.Http" Version="4.3.2" />
-  </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
 </Project>
