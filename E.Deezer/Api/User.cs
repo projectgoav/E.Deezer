@@ -1,21 +1,14 @@
-﻿using System;
+﻿using E.Deezer.Util;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-
 using System.Threading;
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
- 
-using E.Deezer.Util;
 
 
 namespace E.Deezer.Api
 {
-	public interface IUser
+    public interface IUser
 	{
         ulong Id { get; }
         string Username { get;  }
@@ -101,10 +94,10 @@ namespace E.Deezer.Api
         public static IUser FromJson(JToken json)
         {
             string birthdayStr = json.Value<string>(BIRTHDAY_PROPERTY_NAME);
-            DateTime? birthday = DateTimeExtensions.ParseApiDateTime(birthdayStr);
+            DateTime? birthday = DateTimeExtensions.ParseApiDate(birthdayStr);
 
             string joinedStr = json.Value<string>(JOINED_PROPERTY_NAME);
-            DateTime? joined = DateTimeExtensions.ParseApiDateTime(joinedStr);
+            DateTime? joined = DateTimeExtensions.ParseApiDate(joinedStr);
 
             return new User()
             {
@@ -133,7 +126,6 @@ namespace E.Deezer.Api
             };
         }
     }
-
 
 
     public interface IUserV2
@@ -287,14 +279,14 @@ namespace E.Deezer.Api
             var birthdayDate = json.Value<string>(BIRTHDAY_PROPERTY_NAME);
 
             DateTime? birthdayAsDateTime = birthdayDate == DEFAULT_BIRTHDAY ? (DateTime?)null
-                                                                            : DateTimeExtensions.ParseApiDateTime(birthdayDate);
+                                                                            : DateTimeExtensions.ParseApiDate(birthdayDate);
 
             var inscriptionDateStr = json.Value<string>(INSCRIPTION_PROPERTY_NAME);
             DateTime? inscriptionDate = null;
 
             if (inscriptionDateStr != null)
             {
-                inscriptionDate = DateTimeExtensions.ParseApiDateTime(inscriptionDateStr);
+                inscriptionDate = DateTimeExtensions.ParseApiDate(inscriptionDateStr);
             }
 
             return new UserV2()

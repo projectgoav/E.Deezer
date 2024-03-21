@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace E.Deezer.Endpoints
+﻿namespace E.Deezer.Endpoints
 {
     internal class Endpoints
     {
@@ -18,6 +14,8 @@ namespace E.Deezer.Endpoints
             this.Track = new TrackEndpoint(client);
             this.User = new UserEndpoint(client);
             this.Search = new SearchEndpoint(client);
+            this.Podcasts = new PodcastEndpoint(client);
+            this.Episodes = new EpisodeEndpoint(client);
         }
 
 
@@ -40,5 +38,9 @@ namespace E.Deezer.Endpoints
         public IUserEndpoint User { get; }
 
         public ISearchEndpoint Search { get; }
+
+        public IPodcastEndpoint Podcasts { get; }
+
+        public IEpisodeEndpoint Episodes { get; }
     }
 }

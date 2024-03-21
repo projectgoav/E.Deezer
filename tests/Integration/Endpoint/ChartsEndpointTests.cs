@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
 
 using NUnit.Framework;
@@ -14,8 +13,8 @@ namespace E.Deezer.Tests.Integration.Endpoint
     [Parallelizable(ParallelScope.Fixtures)]
     public class ChartsEndpointTests : TestClassBase, IDisposable
     {
-        private OfflineMessageHandler handler;
-        private DeezerSession session;
+        private readonly OfflineMessageHandler handler;
+        private readonly DeezerSession session;
 
         public ChartsEndpointTests()
             : base("ChartsEndpoint")
@@ -138,7 +137,18 @@ namespace E.Deezer.Tests.Integration.Endpoint
         [Test]
         public void GetPodcastChart()
         {
-            Assert.Warn("This functionality not yet implemented!");
+            handler.Content = base.GetServerResponse("podcast");
+
+            var podcasts = session.Charts.GetPodcastChart(CancellationToken.None)
+                                                       .Result;
+
+            Assert.IsNotNull(podcasts, nameof(podcasts));
+            Assert.AreEqual(10, podcasts.Count(), "Count");
+
+            var firstPodcast = podcasts.First();
+            Assert.IsNotNull(firstPodcast, nameof(firstPodcast));
+            Assert.AreEqual(2888112, firstPodcast.Id, nameof(firstPodcast.Id));
+            Assert.AreEqual("The Rest Is History", firstPodcast.Title, nameof(firstPodcast.Title));
         }
     }
 }

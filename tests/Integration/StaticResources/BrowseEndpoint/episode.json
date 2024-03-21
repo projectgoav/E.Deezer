@@ -1,0 +1,27 @@
+{
+  "id": 606723512,
+  "title": "423. Carthage vs. Rome: The Wolf at the Gates (Part 3)",
+  "description": "Episode 606723512 description",
+  "available": true,
+  "release_date": "2024-02-26 00:10:00",
+  "duration": 3089,
+  "link": "https://www.deezer.com/episode/606723512",
+  "share": "https://www.deezer.com/episode/606723512?utm_source=deezer&utm_content=episode-606723512&utm_term=0_1709059422&utm_medium=web",
+  "picture": "https://e-cdns-images.dzcdn.net/images/talk/54d8e1e0c3fd9309722dd6b518ec4d27/180x180-000000-80-0-0.jpg",
+  "picture_small": "https://e-cdns-images.dzcdn.net/images/talk/54d8e1e0c3fd9309722dd6b518ec4d27/56x56-000000-80-0-0.jpg",
+  "picture_medium": "https://e-cdns-images.dzcdn.net/images/talk/54d8e1e0c3fd9309722dd6b518ec4d27/250x250-000000-80-0-0.jpg",
+  "picture_big": "https://e-cdns-images.dzcdn.net/images/talk/54d8e1e0c3fd9309722dd6b518ec4d27/500x500-000000-80-0-0.jpg",
+  "picture_xl": "https://e-cdns-images.dzcdn.net/images/talk/54d8e1e0c3fd9309722dd6b518ec4d27/1000x1000-000000-80-0-0.jpg",
+  "podcast": {
+    "id": 2888112,
+    "title": "The Rest Is History",
+    "link": "https://www.deezer.com/show/2888112",
+    "picture": "https://e-cdns-images.dzcdn.net/images/talk/54d8e1e0c3fd9309722dd6b518ec4d27/180x180-000000-80-0-0.jpg",
+    "picture_small": "https://e-cdns-images.dzcdn.net/images/talk/54d8e1e0c3fd9309722dd6b518ec4d27/56x56-000000-80-0-0.jpg",
+    "picture_medium": "https://e-cdns-images.dzcdn.net/images/talk/54d8e1e0c3fd9309722dd6b518ec4d27/250x250-000000-80-0-0.jpg",
+    "picture_big": "https://e-cdns-images.dzcdn.net/images/talk/54d8e1e0c3fd9309722dd6b518ec4d27/500x500-000000-80-0-0.jpg",
+    "picture_xl": "https://e-cdns-images.dzcdn.net/images/talk/54d8e1e0c3fd9309722dd6b518ec4d27/1000x1000-000000-80-0-0.jpg",
+    "type": "podcast"
+  },
+  "type": "episode"
+}
