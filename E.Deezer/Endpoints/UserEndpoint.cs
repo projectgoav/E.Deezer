@@ -41,6 +41,8 @@ namespace E.Deezer.Endpoints
         Task<IEnumerable<IRadio>> GetFavouriteRadio(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25);
         Task<IEnumerable<IRadio>> GetFavouriteRadio(ulong userId, CancellationToken cancellationToken, uint start = 0, uint count = 25);
 
+        Task<IEnumerable<IPlaylist>> GetFavouritePlaylists(IUserProfile user, CancellationToken cancellationToken, uint start = 0, uint count = 25);
+        Task<IEnumerable<IPlaylist>> GetFavouritePlaylists(ulong userId, CancellationToken cancellationToken, uint start = 0, uint count = 25);
 
         Task<IEnumerable<IAlbum>> GetRecommendedAlbums(CancellationToken cancellationToken, uint start = 0, uint count = 25);
         Task<IEnumerable<IArtist>> GetRecommendedArtists(CancellationToken cancellationToken, uint start = 0, uint count = 25);
@@ -259,6 +261,14 @@ namespace E.Deezer.Endpoints
                                json => FragmentOf<IRadio>.FromJson(json, x => Api.Radio.FromJson(x, this.client)));
 
 
+        public Task<IEnumerable<IPlaylist>> GetPlaylists(IUserProfile userProfile, CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => GetPlaylists(userProfile.Id, cancellationToken, start, count);
+
+        public Task<IEnumerable<IPlaylist>> GetPlaylists(ulong userId, CancellationToken cancellationToken, uint start = 0, uint count = 25)
+            => this.client.Get($"user/{userId}/playlists?{START_PARAM}={start}&{COUNT_PARAM}={count}",
+                               DeezerPermissions.ManageLibrary,
+                               cancellationToken,
+                               json => FragmentOf<IPlaylist>.FromJson(json, x => Api.Playlist.FromJson(x, this.client)));
 
         public Task<IEnumerable<IPlaylist>> GetPlaylists(CancellationToken cancellationToken, uint start = 0, uint count = 25)
             => this.client.Get($"user/me/playlists?{START_PARAM}={start}&{COUNT_PARAM}={count}",
