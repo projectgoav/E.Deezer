@@ -7,6 +7,7 @@ using System.Threading;
 using NUnit.Framework;
 
 using E.Deezer.Api;
+using NUnit.Framework.Legacy;
 
 namespace E.Deezer.Tests.Integration.Endpoint
 {
@@ -50,11 +51,11 @@ namespace E.Deezer.Tests.Integration.Endpoint
                                                       .Result;
 
             var genres = actual.ToList();
-            Assert.AreEqual(22, genres.Count, "Count");
+            ClassicAssert.AreEqual(22, genres.Count, "Count");
 
             var secondGenre = genres[1];
-            Assert.AreEqual(132, secondGenre.Id, nameof(secondGenre.Id));
-            Assert.AreEqual("Pop", secondGenre.Name, nameof(secondGenre.Name));
+            ClassicAssert.AreEqual(132, secondGenre.Id, nameof(secondGenre.Id));
+            ClassicAssert.AreEqual("Pop", secondGenre.Name, nameof(secondGenre.Name));
         }
     }
 }

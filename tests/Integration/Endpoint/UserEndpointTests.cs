@@ -7,6 +7,7 @@ using System.Threading;
 using NUnit.Framework;
 
 using E.Deezer.Api;
+using NUnit.Framework.Legacy;
 
 namespace E.Deezer.Tests.Integration.Endpoint
 {
@@ -31,7 +32,7 @@ namespace E.Deezer.Tests.Integration.Endpoint
             bool didLogin = this.session.Login("access_token", CancellationToken.None)
                                         .Result;
 
-            Assert.IsTrue(didLogin);
+            ClassicAssert.IsTrue(didLogin);
         }
         
         [TearDown]
@@ -50,13 +51,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<ITrack> tracks = session.User.GetListeningHistory(CancellationToken.None)
                                                      .Result;
 
-            Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.AreEqual(50, tracks.Count(), "Count");
+            ClassicAssert.IsNotNull(tracks, nameof(tracks));
+            ClassicAssert.AreEqual(50, tracks.Count(), "Count");
 
             var firstTrack = tracks.First();
-            Assert.IsNotNull(firstTrack, nameof(firstTrack));
-            Assert.AreEqual(391727202, firstTrack.Id, nameof(firstTrack.Id));
-            Assert.AreEqual("Silence", firstTrack.Title, nameof(firstTrack.Title));
+            ClassicAssert.IsNotNull(firstTrack, nameof(firstTrack));
+            ClassicAssert.AreEqual(391727202, firstTrack.Id, nameof(firstTrack.Id));
+            ClassicAssert.AreEqual("Silence", firstTrack.Title, nameof(firstTrack.Title));
         }
 
         [Test]
@@ -67,13 +68,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<ITrack> tracks = session.User.GetFlow(this.session.CurrentUserId, CancellationToken.None)
                                                      .Result;
 
-            Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.AreEqual(40, tracks.Count(), "Count");
+            ClassicAssert.IsNotNull(tracks, nameof(tracks));
+            ClassicAssert.AreEqual(40, tracks.Count(), "Count");
 
             var firstTrack = tracks.First();
-            Assert.IsNotNull(firstTrack, nameof(firstTrack));
-            Assert.AreEqual(561756292, firstTrack.Id, nameof(firstTrack.Id));
-            Assert.AreEqual("Without Me", firstTrack.Title, nameof(firstTrack.Title));
+            ClassicAssert.IsNotNull(firstTrack, nameof(firstTrack));
+            ClassicAssert.AreEqual(561756292, firstTrack.Id, nameof(firstTrack.Id));
+            ClassicAssert.AreEqual("Without Me", firstTrack.Title, nameof(firstTrack.Title));
         }
 
         /*
@@ -99,13 +100,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<IPlaylist> playlists = session.User.GetPlaylists(CancellationToken.None)
                                                            .Result;
 
-            Assert.IsNotNull(playlists, nameof(playlists));
-            Assert.AreEqual(3, playlists.Count(), "Count");
+            ClassicAssert.IsNotNull(playlists, nameof(playlists));
+            ClassicAssert.AreEqual(3, playlists.Count(), "Count");
 
             var firstPlaylist = playlists.First();
-            Assert.IsNotNull(firstPlaylist, nameof(firstPlaylist));
-            Assert.AreEqual(3093783442, firstPlaylist.Id, nameof(firstPlaylist.Id));
-            Assert.AreEqual("Favourite tracks", firstPlaylist.Title, nameof(firstPlaylist.Title));
+            ClassicAssert.IsNotNull(firstPlaylist, nameof(firstPlaylist));
+            ClassicAssert.AreEqual(3093783442, firstPlaylist.Id, nameof(firstPlaylist.Id));
+            ClassicAssert.AreEqual("Favourite tracks", firstPlaylist.Title, nameof(firstPlaylist.Title));
         }
 
         [Test]
@@ -116,13 +117,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<IAlbum> albums = session.User.GetFavouriteAlbums(this.session.CurrentUserId, CancellationToken.None)
                                                      .Result;
 
-            Assert.IsNotNull(albums, nameof(albums));
-            Assert.AreEqual(2, albums.Count(), "Count");
+            ClassicAssert.IsNotNull(albums, nameof(albums));
+            ClassicAssert.AreEqual(2, albums.Count(), "Count");
 
             var firstAlbum = albums.First();
-            Assert.IsNotNull(firstAlbum, nameof(firstAlbum));
-            Assert.AreEqual(68913181, firstAlbum.Id, nameof(firstAlbum.Id));
-            Assert.AreEqual("Arcade Mammoth", firstAlbum.Title, nameof(firstAlbum.Title));
+            ClassicAssert.IsNotNull(firstAlbum, nameof(firstAlbum));
+            ClassicAssert.AreEqual(68913181, firstAlbum.Id, nameof(firstAlbum.Id));
+            ClassicAssert.AreEqual("Arcade Mammoth", firstAlbum.Title, nameof(firstAlbum.Title));
         }
 
         [Test]
@@ -133,13 +134,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<IArtist> artists = session.User.GetFavouriteArtists(this.session.CurrentUserId, CancellationToken.None)
                                                        .Result;
 
-            Assert.IsNotNull(artists, nameof(artists));
-            Assert.AreEqual(7, artists.Count(), "Count");
+            ClassicAssert.IsNotNull(artists, nameof(artists));
+            ClassicAssert.AreEqual(7, artists.Count(), "Count");
 
             var firstArtist = artists.First();
-            Assert.IsNotNull(firstArtist, nameof(firstArtist));
-            Assert.AreEqual(310557, firstArtist.Id, nameof(firstArtist.Id));
-            Assert.AreEqual("Steve Aoki", firstArtist.Name, nameof(firstArtist.Name));
+            ClassicAssert.IsNotNull(firstArtist, nameof(firstArtist));
+            ClassicAssert.AreEqual(310557, firstArtist.Id, nameof(firstArtist.Id));
+            ClassicAssert.AreEqual("Steve Aoki", firstArtist.Name, nameof(firstArtist.Name));
         }
 
         [Test]
@@ -150,13 +151,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<ITrack> tracks = session.User.GetFavouriteTracks(this.session.CurrentUserId, CancellationToken.None)
                                                      .Result;
 
-            Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.AreEqual(58, tracks.Count(), "Count");
+            ClassicAssert.IsNotNull(tracks, nameof(tracks));
+            ClassicAssert.AreEqual(58, tracks.Count(), "Count");
 
             var firstTrack = tracks.First();
-            Assert.IsNotNull(firstTrack, nameof(firstTrack));
-            Assert.AreEqual(565423972, firstTrack.Id, nameof(firstTrack.Id));
-            Assert.AreEqual("MIA (feat. Drake)", firstTrack.Title, nameof(firstTrack.Title));
+            ClassicAssert.IsNotNull(firstTrack, nameof(firstTrack));
+            ClassicAssert.AreEqual(565423972, firstTrack.Id, nameof(firstTrack.Id));
+            ClassicAssert.AreEqual("MIA (feat. Drake)", firstTrack.Title, nameof(firstTrack.Title));
         }
 
         [Test]
@@ -167,13 +168,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<IAlbum> albums = session.User.GetRecommendedAlbums(CancellationToken.None)
                                                      .Result;
 
-            Assert.IsNotNull(albums, nameof(albums));
-            Assert.AreEqual(99, albums.Count(), "Count");
+            ClassicAssert.IsNotNull(albums, nameof(albums));
+            ClassicAssert.AreEqual(99, albums.Count(), "Count");
 
             var firstAlbum = albums.First();
-            Assert.IsNotNull(firstAlbum, nameof(firstAlbum));
-            Assert.AreEqual(10174474, firstAlbum.Id, nameof(firstAlbum.Id));
-            Assert.AreEqual("The Beginning", firstAlbum.Title, nameof(firstAlbum.Title));
+            ClassicAssert.IsNotNull(firstAlbum, nameof(firstAlbum));
+            ClassicAssert.AreEqual(10174474, firstAlbum.Id, nameof(firstAlbum.Id));
+            ClassicAssert.AreEqual("The Beginning", firstAlbum.Title, nameof(firstAlbum.Title));
         }
 
         [Test]
@@ -184,13 +185,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<IArtist> artists = session.User.GetRecommendedArtists(CancellationToken.None)
                                                        .Result;
 
-            Assert.IsNotNull(artists, nameof(artists));
-            Assert.AreEqual(30, artists.Count(), "Count");
+            ClassicAssert.IsNotNull(artists, nameof(artists));
+            ClassicAssert.AreEqual(30, artists.Count(), "Count");
 
             var firstArtist = artists.First();
-            Assert.IsNotNull(firstArtist, nameof(firstArtist));
-            Assert.AreEqual(1353625, firstArtist.Id, nameof(firstArtist.Id));
-            Assert.AreEqual("R3hab", firstArtist.Name, nameof(firstArtist.Name));
+            ClassicAssert.IsNotNull(firstArtist, nameof(firstArtist));
+            ClassicAssert.AreEqual(1353625, firstArtist.Id, nameof(firstArtist.Id));
+            ClassicAssert.AreEqual("R3hab", firstArtist.Name, nameof(firstArtist.Name));
         }
 
         [Test]
@@ -201,13 +202,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<IPlaylist> playlists = session.User.GetRecommendedPlaylists(CancellationToken.None)
                                                            .Result;
 
-            Assert.IsNotNull(playlists, nameof(playlists));
-            Assert.AreEqual(29, playlists.Count(), "Count");
+            ClassicAssert.IsNotNull(playlists, nameof(playlists));
+            ClassicAssert.AreEqual(29, playlists.Count(), "Count");
 
             var firstPlaylist = playlists.First();
-            Assert.IsNotNull(firstPlaylist, nameof(firstPlaylist));
-            Assert.AreEqual(706093725, firstPlaylist.Id, nameof(firstPlaylist.Id));
-            Assert.AreEqual("Pulse", firstPlaylist.Title, nameof(firstPlaylist.Title));
+            ClassicAssert.IsNotNull(firstPlaylist, nameof(firstPlaylist));
+            ClassicAssert.AreEqual(706093725, firstPlaylist.Id, nameof(firstPlaylist.Id));
+            ClassicAssert.AreEqual("Pulse", firstPlaylist.Title, nameof(firstPlaylist.Title));
         }
 
         [Test]
@@ -218,13 +219,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<ITrack> tracks = session.User.GetRecommendedTracks(CancellationToken.None)
                                                      .Result;
 
-            Assert.IsNotNull(tracks, nameof(tracks));
-            Assert.AreEqual(40, tracks.Count(), "Count");
+            ClassicAssert.IsNotNull(tracks, nameof(tracks));
+            ClassicAssert.AreEqual(40, tracks.Count(), "Count");
 
             var firstTrack = tracks.First();
-            Assert.IsNotNull(firstTrack, nameof(firstTrack));
-            Assert.AreEqual(485156332, firstTrack.Id, nameof(firstTrack.Id));
-            Assert.AreEqual("Hold On Tight", firstTrack.Title, nameof(firstTrack.Title));
+            ClassicAssert.IsNotNull(firstTrack, nameof(firstTrack));
+            ClassicAssert.AreEqual(485156332, firstTrack.Id, nameof(firstTrack.Id));
+            ClassicAssert.AreEqual("Hold On Tight", firstTrack.Title, nameof(firstTrack.Title));
         }
 
         [Test]
@@ -235,13 +236,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<IRadio> radios = session.User.GetRecommendedRadio(CancellationToken.None)
                                                      .Result;
 
-            Assert.IsNotNull(radios, nameof(radios));
-            Assert.AreEqual(40, radios.Count(), "Count");
+            ClassicAssert.IsNotNull(radios, nameof(radios));
+            ClassicAssert.AreEqual(40, radios.Count(), "Count");
 
             var firstRadio = radios.First();
-            Assert.IsNotNull(firstRadio, nameof(firstRadio));
-            Assert.AreEqual(531582301, firstRadio.Id, nameof(firstRadio.Id));
-            Assert.AreEqual("Arcade Mammoth", firstRadio.Title, nameof(firstRadio.Title));
+            ClassicAssert.IsNotNull(firstRadio, nameof(firstRadio));
+            ClassicAssert.AreEqual(531582301, firstRadio.Id, nameof(firstRadio.Id));
+            ClassicAssert.AreEqual("Arcade Mammoth", firstRadio.Title, nameof(firstRadio.Title));
         }
 
     }

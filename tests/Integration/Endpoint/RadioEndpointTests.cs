@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Threading;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using E.Deezer.Api;
 
@@ -50,13 +51,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<IRadio> radios = session.Radio.GetTopRadio(CancellationToken.None)
                                                       .Result;
 
-            Assert.IsNotNull(radios, nameof(radios));
-            Assert.AreEqual(25, radios.Count(), "Count");
+            ClassicAssert.IsNotNull(radios, nameof(radios));
+            ClassicAssert.AreEqual(25, radios.Count(), "Count");
 
             var firstRadio = radios.First();
-            Assert.IsNotNull(firstRadio, nameof(firstRadio));
-            Assert.AreEqual(36891, firstRadio.Id, nameof(firstRadio.Id));
-            Assert.AreEqual("Deep House", firstRadio.Title, nameof(firstRadio.Title));
+            ClassicAssert.IsNotNull(firstRadio, nameof(firstRadio));
+            ClassicAssert.AreEqual(36891, firstRadio.Id, nameof(firstRadio.Id));
+            ClassicAssert.AreEqual("Deep House", firstRadio.Title, nameof(firstRadio.Title));
         }
 
         /*
@@ -69,13 +70,13 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<IRadio> radios = session.Radio.GetDeezerSelection();
 
 
-            Assert.IsNotNull(radios, nameof(radios));
-            Assert.AreEqual(77, radios.Count(), "Count");
+            ClassicAssert.IsNotNull(radios, nameof(radios));
+            ClassicAssert.AreEqual(77, radios.Count(), "Count");
 
             var firstRadio = radios.First();
-            Assert.IsNotNull(firstRadio, nameof(firstRadio));
-            Assert.AreEqual(37151, firstRadio.Id, nameof(firstRadio.Id));
-            Assert.AreEqual("Slágerek", firstRadio.Title, nameof(firstRadio.Title));
+            ClassicAssert.IsNotNull(firstRadio, nameof(firstRadio));
+            ClassicAssert.AreEqual(37151, firstRadio.Id, nameof(firstRadio.Id));
+            ClassicAssert.AreEqual("Slágerek", firstRadio.Title, nameof(firstRadio.Title));
         }
         */
 
@@ -89,18 +90,18 @@ namespace E.Deezer.Tests.Integration.Endpoint
             IEnumerable<IGenreWithRadios> radios = session.Radio.GetByGenres();
         
 
-            Assert.IsNotNull(radios, nameof(radios));
-            Assert.AreEqual(20, radios.Count(), "radios.Count");
+            ClassicAssert.IsNotNull(radios, nameof(radios));
+            ClassicAssert.AreEqual(20, radios.Count(), "radios.Count");
 
             IGenreWithRadios firstGenre = radios.First();
-            Assert.AreEqual(132, firstGenre.ID, nameof(firstGenre.ID));
-            Assert.AreEqual("Pop", firstGenre.Title, nameof(firstGenre.Title));
+            ClassicAssert.AreEqual(132, firstGenre.ID, nameof(firstGenre.ID));
+            ClassicAssert.AreEqual("Pop", firstGenre.Title, nameof(firstGenre.Title));
 
-            Assert.AreEqual(25, firstGenre.Radios.Count(), "firstGenre.Radios.Count");
+            ClassicAssert.AreEqual(25, firstGenre.Radios.Count(), "firstGenre.Radios.Count");
 
             IRadio lastRadio = firstGenre.Radios.Last();
-            Assert.AreEqual(32101, lastRadio.Id, $"{nameof(lastRadio)}.{nameof(lastRadio.Id)}");
-            Assert.AreEqual("Phenom'enon", lastRadio.Title, $"{nameof(lastRadio)}.{nameof(lastRadio.Title)}");
+            ClassicAssert.AreEqual(32101, lastRadio.Id, $"{nameof(lastRadio)}.{nameof(lastRadio.Id)}");
+            ClassicAssert.AreEqual("Phenom'enon", lastRadio.Title, $"{nameof(lastRadio)}.{nameof(lastRadio.Title)}");
         }
         */
 
@@ -109,7 +110,7 @@ namespace E.Deezer.Tests.Integration.Endpoint
         [Test]
         public void GetByTracks()
         {
-            Assert.Warn("This functionality not yet implemented!");
+            ClassicAssert.Warn("This functionality not yet implemented!");
         }
         */
     }
